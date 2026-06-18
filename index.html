@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Yeniçeri: Hisarköy Muhafızı</title>
+<style>
+/* ─── RESET & TEMEL ─────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Cinzel',Georgia,serif;}
+#gc{position:fixed;inset:0;overflow:hidden;}
+canvas{position:absolute;inset:0;display:block;}
+
+/* ─── ORTAK EKRAN KATI ─────────────────────────────────────── */
+.screen{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;}
+.screen.overlay{background:rgba(0,0,0,.78);}
+
+/* ─── ORTAK UI ELEMANi ─────────────────────────────────────── */
+.panel{background:linear-gradient(180deg,#1c0e00,#0e0600);border:2px solid #8B6914;border-radius:6px;padding:22px 28px;position:relative;}
+.panel::before{content:'';position:absolute;inset:5px;border:1px solid rgba(139,105,20,.22);border-radius:4px;pointer-events:none;}
+.gold-title{color:#FFD700;font-size:16px;letter-spacing:3px;margin-bottom:6px;font-family:'Cinzel Decorative',serif;text-shadow:0 0 12px rgba(255,180,0,.5);}
+.gold-sub{color:#8B6914;font-size:8px;letter-spacing:4px;margin-bottom:14px;}
+.btn{display:block;width:100%;padding:9px 0;margin:6px 0;background:linear-gradient(180deg,#4a2e00,#1e1000);border:1.5px solid #8B6914;border-radius:3px;color:#F5DEB3;font-size:11px;font-family:'Cinzel',serif;cursor:pointer;letter-spacing:1px;transition:all .12s;text-align:center;}
+.btn:hover,.btn:active{border-color:#FFD700;color:#FFD700;}
+.btn.danger{border-color:#7B1414;color:#c0392b;}
+.btn.danger:hover{border-color:#c0392b;color:#ff6b6b;}
+.btn.success{border-color:#27ae60;color:#2ecc71;}
+.btn.success:hover{border-color:#2ecc71;color:#5dfc90;}
+.stat-row{display:flex;justify-content:space-between;color:#D4B896;font-size:9px;margin:3px 0;padding:2px 0;}
+.stat-val{color:#FFD700;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,#8B6914,transparent);margin:10px 0;}
+
+/* ─── ANA MENÜ ─────────────────────────────────────────────── */
+#screen-menu{position:absolute;inset:0;z-index:20;display:none;flex-direction:column;align-items:center;}
+#menu-bg{position:absolute;inset:0;background:linear-gradient(180deg,#080618 0%,#180e36 20%,#2c1e50 35%,#4a2c50 55%,#6c381e 65%,#a05018 82%,#3a1803 100%);}
+#menu-star-cv,#menu-sil-cv{position:absolute;inset:0;pointer-events:none;}
+#menu-lan{position:absolute;bottom:80px;left:20px;pointer-events:none;}
+#menu-frame{position:absolute;inset:0;pointer-events:none;}
+#menu-frame::before{content:'';position:absolute;inset:2px;border:2px solid #8B5E1A;border-radius:3px;}
+#menu-frame::after{content:'';position:absolute;inset:8px;border:2px solid #6B4A0C;border-radius:3px;}
+.rivet{position:absolute;width:15px;height:15px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#D4A030,#8B5E1A 50%,#4a2800);}
+#menu-title-wrap{position:absolute;top:20px;left:0;right:0;text-align:center;z-index:2;}
+#menu-title{font-family:'Cinzel Decorative',serif;font-size:22px;font-weight:700;color:#FFD700;text-shadow:0 0 24px rgba(255,180,0,.9),2px 2px 0 #5a2800;letter-spacing:2px;}
+#menu-sub{color:#FFD700;font-size:10px;letter-spacing:3px;margin-top:5px;}
+#menu-version{color:rgba(255,215,0,.45);font-size:8px;letter-spacing:2px;margin-top:3px;}
+#menu-btns{position:absolute;left:50%;transform:translateX(-50%);top:122px;display:flex;flex-direction:column;gap:9px;width:290px;z-index:2;}
+.mbtn{width:100%;padding:11px 0;cursor:pointer;text-align:center;font-family:'Cinzel',serif;font-size:13px;font-weight:700;letter-spacing:2px;color:#F5DEB3;text-shadow:1px 1px 3px #000;border:none;outline:none;background:linear-gradient(180deg,#6B4A0C,#8B6010 8%,#4a2e06 40%,#3a2205 60%,#4a2e06 85%,#6B4A0C);border-radius:3px;box-shadow:0 0 0 1.5px #8B6010,0 0 0 3px #4a2e06,0 0 0 4.5px #8B6010,0 3px 10px rgba(0,0,0,.7);transition:all .12s;}
+.mbtn:hover,.mbtn:active{color:#FFD700;box-shadow:0 0 0 1.5px #C8A030,0 0 0 3px #5a3808,0 0 0 4.5px #C8A030,0 0 16px rgba(200,150,30,.3);}
+#menu-icons{position:absolute;bottom:18px;left:0;right:0;display:flex;justify-content:center;gap:44px;z-index:2;}
+.mico{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;}
+.mico span{font-size:19px;} .mico p{color:#C8A060;font-size:7px;letter-spacing:2px;margin:0;}
+
+/* ─── HARİTA SEÇİMİ ────────────────────────────────────────── */
+#screen-mapselect{z-index:25;}
+#mapselect-panel{width:520px;max-height:440px;overflow-y:auto;}
+#mapselect-panel::-webkit-scrollbar{width:4px;}
+#mapselect-panel::-webkit-scrollbar-thumb{background:#8B6914;border-radius:2px;}
+.map-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.map-card{background:rgba(0,0,0,.4);border:1.5px solid rgba(139,105,20,.35);border-radius:4px;padding:10px 12px;cursor:pointer;transition:all .15s;position:relative;}
+.map-card.unlocked:hover{border-color:#FFD700;background:rgba(139,105,20,.15);}
+.map-card.locked{opacity:.5;cursor:not-allowed;}
+.map-card-icon{font-size:22px;margin-bottom:5px;}
+.map-card-name{color:#F5DEB3;font-size:11px;font-weight:700;}
+.map-card-desc{color:#888;font-size:9px;margin-top:3px;}
+.map-card-lock{position:absolute;top:8px;right:8px;font-size:12px;}
+
+/* ─── OYUN HUD ─────────────────────────────────────────────── */
+#screen-hud{z-index:15;background:none;pointer-events:none;display:none;align-items:stretch;justify-content:stretch;}
+/* Sol üst: karakter paneli */
+#hud-tl{position:absolute;top:8px;left:8px;display:flex;align-items:center;gap:7px;}
+#hud-port{width:44px;height:44px;border:2px solid #8B6914;border-radius:3px;background:linear-gradient(135deg,#3a1a00,#1a0800);display:flex;align-items:center;justify-content:center;font-size:21px;}
+#hud-bars{background:rgba(5,2,0,.92);border:1.5px solid #8B6914;border-radius:3px;padding:5px 9px;}
+#hud-char-name{color:#FFD700;font-size:8px;letter-spacing:1px;margin-bottom:2px;}
+#hud-level{color:rgba(255,215,0,.6);font-size:7px;float:right;}
+.hbar{display:flex;align-items:center;gap:4px;margin:2px 0;}
+.hbar-lbl{font-size:8px;color:#D4B896;width:30px;}
+.hbar-bg{width:105px;height:6px;background:rgba(0,0,0,.6);border:1px solid #444;border-radius:2px;overflow:hidden;}
+.hbar-fill{height:100%;border-radius:1px;transition:width .1s;}
+#hud-hp .hbar-fill{background:linear-gradient(90deg,#7B1414,#e74c3c);}
+#hud-en .hbar-fill{background:linear-gradient(90deg,#7B5A00,#f39c12);}
+.hbar-val{font-size:8px;color:#aaa;min-width:22px;}
+/* Sağ üst: miniharita */
+#hud-mm-wrap{position:absolute;top:8px;right:8px;background:rgba(4,2,0,.92);border:1.5px solid #8B6914;border-radius:3px;padding:3px;}
+#hud-mm-lbl{color:#8B6914;font-size:7px;text-align:center;letter-spacing:2px;margin-bottom:2px;}
+/* Dal sayacı */
+#hud-wave{position:absolute;top:62px;left:50%;transform:translateX(-50%);background:rgba(4,2,0,.92);border:1.5px solid #8B6914;border-radius:3px;color:#FFD700;font-size:10px;padding:3px 14px;}
+/* Para */
+#hud-gold{position:absolute;top:8px;right:102px;display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+.hud-gold-row{background:rgba(4,2,0,.88);border:1px solid #8B6914;border-radius:3px;padding:2px 8px;font-size:9px;color:#FFD700;}
+/* Etkileşim */
+#hud-interact{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.88);border:1px solid #FFD700;color:#FFD700;font-size:9px;padding:3px 12px;border-radius:2px;display:none;}
+/* Alt bar */
+#hud-bottom{position:absolute;bottom:7px;left:8px;right:8px;display:flex;align-items:center;gap:5px;}
+.wslot{background:rgba(5,2,0,.92);border:1.5px solid #8B6914;border-radius:3px;padding:3px 9px;color:#D4B896;font-size:9px;cursor:pointer;pointer-events:all;transition:.12s;}
+.wslot.on{border-color:#FFD700;color:#FFD700;}
+#hud-score{margin-left:auto;background:rgba(5,2,0,.92);border:1.5px solid #8B6914;border-radius:3px;padding:3px 10px;color:#FFD700;font-size:10px;}
+/* Görev */
+#hud-gorev{position:absolute;bottom:46px;left:50%;transform:translateX(-50%);background:rgba(4,2,0,.9);border:1.5px solid #8B6914;border-radius:3px;color:#F5DEB3;font-size:9px;padding:3px 12px;}
+/* Güç çubuğu */
+#hud-pwr{position:absolute;bottom:50px;left:50%;transform:translateX(-50%);display:none;text-align:center;}
+#hud-pwr-lbl{color:#FFD700;font-size:8px;margin-bottom:2px;}
+#hud-pwr-bg{width:126px;height:9px;background:rgba(0,0,0,.7);border:1px solid #8B6914;border-radius:2px;overflow:hidden;}
+#hud-pwr-fill{height:100%;background:linear-gradient(90deg,#8B6914,#FFD700);width:0%;}
+/* Loot */
+#hud-loot{position:absolute;top:8px;right:102px;display:flex;flex-direction:column;gap:3px;pointer-events:none;margin-top:40px;}
+.loot-pop{background:rgba(0,0,0,.8);border:1px solid #8B6914;color:#FFD700;font-size:8px;padding:2px 7px;border-radius:2px;animation:fadeup 2s forwards;}
+@keyframes fadeup{0%{opacity:1;transform:translateY(0)}80%{opacity:1}100%{opacity:0;transform:translateY(-14px)}}
+/* Yetenek butonları */
+#hud-abilities{position:absolute;bottom:50px;left:50%;transform:translateX(-50%);display:flex;gap:8px;pointer-events:all;}
+.ability-btn{width:44px;height:44px;border-radius:8px;border:2px solid #8B6914;background:rgba(5,2,0,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;font-size:18px;}
+.ability-btn .ab-cd{position:absolute;bottom:0;left:0;width:100%;background:rgba(0,0,0,.65);transition:height .1s;}
+.ability-btn.ready{border-color:#FFD700;box-shadow:0 0 8px rgba(255,215,0,.3);}
+.ability-btn .ab-key{position:absolute;top:2px;right:3px;font-size:7px;color:#888;font-family:monospace;}
+
+/* ─── DOKUNMATIK KATMAN ────────────────────────────────────── */
+#touch-layer{position:absolute;inset:0;z-index:16;display:none;pointer-events:none;}
+#joy-zone{position:absolute;bottom:0;left:0;width:50%;height:55%;pointer-events:all;touch-action:none;}
+#joy-base{position:absolute;bottom:90px;left:24px;width:130px;height:130px;border-radius:50%;background:rgba(139,105,20,.2);border:3px solid rgba(255,215,0,.45);}
+#joy-knob{position:absolute;top:50%;left:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(255,215,0,.85),rgba(139,105,20,.9));border:3px solid #FFD700;box-shadow:0 0 14px rgba(255,180,0,.5);}
+#touch-btns{position:absolute;bottom:90px;right:18px;display:flex;flex-direction:column;gap:12px;pointer-events:all;}
+.touch-btn{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;touch-action:none;-webkit-tap-highlight-color:transparent;}
+#touch-atk{background:rgba(139,0,0,.75);border:3px solid #c0392b;color:#fff;}
+#touch-atk.pr{background:rgba(200,0,0,.9);transform:scale(.92);}
+#touch-run{background:rgba(10,60,10,.75);border:3px solid #27ae60;color:#2ecc71;}
+#touch-run.pr{background:rgba(20,100,20,.9);transform:scale(.92);}
+#touch-abilities{position:absolute;bottom:175px;right:18px;display:flex;flex-direction:column;gap:8px;pointer-events:all;}
+.touch-ability{width:52px;height:52px;border-radius:50%;background:rgba(5,2,0,.88);border:2px solid #8B6914;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;touch-action:manipulation;position:relative;overflow:hidden;}
+.touch-ability .ab-cd{position:absolute;bottom:0;left:0;width:100%;background:rgba(0,0,0,.65);transition:height .1s;}
+.touch-ability.ready{border-color:#FFD700;}
+#touch-wep{position:absolute;top:68px;right:10px;display:flex;gap:5px;pointer-events:all;}
+.twep{padding:6px 10px;border-radius:4px;border:2px solid #8B6914;background:rgba(5,2,0,.9);color:#D4B896;font-size:12px;cursor:pointer;touch-action:manipulation;}
+.twep.on{border-color:#FFD700;color:#FFD700;background:rgba(139,105,20,.3);}
+#touch-pause{position:absolute;top:8px;left:50%;transform:translateX(-50%);padding:6px 18px;border-radius:4px;border:2px solid #8B6914;background:rgba(5,2,0,.9);color:#D4B896;font-size:11px;cursor:pointer;pointer-events:all;white-space:nowrap;touch-action:manipulation;}
+#touch-cebe{position:absolute;bottom:260px;right:18px;width:58px;height:58px;border-radius:50%;border:2.5px solid #FFD700;background:rgba(0,0,0,.8);color:#FFD700;font-size:9px;display:none;align-items:center;justify-content:center;pointer-events:all;text-align:center;touch-action:manipulation;flex-direction:column;line-height:1.3;}
+
+/* ─── DURAKLAT ─────────────────────────────────────────────── */
+#screen-pause{z-index:25;}
+#pause-panel{width:280px;}
+
+/* ─── MİLESTONE / MOLA ─────────────────────────────────────── */
+#screen-milestone{z-index:26;}
+#milestone-panel{width:300px;text-align:center;}
+#milestone-wave{font-size:20px;color:#FFD700;margin-bottom:6px;}
+#milestone-pool{font-size:13px;color:#D4B896;margin-bottom:14px;}
+
+/* ─── ÖLÜM ─────────────────────────────────────────────────── */
+#screen-death{z-index:27;}
+#death-panel{width:300px;text-align:center;}
+#death-title{color:#8B0000;font-size:22px;margin-bottom:10px;font-family:'Cinzel Decorative',serif;text-shadow:0 0 16px rgba(139,0,0,.8);}
+#death-btns{display:flex;gap:10px;margin-top:12px;}
+
+/* ─── BİLDİRİM ─────────────────────────────────────────────── */
+#ui-notification{position:absolute;top:66px;left:50%;transform:translateX(-50%);background:rgba(4,2,0,.92);border:1.5px solid #8B6914;border-radius:3px;color:#FFD700;font-size:11px;padding:5px 18px;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:50;white-space:nowrap;}
+.ui-notif--gold{border-color:#FFD700;}
+.ui-notif--levelup{border-color:#27ae60;color:#2ecc71;}
+.ui-notif--boss{border-color:#c0392b;color:#ff6b6b;}
+.ui-notif--error{border-color:#c0392b;color:#ff6b6b;}
+.ui-notif--upgrade{border-color:#3498db;color:#5dade2;}
+.ui-notif--transfer{border-color:#f39c12;color:#f39c12;}
+.ui-notif--loss{border-color:#7B1414;color:#c0392b;}
+
+/* ─── YÜKLENİYOR ─────────────────────────────────────────────  */
+#screen-loading{z-index:40;background:#0a0500;}
+#loading-title{color:#FFD700;font-size:18px;letter-spacing:3px;margin-bottom:12px;}
+#loading-bar-bg{width:200px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;}
+#loading-bar{height:100%;background:linear-gradient(90deg,#8B6914,#FFD700);width:0%;transition:width .3s;border-radius:3px;}
+</style>
+</head>
+<body>
+<div id="gc">
+  <!-- 3D Canvas -->
+  <canvas id="c3d"></canvas>
+
+  <!-- ── ANA MENÜ ── -->
+  <div id="screen-menu" class="screen">
+    <div id="menu-bg"></div>
+    <canvas id="menu-star-cv"></canvas>
+    <canvas id="menu-sil-cv"></canvas>
+    <div id="menu-lan"><canvas id="menu-lan-cv" width="66" height="106"></canvas></div>
+    <div id="menu-frame">
+      <div class="rivet" style="top:5px;left:5px;"></div>
+      <div class="rivet" style="top:5px;right:5px;"></div>
+      <div class="rivet" style="bottom:5px;left:5px;"></div>
+      <div class="rivet" style="bottom:5px;right:5px;"></div>
+    </div>
+    <div id="menu-title-wrap">
+      <div id="menu-title">☽✦ YENİÇERİ: HİSARKÖY MUHAFIZI ✦☾</div>
+      <div id="menu-sub">✦ 3D OSMANLI AKSİYON RPG ✦</div>
+      <div id="menu-version"><span data-version>v1.00</span></div>
+    </div>
+    <div id="menu-btns">
+      <button class="mbtn" id="btn-continue" onclick="Game.continue_()">📖 KALDIM YERDEN DEVAM</button>
+      <button class="mbtn" onclick="Game.startNew()">⚔ YENİ OYUN</button>
+      <button class="mbtn" onclick="Game.goMapSelect()">🗺 HARİTA SEÇ</button>
+    </div>
+    <div id="menu-icons">
+      <div class="mico"><span>⚙</span><p>AYARLAR</p></div>
+      <div class="mico"><span>🏆</span><p>SKOR</p></div>
+    </div>
+  </div>
+
+  <!-- ── HARİTA SEÇİMİ ── -->
+  <div id="screen-mapselect" class="screen overlay">
+    <div class="panel" id="mapselect-panel">
+      <div class="gold-title">🗺 HARİTA SEÇ</div>
+      <div class="divider"></div>
+      <div class="map-grid" id="map-grid">
+        <!-- JS tarafından doldurulur -->
+      </div>
+      <button class="btn" onclick="UI.hide('screen-mapselect')" style="margin-top:12px;">← Geri</button>
+    </div>
+  </div>
+
+  <!-- ── YÜKLENİYOR ── -->
+  <div id="screen-loading" class="screen">
+    <div id="loading-title">⏳ YÜKLENİYOR</div>
+    <div id="loading-bar-bg"><div id="loading-bar"></div></div>
+  </div>
+
+  <!-- ── OYUN HUD ── -->
+  <div id="screen-hud" class="screen">
+    <!-- Sol üst -->
+    <div id="hud-tl">
+      <div id="hud-port">🪖</div>
+      <div id="hud-bars">
+        <div id="hud-char-name">☽ KIDEMLI YENİÇERİ <span id="hud-level">Sv.1</span></div>
+        <div class="hbar" id="hud-hp">
+          <span class="hbar-lbl">CAN</span>
+          <div class="hbar-bg"><div class="hbar-fill" id="hud-hp-fill" style="width:100%"></div></div>
+          <span class="hbar-val" id="hud-hp-val">100</span>
+        </div>
+        <div class="hbar" id="hud-en">
+          <span class="hbar-lbl">ENERJİ</span>
+          <div class="hbar-bg"><div class="hbar-fill" id="hud-en-fill" style="width:100%"></div></div>
+          <span class="hbar-val" id="hud-en-val">100</span>
+        </div>
+      </div>
+    </div>
+    <!-- Sağ üst: miniharita -->
+    <div id="hud-mm-wrap">
+      <div id="hud-mm-lbl">MİNİHARİTA</div>
+      <canvas id="hud-minimap" width="84" height="84"></canvas>
+    </div>
+    <!-- Para -->
+    <div id="hud-gold">
+      <div class="hud-gold-row">🪙 <span id="hud-gold-main">0</span> Ana</div>
+      <div class="hud-gold-row" id="hud-pool-row" style="display:none">📦 <span id="hud-gold-pool">0</span> Havuz</div>
+    </div>
+    <!-- Dalga -->
+    <div id="hud-wave">GÖREV: <span id="hud-wave-txt">Dalga 1</span></div>
+    <!-- Güç çubuğu -->
+    <div id="hud-pwr">
+      <div id="hud-pwr-lbl">⚡ GÜÇ</div>
+      <div id="hud-pwr-bg"><div id="hud-pwr-fill"></div></div>
+    </div>
+    <!-- Etkileşim -->
+    <div id="hud-interact">[ E ] Kapat</div>
+    <!-- Görev -->
+    <div id="hud-gorev">GÖREV: <span id="hud-gorev-txt">Hisarköy'ü Temizle</span></div>
+    <!-- Loot -->
+    <div id="hud-loot"></div>
+    <!-- Yetenek butonları (klavye) -->
+    <div id="hud-abilities">
+      <div class="ability-btn" id="ability-btn-q" onclick="Bus.emit('input:ability',{key:'q'})">
+        <span>⚡</span><span class="ab-key">Q</span>
+        <div class="ab-cd" id="ability-q-cd" style="height:100%"></div>
+      </div>
+      <div class="ability-btn" id="ability-btn-f" onclick="Bus.emit('input:ability',{key:'f'})">
+        <span>🛡</span><span class="ab-key">F</span>
+        <div class="ab-cd" id="ability-f-cd" style="height:100%"></div>
+      </div>
+      <div class="ability-btn" id="ability-btn-r" onclick="Bus.emit('input:ability',{key:'r'})">
+        <span>🔥</span><span class="ab-key">R</span>
+        <div class="ab-cd" id="ability-r-cd" style="height:100%"></div>
+      </div>
+    </div>
+    <!-- Alt bar -->
+    <div id="hud-bottom">
+      <div class="wslot on" id="ws0" onclick="selW(0)">🗡 Yatağan</div>
+      <div class="wslot" id="ws1" onclick="selW(1)">🔫 Tüfek</div>
+      <div class="wslot" id="ws2" onclick="selW(2)">🏹 Ok</div>
+      <div id="hud-score">💀<span id="hud-kill">0</span></div>
+    </div>
+  </div>
+
+  <!-- ── DOKUNMATIK KATMAN ── -->
+  <div id="touch-layer">
+    <div id="joy-zone">
+      <div id="joy-base"><div id="joy-knob"></div></div>
+    </div>
+    <div id="touch-btns">
+      <div class="touch-btn" id="touch-atk">⚔</div>
+      <div class="touch-btn" id="touch-run">🏃</div>
+    </div>
+    <div id="touch-abilities">
+      <div class="touch-ability" id="touch-q" onclick="Bus.emit('input:ability',{key:'q'})">
+        <span>⚡</span><div class="ab-cd" id="tab-q-cd" style="height:100%"></div>
+      </div>
+      <div class="touch-ability" id="touch-f" onclick="Bus.emit('input:ability',{key:'f'})">
+        <span>🛡</span><div class="ab-cd" id="tab-f-cd" style="height:100%"></div>
+      </div>
+      <div class="touch-ability" id="touch-r" onclick="Bus.emit('input:ability',{key:'r'})">
+        <span>🔥</span><div class="ab-cd" id="tab-r-cd" style="height:100%"></div>
+      </div>
+    </div>
+    <div id="touch-wep">
+      <div class="twep on" id="tw0" onclick="selW(0)">🗡</div>
+      <div class="twep" id="tw1" onclick="selW(1)">🔫</div>
+      <div class="twep" id="tw2" onclick="selW(2)">🏹</div>
+    </div>
+    <div id="touch-pause" onclick="Bus.emit('input:pause')">❙❙ Duraklat</div>
+    <div id="touch-cebe" onclick="Bus.emit('input:interact')">⚒<br>Cebe</div>
+  </div>
+
+  <!-- ── DURAKLAT ── -->
+  <div id="screen-pause" class="screen overlay">
+    <div class="panel" id="pause-panel">
+      <div class="gold-title">❙❙ DURAKLATILDI</div>
+      <div class="gold-sub">HİSARKÖY MUHAFIZI · <span data-version>v1.00</span></div>
+      <div id="pause-stats">
+        <div class="stat-row"><span>Dalga</span><span class="stat-val" id="pause-wave">1</span></div>
+        <div class="stat-row"><span>Katil</span><span class="stat-val" id="pause-kills">0</span></div>
+        <div class="stat-row"><span>Havuz Akçe</span><span class="stat-val" id="pause-pool">0</span></div>
+        <div class="stat-row"><span>Ana Akçe</span><span class="stat-val" id="pause-main">0</span></div>
+      </div>
+      <div class="divider"></div>
+      <button class="btn success" onclick="Game.resume()">▶ Devam Et</button>
+      <button class="btn" onclick="Game.toBarracks()">🏰 Kışlaya Dön</button>
+      <button class="btn danger" onclick="Game.toMainMenu()">✕ Ana Menüye Dön</button>
+    </div>
+  </div>
+
+  <!-- ── MİLESTONE MOLA ── -->
+  <div id="screen-milestone" class="screen overlay">
+    <div class="panel" id="milestone-panel">
+      <div class="gold-title" id="milestone-wave">⚔ Dalga 5 Tamamlandı!</div>
+      <div class="gold-sub">MOLA ZAMANI</div>
+      <div id="milestone-pool" style="color:#FFD700;font-size:14px;margin-bottom:4px;">Havuz: 0 Akçe</div>
+      <div style="color:#888;font-size:9px;margin-bottom:14px;">Boss'u yenmeden dönersen havuz sıfırlanır!</div>
+      <div class="divider"></div>
+      <button class="btn success" onclick="Game.continueWave()">▶ Devam Et (Dalga devam)</button>
+      <button class="btn" onclick="Game.toBarracks()">🏰 Kışlaya Dön (Havuz kaybolur)</button>
+      <button class="btn danger" onclick="Game.toMainMenu()">✕ Ana Menüye Dön</button>
+    </div>
+  </div>
+
+  <!-- ── ÖLÜM ── -->
+  <div id="screen-death" class="screen overlay">
+    <div class="panel" id="death-panel">
+      <div id="death-title">⚔ ŞEHİT DÜŞTÜN ⚔</div>
+      <div style="color:#D4B896;font-size:10px;">Osmanlı devleti bir yiğidini daha yitirdi...</div>
+      <div class="divider"></div>
+      <div class="stat-row"><span>Katil</span><span class="stat-val" id="death-kills">0</span></div>
+      <div class="stat-row"><span>Dalga</span><span class="stat-val" id="death-wave">1</span></div>
+      <div class="stat-row" style="color:#c0392b;"><span>Kayıp Akçe</span><span id="death-gold">0</span></div>
+      <div class="divider"></div>
+      <div id="death-btns">
+        <button class="btn success" style="flex:1" onclick="Game.retry()">↺ Yeniden Dene</button>
+        <button class="btn danger"  style="flex:1" onclick="Game.toMainMenu()">⌂ Ana Menü</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BİLDİRİM ── -->
+  <div id="ui-notification"></div>
+</div>
+
+<!-- ── MODÜLLER ── -->
+<script type="module">
+import { VERSION, Bus, EVENTS, Loop } from './core/Engine.js';
+import { Save }       from './core/SaveSystem.js';
+import { Gold }       from './systems/GoldSystem.js';
+import { Player }     from './systems/PlayerSystem.js';
+import { AbilitySystem } from './systems/AbilitySystem.js';
+import { Input }      from './systems/InputSystem.js';
+import { UI, SCREENS } from './ui/UIManager.js';
+import { Maps, MAP_REGISTRY } from './maps/MapManager.js';
+
+// ─── MENÜ ANİMASYONU ──────────────────────────────────────────
+const starCv = document.getElementById('menu-star-cv');
+const silCv  = document.getElementById('menu-sil-cv');
+const lanCv  = document.getElementById('menu-lan-cv');
+const starX  = starCv.getContext('2d');
+const silX   = silCv.getContext('2d');
+const lanX   = lanCv.getContext('2d');
+let silDrawn = false, lanT = 0;
+
+function resizeMenuCvs() {
+  starCv.width=window.innerWidth; starCv.height=window.innerHeight;
+  silCv.width=window.innerWidth;  silCv.height=Math.min(300,window.innerHeight*0.55);
+  silDrawn=false;
+}
+window.addEventListener('resize', resizeMenuCvs);
+resizeMenuCvs();
+
+const stars = Array.from({length:95},()=>({x:Math.random(),y:Math.random()*0.55,r:Math.random()<.14?1.3:Math.random()<.4?.8:.5,a:Math.random(),da:(Math.random()-.5)*.015}));
+
+function drawMenuAnim() {
+  if (document.getElementById('screen-menu').style.display==='none') return;
+  const W=starCv.width,H=starCv.height;
+  starX.clearRect(0,0,W,H);
+  stars.forEach(s=>{s.a=Math.max(.08,Math.min(1,s.a+s.da));if(Math.random()<.008)s.da=-s.da;starX.fillStyle=`rgba(255,248,210,${s.a})`;starX.beginPath();starX.arc(s.x*W,s.y*H,s.r,0,Math.PI*2);starX.fill();});
+  if(!silDrawn){
+    silDrawn=true;const W2=silCv.width,H2=silCv.height;silX.clearRect(0,0,W2,H2);const sx=W2/680,sy=H2/300;
+    silX.save();silX.scale(sx,sy);silX.fillStyle='#12082a';silX.globalAlpha=.82;
+    silX.fillRect(25,88,130,212);silX.beginPath();silX.ellipse(90,88,55,48,0,Math.PI,0);silX.fill();
+    silX.fillRect(155,20,11,200);silX.beginPath();silX.moveTo(155,20);silX.lineTo(160.5,4);silX.lineTo(166,20);silX.fill();
+    silX.fillRect(528,112,104,188);silX.beginPath();silX.ellipse(580,112,45,38,0,Math.PI,0);silX.fill();
+    silX.fillStyle='#0a031a';silX.globalAlpha=.97;
+    silX.fillRect(0,180,680,120);silX.fillRect(0,148,56,152);silX.fillRect(278,155,64,145);silX.fillRect(272,144,76,18);
+    silX.fillRect(488,174,192,126);silX.fillRect(618,148,62,152);silX.fillStyle='#06010f';silX.fillRect(0,270,680,30);
+    silX.restore();
+  }
+  lanT+=.06;const f=.7+Math.sin(lanT)*.3;
+  lanX.clearRect(0,0,66,106);
+  lanX.fillStyle=`rgba(255,140,20,${.06*f})`;lanX.beginPath();lanX.arc(33,70,30,0,Math.PI*2);lanX.fill();
+  lanX.fillStyle='#6B4010';lanX.fillRect(30,6,5,18);
+  lanX.fillStyle='#8B5A10';lanX.beginPath();lanX.moveTo(20,24);lanX.quadraticCurveTo(33,16,46,24);lanX.lineTo(48,36);lanX.quadraticCurveTo(33,28,18,36);lanX.closePath();lanX.fill();
+  lanX.fillStyle='#6B3A08';lanX.beginPath();lanX.roundRect(18,36,30,46,4);lanX.fill();
+  lanX.fillStyle=`rgba(255,${Math.floor(180+f*50)},20,${.88*f})`;lanX.beginPath();lanX.ellipse(33,55,7,10,0,0,Math.PI*2);lanX.fill();
+  lanX.fillStyle='#8B5A10';lanX.beginPath();lanX.moveTo(18,82);lanX.quadraticCurveTo(33,92,48,82);lanX.lineTo(46,90);lanX.quadraticCurveTo(33,99,20,90);lanX.closePath();lanX.fill();
+}
+Loop.register('menuAnim', () => drawMenuAnim());
+
+// ─── HARİTA GRID ──────────────────────────────────────────────
+function buildMapGrid() {
+  const grid = document.getElementById('map-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  Object.values(MAP_REGISTRY).forEach(m => {
+    const unlocked = Save.get(`maps.${m.id}.unlocked`) || m.unlocked;
+    const card = document.createElement('div');
+    card.className = `map-card ${unlocked?'unlocked':'locked'}`;
+    card.innerHTML = `<div class="map-card-icon">${m.icon}</div><div class="map-card-name">${m.name}</div><div class="map-card-desc">${m.description}</div>${!unlocked?'<div class="map-card-lock">🔒</div>':''}`;
+    if (unlocked) card.onclick = () => { Maps.load(m.id); UI.hide('screen-mapselect'); };
+    grid.appendChild(card);
+  });
+}
+
+// ─── DOKUNMATIK ───────────────────────────────────────────────
+function initTouch() {
+  const joyZone = document.getElementById('joy-zone');
+  const knob    = document.getElementById('joy-knob');
+  const base    = document.getElementById('joy-base');
+  let joyId = -1;
+
+  function getCenter() { const r=base.getBoundingClientRect(); return {x:r.left+r.width/2,y:r.top+r.height/2}; }
+
+  joyZone.addEventListener('touchstart', e=>{
+    e.preventDefault();
+    if (joyId===-1) { const t=e.changedTouches[0]; joyId=t.identifier; const c=getCenter(); Input.startJoy(t.clientX,t.clientY,t.identifier,c.x,c.y); }
+  },{passive:false});
+
+  Bus.on('input:joyMove', ({nx,ny}) => { knob.style.transform=`translate(${nx}px,${ny}px)`; });
+
+  const atkBtn = document.getElementById('touch-atk');
+  atkBtn.addEventListener('touchstart', e=>{ e.preventDefault(); e.stopPropagation(); atkBtn.classList.add('pr'); Bus.emit('input:attack',{}); },{passive:false});
+  atkBtn.addEventListener('touchend',   e=>{ e.preventDefault(); atkBtn.classList.remove('pr'); Bus.emit('input:attackEnd'); },{passive:false});
+
+  const runBtn = document.getElementById('touch-run');
+  runBtn.addEventListener('touchstart', e=>{ e.preventDefault(); e.stopPropagation(); runBtn.classList.add('pr'); Input.keys.shift=true; },{passive:false});
+  runBtn.addEventListener('touchend',   e=>{ e.preventDefault(); runBtn.classList.remove('pr'); Input.keys.shift=false; },{passive:false});
+
+  document.getElementById('touch-layer').style.display = 'block';
+}
+
+// ─── SILAH SEÇİMİ ─────────────────────────────────────────────
+window.selW = (i) => {
+  [0,1,2].forEach(j=>{
+    document.getElementById('ws'+j)?.classList.toggle('on',j===i);
+    document.getElementById('tw'+j)?.classList.toggle('on',j===i);
+  });
+  if (Maps.currentMap && Maps.currentMap._selWeapon !== undefined) Maps.currentMap._selWeapon=i;
+};
+
+// ─── GLOBAL GAME NESNESI ──────────────────────────────────────
+window.Game = {
+  startNew()     { Save.reset(); Gold.init(); Player.init(); Maps.load('kisla'); UI.hide('screen-menu'); UI.show('screen-hud'); initTouch(); },
+  continue_()    { Maps.load('kisla'); UI.hide('screen-menu'); UI.show('screen-hud'); initTouch(); },
+  goMapSelect()  { buildMapGrid(); UI.show('screen-mapselect'); },
+  resume()       { UI.hide('screen-pause'); Maps.currentMap?.resume(); },
+  toBarracks()   { Gold.returnToBarracks(); UI.hide('screen-pause'); UI.hide('screen-milestone'); Maps.load('kisla'); },
+  toMainMenu()   { Maps.exit(); Gold.losePool(); UI.hideAll(); UI.show('screen-menu'); document.getElementById('touch-layer').style.display='none'; },
+  retry()        { const id=Maps.currentId||'gorev'; Maps.load(id); UI.hide('screen-death'); },
+  continueWave() { const gm=Maps.currentMap; if(gm?.continueWave) gm.continueWave(); UI.hide('screen-milestone'); },
+};
+window.Bus = Bus;  // HTML onclick'ler için
+
+// ─── PARA HUD GÜNCELLE ────────────────────────────────────────
+Bus.on(EVENTS.GOLD_CHANGED, ({main,pool}) => {
+  const mel = document.getElementById('hud-gold-main'); if(mel) mel.textContent=main;
+  const pel = document.getElementById('hud-gold-pool'); if(pel) pel.textContent=pool;
+  const prow= document.getElementById('hud-pool-row'); if(prow) prow.style.display=pool>0?'block':'none';
+  const pauseMain=document.getElementById('pause-main'); if(pauseMain) pauseMain.textContent=main;
+  const pausePool=document.getElementById('pause-pool'); if(pausePool) pausePool.textContent=pool;
+});
+
+// ─── HUD BAR GÜNCELLEME ───────────────────────────────────────
+Bus.on(EVENTS.PLAYER_DAMAGED, ({hp,maxHp,en,maxEn}) => {
+  const hf=document.getElementById('hud-hp-fill'); if(hf) hf.style.width=(hp/maxHp*100)+'%';
+  const hv=document.getElementById('hud-hp-val');  if(hv) hv.textContent=Math.ceil(hp);
+  const ef=document.getElementById('hud-en-fill'); if(ef) ef.style.width=(en/maxEn*100)+'%';
+  const ev=document.getElementById('hud-en-val');  if(ev) ev.textContent=Math.ceil(en);
+});
+Bus.on(EVENTS.WAVE_START, ({wave}) => {
+  const el=document.getElementById('hud-wave-txt'); if(el) el.textContent=`Dalga ${wave}`;
+  const pw=document.getElementById('pause-wave');   if(pw) pw.textContent=wave;
+});
+Bus.on(EVENTS.PLAYER_LEVEL_UP, ({level}) => {
+  const el=document.getElementById('hud-level'); if(el) el.textContent=`Sv.${level}`;
+});
+Bus.on('enemy:killed_count', ({kills}) => {
+  const el=document.getElementById('hud-kill'); if(el) el.textContent=kills;
+  const pk=document.getElementById('pause-kills'); if(pk) pk.textContent=kills;
+});
+Bus.on('ui:powerUpdate', ({pct}) => {
+  const el=document.getElementById('hud-pwr-fill'); if(el) el.style.width=(pct*100)+'%';
+  const pw=document.getElementById('hud-pwr');      if(pw) pw.style.display=pct>0?'block':'none';
+});
+Bus.on(EVENTS.PLAYER_DIED, ({kills,wave}) => {
+  document.getElementById('death-kills').textContent=kills;
+  document.getElementById('death-wave').textContent=wave;
+  document.getElementById('death-gold').textContent=Gold.poolGold;
+  UI.show('screen-death');
+});
+Bus.on(EVENTS.WAVE_MILESTONE, ({wave}) => {
+  document.getElementById('milestone-wave').textContent=`⚔ Dalga ${wave} Tamamlandı!`;
+  document.getElementById('milestone-pool').textContent=`Havuz: ${Gold.poolGold} Akçe`;
+  UI.show('screen-milestone');
+});
+
+// ─── BAŞLATMA ─────────────────────────────────────────────────
+async function boot() {
+  console.log(`%c☽✦ YENİÇERİ: HİSARKÖY MUHAFIZI ${VERSION} ✦☾`, 'color:#FFD700;font-weight:bold;');
+  Save.load();
+  Gold.init();
+  Player.init();
+  AbilitySystem.init();
+  UI.init();
+  Input.init(document.getElementById('c3d'));
+  Loop.start();
+  UI.show('screen-menu');
+  if (!Save.hasSave()) document.getElementById('btn-continue').style.opacity='0.4';
+}
+
+document.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>
