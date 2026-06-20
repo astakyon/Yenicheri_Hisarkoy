@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Yeniçeri: Hisarköy Muhafızı v1.25</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.26</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -315,7 +315,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mTitle">☽✦ YENİÇERİ: HİSARKÖY MUHAFIZI ✦☾</div>
       <div id="mDeco"><div class="ml"></div><div id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</div><div class="ml"></div></div>
-      <div id="mVer" onclick="devTapVersion()">v1.25</div>
+      <div id="mVer" onclick="devTapVersion()">v1.26</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">🏰 KIŞLAYA GİR</button>
@@ -663,7 +663,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.25';
+const VERSION='v1.26';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -812,6 +812,24 @@ function updateGoldHud(){
   document.getElementById('zmGold').textContent=mainGold;
   document.getElementById('pMain').textContent=mainGold;
   document.getElementById('pPool').textContent=poolGold;
+  forceTopRightHudLayout(); // CSS'e bağımlı olmadan garanti pozisyon
+}
+
+// CSS cascade/cache sorunlarından tamamen bağımsız garanti — her şeyi JS ile zorla.
+function forceTopRightHudLayout(){
+  const hud=document.getElementById('topRightHud');
+  const row2=document.getElementById('topRightRow2');
+  const mmCv=document.getElementById('mmCv');
+  const mmLbl=document.getElementById('mmLbl');
+  const pauseBtn=document.getElementById('pauseBtn2');
+  const goldRow=document.getElementById('mainGoldRow');
+  if(!hud||!row2)return;
+  hud.style.cssText='position:fixed!important;top:6px!important;right:6px!important;width:94px!important;background:rgba(4,2,0,.95)!important;border:1.5px solid #8B6914!important;border-radius:4px!important;padding:4px!important;box-sizing:border-box!important;z-index:9999!important;display:block!important;pointer-events:all!important;';
+  if(mmLbl)mmLbl.style.cssText='color:#FFD700!important;font-size:6px!important;text-align:center!important;margin-bottom:2px!important;display:block!important;';
+  if(mmCv)mmCv.style.cssText='display:block!important;width:86px!important;height:86px!important;border-radius:2px!important;';
+  row2.style.cssText='display:flex!important;gap:4px!important;margin-top:5px!important;width:100%!important;box-sizing:border-box!important;visibility:visible!important;opacity:1!important;height:28px!important;';
+  if(pauseBtn)pauseBtn.style.cssText='background:rgba(20,10,0,.95)!important;border:2px solid #FFD700!important;border-radius:4px!important;color:#FFD700!important;font-size:13px!important;width:28px!important;height:28px!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;box-sizing:border-box!important;';
+  if(goldRow)goldRow.style.cssText='background:rgba(20,10,0,.95)!important;border:2px solid #FFD700!important;border-radius:4px!important;font-size:9px!important;color:#FFD700!important;white-space:nowrap!important;display:flex!important;align-items:center!important;justify-content:center!important;font-weight:700!important;flex:1!important;height:28px!important;box-sizing:border-box!important;overflow:hidden!important;';
 }
 
 // ═══════════════════════════════════════════════════════
@@ -3592,7 +3610,7 @@ function BEGIN(mapId){
   document.getElementById('topRightHud').style.display='block';
   initThree();
   if(mapId==='kisla')startKisla();else if(mapId==='orman')startOrman();else startGorev();
-  setTimeout(()=>{ initTouch(); applyAllSettings(); },100);
+  setTimeout(()=>{ initTouch(); applyAllSettings(); forceTopRightHudLayout(); },100);
   updateGoldHud();
   updateXPHud();
   updateCharHud();
@@ -3610,7 +3628,7 @@ function BEGIN_CUSTOM(mapId){
   isTestMode=true;
   initThree();
   startCustomMap(mapId);
-  setTimeout(()=>{ initTouch(); applyAllSettings(); },100);
+  setTimeout(()=>{ initTouch(); applyAllSettings(); forceTopRightHudLayout(); },100);
   updateGoldHud();
   updateXPHud();
   updateCharHud();
