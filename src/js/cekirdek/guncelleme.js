@@ -55,7 +55,8 @@ function movePlayer(p,cmd,dt){
 }
 
 function updateMovement(dt){
-  movePlayer(pl,readLocalInput(),dt);
+  SESSION.submitLocal(readLocalInput());
+  SESSION.step(dt);
   if(joyActive){worldAim.x=pl.x+Math.cos(pl.ang)*20;worldAim.z=pl.z+Math.sin(pl.ang)*20;}
 }
 

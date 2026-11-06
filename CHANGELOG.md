@@ -1,5 +1,9 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.38 — Oturum ve LoopbackTransport (oynanış aynı)
+- Yeni `cekirdek/oturum.js`: `SESSION` + `LoopbackTransport`. Yerel oyuncunun girdisi artık bir taşıma kuyruğundan geçip host koduna ulaşıyor ("sıfır eşli host"). Çok oyunculuda uzak oyuncuların girdisi aynı yoldan gelecek.
+- Altın test değişmedi; yeni test: taşımadan gelen uzak girdi ikinci oyuncuyu hareket ettiriyor.
+
 ## v1.37 — Girdi komutu katmanı (oynanış aynı)
 - Hareket, klavye/joystick'i doğrudan okumak yerine bir **girdi komutundan** (`readLocalInput` → `movePlayer`) geçiyor. Uzak oyuncuların komutları ağdan gelince aynı koddan geçecek. Altın test değişmedi.
 - Kalan `setTimeout`'lar yalnızca arayüz içindir; oyun mantığı zamanlayıcıları tamamen tik tabanlı.

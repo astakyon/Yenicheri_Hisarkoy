@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Yeniçeri: Hisarköy Muhafızı v1.37</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.38</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -334,7 +334,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mTitle"><svg class="mOrn" viewBox="0 0 48 44" aria-hidden="true"><defs><mask id="mCres"><rect width="48" height="44" fill="#fff"/><circle cx="31" cy="22" r="14.5" fill="#000"/></mask></defs><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg><span class="mTx"><span>YENİÇERİ:</span> <span>HİSARKÖY MUHAFIZI</span></span><svg class="mOrn r" viewBox="0 0 48 44" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg></div>
       <div id="mDeco"><div class="ml"></div><div id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</div><div class="ml"></div></div>
-      <div id="mVer">v1.37</div>
+      <div id="mVer">v1.38</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
@@ -687,7 +687,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.37';
+const VERSION='v1.38';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -1728,6 +1728,30 @@ function nearestPlayer(x,z){
   });
   return best||localPlayer();
 }
+// ═══════════════════════════════════════════════════════
+// OTURUM (Session) — tek ve çok oyunculu için ortak host yolu
+// Tek kişilik = "sıfır eşli host": girdi LoopbackTransport'tan geçip aynı host koduna ulaşır.
+// Çok oyunculuda aynı arayüzü PeerJS taşıması sağlayacak (F2).
+// ═══════════════════════════════════════════════════════
+class LoopbackTransport{
+  constructor(){this.kuyruk=[];}
+  send(msg){this.kuyruk.push(msg);}            // yerel host'a teslim
+  poll(){const m=this.kuyruk;this.kuyruk=[];return m;}
+}
+const SESSION={
+  isHost:true,
+  transport:new LoopbackTransport(),
+  inputs:new Map(),                              // oyuncu id -> son girdi komutu
+  submitLocal:function(cmd){this.transport.send({t:'input',id:WORLD.localId,cmd:cmd});},
+  // Bir tik: gelen girdileri al, her oyuncuyu kendi komutuyla hareket ettir
+  step:function(dt){
+    this.transport.poll().forEach(function(m){if(m.t==='input')SESSION.inputs.set(m.id,m.cmd);});
+    WORLD.players.forEach(function(p,id){
+      const c=SESSION.inputs.get(id);
+      if(c&&p.mesh)movePlayer(p,c,dt);
+    });
+  }
+};
 // ═══════════════════════════════════════════════════════
 // BÖLÜMLER (Chapters) — ana menüden açılır, bölge kilidi/seçimi
 // ═══════════════════════════════════════════════════════
@@ -3745,7 +3769,8 @@ function movePlayer(p,cmd,dt){
 }
 
 function updateMovement(dt){
-  movePlayer(pl,readLocalInput(),dt);
+  SESSION.submitLocal(readLocalInput());
+  SESSION.step(dt);
   if(joyActive){worldAim.x=pl.x+Math.cos(pl.ang)*20;worldAim.z=pl.z+Math.sin(pl.ang)*20;}
 }
 

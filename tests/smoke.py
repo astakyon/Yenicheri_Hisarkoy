@@ -182,6 +182,25 @@ def main():
         check(r['p2x'] > 0 and r['yerelAyni'], 'komutla ikinci oyuncu hareket etti, yerel oyuncu yerinde kaldı')
         ctx.close()
 
+        print('Oturum (SESSION + LoopbackTransport)')
+        ctx, pg, errs = yeni_sayfa()
+        pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)
+        r = pg.evaluate("""() => {
+          REN.render = () => {};
+          const p2 = Object.assign({}, pl, { mesh: pl.mesh.clone() }); p2.x = 0; p2.z = 0;
+          for (let x = -20; x <= 20; x += 2) { for (let z = -20; z <= 20; z += 2) { if (!checkCollision(x, z, 2) && !checkCollision(x + 3, z, 2)) { p2.x = x; p2.z = z; x = 99; break; } } }
+          WORLD.players.set('p2', p2); const bx = p2.x, lx = pl.x;
+          for (let i = 0; i < 30; i++) {
+            SESSION.transport.send({ t: 'input', id: 'p2', cmd: { dx: 1, dz: 0, run: false, aimX: 99, aimZ: p2.z } });
+            SESSION.step(1 / 60);
+          }
+          const sonuc = { p2: p2.x - bx, yerel: pl.x - lx, bos: SESSION.transport.kuyruk.length };
+          WORLD.players.delete('p2'); SESSION.inputs.delete('p2');
+          return sonuc;
+        }""")
+        check(r['p2'] > 0 and r['bos'] == 0, 'taşımadan gelen uzak girdi ikinci oyuncuyu hareket ettirdi, kuyruk boşaldı')
+        ctx.close()
+
         print('Kimlikler (düşman, mermi, ganimet)')
         ctx, pg, errs = yeni_sayfa()
         pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)
