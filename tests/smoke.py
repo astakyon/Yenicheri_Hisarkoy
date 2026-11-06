@@ -172,12 +172,14 @@ def main():
         pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)
         r = pg.evaluate("""() => {
           REN.render = () => {};
-          const p2 = Object.assign({}, pl, { mesh: pl.mesh.clone() }); p2.x = -5; p2.z = -5;
+          const p2 = Object.assign({}, pl, { mesh: pl.mesh.clone() }); p2.x = 0; p2.z = 0;
+          for (let x = -20; x <= 20; x += 2) { for (let z = -20; z <= 20; z += 2) { if (!checkCollision(x, z, 2) && !checkCollision(x + 3, z, 2)) { p2.x = x; p2.z = z; x = 99; break; } } }
+          const bx = p2.x;
           const x0 = pl.x, z0 = pl.z;
-          for (let i = 0; i < 30; i++) movePlayer(p2, { dx: 1, dz: 0, run: false, aimX: 99, aimZ: -5 }, 1 / 60);
-          return { p2x: p2.x, yerelAyni: pl.x === x0 && pl.z === z0, ang: p2.ang };
+          for (let i = 0; i < 30; i++) movePlayer(p2, { dx: 1, dz: 0, run: false, aimX: 99, aimZ: p2.z }, 1 / 60);
+          return { p2x: p2.x - bx, yerelAyni: pl.x === x0 && pl.z === z0, ang: p2.ang };
         }""")
-        check(r['p2x'] > -5 and r['yerelAyni'], 'komutla ikinci oyuncu hareket etti, yerel oyuncu yerinde kaldı')
+        check(r['p2x'] > 0 and r['yerelAyni'], 'komutla ikinci oyuncu hareket etti, yerel oyuncu yerinde kaldı')
         ctx.close()
 
         print('Kimlikler (düşman, mermi, ganimet)')
