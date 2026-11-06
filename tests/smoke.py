@@ -242,6 +242,25 @@ def main():
         check(r['yeniMermi'] == 1 and r['mermiX'] == 30 and r['p2En'] == 92 and r['yerelEn'] == 100 and r['id'], 'p2 mermisi p2 konumundan çıktı, yalnızca p2 enerjisi azaldı')
         ctx.close()
 
+        print('Tuzak tüm oyunculara etki eder')
+        ctx, pg, errs = yeni_sayfa()
+        pg.evaluate("SAVE.mapsUnlocked={maden:true}; BEGIN('maden')"); pg.wait_for_timeout(800)
+        r = pg.evaluate("""() => {
+          REN.render = () => {};
+          enemies.forEach(e => { e.x = 500; e.z = 500; });
+          const t = madenTraps[0]; SAVE.armor = 'none';
+          const p2 = Object.assign({}, pl, { mesh: pl.mesh.clone(), armor: 'ottoman', x: t.x + 0.5, z: t.z });
+          const p3 = Object.assign({}, pl, { mesh: pl.mesh.clone(), x: t.x + 90, z: t.z });
+          pl.x = t.x; pl.z = t.z; pl.hp = pl.maxHp = p2.hp = p3.hp = 100;
+          WORLD.players.set('p2', p2); WORLD.players.set('p3', p3);
+          checkMadenTraps();
+          const o = { yerel: pl.hp, p2: p2.hp, uzak: p3.hp, tetik: t.triggered };
+          WORLD.players.delete('p2'); WORLD.players.delete('p3');
+          return o;
+        }""")
+        check(r['tetik'] and r['yerel'] == 82 and r['p2'] == 91 and r['uzak'] == 100, 'yakın iki oyuncu hasar aldı (zırhla 91), uzaktaki almadı: %s' % r)
+        ctx.close()
+
         print('Kimlikler (düşman, mermi, ganimet)')
         ctx, pg, errs = yeni_sayfa()
         pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)

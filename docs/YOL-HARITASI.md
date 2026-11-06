@@ -59,3 +59,4 @@ PeerJS host-relay oda sistemi, Supabase hesap/kayıt, misafir modu, testler.
 - v1.37–v1.38: girdi komutu (`readLocalInput`/`movePlayer`), `SESSION` + `LoopbackTransport`. Kalan F1: mesh/simülasyon ayrımı, `pl` → `localPlayer()` geçişi (yetenekler, silah, zırh oyuncu başına).
 - v1.39: yetenekler oyuncu başına (`p.ab`). Kalan F1: silah/zırh seçimi oyuncu başına, mesh/simülasyon ayrımı, `pl` kullanımlarının `localPlayer()`e taşınması.
 - v1.40: silah ve zırh oyuncu başına. Kalan F1: mesh/simülasyon ayrımı, tuzakların tüm oyunculara etkisi, `pl` → `localPlayer()`.
+- v1.41: Maden tuzağı tüm oyuncular. `pl` kalan kullanımları çoğunlukla yerel arayüz/başlatma (oyun-baslat, menüler, girdi); simülasyon tarafı oyuncu listesine geçti. Kalan F1: mesh/simülasyon ayrımı (View katmanı).

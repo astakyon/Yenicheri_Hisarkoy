@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Yeniçeri: Hisarköy Muhafızı v1.40</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.41</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -334,7 +334,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mTitle"><svg class="mOrn" viewBox="0 0 48 44" aria-hidden="true"><defs><mask id="mCres"><rect width="48" height="44" fill="#fff"/><circle cx="31" cy="22" r="14.5" fill="#000"/></mask></defs><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg><span class="mTx"><span>YENİÇERİ:</span> <span>HİSARKÖY MUHAFIZI</span></span><svg class="mOrn r" viewBox="0 0 48 44" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg></div>
       <div id="mDeco"><div class="ml"></div><div id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</div><div class="ml"></div></div>
-      <div id="mVer">v1.40</div>
+      <div id="mVer">v1.41</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
@@ -687,7 +687,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.40';
+const VERSION='v1.41';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -3644,16 +3644,22 @@ function checkMadenTraps(){
       if(gt>=trap.rearmAt){trap.triggered=false;trap.mesh.material.opacity=0;}
       return;
     }
-    const d=Math.hypot(pl.x-trap.x,pl.z-trap.z);
-    if(d<trap.r){
+    // Menzildeki herhangi bir oyuncu tuzağı tetikler; patlama menzildeki herkese hasar verir
+    const hit=[];
+    WORLD.players.forEach(function(p){if(p.hp>0&&Math.hypot(p.x-trap.x,p.z-trap.z)<trap.r)hit.push(p);});
+    if(hit.length){
       trap.triggered=true;
       addFX(trap.x,trap.z,0xFF6600,16);
       const flash=new THREE.PointLight(0xFF6600,8,12);flash.position.set(trap.x,1,trap.z);S3.add(flash);
       setTimeout(()=>S3.remove(flash),200);
-      const def=getArmorDef();const dmg=18*(1-def);
-      pl.hp=Math.max(0,pl.hp-dmg);
-      lootPop('💥 Patlama tuzağı! -'+Math.round(dmg)+' Can');
-      if(pl.hp<=0){playing=false;showDeath();}
+      hit.forEach(function(p){
+        const dmg=18*(1-getArmorDef(p));
+        p.hp=Math.max(0,p.hp-dmg);
+        if(p===pl){
+          lootPop('💥 Patlama tuzağı! -'+Math.round(dmg)+' Can');
+          if(pl.hp<=0){playing=false;showDeath();}
+        }
+      });
       trap.mesh.material.opacity=.4;trap.mesh.material.color.setHex(0x1a0a00);
       trap.rearmAt=gt+480;
     }

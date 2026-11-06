@@ -40,16 +40,22 @@ function checkMadenTraps(){
       if(gt>=trap.rearmAt){trap.triggered=false;trap.mesh.material.opacity=0;}
       return;
     }
-    const d=Math.hypot(pl.x-trap.x,pl.z-trap.z);
-    if(d<trap.r){
+    // Menzildeki herhangi bir oyuncu tuzağı tetikler; patlama menzildeki herkese hasar verir
+    const hit=[];
+    WORLD.players.forEach(function(p){if(p.hp>0&&Math.hypot(p.x-trap.x,p.z-trap.z)<trap.r)hit.push(p);});
+    if(hit.length){
       trap.triggered=true;
       addFX(trap.x,trap.z,0xFF6600,16);
       const flash=new THREE.PointLight(0xFF6600,8,12);flash.position.set(trap.x,1,trap.z);S3.add(flash);
       setTimeout(()=>S3.remove(flash),200);
-      const def=getArmorDef();const dmg=18*(1-def);
-      pl.hp=Math.max(0,pl.hp-dmg);
-      lootPop('💥 Patlama tuzağı! -'+Math.round(dmg)+' Can');
-      if(pl.hp<=0){playing=false;showDeath();}
+      hit.forEach(function(p){
+        const dmg=18*(1-getArmorDef(p));
+        p.hp=Math.max(0,p.hp-dmg);
+        if(p===pl){
+          lootPop('💥 Patlama tuzağı! -'+Math.round(dmg)+' Can');
+          if(pl.hp<=0){playing=false;showDeath();}
+        }
+      });
       trap.mesh.material.opacity=.4;trap.mesh.material.color.setHex(0x1a0a00);
       trap.rearmAt=gt+480;
     }

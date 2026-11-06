@@ -1,5 +1,8 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.41 — Maden tuzağı tüm oyuncular için (oynanış aynı)
+- Patlama tuzağını menzildeki herhangi bir oyuncu tetikler; patlama menzildeki herkese kendi zırhına göre hasar verir. Tek kişilik davranış aynı (altın test değişmedi). Ölüm ekranı yalnızca yerel oyuncu için açılır.
+
 ## v1.40 — Silah ve zırh oyuncu başına (oynanış aynı)
 - Zırh (`p.armor`) ve silah seçimi (`p.weapon`) oyuncuya ait. Düşman hasarı hedef oyuncunun zırhına, `doMelee(p)` / `doRanged(p, nişan)` saldıran oyuncuya göre çalışır. Yerel oyuncuda eski değerler (`SAVE.armor`, `selWeapon`) aynen geçerli.
 - Altın test değişmedi. Yeni test: zırh, silah ve mermi çıkışı oyuncuya göre.
