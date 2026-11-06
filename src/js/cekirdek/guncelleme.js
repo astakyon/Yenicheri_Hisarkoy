@@ -29,22 +29,33 @@ function update(dt){
 // Çizim güncellemeden ayrıdır: simülasyon sabit tikle (TIK) çalışır, çizim ekran hızında (ana-dongu.js)
 function renderFrame(){REN.render(S3,CAM);}
 
-function updateMovement(dt){
-  const run=keys['shift']&&pl.en>1,sp=(run?pl.rspd:pl.spd)*dt;
+// Girdi komutu: bir oyuncunun bir tikteki isteği. Yerel oyuncu için klavye/joystick'ten okunur;
+// çok oyunculuda uzak oyuncuların komutları ağdan gelecek ve aynı movePlayer'dan geçecek.
+function readLocalInput(){
   let dx=0,dz=0;
   if(keys['w']||keys['arrowup'])dz=-1;if(keys['s']||keys['arrowdown'])dz=1;if(keys['a']||keys['arrowleft'])dx=-1;if(keys['d']||keys['arrowright'])dx=1;
+  return {dx:dx,dz:dz,run:!!keys['shift'],aimX:worldAim.x,aimZ:worldAim.z};
+}
+
+function movePlayer(p,cmd,dt){
+  const run=cmd.run&&p.en>1,sp=(run?p.rspd:p.spd)*dt;
+  let dx=cmd.dx,dz=cmd.dz;
   const mov=dx||dz;if(mov){const l=Math.hypot(dx,dz);dx/=l;dz/=l;}
   // Önerilen yeni konum
-  let nx=Math.max(-(MAP_HALF||28),Math.min((MAP_HALF||28),pl.x+dx*sp));
-  let nz=Math.max(-(MAP_HALF||28),Math.min((MAP_HALF||28),pl.z+dz*sp));
+  let nx=Math.max(-(MAP_HALF||28),Math.min((MAP_HALF||28),p.x+dx*sp));
+  let nz=Math.max(-(MAP_HALF||28),Math.min((MAP_HALF||28),p.z+dz*sp));
   // Çarpışma kontrolü — X ve Z ekseni ayrı ayrı (duvar boyunca kayma için)
-  const r=pl.radius||0.45;
-  if(!checkCollision(nx,pl.z,r)) pl.x=nx;
-  if(!checkCollision(pl.x,nz,r)) pl.z=nz;
-  pl.mesh.position.set(pl.x,0,pl.z);
-  if(run&&mov)pl.en=Math.max(0,pl.en-.42);else if(!mov)pl.en=Math.min(pl.maxEn,pl.en+.48);else pl.en=Math.min(pl.maxEn,pl.en+.20);
-  const adx=worldAim.x-pl.x,adz=worldAim.z-pl.z;
-  if(Math.abs(adx)+Math.abs(adz)>.4){pl.ang=Math.atan2(adz,adx);pl.mesh.rotation.y=-pl.ang+Math.PI/2;}
+  const r=p.radius||0.45;
+  if(!checkCollision(nx,p.z,r)) p.x=nx;
+  if(!checkCollision(p.x,nz,r)) p.z=nz;
+  p.mesh.position.set(p.x,0,p.z);
+  if(run&&mov)p.en=Math.max(0,p.en-.42);else if(!mov)p.en=Math.min(p.maxEn,p.en+.48);else p.en=Math.min(p.maxEn,p.en+.20);
+  const adx=cmd.aimX-p.x,adz=cmd.aimZ-p.z;
+  if(Math.abs(adx)+Math.abs(adz)>.4){p.ang=Math.atan2(adz,adx);p.mesh.rotation.y=-p.ang+Math.PI/2;}
+}
+
+function updateMovement(dt){
+  movePlayer(pl,readLocalInput(),dt);
   if(joyActive){worldAim.x=pl.x+Math.cos(pl.ang)*20;worldAim.z=pl.z+Math.sin(pl.ang)*20;}
 }
 

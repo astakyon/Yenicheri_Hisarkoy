@@ -167,6 +167,19 @@ def main():
         check(not uniq, 'JavaScript hatası yok' + ('' if not uniq else ': ' + uniq[0]))
         ctx.close()
 
+        print('Girdi komutu (movePlayer)')
+        ctx, pg, errs = yeni_sayfa()
+        pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)
+        r = pg.evaluate("""() => {
+          REN.render = () => {};
+          const p2 = Object.assign({}, pl, { mesh: pl.mesh.clone() }); p2.x = -5; p2.z = -5;
+          const x0 = pl.x, z0 = pl.z;
+          for (let i = 0; i < 30; i++) movePlayer(p2, { dx: 1, dz: 0, run: false, aimX: 99, aimZ: -5 }, 1 / 60);
+          return { p2x: p2.x, yerelAyni: pl.x === x0 && pl.z === z0, ang: p2.ang };
+        }""")
+        check(r['p2x'] > -5 and r['yerelAyni'], 'komutla ikinci oyuncu hareket etti, yerel oyuncu yerinde kaldı')
+        ctx.close()
+
         print('Kimlikler (düşman, mermi, ganimet)')
         ctx, pg, errs = yeni_sayfa()
         pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)

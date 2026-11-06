@@ -1,5 +1,9 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.37 — Girdi komutu katmanı (oynanış aynı)
+- Hareket, klavye/joystick'i doğrudan okumak yerine bir **girdi komutundan** (`readLocalInput` → `movePlayer`) geçiyor. Uzak oyuncuların komutları ağdan gelince aynı koddan geçecek. Altın test değişmedi.
+- Kalan `setTimeout`'lar yalnızca arayüz içindir; oyun mantığı zamanlayıcıları tamamen tik tabanlı.
+
 ## v1.36 — Her ekranda aynı oyun hızı
 - **Düzeltme:** Oyun mantığı kare sayısına bağlıydı; 90/120/144 Hz ekranlı telefonlarda düşman yapay zekâsı ve dalgalar 1,5–2,4 kat hızlı akıyordu. Artık mantık sabit **60 tik/sn** çalışır, çizim ekranın hızında yapılır. Ekran hızı ne olursa olsun oyun hızı aynıdır.
 - **Demir Madeni tuzakları:** 8 saniyelik yeniden kurulum artık oyun süresiyle sayılır (duraklatınca durur).
