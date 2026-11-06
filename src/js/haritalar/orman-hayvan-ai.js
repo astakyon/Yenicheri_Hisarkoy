@@ -1,0 +1,65 @@
+// ═══════════════════════════════════════════════════════
+// HAYVAN AI — Sessiz Yaklaşma + İz Takibi
+// ═══════════════════════════════════════════════════════
+const ANIMAL_DEFS={
+  geyik:{name:'Geyik',hp:24,spd:.04,fleeSpd:.11,col:0x8B6030,size:.85,xp:14,gold:[6,12],fleeRange:9,detectNoise:0.4},
+  kurt:{name:'Kurt',hp:40,spd:.05,fleeSpd:.09,col:0x4a4a4a,size:.95,xp:22,gold:[8,16],fleeRange:7,detectNoise:0.55,aggressive:true,atkDmg:3},
+  domuz:{name:'Yaban Domuzu',hp:55,spd:.045,fleeSpd:.085,col:0x5a3a20,size:1.05,xp:28,gold:[10,20],fleeRange:6,detectNoise:0.6,aggressive:true,atkDmg:4},
+};
+let huntNoise=0; // 0-1 arası, hareket/saldırı arttırır, zamanla azalır
+let animalTracks=[]; // İz parçacıkları
+
+function spawnAnimal(type,isBoss){
+  type=type||['geyik','geyik','kurt','domuz'][Math.floor(Math.random()*4)];
+  const def=isBoss?{name:'Koca Ayı',hp:220,spd:.05,fleeSpd:.05,col:0x3a2810,size:1.7,xp:300,gold:[80,140],fleeRange:0,detectNoise:1,aggressive:true,atkDmg:9}:ANIMAL_DEFS[type];
+  const g=new THREE.Group();
+  const s=def.size;
+  const body=new THREE.Mesh(new THREE.BoxGeometry(1.1*s,0.8*s,1.7*s),new THREE.MeshLambertMaterial({color:def.col}));
+  body.position.y=0.7*s;body.castShadow=true;g.add(body);
+  const head=new THREE.Mesh(new THREE.BoxGeometry(.6*s,.55*s,.6*s),new THREE.MeshLambertMaterial({color:def.col}));
+  head.position.set(0,.85*s,.9*s);g.add(head);
+  [-0.35*s,0.35*s].forEach(ox=>{
+    [-0.5*s,0.5*s].forEach(oz=>{
+      const leg=new THREE.Mesh(new THREE.CylinderGeometry(.08*s,.08*s,.65*s,6),new THREE.MeshLambertMaterial({color:def.col}));
+      leg.position.set(ox,.32*s,oz);g.add(leg);
+    });
+  });
+  if(isBoss){const crown=new THREE.Mesh(new THREE.ConeGeometry(.5,.6,6),new THREE.MeshLambertMaterial({color:0xFFD700}));crown.position.set(0,1.3*s,.9*s);head.add(crown);}
+  const hpBg=new THREE.Mesh(new THREE.PlaneGeometry(isBoss?1.8:1.0,.13),new THREE.MeshBasicMaterial({color:0x330000,side:THREE.DoubleSide,depthTest:false}));
+  hpBg.position.set(0,1.6*s,0);g.add(hpBg);
+  const hpFl=new THREE.Mesh(new THREE.PlaneGeometry(isBoss?1.8:1.0,.13),new THREE.MeshBasicMaterial({color:isBoss?0xFFD700:0x22cc55,side:THREE.DoubleSide,depthTest:false}));
+  hpFl.position.set(0,1.6*s,.01);g.add(hpFl);
+
+  const a=Math.random()*Math.PI*2,dist=20+Math.random()*18;
+  const ex=Math.cos(a)*dist,ez=Math.sin(a)*dist;
+  g.position.set(ex,0,ez);S3.add(g);
+  enemies.push({
+    mesh:g,hpFl:hpFl,hp:def.hp,maxHp:def.hp,x:ex,z:ez,
+    spd:def.spd,fleeSpd:def.fleeSpd,isBoss:!!isBoss,hurtT:0,
+    animalType:isBoss?'ayi':type,aggressive:!!def.aggressive,atkDmg:def.atkDmg||0,
+    state:'idle', // idle | alert | fleeing | attacking
+    fleeRange:def.fleeRange,detectNoise:def.detectNoise,
+    xpReward:def.xp,goldReward:def.gold,
+    wanderAng:Math.random()*Math.PI*2,wanderT:0,
+  });
+}
+
+function spawnOrmanWave(n){
+  waveActive=true;
+  const isBoss=n%5===0;
+  const cnt=isBoss?1:3+Math.floor(n*1.5);
+  showWave(isBoss?'⚠ BÜYÜK AV — Koca Ayı Uyandı!':'🏹 Av '+n+' — '+cnt+' Hayvan');
+  for(let i=0;i<cnt;i++)spawnAnimal(null,isBoss&&i===0);
+}
+
+// Gürültü üret (koşma/saldırı) — hayvanları uyarır
+function makeNoise(amount){huntNoise=Math.min(1,huntNoise+amount);}
+
+// İz bırak (oyuncunun yakınındaki hayvanlar için görsel ipucu)
+function dropTrack(x,z){
+  if(Math.random()>0.3)return; // her adımda değil, ara sıra
+  const t=new THREE.Mesh(new THREE.CircleGeometry(.12,6),new THREE.MeshBasicMaterial({color:0x3a2818,transparent:true,opacity:.5}));
+  t.rotation.x=-Math.PI/2;t.position.set(x+(Math.random()-.5)*.6,.02,z+(Math.random()-.5)*.6);
+  S3.add(t);animalTracks.push({mesh:t,life:240});
+}
+

@@ -1,0 +1,304 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Cinzel',Georgia,serif;}
+#gc{position:fixed;inset:0;overflow:hidden;}
+canvas{display:block;position:absolute;top:0;left:0;}
+
+/* ── KATMANLAR ── */
+#menuLayer{position:absolute;inset:0;z-index:20;}
+#gameLayer{position:absolute;inset:0;z-index:10;display:none;}
+#hudLayer{position:absolute;inset:0;z-index:15;display:none;pointer-events:none;}
+#touchLayer{position:absolute;inset:0;z-index:16;display:none;pointer-events:none;}
+
+/* ── ANA MENÜ ── */
+#menuBg{position:absolute;inset:0;background:radial-gradient(ellipse 90% 40% at 50% 66%,rgba(255,170,90,.30),transparent 70%),linear-gradient(180deg,#060a1a 0%,#0c1634 28%,#16254a 50%,#26335a 64%,#4a4260 74%,#7a5a4c 84%,#3a2418 94%,#1a0e08 100%);}
+#starCv,#silCv{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
+#lanWrap{position:absolute;bottom:64px;left:16px;width:84px;pointer-events:none;z-index:1;}
+#lanWrap::before{content:'';position:absolute;left:-60px;top:-50px;width:210px;height:210px;border-radius:50%;background:radial-gradient(circle,rgba(255,160,50,.32),rgba(255,120,20,.10) 45%,transparent 70%);}
+#lanCv{position:relative;display:block;width:84px;height:auto;}
+#frameDiv{position:absolute;inset:0;pointer-events:none;}
+.rivet{position:absolute;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#F0C850,#B07A20 45%,#4a2800);box-shadow:0 1px 3px rgba(0,0,0,.7);z-index:3;}
+#mTitleWrap{position:absolute;top:22px;left:0;right:0;text-align:center;z-index:2;padding:0 26px;}
+#mTitle{display:flex;align-items:center;justify-content:center;gap:12px;font-family:'Cinzel Decorative',serif;font-size:22px;font-weight:700;line-height:1.15;color:#FFD700;text-shadow:0 0 24px rgba(255,180,0,.9),2px 2px 0 #5a2800,0 2px 6px #000;letter-spacing:2px;}
+#mTitle .mTx{display:block;text-align:center;}
+@media (max-width:640px){#mTitle .mTx span{display:block;}#mTitle{gap:8px;}.mOrn{width:26px;height:24px;}}
+.mOrn{flex-shrink:0;width:34px;height:32px;filter:drop-shadow(0 0 8px rgba(255,190,40,.8));}
+.mOrn.r{transform:scaleX(-1);}
+#mDeco{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:5px;}
+.ml{height:1px;width:50px;background:linear-gradient(90deg,transparent,#FFD700,transparent);}
+#mSub{color:#FFD700;font-size:10px;letter-spacing:3px;}
+#mVer{color:rgba(255,215,0,.4);font-size:8px;letter-spacing:2px;margin-top:3px;}
+#mBtns{position:absolute;left:50%;transform:translateX(-50%);top:108px;display:flex;flex-direction:column;gap:7px;width:290px;z-index:2;}
+.mBtn{width:100%;padding:10px 0;cursor:pointer;text-align:center;font-family:'Cinzel',serif;font-size:13px;font-weight:700;letter-spacing:2px;color:#F5DEB3;text-shadow:1px 1px 3px #000;border:none;outline:none;background:linear-gradient(180deg,#6B4A0C,#8B6010 8%,#4a2e06 40%,#3a2205 60%,#4a2e06 85%,#6B4A0C);border-radius:3px;box-shadow:0 0 0 1.5px #8B6010,0 0 0 3px #4a2e06,0 0 0 4.5px #8B6010,0 3px 10px rgba(0,0,0,.7);transition:all .12s;}
+.mBtn:hover,.mBtn:active{color:#FFD700;box-shadow:0 0 0 1.5px #C8A030,0 0 0 3px #5a3808,0 0 0 4.5px #C8A030,0 0 16px rgba(200,150,30,.3);}
+#mBtns .mBtn:first-child{box-shadow:0 0 0 1.5px #C8A030,0 0 0 3px #5a3808,0 0 0 4.5px #C8A030,0 0 22px rgba(255,170,40,.45);color:#FFE9A8;}
+@media (min-height:640px){
+  #mTitleWrap{top:5%;}
+  #mTitle{font-size:clamp(18px,5.4vw,34px);}
+  #mBtns{top:47%;transform:translate(-50%,-50%);width:min(330px,82vw);gap:12px;}
+  .mBtn{padding:15px 0;font-size:15px;}
+  #lanWrap{bottom:84px;}
+}
+#mIcos{position:absolute;bottom:18px;left:0;right:0;display:flex;justify-content:center;gap:44px;z-index:2;}
+.mIco{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;}
+.mIco span{color:#E8C060;font-size:22px;filter:drop-shadow(0 0 6px rgba(255,190,60,.5));}.mIco p{color:#E8C888;font-size:9px;letter-spacing:2px;margin:0;text-shadow:0 1px 3px #000;}
+
+/* ── TOGGLE SWITCH ── */
+.toggleRow{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(139,105,20,.2);}
+.toggleRow:last-child{border-bottom:none;}
+.toggleLabel{color:#D4B896;font-size:11px;}
+.toggleSub{color:#666;font-size:8px;margin-top:2px;}
+.toggle{position:relative;width:46px;height:24px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggleSlider{position:absolute;cursor:pointer;inset:0;background:rgba(50,30,0,.8);border:1.5px solid #5a3800;border-radius:24px;transition:.3s;}
+.toggleSlider::before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:#8B6914;border-radius:50%;transition:.3s;}
+.toggle input:checked+.toggleSlider{background:rgba(39,174,96,.25);border-color:#27ae60;}
+.toggle input:checked+.toggleSlider::before{transform:translateX(22px);background:#2ecc71;}
+.panel{background:linear-gradient(180deg,#1c0e00,#0e0600);border:2px solid #8B6914;border-radius:5px;padding:20px 24px;position:relative;}
+.panel::before{content:'';position:absolute;inset:5px;border:1px solid rgba(139,105,20,.2);border-radius:3px;pointer-events:none;}
+.panTitle{color:#FFD700;font-size:15px;letter-spacing:3px;margin-bottom:4px;font-family:'Cinzel Decorative',serif;}
+.panSub{color:#8B6914;font-size:8px;letter-spacing:3px;margin-bottom:14px;}
+.panBtn{display:block;width:100%;margin:5px 0;padding:8px 0;background:linear-gradient(180deg,#4a2e00,#1e1000);border:1.5px solid #8B6914;border-radius:3px;color:#F5DEB3;font-size:11px;font-family:'Cinzel',serif;cursor:pointer;letter-spacing:1px;transition:.12s;text-align:center;}
+.panBtn:hover,.panBtn:active{border-color:#FFD700;color:#FFD700;}
+.panBtn.red{border-color:#7B1414;color:#c0392b;}
+.panBtn.red:hover{border-color:#c0392b;color:#ff6b6b;}
+.panBtn.grn{border-color:#27ae60;color:#2ecc71;}
+.panBtn.grn:hover{border-color:#2ecc71;background:rgba(39,174,96,.15);}
+.divider{height:1px;background:linear-gradient(90deg,transparent,#8B6914,transparent);margin:10px 0;}
+
+/* ── HUD ── */
+/* ═══════════════════════════════════════════════════════
+   HUD v2 — Sol üst: Karakter+Görev | Sağ üst: Harita+Duraklat/Akçe
+   Sağ alt: Tüm aksiyonlar grup halinde | Sol alt: Sadece Joystick
+   ═══════════════════════════════════════════════════════ */
+
+/* ── SOL ÜST: Karakter paneli + Görev (altında) ── */
+#testExitBtn{display:none;position:absolute;top:6px;left:50%;transform:translateX(-50%);background:rgba(139,0,0,.92);border:2px solid #ff6b6b;border-radius:6px;color:#fff;font-size:10px;font-weight:700;padding:7px 14px;cursor:pointer;z-index:60;pointer-events:all;white-space:nowrap;touch-action:manipulation;font-family:'Cinzel',serif;box-shadow:0 2px 8px rgba(0,0,0,.5);}
+/* ═══ ÜST BAR — boydan boya, basit flex akışı, taşma imkansız ═══ */
+#topBar{position:absolute;top:0;left:0;right:0;height:34px;display:flex;align-items:center;background:rgba(4,2,0,.94);border-bottom:1.5px solid #8B6914;z-index:20;pointer-events:all;box-sizing:border-box;padding:0 8px;}
+#topBarLeft{width:60px;flex-shrink:0;}
+#topBarCenter{flex:1;min-width:0;text-align:center;overflow:hidden;}
+#mapIndicator{color:#FFD700;font-size:11px;font-weight:700;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:inline-block;max-width:100%;}
+#topBarRight{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+#mainGoldRow{color:#FFD700;font-size:12px;font-weight:700;white-space:nowrap;}
+#pauseBtn2{background:rgba(139,105,20,.25);border:1.5px solid #FFD700;border-radius:4px;color:#FFD700;font-size:13px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;flex-shrink:0;}
+#poolRow{position:absolute;top:36px;left:50%;transform:translateX(-50%);background:rgba(4,2,0,.92);border:1px solid rgba(255,165,0,.5);border-radius:4px;padding:2px 10px;font-size:8px;color:#FFA500;white-space:nowrap;display:none;z-index:19;}
+
+/* ── SOL: Karakter paneli (üst bar altında) ── */
+#topLeftHud{position:absolute;top:40px;left:6px;max-width:62%;display:flex;flex-direction:column;gap:4px;pointer-events:none;z-index:18;}
+#topHudRow1{display:flex;align-items:center;gap:6px;}
+#port{width:36px;height:36px;border:2px solid #8B6914;border-radius:4px;background:linear-gradient(135deg,#3a1a00,#1a0800);display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;flex-shrink:0;pointer-events:all;}
+#topHudInfo{flex:1;min-width:0;background:rgba(5,2,0,.92);border:1.5px solid #8B6914;border-radius:4px;padding:4px 8px;pointer-events:all;}
+#cname{color:#FFD700;font-size:8px;letter-spacing:1px;display:flex;justify-content:space-between;margin-bottom:2px;}
+#cnameTitle{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#cnameLevel{color:#5dade2;flex-shrink:0;margin-left:4px;}
+#topHudBars{display:flex;flex-direction:column;gap:1px;}
+.br{display:flex;align-items:center;gap:4px;}
+.bl{font-size:7px;color:#D4B896;width:24px;flex-shrink:0;}
+.bo{flex:1;height:5px;background:rgba(0,0,0,.6);border:1px solid #444;border-radius:2px;overflow:hidden;min-width:0;}
+.bf{height:100%;border-radius:1px;transition:width .1s;}
+#bHP .bf{background:linear-gradient(90deg,#7B1414,#e74c3c);}
+#bEN .bf{background:linear-gradient(90deg,#7B5A00,#f39c12);}
+#bXP .bf{background:linear-gradient(90deg,#1a3a6a,#3498db);}
+#bXP .bl{color:#5dade2;}
+.bv{font-size:7px;color:#aaa;min-width:30px;text-align:right;flex-shrink:0;}
+#gorevB{background:rgba(4,2,0,.9);border:1.5px solid #8B6914;border-radius:3px;color:#F5DEB3;font-size:8px;padding:4px 9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;pointer-events:none;margin-top:2px;}
+
+/* ── SAĞ: Mini-harita (üst bar altında, bağımsız basit kutu) ── */
+#mmBox{position:absolute;top:40px;right:6px;width:84px;height:84px;background:rgba(4,2,0,.95);border:1.5px solid #8B6914;border-radius:4px;cursor:pointer;z-index:18;pointer-events:all;overflow:hidden;}
+#mmCv{display:block;width:100%;height:100%;}
+
+#wvAnn{position:absolute;top:96px;left:50%;transform:translateX(-50%);background:rgba(4,2,0,.94);border:1.5px solid #8B6914;border-radius:3px;color:#FFD700;font-size:10px;padding:4px 14px;display:none;z-index:20;white-space:nowrap;}
+
+/* ── Yetenek slotları (masaüstü klavye göstergesi — sağ üst harita altında) ── */
+#abilityBar{position:absolute;top:134px;right:6px;display:flex;gap:4px;pointer-events:none;z-index:17;}
+.abilitySlot{width:32px;height:32px;border-radius:6px;border:1.5px solid rgba(139,105,20,.5);background:rgba(4,2,0,.88);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.abilitySlot.unlocked{border-color:#8B6914;}
+.abilitySlot.ready{border-color:#FFD700;box-shadow:0 0 6px rgba(255,215,0,.3);}
+.abilitySlot .abIcon{font-size:14px;z-index:2;}
+.abilitySlot .abKey{position:absolute;top:1px;right:2px;font-size:6px;color:#666;font-family:monospace;}
+.abilitySlot .abCd{position:absolute;bottom:0;left:0;width:100%;background:rgba(0,0,0,.7);transition:height .1s;}
+.abilitySlot .abCdTxt{position:absolute;bottom:1px;left:0;right:0;text-align:center;font-size:6px;color:#aaa;z-index:3;}
+.abilitySlot.locked{opacity:.3;}
+
+/* ── Güç çubuğu / etkileşim (orta-alt, joystick/aksiyon kümesi üstünde, ortalı) ── */
+#pwrW{position:absolute;bottom:170px;left:50%;transform:translateX(-50%);display:none;text-align:center;z-index:20;}
+#pwrL{color:#FFD700;font-size:8px;margin-bottom:2px;}
+#pwrBg{width:110px;height:8px;background:rgba(0,0,0,.7);border:1px solid #8B6914;border-radius:2px;overflow:hidden;}
+#pwrFl{height:100%;background:linear-gradient(90deg,#8B6914,#FFD700);width:0%;}
+#intH{position:absolute;bottom:200px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.88);border:1px solid #FFD700;color:#FFD700;font-size:9px;padding:3px 12px;border-radius:2px;display:none;z-index:20;white-space:nowrap;}
+#lootFd{position:absolute;top:150px;left:6px;display:flex;flex-direction:column;gap:3px;pointer-events:none;z-index:16;}
+.lpop{background:rgba(0,0,0,.8);border:1px solid #8B6914;color:#FFD700;font-size:8px;padding:2px 7px;border-radius:2px;animation:fu 2s forwards;}
+#levelUpAnn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(4,2,0,.96);border:2px solid #3498db;border-radius:6px;color:#5dade2;font-size:14px;padding:10px 24px;display:none;z-index:35;text-align:center;font-family:'Cinzel Decorative',serif;text-shadow:0 0 12px rgba(52,152,219,.7);}
+
+/* ── ALT KONTROLLER ── */
+/* Sol: Sadece Joystick */
+#joyZone{position:absolute;bottom:0;left:0;width:42%;height:42%;pointer-events:all;touch-action:none;}
+#joyBase{position:absolute;bottom:18px;left:18px;width:100px;height:100px;border-radius:50%;background:rgba(139,105,20,.2);border:3px solid rgba(255,215,0,.45);}
+#joyKnob{position:absolute;top:50%;left:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(255,215,0,.85),rgba(139,105,20,.9));border:3px solid #FFD700;box-shadow:0 0 14px rgba(255,180,0,.5);}
+
+/* Sağ: Tüm aksiyonlar tek dikey grupta — Yetenekler(üst) → Silah+Koş(orta) → Saldır(alt,büyük) */
+#actionCluster{position:absolute;bottom:14px;right:14px;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;z-index:15;}
+#abilityBtns{display:flex;gap:6px;pointer-events:all;}
+.abBtn{width:38px;height:38px;border-radius:50%;background:rgba(20,10,40,.85);border:2px solid #5a2080;color:#c39bd3;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:none;position:relative;overflow:hidden;}
+.abBtn.ready{border-color:#9b59b6;box-shadow:0 0 8px rgba(155,89,182,.4);}
+.abBtn.active{border-color:#8e44ad;background:rgba(142,68,173,.3);}
+.abBtn.locked{opacity:.3;pointer-events:none;}
+.abBtn .abBtnCd{position:absolute;bottom:0;left:0;width:100%;background:rgba(0,0,0,.6);transition:height .15s;}
+.abBtn .abBtnKey{position:absolute;top:1px;right:3px;font-size:6px;color:#888;font-family:monospace;}
+
+#midRow{display:flex;align-items:center;gap:14px;pointer-events:all;position:relative;}
+#runBtn{width:46px;height:46px;border-radius:50%;background:rgba(10,60,10,.75);border:3px solid #27ae60;color:#2ecc71;font-size:18px;display:flex;align-items:center;justify-content:center;touch-action:none;flex-shrink:0;}
+#runBtn.pr{background:rgba(20,100,20,.9);transform:scale(.92);}
+
+#wepSel{width:46px;height:46px;border-radius:50%;background:rgba(20,15,5,.85);border:3px solid #8B6914;color:#FFD700;font-size:18px;display:flex;align-items:center;justify-content:center;touch-action:manipulation;cursor:pointer;flex-shrink:0;position:relative;z-index:16;}
+#wepSel.open{border-color:#FFD700;box-shadow:0 0 10px rgba(255,215,0,.4);}
+#wepFan{position:absolute;left:0;top:0;width:46px;height:46px;pointer-events:none;z-index:17;}
+.wfOpt{position:absolute;width:42px;height:42px;border-radius:50%;background:rgba(5,2,0,.95);border:2.5px solid #8B6914;color:#D4B896;font-size:17px;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;left:2px;top:2px;transform:scale(.3) translate(0,0);transition:all .22s cubic-bezier(.34,1.56,.64,1);touch-action:manipulation;}
+.wfOpt.show{pointer-events:all;opacity:1;transform:scale(1) translate(var(--fx),var(--fy));}
+#wf0{--fx:-50px;--fy:-12px;}
+#wf1{--fx:-28px;--fy:-46px;}
+#wf2{--fx:18px;--fy:-52px;}
+.wfOpt.on{border-color:#FFD700;color:#FFD700;box-shadow:0 0 8px rgba(255,215,0,.4);}
+
+#atkBtn{width:70px;height:70px;border-radius:50%;background:rgba(139,0,0,.75);border:3px solid #c0392b;color:#fff;font-size:25px;display:flex;align-items:center;justify-content:center;pointer-events:all;touch-action:none;}
+#atkBtn.pr{background:rgba(200,0,0,.9);transform:scale(.92);}
+
+#zoneBtn{position:absolute;bottom:230px;right:20px;width:56px;height:56px;border-radius:50%;border:3px solid #FFD700;background:rgba(0,0,0,.8);color:#FFD700;font-size:9px;display:none;flex-direction:column;align-items:center;justify-content:center;pointer-events:all;text-align:center;line-height:1.25;touch-action:manipulation;z-index:16;}
+
+/* ── BÜYÜK HARİTA (World Map) ── */
+#worldMapBox{display:none;position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.92);align-items:flex-start;justify-content:center;padding:8px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+#wmPanel{width:min(640px,94vw);max-height:92vh;display:flex;flex-direction:column;margin-top:6px;}
+#wmHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+#wmTitle{color:#FFD700;font-size:16px;letter-spacing:3px;font-family:'Cinzel Decorative',serif;}
+#wmClose{background:rgba(139,20,20,.25);border:1.5px solid #7B1414;border-radius:4px;color:#ff6b6b;font-size:11px;padding:6px 14px;cursor:pointer;font-family:'Cinzel',serif;}
+#wmGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:2px;max-height:70vh;}
+.wmCard{background:rgba(0,0,0,.4);border:1.5px solid rgba(139,105,20,.4);border-radius:6px;padding:12px;cursor:pointer;transition:all .15s;position:relative;}
+.wmCard.unlocked:hover{border-color:#FFD700;background:rgba(139,105,20,.18);transform:translateY(-2px);}
+.wmCard.current{border-color:#27ae60;background:rgba(39,174,96,.12);}
+.wmCard.locked{opacity:.45;cursor:not-allowed;}
+.wmIcon{font-size:26px;margin-bottom:6px;}
+.wmName{color:#F5DEB3;font-size:12px;font-weight:700;margin-bottom:3px;}
+.wmDesc{color:#999;font-size:9px;line-height:1.4;}
+.wmBadge{position:absolute;top:8px;right:8px;font-size:8px;padding:2px 7px;border-radius:3px;letter-spacing:1px;}
+.wmBadge.you{background:rgba(39,174,96,.25);border:1px solid #27ae60;color:#2ecc71;}
+.wmBadge.lock{background:rgba(0,0,0,.5);border:1px solid #555;color:#888;}
+/* ── GERÇEK HARİTA (Blueprint Big Map) ── */
+#bigMapBox{display:none;position:fixed;inset:0;z-index:41;background:rgba(0,0,0,.94);align-items:center;justify-content:center;}
+#bmPanel{width:96vw;display:flex;flex-direction:column;background:linear-gradient(180deg,#1c0e00,#0e0600);border:2px solid #8B6914;border-radius:6px;padding:10px 12px;box-sizing:border-box;overflow:hidden;}
+#bmHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-shrink:0;}
+#bmTitle{color:#FFD700;font-size:14px;letter-spacing:2px;font-family:'Cinzel Decorative',serif;}
+#bmClose{background:rgba(139,20,20,.3);border:1.5px solid #c0392b;border-radius:4px;color:#ff6b6b;font-size:12px;padding:7px 16px;cursor:pointer;font-family:'Cinzel',serif;font-weight:700;flex-shrink:0;}
+#bmTabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;flex-shrink:0;max-height:64px;overflow-y:auto;}
+.bmTab{padding:5px 12px;border-radius:4px;border:1px solid #5a3808;background:rgba(0,0,0,.4);font-size:10px;color:#9a8050;cursor:pointer;font-family:'Cinzel',serif;transition:.12s;white-space:nowrap;flex-shrink:0;}
+.bmTab.on{background:#8B6914;color:#1c0e00;border-color:#FFD700;font-weight:700;}
+.bmTab.lk{opacity:.4;cursor:not-allowed;}
+#bmCanvasWrap{flex:1;min-height:0;min-width:0;overflow:hidden;touch-action:none;border:1.5px solid #5a3808;border-radius:4px;background:#f0e8d0;position:relative;}
+#bmCanvasInner{position:absolute;top:0;left:0;transform-origin:0 0;}
+#bmCanvas{display:block;}
+#bmZoomCtrl{display:flex;justify-content:center;gap:8px;margin-top:8px;flex-shrink:0;}
+.bmZBtn{width:38px;height:38px;border-radius:6px;border:1.5px solid #8B6914;background:rgba(0,0,0,.4);color:#FFD700;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:'Cinzel',serif;font-weight:700;}
+#bmLegend{margin-top:6px;color:#8B6914;font-size:8px;letter-spacing:1px;text-align:center;flex-shrink:0;}
+
+/* ═══════════════════════════════════════════════════════
+   HARİTA EDİTÖRÜ — Geliştirici Modu
+   ═══════════════════════════════════════════════════════ */
+#mapEditorBox{display:none;position:fixed;inset:0;z-index:45;background:rgba(0,0,0,.96);align-items:center;justify-content:center;}
+#mePanel{width:98vw;height:90vh;height:calc(100dvh - 16px);max-height:90vh;max-height:calc(100svh - 16px);display:flex;flex-direction:column;background:linear-gradient(180deg,#1c0e00,#0e0600);border:2px solid #8B6914;border-radius:6px;padding:8px 10px;box-sizing:border-box;overflow:hidden;}
+#meHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-shrink:0;}
+#meTitle{color:#FFD700;font-size:13px;letter-spacing:2px;font-family:'Cinzel Decorative',serif;}
+#meClose{background:rgba(139,20,20,.3);border:1.5px solid #c0392b;border-radius:4px;color:#ff6b6b;font-size:11px;padding:6px 14px;cursor:pointer;font-family:'Cinzel',serif;font-weight:700;}
+
+/* Liste görünümü */
+#meListView{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;}
+#meListHead{flex-shrink:0;margin-bottom:8px;}
+#meMapList{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:6px;}
+.meMapCard{background:rgba(0,0,0,.4);border:1.5px solid rgba(139,105,20,.4);border-radius:6px;padding:10px 12px;display:flex;align-items:center;gap:10px;}
+.meMapCard .mmcName{flex:1;color:#F5DEB3;font-size:11px;font-weight:700;}
+.meMapCard .mmcInfo{color:#888;font-size:9px;}
+.meMapCard .mmcBtns{display:flex;gap:4px;}
+
+/* Editör görünümü */
+#meEditView{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;}
+#meToolbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;flex-shrink:0;align-items:center;}
+.meSmallBtn{padding:6px 10px;background:rgba(39,174,96,.2);border:1.5px solid #27ae60;border-radius:3px;color:#2ecc71;font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;}
+.meSmallBtn.red{background:rgba(139,20,20,.2);border-color:#c0392b;color:#ff6b6b;}
+
+#meCategoryTabs{display:flex;gap:4px;overflow-x:auto;margin-bottom:4px;flex-shrink:0;padding-bottom:2px;}
+.meCatTab{padding:5px 10px;border-radius:4px;border:1px solid #5a3808;background:rgba(0,0,0,.4);font-size:9px;color:#9a8050;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:Cinzel,serif;}
+.meCatTab.on{background:#8B6914;color:#1c0e00;border-color:#FFD700;font-weight:700;}
+
+#meAssetPalette{display:flex;gap:5px;overflow-x:auto;margin-bottom:6px;flex-shrink:0;padding:2px;}
+.meAssetBtn{min-width:54px;height:54px;border-radius:5px;border:1.5px solid #5a3808;background:rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:2px;}
+.meAssetBtn .maIcon{font-size:18px;}
+.meAssetBtn .maName{font-size:6px;color:#aaa;margin-top:1px;text-align:center;line-height:1.1;}
+.meAssetBtn.on{border-color:#FFD700;background:rgba(255,215,0,.15);}
+
+#meGridWrap{flex:1;min-height:0;overflow:hidden;touch-action:none;border:1.5px solid #5a3808;border-radius:4px;background:#f0e8d0;position:relative;}
+#meGridCanvas{display:block;touch-action:none;}
+
+#meBottomBar{display:flex;justify-content:space-between;align-items:center;margin-top:6px;flex-shrink:0;gap:6px;flex-wrap:wrap;}
+#meSelectedInfo{color:#D4B896;font-size:9px;flex:1;min-width:100px;}
+#meZoomCtrl{display:flex;gap:5px;}
+#meEraserBtn.on,#meSpawnBtn.on{border-color:#FFD700;color:#FFD700;background:rgba(255,215,0,.15);}
+
+
+#scoreB{background:rgba(5,2,0,.92);border:1.5px solid #8B6914;border-radius:3px;padding:3px 9px;color:#FFD700;font-size:9px;white-space:nowrap;pointer-events:all;}
+@keyframes fu{0%{opacity:1;transform:translateY(0)}80%{opacity:1}100%{opacity:0;transform:translateY(-14px)}}
+
+/* ── DURAKLAT ── */
+#pauseBox{position:absolute;inset:0;z-index:25;display:none;background:rgba(0,0,0,.78);align-items:center;justify-content:center;}
+#pStats{margin:10px 0;padding:8px;background:rgba(0,0,0,.4);border:1px solid rgba(139,105,20,.28);border-radius:3px;}
+#pStats div{color:#D4B896;font-size:9px;margin:3px 0;display:flex;justify-content:space-between;gap:20px;}
+#pStats span{color:#FFD700;}
+
+/* ── MİLESTONE ── */
+#milestoneBox{position:absolute;inset:0;z-index:26;display:none;background:rgba(0,0,0,.82);align-items:center;justify-content:center;}
+#milestoneInfo{background:rgba(5,2,0,.95);border:2px solid #FFD700;border-radius:5px;padding:16px 20px;text-align:center;margin:12px 0;}
+.milePoolGold{font-size:18px;color:#FFA500;margin:4px 0;}
+.milePoolNote{font-size:9px;color:#888;}
+
+/* ── DİALOG ── */
+#dlgLayer{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);}
+#dlgBox{background:linear-gradient(180deg,#1c0e00,#0e0600);border:2px solid #8B6914;border-radius:5px;padding:20px 24px;min-width:240px;max-width:340px;text-align:center;}
+#dlgT{color:#FFD700;font-size:13px;margin-bottom:8px;font-family:'Cinzel Decorative',serif;}
+#dlgP{color:#D4B896;font-size:10px;line-height:1.7;white-space:pre-line;}
+#dlgB{margin-top:12px;background:linear-gradient(180deg,#5a3a00,#2a1800);border:1.5px solid #8B6914;border-radius:3px;color:#F5DEB3;padding:6px 20px;font-size:11px;font-family:'Cinzel',serif;cursor:pointer;}
+#dlgB:hover{border-color:#FFD700;color:#FFD700;}
+
+/* ── ÖLÜM ── */
+#deathBox{position:absolute;inset:0;z-index:28;display:none;background:rgba(0,0,0,.88);align-items:center;justify-content:center;flex-direction:column;gap:12px;}
+#deathT{color:#8B0000;font-size:24px;font-family:'Cinzel Decorative',serif;text-shadow:0 0 18px rgba(139,0,0,.8);}
+#deathInfo{background:rgba(8,4,0,.95);border:1.5px solid #8B6914;border-radius:4px;padding:14px 22px;text-align:center;}
+#deathInfo div{color:#D4B896;font-size:10px;margin:4px 0;}.dv{color:#FFD700;}
+#deathBtns{display:flex;gap:12px;}
+
+/* ── BÖLGE MENÜSÜ ── */
+#zoneMenuBox{position:fixed;inset:0;z-index:27;display:none;background:rgba(0,0,0,.8);align-items:flex-start;justify-content:center;padding:8px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+#zoneMenuPanel{width:min(540px,95vw);max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;background:linear-gradient(180deg,#1c0e00,#0e0600);border:2px solid #8B6914;border-radius:6px;padding:18px 20px;position:relative;margin-top:6px;}
+#zoneMenuPanel::-webkit-scrollbar{width:4px;}
+#zoneMenuPanel::-webkit-scrollbar-thumb{background:#8B6914;border-radius:2px;}
+#zoneMenuPanel::before{content:'';position:absolute;inset:5px;border:1px solid rgba(139,105,20,.2);border-radius:4px;pointer-events:none;}
+.zoneTitle{color:#FFD700;font-size:16px;letter-spacing:3px;margin-bottom:3px;font-family:'Cinzel Decorative',serif;}
+.zoneGold{color:#FFA500;font-size:11px;margin-bottom:12px;}
+/* Kart grid */
+.cardGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;}
+.itemCard{background:rgba(0,0,0,.5);border:1.5px solid rgba(139,105,20,.4);border-radius:5px;padding:12px;cursor:pointer;transition:all .15s;position:relative;}
+.itemCard:hover,.itemCard:active{border-color:#FFD700;background:rgba(139,105,20,.12);}
+.itemCard.owned{border-color:#27ae60;}
+.itemCard.maxed{border-color:#3498db;cursor:default;}
+.cardIcon{font-size:22px;margin-bottom:5px;}
+.cardName{color:#F5DEB3;font-size:11px;font-weight:700;margin-bottom:3px;}
+.cardDesc{color:#888;font-size:9px;line-height:1.4;margin-bottom:6px;}
+.cardCost{color:#FFD700;font-size:10px;}
+.cardCost.cantAfford{color:#c0392b;}
+.cardBadge{position:absolute;top:6px;right:6px;font-size:8px;padding:2px 6px;border-radius:3px;font-family:'Cinzel',serif;}
+.cardBadge.owned{background:rgba(39,174,96,.2);color:#2ecc71;border:1px solid #27ae60;}
+.cardBadge.equipped{background:rgba(255,215,0,.2);color:#FFD700;border:1px solid #FFD700;}
+.cardBadge.maxed{background:rgba(52,152,219,.2);color:#5dade2;border:1px solid #3498db;}
+/* Level bar */
+.lvlBar{height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:5px;overflow:hidden;}
+.lvlBarFill{height:100%;background:linear-gradient(90deg,#8B6914,#FFD700);border-radius:2px;}
+/* Stat satırı */
+.statRow{display:flex;justify-content:space-between;color:#D4B896;font-size:9px;margin:3px 0;}
+.statVal{color:#FFD700;}

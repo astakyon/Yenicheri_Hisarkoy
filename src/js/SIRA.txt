@@ -1,0 +1,39 @@
+# Modüllerin birleştirilme sırası (tools/build.py). SIRA ÖNEMLİDİR: tüm dosyalar tek bir script olarak birleşir.
+# Bir dosya, kendisinden ÖNCE gelen dosyaların işlevlerini kullanabilir; üst düzey const/let değişkenlerine
+# yükleme anında yalnızca önceki dosyalardan erişin (aksi halde 'before initialization' hatası olur).
+# Yeni dosyayı kullandığı dosyalardan sonra, cekirdek/ana-dongu.js'den önce ekleyin.
+cekirdek/surum-kayit.js
+cekirdek/ayarlar.js
+gorev/gorev-basari.js
+karakter/xp-sinif.js
+karakter/yetenekler.js
+ekran/menu-animasyon.js
+cekirdek/oyun-durumu.js
+ekran/bolumler.js
+ekran/buyuk-harita.js
+ekran/buyuk-harita-cizim.js
+ekran/ui-yardimcilari.js
+cekirdek/three-baslat.js
+editor/asset-kutuphanesi.js
+editor/haritalari-donustur.js
+editor/ozel-harita-sablon.js
+editor/editor-arayuz.js
+haritalar/kisla.js
+haritalar/devriye.js
+haritalar/orman-sahne.js
+haritalar/maden-sahne.js
+haritalar/orman-hayvan-ai.js
+haritalar/maden-dusman-ai.js
+karakter/karakter-modeli.js
+savas/dusman.js
+savas/ganimet-efekt.js
+savas/savas.js
+ekran/mini-harita.js
+kontrol/nisan.js
+cekirdek/guncelleme.js
+haritalar/orman-guncelleme.js
+haritalar/maden-guncelleme.js
+cekirdek/oyun-baslat.js
+ekran/bolge-menusu.js
+kontrol/girdi.js
+cekirdek/ana-dongu.js

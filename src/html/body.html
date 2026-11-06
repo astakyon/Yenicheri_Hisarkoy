@@ -1,0 +1,369 @@
+<div id="gc">
+  <div id="gameLayer"><canvas id="c3d"></canvas></div>
+
+  <!-- ── ANA MENÜ ── -->
+  <div id="menuLayer">
+    <div id="menuBg"></div>
+    <canvas id="starCv"></canvas><canvas id="silCv"></canvas>
+    <div id="lanWrap"><canvas id="lanCv" width="66" height="106"></canvas></div>
+    <div id="frameDiv">
+      <div style="position:absolute;inset:0;border:10px solid #4a2c16;box-shadow:inset 0 0 0 2px #9a6a22,inset 0 0 26px rgba(0,0,0,.75),0 0 0 1px #20110a;pointer-events:none;"></div>
+      <div style="position:absolute;inset:14px;border:2px dashed rgba(225,175,95,.5);border-radius:2px;pointer-events:none;"></div>
+      
+      
+      
+      
+      <div class="rivet" style="top:-1px;left:-1px;"></div><div class="rivet" style="top:-1px;right:-1px;"></div>
+      <div class="rivet" style="bottom:-1px;left:-1px;"></div><div class="rivet" style="bottom:-1px;right:-1px;"></div>
+    </div>
+    <div id="mTitleWrap">
+      <div id="mTitle"><svg class="mOrn" viewBox="0 0 48 44" aria-hidden="true"><defs><mask id="mCres"><rect width="48" height="44" fill="#fff"/><circle cx="31" cy="22" r="14.5" fill="#000"/></mask></defs><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg><span class="mTx"><span>YENİÇERİ:</span> <span>HİSARKÖY MUHAFIZI</span></span><svg class="mOrn r" viewBox="0 0 48 44" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg></div>
+      <div id="mDeco"><div class="ml"></div><div id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</div><div class="ml"></div></div>
+      <div id="mVer">{{VERSION}}</div>
+    </div>
+    <div id="mBtns">
+      <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
+      <button class="mBtn" onclick="openChapters()">🗺 BÖLÜMLER</button>
+      <button class="mBtn" onclick="openMapEditor()">🛠 HARİTA EDİTÖRÜ</button>
+      <button class="mBtn" onclick="showDlg('📜 Nasıl Oynanır','WASD / Joystick → Hareket\nShift / 🏃 → Koşma\nFare / ⚔ → Saldır\n1/2/3 → Silah seç\nE / Kapı → Bölgeye Gir\nKışlada Demir Kapı → Göreve Çık\nEsc → Duraklat','Anlaşıldı!',hideDlg)">📜 NASIL OYNANIR</button>
+    </div>
+    <div id="mIcos">
+      <div class="mIco" onclick="openSettings()"><span>⚙</span><p>AYARLAR</p></div>
+      <div class="mIco"><span>🏆</span><p>SKOR</p></div>
+    </div>
+  </div>
+
+  <!-- ── AYARLAR PANELİ ── -->
+  <div id="settingsBox" style="display:none;position:absolute;inset:0;z-index:22;background:rgba(0,0,0,.82);align-items:center;justify-content:center;">
+    <div class="panel" style="width:min(320px,92vw);">
+      <div class="panTitle">⚙ AYARLAR</div>
+      <div class="panSub">v1.03 — YENİÇERİ: HİSARKÖY MUHAFIZI</div>
+      <div class="divider"></div>
+
+      <!-- Dokunmatik kontroller -->
+      <div class="toggleRow">
+        <div>
+          <div class="toggleLabel">📱 Dokunmatik Kontroller</div>
+          <div class="toggleSub">Joystick ve butonları göster/gizle</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="toggleTouch" onchange="applyTouchSetting(this.checked)">
+          <span class="toggleSlider"></span>
+        </label>
+      </div>
+
+      <!-- Joystick boyutu -->
+      <div class="toggleRow">
+        <div>
+          <div class="toggleLabel">🕹 Joystick Boyutu</div>
+          <div class="toggleSub" id="joySizeLabel">Normal</div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button onclick="setJoySize('small')"  style="padding:4px 8px;background:rgba(0,0,0,.5);border:1.5px solid #8B6914;border-radius:3px;color:#D4B896;font-size:9px;cursor:pointer;font-family:Cinzel,serif;">Küçük</button>
+          <button onclick="setJoySize('normal')" style="padding:4px 8px;background:rgba(0,0,0,.5);border:1.5px solid #8B6914;border-radius:3px;color:#D4B896;font-size:9px;cursor:pointer;font-family:Cinzel,serif;">Normal</button>
+          <button onclick="setJoySize('large')"  style="padding:4px 8px;background:rgba(0,0,0,.5);border:1.5px solid #8B6914;border-radius:3px;color:#D4B896;font-size:9px;cursor:pointer;font-family:Cinzel,serif;">Büyük</button>
+        </div>
+      </div>
+
+      <!-- Yetenek butonları -->
+      <div class="toggleRow">
+        <div>
+          <div class="toggleLabel">⚡ Yetenek Butonları (Q/F/R)</div>
+          <div class="toggleSub">Savaş ekranında yetenek butonlarını göster</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="toggleAbilityBtns" onchange="applyAbilityBtnSetting(this.checked)" checked>
+          <span class="toggleSlider"></span>
+        </label>
+      </div>
+
+      <!-- Silah seçim çubuğu -->
+      <div class="toggleRow">
+        <div>
+          <div class="toggleLabel">🗡 Silah Seçim Çubuğu</div>
+          <div class="toggleSub">Alt barı göster/gizle</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="toggleWeaponBar" onchange="applyWeaponBarSetting(this.checked)" checked>
+          <span class="toggleSlider"></span>
+        </label>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Kayıt sıfırla -->
+      <button class="panBtn red" onclick="confirmReset()">🗑 Kayıdı Sıfırla</button>
+      <button class="panBtn" onclick="closeSettings()">✕ Kapat</button>
+    </div>
+  </div>
+
+  <!-- ── HUD ── -->
+  <div id="hudLayer">
+    <!-- Test Modu Çıkış Butonu — her zaman üstte, editörden test edilirken görünür -->
+    <div id="testExitBtn" onclick="exitTestMode()">✕ Test Modundan Çık</div>
+
+    <!-- ═══ ÜST BAR — boydan boya, sol(boş) / orta(harita adı) / sağ(altın+duraklat) ═══ -->
+    <div id="topBar">
+      <div id="topBarLeft"></div>
+      <div id="topBarCenter"><span id="mapIndicator">Hisarköy</span></div>
+      <div id="topBarRight">
+        <div id="mainGoldRow">🪙 <span id="mainGoldV">0</span></div>
+        <div id="pauseBtn2" onclick="doPause()">❙❙</div>
+      </div>
+    </div>
+    <div id="poolRow">📦 <span id="poolGoldV">0</span></div>
+
+    <!-- SOL: Karakter paneli (üst bar altında, ayrı satır) -->
+    <div id="topLeftHud">
+      <div id="topHudRow1">
+        <div id="port" onclick="openCharPanel()">🪖</div>
+        <div id="topHudInfo">
+          <div id="cname">
+            <span id="cnameTitle">☽ ACEMI YENİÇERİ</span>
+            <span id="cnameLevel">Sv.1</span>
+          </div>
+          <div id="topHudBars">
+            <div class="br" id="bHP"><span class="bl">CAN</span><div class="bo"><div class="bf" id="hpf" style="width:100%"></div></div><span class="bv" id="hpn">100</span></div>
+            <div class="br" id="bEN"><span class="bl">ENJ</span><div class="bo"><div class="bf" id="enf" style="width:100%"></div></div><span class="bv" id="enn">100</span></div>
+            <div class="br" id="bXP"><span class="bl">XP</span><div class="bo"><div class="bf" id="xpf" style="width:0%"></div></div><span class="bv" id="xpn">0</span></div>
+          </div>
+        </div>
+      </div>
+      <div id="gorevB">GÖREV: <span id="gorevT">Hisarköy'ü Temizle</span></div>
+    </div>
+
+    <!-- SAĞ: Mini-harita (üst bar altında, bağımsız küçük kutu) -->
+    <div id="mmBox" onclick="openBigMap()">
+      <canvas id="mmCv" width="84" height="84"></canvas>
+    </div>
+
+    <div id="wvAnn"></div>
+    <div id="pwrW"><div id="pwrL">⚡ GÜÇ</div><div id="pwrBg"><div id="pwrFl"></div></div></div>
+    <div id="intH"></div>
+    <div id="lootFd"></div>
+    <div id="levelUpAnn"></div>
+    <!-- Başarı banner -->
+    <div id="achievementBanner" style="display:none;position:absolute;top:80px;left:50%;transform:translateX(-50%);background:linear-gradient(180deg,#1c0e00,#0e0600);border:2px solid #FFD700;border-radius:6px;color:#FFD700;font-size:11px;padding:8px 18px;text-align:center;z-index:35;pointer-events:none;min-width:200px;"></div>
+    <style>@keyframes achAnim{0%{opacity:0;transform:translateX(-50%) translateY(-10px)}10%{opacity:1;transform:translateX(-50%) translateY(0)}80%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-8px)}}</style>
+    <div id="scoreWrap" style="position:absolute;bottom:8px;right:8px;display:none;pointer-events:none;z-index:14;"><div id="scoreB">🪙<span id="akceV">0</span> 💀<span id="killV">0</span></div></div>
+  </div>
+
+  <!-- ── DOKUNMATIK ── -->
+  <div id="touchLayer">
+    <!-- SOL: Sadece Joystick -->
+    <div id="joyZone"><div id="joyBase"><div id="joyKnob"></div></div></div>
+
+    <!-- SAĞ ALT: Tüm aksiyon butonları tek grupta — Yetenekler üstte, Koş+Silah ortada, Saldır altta büyük -->
+    <div id="actionCluster">
+      <div id="abilityBtns">
+        <div class="abBtn locked" id="abMob_q" onclick="useAbility('q')"><span>⚡</span><span class="abBtnKey">Q</span><div class="abBtnCd" id="abMobCd_q" style="height:100%"></div></div>
+        <div class="abBtn locked" id="abMob_f" onclick="useAbility('f')"><span>🛡</span><span class="abBtnKey">F</span><div class="abBtnCd" id="abMobCd_f" style="height:100%"></div></div>
+        <div class="abBtn locked" id="abMob_r" onclick="useAbility('r')"><span>🔥</span><span class="abBtnKey">R</span><div class="abBtnCd" id="abMobCd_r" style="height:100%"></div></div>
+      </div>
+      <div id="midRow">
+        <div id="wepSel" onclick="toggleWepFan()">🗡</div>
+        <div id="wepFan">
+          <div class="wfOpt on" id="wf0" onclick="chooseWeapon(0)">🗡</div>
+          <div class="wfOpt" id="wf1" onclick="chooseWeapon(1)">🔫</div>
+          <div class="wfOpt" id="wf2" onclick="chooseWeapon(2)">🏹</div>
+        </div>
+        <div id="runBtn">🏃</div>
+      </div>
+      <div id="atkBtn">⚔</div>
+    </div>
+    <div id="zoneBtn"></div>
+  </div>
+
+  <!-- ── DURAKLAT ── -->
+  <div id="pauseBox" style="display:none;align-items:center;justify-content:center;">
+    <div class="panel" style="min-width:260px;text-align:center;">
+      <div class="panTitle">❙❙ DURAKLATILDI</div>
+      <div class="panSub" id="pauseMapLbl">HİSARKÖY MUHAFIZI</div>
+      <div id="pStats">
+        <div><span>Dalga</span><span id="pWv">1</span></div>
+        <div><span>Katil</span><span id="pKl">0</span></div>
+        <div><span>Havuz Akçe</span><span id="pPool">0</span></div>
+        <div><span>Ana Akçe</span><span id="pMain">0</span></div>
+      </div>
+      <div class="divider"></div>
+      <button class="panBtn grn" onclick="doResume()">▶ Devam Et</button>
+      <button class="panBtn" onclick="openBigMap()">🗺 Büyük Harita</button>
+      <button class="panBtn" onclick="toKisla()">🏰 Kışlaya Dön</button>
+      <button class="panBtn red" onclick="toMenu()">✕ Ana Menüye Dön</button>
+    </div>
+  </div>
+
+  <!-- ── BÖLÜMLER (Chapter/Region Select) ── -->
+  <div id="worldMapBox">
+    <div class="panel" id="wmPanel">
+      <div id="wmHead">
+        <div id="wmTitle">🗺 OSMANLI TOPRAKLARI</div>
+        <div id="wmClose" onclick="closeChapters()">✕ Kapat</div>
+      </div>
+      <div id="wmGrid"></div>
+    </div>
+  </div>
+
+  <!-- ── GERÇEK HARİTA (Blueprint — bulunduğun bölgenin krokisi) ── -->
+  <div id="bigMapBox">
+    <div class="panel" id="bmPanel">
+      <div id="bmHead">
+        <div id="bmTitle">🗺 HARİTA</div>
+        <div id="bmClose" onclick="closeBigMap()">✕ Kapat</div>
+      </div>
+      <div id="bmTabs"></div>
+      <div id="bmCanvasWrap">
+        <div id="bmCanvasInner">
+          <canvas id="bmCanvas"></canvas>
+        </div>
+      </div>
+      <div id="bmZoomCtrl">
+        <div class="bmZBtn" onclick="bmZoom(-0.2)">−</div>
+        <div class="bmZBtn" onclick="bmResetView()">⟲</div>
+        <div class="bmZBtn" onclick="bmZoom(0.2)">+</div>
+      </div>
+      <div id="bmLegend"></div>
+    </div>
+  </div>
+
+  <!-- ── HARİTA EDİTÖRÜ (Geliştirici Modu — gizli erişim) ── -->
+  <div id="mapEditorBox">
+    <div id="mePanel">
+      <div id="meHead">
+        <div id="meTitle">🛠 HARİTA EDİTÖRÜ</div>
+        <div id="meClose" onclick="closeMapEditor()">✕ Kapat</div>
+      </div>
+
+      <!-- Harita listesi / yeni harita -->
+      <div id="meListView">
+        <div id="meListHead">
+          <button class="panBtn grn" onclick="meCreateNewMap()">+ Yeni Harita</button>
+        </div>
+        <div id="meMapList"></div>
+      </div>
+
+      <!-- Editör çalışma alanı (harita seçilince açılır) -->
+      <div id="meEditView" style="display:none;">
+        <div id="meToolbar">
+          <input id="meMapName" type="text" placeholder="Harita adı" style="flex:1;min-width:80px;background:rgba(0,0,0,.4);border:1px solid #8B6914;border-radius:3px;color:#F5DEB3;padding:5px 8px;font-size:10px;font-family:Cinzel,serif;">
+          <button class="meSmallBtn" onclick="meSaveMap()">💾 Kaydet</button>
+          <button class="meSmallBtn" onclick="meTestMap()">▶ Test Et</button>
+          <button class="meSmallBtn red" onclick="meBackToList()">← Liste</button>
+        </div>
+
+        <div id="meCategoryTabs"></div>
+        <div id="meAssetPalette"></div>
+
+        <div id="meGridWrap">
+          <canvas id="meGridCanvas"></canvas>
+        </div>
+
+        <div id="meBottomBar">
+          <div id="meSelectedInfo">Bir araç seçin, sonra ızgaraya dokunun</div>
+          <div id="meZoomCtrl">
+            <div class="bmZBtn" onclick="meZoom(-0.2)">−</div>
+            <div class="bmZBtn" onclick="meResetView()">⟲</div>
+            <div class="bmZBtn" onclick="meZoom(0.2)">+</div>
+            <div class="bmZBtn" onclick="meToggleEraser()" id="meEraserBtn">🗑</div>
+            <div class="bmZBtn" onclick="meSetSpawn()" id="meSpawnBtn">🚩</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MİLESTONE MOLA ── -->
+  <div id="milestoneBox" style="display:none;align-items:center;justify-content:center;">
+    <div class="panel" style="min-width:280px;text-align:center;">
+      <div class="panTitle">⚔ MOLA ZAMANI</div>
+      <div id="milestoneInfo">
+        <div style="color:#FFD700;font-size:14px;" id="mileWaveTxt">Dalga 5 Tamamlandı!</div>
+        <div class="milePoolGold">📦 Havuz: <span id="milePool">0</span> Akçe</div>
+        <div class="milePoolNote">Boss'u yenmeden kışlaya dönersen havuz sıfırlanır!</div>
+      </div>
+      <button class="panBtn grn" onclick="mileContinue()">▶ Devam Et</button>
+      <button class="panBtn" onclick="toKisla()">🏰 Kışlaya Dön (Havuz kaybolur)</button>
+      <button class="panBtn red" onclick="toMenu()">✕ Ana Menüye Dön</button>
+    </div>
+  </div>
+
+  <!-- ── BÖLGE MENÜSÜ ── -->
+  <div id="zoneMenuBox" style="display:none;align-items:center;justify-content:center;">
+    <div id="zoneMenuPanel">
+      <div class="zoneTitle" id="zmTitle">⚔ Armory</div>
+      <div class="zoneGold">🪙 Ana Akçe: <span id="zmGold">0</span></div>
+      <div class="divider"></div>
+      <div id="zmContent"></div>
+      <div class="divider"></div>
+      <button class="panBtn" style="margin-top:8px;" onclick="closeZoneMenu()">✕ Kapat</button>
+    </div>
+  </div>
+
+  <!-- ── DİALOG ── -->
+  <div id="dlgLayer">
+    <div id="dlgBox">
+      <div id="dlgT"></div><div id="dlgP"></div><button id="dlgB"></button>
+    </div>
+  </div>
+
+  <!-- ── SINIF SEÇİMİ (Level 10) ── -->
+  <div id="classBox" style="display:none;position:absolute;inset:0;z-index:32;background:rgba(0,0,0,.92);align-items:center;justify-content:center;">
+    <div class="panel" style="width:min(520px,95vw);max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;text-align:center;">
+      <div class="panTitle">🎖 SINIF SEÇİMİ</div>
+      <div class="panSub">Level 10'a ulaştın! Yolunu seç</div>
+      <div class="cardGrid" style="margin-top:12px;">
+        <div class="itemCard" onclick="selectClass('yenicheri')" style="cursor:pointer;">
+          <div class="cardIcon">🗡</div>
+          <div class="cardName">Yeniçeri</div>
+          <div class="cardDesc">Dengeli savaşçı<br>+%15 tüm stat</div>
+          <div style="margin-top:6px;color:#FFD700;font-size:9px;">Özel: Dönüş Saldırısı</div>
+        </div>
+        <div class="itemCard" onclick="selectClass('sipahi')" style="cursor:pointer;">
+          <div class="cardIcon">🏇</div>
+          <div class="cardName">Sipahi</div>
+          <div class="cardDesc">Hız & hasar<br>+%30 hız, +%20 hasar</div>
+          <div style="margin-top:6px;color:#FFD700;font-size:9px;">Özel: Süvari Hücumu</div>
+        </div>
+        <div class="itemCard" onclick="selectClass('akinci')" style="cursor:pointer;">
+          <div class="cardIcon">🏹</div>
+          <div class="cardName">Akıncı</div>
+          <div class="cardDesc">Uzak mesafe<br>+%40 menzil, gizlenme</div>
+          <div style="margin-top:6px;color:#FFD700;font-size:9px;">Özel: Gölge Adımı</div>
+        </div>
+        <div class="itemCard" onclick="selectClass('azap')" style="cursor:pointer;">
+          <div class="cardIcon">🛡</div>
+          <div class="cardName">Azap</div>
+          <div class="cardDesc">Tank<br>+%50 can, +%40 savunma</div>
+          <div style="margin-top:6px;color:#FFD700;font-size:9px;">Özel: Demir Beden</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── KARAKTER PANELİ ── -->
+  <div id="charBox" style="display:none;position:absolute;inset:0;z-index:31;background:rgba(0,0,0,.82);align-items:center;justify-content:center;">
+    <div class="panel" style="width:min(340px,95vw);max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;">
+      <div class="panTitle">👤 KARAKTERİN</div>
+      <div class="panSub" id="charUnvan">ACEMI YENİÇERİ</div>
+      <div class="divider"></div>
+      <div id="charStats"></div>
+      <div class="divider"></div>
+      <button class="panBtn" onclick="document.getElementById('charBox').style.display='none';if(currentMap==='kisla')playing=true;">✕ Kapat</button>
+    </div>
+  </div>
+
+  <!-- ── ÖLÜM ── -->
+  <div id="deathBox">
+    <div id="deathT">⚔ ŞEHİT DÜŞTÜN ⚔</div>
+    <div id="deathInfo">
+      <div>Osmanlı devleti bir yiğidini daha yitirdi...</div>
+      <div style="margin-top:8px;">Katil: <span class="dv" id="dKl">0</span> | Dalga: <span class="dv" id="dWv">1</span></div>
+      <div style="color:#c0392b;margin-top:4px;">Havuz Akçe Kaybı: <span id="dPool">0</span></div>
+    </div>
+    <div id="deathBtns">
+      <button class="mBtn" style="width:138px;font-size:10px;" onclick="doRetry()">↺ Yeniden Dene</button>
+      <button class="mBtn" style="width:138px;font-size:10px;" onclick="toMenu()">⌂ Ana Menü</button>
+    </div>
+  </div>
+</div>
+
