@@ -33,7 +33,7 @@ function spawnAnimal(type,isBoss){
   const a=Math.random()*Math.PI*2,dist=20+Math.random()*18;
   const ex=Math.cos(a)*dist,ez=Math.sin(a)*dist;
   g.position.set(ex,0,ez);S3.add(g);
-  enemies.push({
+  enemies.push({id:newNetId(),
     mesh:g,hpFl:hpFl,hp:def.hp,maxHp:def.hp,x:ex,z:ez,
     spd:def.spd,fleeSpd:def.fleeSpd,isBoss:!!isBoss,hurtT:0,
     animalType:isBoss?'ayi':type,aggressive:!!def.aggressive,atkDmg:def.atkDmg||0,

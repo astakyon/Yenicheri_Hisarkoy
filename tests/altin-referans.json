@@ -1,0 +1,880 @@
+{
+ "gorev": [
+  {
+   "akce": 0,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "",
+     -3.55,
+     17.186,
+     22
+    ],
+    [
+     "",
+     -5.689,
+     -11.914,
+     22
+    ],
+    [
+     "",
+     16.285,
+     -5.545,
+     22
+    ],
+    [
+     "",
+     7.426,
+     -11.81,
+     22
+    ],
+    [
+     "",
+     9.865,
+     11.585,
+     22
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 250,
+   "harita": "gorev",
+   "havuz_altin": 0,
+   "mermi": 0,
+   "oldurme": 0,
+   "oyuncu": {
+    "en": 100,
+    "hp": 100,
+    "x": 5.2,
+    "z": 9.333
+   },
+   "seviye": 1,
+   "xp": 0
+  },
+  {
+   "akce": 13,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "",
+     1.638,
+     1.112,
+     22
+    ],
+    [
+     "",
+     6.872,
+     10.831,
+     8
+    ],
+    [
+     "",
+     7.451,
+     3.105,
+     22
+    ],
+    [
+     "",
+     9.411,
+     7.606,
+     22
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 500,
+   "harita": "gorev",
+   "havuz_altin": 13,
+   "mermi": 0,
+   "oldurme": 1,
+   "oyuncu": {
+    "en": 91.6,
+    "hp": 90,
+    "x": 8.267,
+    "z": 10.667
+   },
+   "seviye": 1,
+   "xp": 12
+  },
+  {
+   "akce": 31,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "",
+     7.11,
+     7.957,
+     22
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 750,
+   "harita": "gorev",
+   "havuz_altin": 31,
+   "mermi": 0,
+   "oldurme": 4,
+   "oyuncu": {
+    "en": 100,
+    "hp": 90,
+    "x": 0,
+    "z": 0
+   },
+   "seviye": 1,
+   "xp": 48
+  },
+  {
+   "akce": 31,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "",
+     0.314,
+     0.351,
+     22
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 1000,
+   "harita": "gorev",
+   "havuz_altin": 31,
+   "mermi": 0,
+   "oldurme": 4,
+   "oyuncu": {
+    "en": 83.2,
+    "hp": 82,
+    "x": 0,
+    "z": 0
+   },
+   "seviye": 1,
+   "xp": 48
+  },
+  {
+   "akce": 31,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "",
+     0.314,
+     0.351,
+     22
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 1250,
+   "harita": "gorev",
+   "havuz_altin": 31,
+   "mermi": 0,
+   "oldurme": 4,
+   "oyuncu": {
+    "en": 100,
+    "hp": 64,
+    "x": 0,
+    "z": 0
+   },
+   "seviye": 1,
+   "xp": 48
+  },
+  {
+   "akce": 31,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "",
+     0.314,
+     0.351,
+     22
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 1500,
+   "harita": "gorev",
+   "havuz_altin": 31,
+   "mermi": 0,
+   "oldurme": 4,
+   "oyuncu": {
+    "en": 74.8,
+    "hp": 46,
+    "x": 0,
+    "z": 0
+   },
+   "seviye": 1,
+   "xp": 48
+  }
+ ],
+ "kisla": [
+  {
+   "akce": 0,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": false,
+   "dalgaSayaci": 180,
+   "dusman": [],
+   "ganimet": 0,
+   "gt": 250,
+   "harita": "kisla",
+   "havuz_altin": 0,
+   "mermi": 0,
+   "oldurme": 0,
+   "oyuncu": {
+    "en": 100,
+    "hp": 100,
+    "x": 5.2,
+    "z": 23.333
+   },
+   "seviye": 1,
+   "xp": 0
+  },
+  {
+   "akce": 0,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": false,
+   "dalgaSayaci": 180,
+   "dusman": [],
+   "ganimet": 0,
+   "gt": 500,
+   "harita": "kisla",
+   "havuz_altin": 0,
+   "mermi": 0,
+   "oldurme": 0,
+   "oyuncu": {
+    "en": 91.6,
+    "hp": 100,
+    "x": 8.267,
+    "z": 24.667
+   },
+   "seviye": 1,
+   "xp": 0
+  },
+  {
+   "akce": 0,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": false,
+   "dalgaSayaci": 180,
+   "dusman": [],
+   "ganimet": 0,
+   "gt": 750,
+   "harita": "kisla",
+   "havuz_altin": 0,
+   "mermi": 0,
+   "oldurme": 0,
+   "oyuncu": {
+    "en": 100,
+    "hp": 100,
+    "x": 12.4,
+    "z": 26
+   },
+   "seviye": 1,
+   "xp": 0
+  },
+  {
+   "akce": 0,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": false,
+   "dalgaSayaci": 180,
+   "dusman": [],
+   "ganimet": 0,
+   "gt": 1000,
+   "harita": "kisla",
+   "havuz_altin": 0,
+   "mermi": 0,
+   "oldurme": 0,
+   "oyuncu": {
+    "en": 83.2,
+    "hp": 100,
+    "x": 16.533,
+    "z": 27.333
+   },
+   "seviye": 1,
+   "xp": 0
+  },
+  {
+   "akce": 0,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": false,
+   "dalgaSayaci": 180,
+   "dusman": [],
+   "ganimet": 0,
+   "gt": 1250,
+   "harita": "kisla",
+   "havuz_altin": 0,
+   "mermi": 0,
+   "oldurme": 0,
+   "oyuncu": {
+    "en": 100,
+    "hp": 100,
+    "x": 19.6,
+    "z": 28.667
+   },
+   "seviye": 1,
+   "xp": 0
+  },
+  {
+   "akce": 0,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": false,
+   "dalgaSayaci": 180,
+   "dusman": [],
+   "ganimet": 0,
+   "gt": 1500,
+   "harita": "kisla",
+   "havuz_altin": 0,
+   "mermi": 0,
+   "oldurme": 0,
+   "oyuncu": {
+    "en": 74.8,
+    "hp": 100,
+    "x": 24.8,
+    "z": 30
+   },
+   "seviye": 1,
+   "xp": 0
+  }
+ ],
+ "maden": [
+  {
+   "akce": 0,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "eskiya",
+     -23.232,
+     -12.278,
+     34
+    ],
+    [
+     "eskiya",
+     -7.776,
+     6.028,
+     34
+    ],
+    [
+     "eskiya",
+     -8.968,
+     5.096,
+     34
+    ],
+    [
+     "eskiya",
+     0.206,
+     -5.844,
+     34
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 250,
+   "harita": "maden",
+   "havuz_altin": 0,
+   "mermi": 0,
+   "oldurme": 0,
+   "oyuncu": {
+    "en": 100,
+    "hp": 100,
+    "x": 4.4,
+    "z": 29.333
+   },
+   "seviye": 1,
+   "xp": 0
+  },
+  {
+   "akce": 0,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "eskiya",
+     -0.869,
+     -6.63,
+     34
+    ],
+    [
+     "eskiya",
+     -22.411,
+     -13.838,
+     34
+    ],
+    [
+     "eskiya",
+     -7.995,
+     6.915,
+     34
+    ],
+    [
+     "eskiya",
+     -8.025,
+     6.958,
+     34
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 500,
+   "harita": "maden",
+   "havuz_altin": 0,
+   "mermi": 0,
+   "oldurme": 0,
+   "oyuncu": {
+    "en": 91.6,
+    "hp": 82,
+    "x": -0.267,
+    "z": 19.333
+   },
+   "seviye": 1,
+   "xp": 0
+  },
+  {
+   "akce": 0,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "eskiya",
+     -24.503,
+     -12.133,
+     34
+    ],
+    [
+     "eskiya",
+     -7.395,
+     9.574,
+     34
+    ],
+    [
+     "eskiya",
+     -7.469,
+     6.379,
+     34
+    ],
+    [
+     "eskiya",
+     0.654,
+     -5.178,
+     20
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 750,
+   "harita": "maden",
+   "havuz_altin": 0,
+   "mermi": 0,
+   "oldurme": 0,
+   "oyuncu": {
+    "en": 100,
+    "hp": 76,
+    "x": 2,
+    "z": -5.333
+   },
+   "seviye": 1,
+   "xp": 0
+  },
+  {
+   "akce": 10,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "eskiya",
+     -25.669,
+     -13.371,
+     34
+    ],
+    [
+     "eskiya",
+     -8.843,
+     5.135,
+     34
+    ],
+    [
+     "eskiya",
+     -9.097,
+     8.862,
+     34
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 1000,
+   "harita": "maden",
+   "havuz_altin": 10,
+   "mermi": 0,
+   "oldurme": 1,
+   "oyuncu": {
+    "en": 83.2,
+    "hp": 55,
+    "x": 6.133,
+    "z": -4
+   },
+   "seviye": 1,
+   "xp": 18
+  },
+  {
+   "akce": 10,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "eskiya",
+     -8.023,
+     8.024,
+     34
+    ],
+    [
+     "eskiya",
+     -8.836,
+     6.382,
+     34
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 1250,
+   "harita": "maden",
+   "havuz_altin": 10,
+   "mermi": 0,
+   "oldurme": 2,
+   "oyuncu": {
+    "en": 100,
+    "hp": 55,
+    "x": -22,
+    "z": -8
+   },
+   "seviye": 1,
+   "xp": 36
+  },
+  {
+   "akce": 10,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "eskiya",
+     -5.036,
+     9.103,
+     34
+    ],
+    [
+     "eskiya",
+     -7.7,
+     8.236,
+     34
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 1500,
+   "harita": "maden",
+   "havuz_altin": 10,
+   "mermi": 0,
+   "oldurme": 2,
+   "oyuncu": {
+    "en": 74.8,
+    "hp": 55,
+    "x": 22,
+    "z": 8
+   },
+   "seviye": 1,
+   "xp": 36
+  }
+ ],
+ "orman": [
+  {
+   "akce": 0,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "domuz",
+     -29.532,
+     -8.258,
+     55
+    ],
+    [
+     "geyik",
+     -0.406,
+     38.647,
+     24
+    ],
+    [
+     "geyik",
+     26.758,
+     3.936,
+     24
+    ],
+    [
+     "kurt",
+     -7.288,
+     29.316,
+     40
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 250,
+   "harita": "orman",
+   "havuz_altin": 0,
+   "mermi": 0,
+   "oldurme": 0,
+   "oyuncu": {
+    "en": 100,
+    "hp": 100,
+    "x": -16.8,
+    "z": 23.333
+   },
+   "seviye": 1,
+   "xp": 0
+  },
+  {
+   "akce": 0,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "domuz",
+     -29.397,
+     -9.192,
+     55
+    ],
+    [
+     "geyik",
+     0.431,
+     38.11,
+     24
+    ],
+    [
+     "geyik",
+     27.949,
+     3.608,
+     24
+    ],
+    [
+     "kurt",
+     -6.788,
+     28.642,
+     40
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 500,
+   "harita": "orman",
+   "havuz_altin": 0,
+   "mermi": 0,
+   "oldurme": 0,
+   "oyuncu": {
+    "en": 91.6,
+    "hp": 100,
+    "x": -13.733,
+    "z": 24.667
+   },
+   "seviye": 1,
+   "xp": 0
+  },
+  {
+   "akce": 0,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "domuz",
+     -28.718,
+     -8.328,
+     55
+    ],
+    [
+     "geyik",
+     0.568,
+     38.826,
+     24
+    ],
+    [
+     "geyik",
+     26.267,
+     2.469,
+     24
+    ],
+    [
+     "kurt",
+     -5.803,
+     16.77,
+     40
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 750,
+   "harita": "orman",
+   "havuz_altin": 0,
+   "mermi": 0,
+   "oldurme": 0,
+   "oyuncu": {
+    "en": 100,
+    "hp": 94,
+    "x": -1.867,
+    "z": -1.333
+   },
+   "seviye": 1,
+   "xp": 0
+  },
+  {
+   "akce": 0,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "domuz",
+     -30.107,
+     -7.676,
+     55
+    ],
+    [
+     "geyik",
+     1.438,
+     38.621,
+     24
+    ],
+    [
+     "geyik",
+     24.547,
+     3.139,
+     24
+    ],
+    [
+     "kurt",
+     -2.805,
+     9.676,
+     40
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 1000,
+   "harita": "orman",
+   "havuz_altin": 0,
+   "mermi": 0,
+   "oldurme": 0,
+   "oyuncu": {
+    "en": 83.2,
+    "hp": 94,
+    "x": 2.267,
+    "z": 0
+   },
+   "seviye": 1,
+   "xp": 0
+  },
+  {
+   "akce": 0,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "domuz",
+     -31.079,
+     -6.279,
+     55
+    ],
+    [
+     "geyik",
+     1.074,
+     39.095,
+     24
+    ],
+    [
+     "geyik",
+     25.003,
+     2.754,
+     24
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 1250,
+   "harita": "orman",
+   "havuz_altin": 0,
+   "mermi": 0,
+   "oldurme": 1,
+   "oyuncu": {
+    "en": 100,
+    "hp": 85,
+    "x": -5.733,
+    "z": 11.333
+   },
+   "seviye": 1,
+   "xp": 22
+  },
+  {
+   "akce": 0,
+   "ana_altin": 0,
+   "dalga": 1,
+   "dalgaAktif": true,
+   "dalgaSayaci": 170,
+   "dusman": [
+    [
+     "domuz",
+     -31.953,
+     -6.238,
+     55
+    ],
+    [
+     "geyik",
+     2.942,
+     40.877,
+     24
+    ],
+    [
+     "geyik",
+     26.308,
+     0.214,
+     24
+    ]
+   ],
+   "ganimet": 0,
+   "gt": 1500,
+   "harita": "orman",
+   "havuz_altin": 0,
+   "mermi": 0,
+   "oldurme": 1,
+   "oyuncu": {
+    "en": 74.8,
+    "hp": 85,
+    "x": 0.667,
+    "z": 15.267
+   },
+   "seviye": 1,
+   "xp": 22
+  }
+ ]
+}

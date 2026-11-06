@@ -34,7 +34,7 @@ function updateMaden(dt){
   enemies.forEach(function(en){
     if(en.hurtT>0){en.hurtT--;en.mesh.children[0].material.color.setHex(0xff3333);}
     else{en.mesh.children[0].material.color.setHex(en.isBoss?0x5a1010:0x4a3828);}
-    const dx=pl.x-en.x,dz=pl.z-en.z,dist=Math.hypot(dx,dz);
+    const tp=nearestPlayer(en.x,en.z);const dx=tp.x-en.x,dz=tp.z-en.z,dist=Math.hypot(dx,dz);
     const detectRange=en.isBoss?30:10; // dar tünellerde sınırlı görüş
 
     if(dist<detectRange)en.state='attacking';
@@ -56,14 +56,14 @@ function updateMaden(dt){
     en.hpFl.scale.x=en.hp/en.maxHp;en.hpFl.position.x=(en.hp/en.maxHp-1)*(en.isBoss?.85:.5);
     en.hpBg.lookAt(CAM.position);en.hpFl.lookAt(CAM.position);
 
-    if(en.state==='attacking'&&dist<1.6&&pl.ifr===0){
-      if(abilityActive.f){addFX(pl.x,pl.z,0x3498db,4);}
+    if(en.state==='attacking'&&dist<1.6&&tp.ifr===0){
+      if(tp===pl&&abilityActive.f){addFX(tp.x,tp.z,0x3498db,4);}
       else{
         const armorDef=getArmorDef();const dmg=(en.atkDmg||3)*(1-armorDef);
-        pl.hp=Math.max(0,pl.hp-dmg);pl.ifr=28;addFX(pl.x,pl.z,0xcc2222,5);
-        if(pl.hp<=0){playing=false;showDeath();}
+        tp.hp=Math.max(0,tp.hp-dmg);tp.ifr=28;addFX(tp.x,tp.z,0xcc2222,5);
+        if(tp.hp<=0&&tp===pl){playing=false;showDeath();}
       }
-      pl.ifr=28;
+      tp.ifr=28;
     }
   });
 

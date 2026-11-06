@@ -11,7 +11,7 @@ src/
   js/SIRA.txt         JS modüllerinin birleştirme sırası
   js/<konu>/*.js      oyun kodu (35 modül)
 tools/build.py        src/ -> index.html   (--check: güncel mi?)
-tests/                test_kaynak.py (tarayıcısız), smoke.py (gerçek tarayıcı), run.sh (ikisi birden)
+tests/                test_kaynak.py (tarayıcısız), smoke.py (gerçek tarayıcı), altin.py (davranış referansı), run.sh (hepsi)
 docs/                 bu belge ve yol haritası
 arsiv/                bölmeden önceki tek dosyalık sürüm (game_v1.33.html)
 VERSION               'v1.xx' — başlık, ana menü ve VERSION sabiti buradan gelir
@@ -24,7 +24,7 @@ index.html            ÜRETİLEN dosya, GitHub Pages bunu yayınlar
 
 | Klasör | İçerik |
 |---|---|
-| `cekirdek/` | sürüm ve kayıt (`SAVE`), ayarlar, oyun durumu (global değişkenler), Three.js başlatma, ana güncelleme, oyun başlatma, ana döngü |
+| `cekirdek/` | sürüm ve kayıt (`SAVE`), ayarlar, oyun durumu (global değişkenler), **dünya modeli** (`WORLD`, oyuncu kaydı, `newNetId`, `nearestPlayer`), Three.js başlatma, ana güncelleme, oyun başlatma, ana döngü |
 | `karakter/` | XP / seviye / sınıf, aktif yetenekler (Q/F/R), oyuncu modeli |
 | `savas/` | düşman, ganimet ve efektler, savaş |
 | `haritalar/` | her harita için sahne (`*-sahne`), yapay zekâ (`*-ai`) ve güncelleme (`*-guncelleme`): Kışla, Devriye, Av Ormanı, Demir Madeni |
@@ -52,11 +52,20 @@ Tüm dosyalar **tek script** olarak, `SIRA.txt` sırasıyla birleşir. Bu yüzde
 - **Dolu blok kamerayı kapatır:** kamera yukarıdan ve güneyden bakar; oyuncunun önüne yüksek dolu blok koyma (Demir Madeni girişi böyle bozuldu).
 - **CSS yerine yapı:** mobil WebView'da HUD için iç içe `fixed`/`%` yerine düz `flex` akışı kullan.
 
+## Dünya modeli (F1, sürüyor)
+`cekirdek/dunya-modeli.js`:
+- `WORLD.players` (Map): bütün oyuncular. Şimdilik yalnızca yerel oyuncu (`pl`) kayıtlı; F2'de uzak oyuncular buraya eklenir.
+- `nearestPlayer(x,z)`: en yakın **canlı** oyuncu. Düşman yapay zekâsı hedefini buradan alır (`pl`'den değil); hasar da hedef oyuncuya uygulanır.
+- `newNetId()`: her düşmana (`en.id`) host'ta artan, kararlı bir kimlik. Ağda varlıklar bu kimlikle anılacak. Mermi ve ganimet kimlikleri sırada.
+- `pl` değişkeni uyumluluk için hâlâ global (yerel oyuncu). Modül modül `localPlayer()`/`forEachPlayer()` çağrılarına geçilecek.
+
 ## Test
 ```
 python3 tools/build.py          # üret
-sh tests/run.sh                 # kaynak denetimleri + tarayıcı duman testi
+sh tests/run.sh                 # kaynak denetimleri + duman testi + altın test
 SMOKE=0 sh tests/run.sh         # yalnızca kaynak denetimleri (tarayıcı gerekmez)
 ```
 Tarayıcı testi için `pip install playwright` ve bir Chromium/Chrome gerekir. Three.js CDN'ine erişim yoksa
 `npm i three@0.128.0` yapıp (ya da `THREE_JS=/yol/three.min.js`) yerel kopya verin; `CHROME_PATH` ile tarayıcı seçilir.
+
+**Altın test (`tests/altin.py`):** tarayıcı döngüsünü kapatır, `Math.random`'u sabit tohumlu yapar, her haritayı 1.500 kare (25 sn) sabit adımla ve betikli girdilerle çalıştırır, 250 karede bir oyun durumunun özetini `tests/altin-referans.json` ile karşılaştırır. Refaktörde oyunun davranışının değişmediğinin kanıtıdır. Davranış **bilerek** değiştiyse `python3 tests/altin.py --yaz` ile referansı yenileyin (farkı önce okuyun).

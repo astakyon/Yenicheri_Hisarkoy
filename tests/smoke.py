@@ -4,10 +4,7 @@
 Çalıştırma:  python3 tests/smoke.py
 Gereken:     pip install playwright   (+ bir Chromium/Chrome)
 
-Ortam değişkenleri (hepsi isteğe bağlı):
-  CHROME_PATH  tarayıcı yürütülebilir dosyası (yoksa Playwright'ın kendi Chromium'u)
-  THREE_JS     yerel three.min.js (r128). Verilmezse CDN'e ulaşılması gerekir; ağ kapalıysa
-               `npm i three@0.128.0` ile node_modules/three/build/three.min.js kullanılır.
+Ortam değişkenleri: bkz. tests/ortak.py (CHROME_PATH, THREE_JS)
 
 Denetlenenler:
   - menü açılıyor, JavaScript hatası yok
@@ -16,15 +13,14 @@ Denetlenenler:
   - Demir Madeni savaşı: tuzak can götürüyor, eşkıya saldırıyor, ölüyor, 2. dalga geliyor
   - HUD (üst bar, can paneli, mini harita) birbirine binmiyor
 """
-import functools
-import http.server
 import os
 import sys
-import threading
 
-from playwright.sync_api import sync_playwright
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from playwright.sync_api import sync_playwright  # noqa: E402
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+import ortak  # noqa: E402
+
 fails = []
 
 
@@ -34,44 +30,12 @@ def check(cond, msg):
         fails.append(msg)
 
 
-def three_source():
-    for p in (os.environ.get('THREE_JS'),
-              os.path.join(ROOT, 'node_modules', 'three', 'build', 'three.min.js'),
-              os.path.join(ROOT, 'vendor', 'three.min.js')):
-        if p and os.path.isfile(p):
-            with open(p, encoding='utf-8') as f:
-                return f.read()
-    return None
-
-
-class Sessiz(http.server.SimpleHTTPRequestHandler):
-    def log_message(self, *a):
-        pass
-
-
 def main():
-    handler = functools.partial(Sessiz, directory=ROOT)
-    srv = http.server.ThreadingHTTPServer(('127.0.0.1', 0), handler)
-    threading.Thread(target=srv.serve_forever, daemon=True).start()
-    url = 'http://127.0.0.1:%d/index.html' % srv.server_address[1]
-    three = three_source()
-
-    def route(r):
-        u = r.request.url
-        if three and 'three.min.js' in u:
-            r.fulfill(status=200, content_type='application/javascript', body=three)
-        elif 'fonts.g' in u:
-            r.fulfill(status=200, content_type='text/css', body='')
-        else:
-            r.continue_()
-
-    launch = {'headless': True,
-              'args': ['--no-sandbox', '--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist']}
-    if os.environ.get('CHROME_PATH'):
-        launch['executable_path'] = os.environ['CHROME_PATH']
+    srv, url = ortak.sunucu()
+    route = ortak.yonlendirici()
 
     with sync_playwright() as p:
-        b = p.chromium.launch(**launch)
+        b = ortak.tarayici(p)
 
         def yeni_sayfa(w=412, h=915):
             ctx = b.new_context(viewport={'width': w, 'height': h}, has_touch=True, is_mobile=True)
@@ -133,6 +97,32 @@ def main():
         check(pg.evaluate('wave') == 2 and pg.evaluate('enemies.length') > 0, '2. dalga geldi')
         uniq = sorted(set(errs))
         check(not uniq, 'savaş boyunca JavaScript hatası yok' + ('' if not uniq else ': ' + uniq[0]))
+        ctx.close()
+        print('Dünya modeli (çok oyuncuya hazırlık)')
+        ctx, pg, errs = yeni_sayfa()
+        pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(1500)
+        r = pg.evaluate("""() => {
+          const kimlikler = enemies.map(e => e.id);
+          const benzersiz = kimlikler.every(i => Number.isInteger(i)) && new Set(kimlikler).size === kimlikler.length;
+          enemies.forEach(e => { e.x = 500; e.z = 500; e.mesh.position.set(500, 0, 500); });
+          const e0 = enemies[0]; pl.x = 0; pl.z = 0; pl.ifr = 99;
+          WORLD.players.set('uzak', { x: 10, z: 0, hp: 100, ifr: 99 });
+          e0.x = 9; e0.z = 0;
+          update(1 / 60);
+          const yakinaGitti = e0.x > 9;           // (10,0)'daki uzak oyuncuya doğru: x artmalı
+          WORLD.players.get('uzak').hp = 0;         // uzak oyuncu ölünce hedef yerel oyuncuya döner
+          e0.x = 9; e0.z = 0;
+          update(1 / 60);
+          const olunceDondu = e0.x < 9;
+          WORLD.players.delete('uzak');
+          return { n: kimlikler.length, benzersiz, yakinaGitti, olunceDondu, yerel: nearestPlayer(0, 0) === pl };
+        }""")
+        check(r['n'] > 0 and r['benzersiz'], 'her düşmanın kararlı ve benzersiz id\'si var (%d düşman)' % r['n'])
+        check(r['yakinaGitti'], 'düşman en yakın oyuncuya (uzaktaki ikinci oyuncuya) yöneliyor')
+        check(r['olunceDondu'], 'ikinci oyuncu ölünce düşman yerel oyuncuya dönüyor')
+        check(r['yerel'], 'tek oyuncuda nearestPlayer() yerel oyuncuyu veriyor')
+        uniq = sorted(set(errs))
+        check(not uniq, 'JavaScript hatası yok' + ('' if not uniq else ': ' + uniq[0]))
         ctx.close()
         b.close()
 

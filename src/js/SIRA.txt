@@ -9,6 +9,7 @@ karakter/xp-sinif.js
 karakter/yetenekler.js
 ekran/menu-animasyon.js
 cekirdek/oyun-durumu.js
+cekirdek/dunya-modeli.js
 ekran/bolumler.js
 ekran/buyuk-harita.js
 ekran/buyuk-harita-cizim.js

@@ -124,21 +124,22 @@ function updateGorev(dt){
   // Düşmanlar
   enemies.forEach(function(en){
     if(en.hurtT>0){en.hurtT--;en.mesh.children[0].material.color.setHex(0xff3333);}else en.mesh.children[0].material.color.setHex(en.isBoss?0x7B0000:0x4a2000);
-    const ex2=pl.x-en.x,ez2=pl.z-en.z,d2=Math.hypot(ex2,ez2);
+    const tp=nearestPlayer(en.x,en.z);
+    const ex2=tp.x-en.x,ez2=tp.z-en.z,d2=Math.hypot(ex2,ez2);
     if(d2>.5){en.x+=ex2/d2*en.spd;en.z+=ez2/d2*en.spd;en.mesh.position.set(en.x,0,en.z);}
     en.mesh.rotation.y=Math.atan2(ex2,ez2);
     en.hpFl.scale.x=en.hp/en.maxHp;en.hpFl.position.x=(en.hp/en.maxHp-1)*(en.isBoss?.8:.55);
     en.mesh.children[2].lookAt(CAM.position);en.mesh.children[3].lookAt(CAM.position);
-    if(d2<1.1&&pl.ifr===0){
-      if(abilityActive.f){
+    if(d2<1.1&&tp.ifr===0){
+      if(tp===pl&&abilityActive.f){
         // Demir Kalkan aktif — hasar engeli
-        addFX(pl.x,pl.z,0x3498db,4);
+        addFX(tp.x,tp.z,0x3498db,4);
       } else {
         const def=getArmorDef();const dmg=(en.isBoss?6:2)*(1-def);
-        pl.hp=Math.max(0,pl.hp-dmg);pl.ifr=28;addFX(pl.x,pl.z,0xcc2222,5);
-        if(pl.hp<=0){playing=false;showDeath();}
+        tp.hp=Math.max(0,tp.hp-dmg);tp.ifr=28;addFX(tp.x,tp.z,0xcc2222,5);
+        if(tp.hp<=0&&tp===pl){playing=false;showDeath();}
       }
-      pl.ifr=28;
+      tp.ifr=28;
     }
   });
   enemies=enemies.filter(function(en){

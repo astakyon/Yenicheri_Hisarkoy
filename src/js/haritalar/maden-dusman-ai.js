@@ -22,7 +22,7 @@ function spawnEskiya(isBoss){
   const sp=spots[Math.floor(Math.random()*spots.length)];
   const ex=sp[0]+(Math.random()-.5)*4,ez=sp[1]+(Math.random()-.5)*4;
   g.position.set(ex,0,ez);S3.add(g);
-  enemies.push({mesh:g,hpFl,hpBg,hp,maxHp:hp,x:ex,z:ez,spd:isBoss?.045:.05+wave*.004,isBoss,hurtT:0,animalType:'eskiya',aggressive:true,atkDmg:isBoss?10:3,state:'idle',wanderAng:Math.random()*Math.PI*2,wanderT:0,xpReward:isBoss?320:18,goldReward:[10,18]});
+  enemies.push({id:newNetId(),mesh:g,hpFl,hpBg,hp,maxHp:hp,x:ex,z:ez,spd:isBoss?.045:.05+wave*.004,isBoss,hurtT:0,animalType:'eskiya',aggressive:true,atkDmg:isBoss?10:3,state:'idle',wanderAng:Math.random()*Math.PI*2,wanderT:0,xpReward:isBoss?320:18,goldReward:[10,18]});
 }
 
 function spawnMadenWave(n){

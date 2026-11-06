@@ -18,7 +18,7 @@ PeerJS host-relay oda sistemi, Supabase hesap/kayıt, misafir modu, testler.
 | Aşama | Kapsam | Süre | Durum |
 |---|---|---|---|
 | **F0 Modülerleştirme** | `src/` yapısı, `build.py`, testler (kaynak + tarayıcı) | 1–2 hafta | **TAMAM (v1.34)** |
-| **F1 Simülasyon/render ayrımı** | `World`/`Entity`/`Player` modeli, `netId`, sabit tik, `player` uyumluluk katmanı, `Session` + `LoopbackTransport`, tek kişilik "altın test" | 3–4 hafta | sıradaki |
+| **F1 Simülasyon/render ayrımı** | `World`/`Entity`/`Player` modeli, `netId`, sabit tik, `player` uyumluluk katmanı, `Session` + `LoopbackTransport`, tek kişilik "altın test" | 3–4 hafta | **sürüyor** (altın test ✔, oyuncu kaydı ✔, düşman kimlikleri ✔) |
 | **F2 İlk co-op (minimum kilometre taşı)** | tek harita, 2 oyuncu, PeerJS iki kanal, lobi/oda kodu, girdi→host, JSON snapshot 15 Hz, interpolasyon + yerel tahmin | 3–4 hafta | |
 | **F3 Saha doğrulaması** | Cloudflare TURN + Worker, yeniden bağlanma, `LagSimTransport`, Playwright iki sayfa testi, **iki gerçek cihazla mobil veride test** | 1–2 hafta | |
 | **F4 Tam co-op** | 4 oyuncu, tüm haritalar, boss telegraph olayları, oyuncu başına ganimet, canlandırma, ikili kodlama | 4–6 hafta | |
@@ -45,3 +45,13 @@ PeerJS host-relay oda sistemi, Supabase hesap/kayıt, misafir modu, testler.
 - Türkiye mobil operatörlerinde ne kadar bağlantının TURN gerektireceği ölçülmedi (F3'te ölçülecek).
 - Bant genişliği ve kota rakamları tahmin; F2'de gerçek paket boyutları loglanıp yeniden hesaplanmalı.
 - Ay Yıldız projesinde de "iki gerçek cihazla internet üzerinden çok oyunculu" hâlâ bekleyen bir deneme; oradaki kod tam saha doğrulaması görmedi.
+
+## F1 ilerleme günlüğü
+- [x] **Altın test** (`tests/altin.py`): 4 harita × 1.500 kare, sabit tohum, betikli girdi; küçük bir davranış değişikliğini (düşman hasarı 3→4) yakaladığı doğrulandı.
+- [x] **Oyuncu kaydı ve `nearestPlayer`**: düşman yapay zekâsı (Kışla/Devriye, Av Ormanı, Demir Madeni) hedefi ve hasarı artık hedef oyuncuya uyguluyor. Altın test birebir aynı çıktı.
+- [x] **Düşman `id`'leri** (`newNetId`).
+- [ ] Mermi ve ganimet için `id`; ölü varlıkları "işaretle, tik sonunda temizle" düzenine al.
+- [ ] Simülasyon durumunu görüntüden ayır: düşman/mermi/ganimet nesnelerinden `THREE.Mesh` çıkar, ayrı bir `View` katmanı `id` ile mesh'i bulsun.
+- [ ] Bekleme süreleri ve `setTimeout` tabanlı oyun zamanlayıcılarını tik sayacına çevir (tuzak yeniden kurulumu vb.).
+- [ ] `pl` globalini modül modül `localPlayer()`/`forEachPlayer()`'a taşı; yetenekler ve zırh oyuncu başına olsun.
+- [ ] `Session` + `LoopbackTransport`: yerel girdi de aynı `InputCommand` kuyruğundan geçsin.

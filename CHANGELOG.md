@@ -1,5 +1,13 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.35 — Çok oyunculu altyapının ilk adımı (oynanış aynı)
+Oyuncular için görünür bir değişiklik yok; bu sürüm, tek ve çok oyunculu mod için ortak altyapıyı hazırlıyor.
+- **Oyuncu kaydı:** Oyun artık oyuncuları bir listede tutuyor (şimdilik tek yerel oyuncu). Düşmanlar hedeflerini bu listeden, **en yakın canlı oyuncuyu** seçerek belirliyor ve hasar da hedef oyuncuya uygulanıyor. Dört haritada da (Kışla/Devriye, Av Ormanı, Demir Madeni).
+- **Düşman kimlikleri:** Her düşman kararlı ve benzersiz bir `id` alıyor; çok oyunculuda düşmanlar ağda bu kimlikle anılacak.
+- **Altın test:** Tek kişilik oyunun davranışını kilitleyen referans test eklendi (`tests/altin.py`). Dört haritayı sabit tohum ve betikli girdiyle 1.500 kare çalıştırıp durumu referansla karşılaştırır; bu değişiklikte referansla birebir aynı çıktı.
+- Yeni testler: benzersiz düşman id'leri, iki oyuncu varken en yakına yönelme, uzaktaki oyuncu ölünce yerel oyuncuya dönme.
+- Belgeler güncellendi: `docs/MIMARI.md` (dünya modeli, altın test) ve `docs/YOL-HARITASI.md` (F1 ilerleme günlüğü).
+
 ## v1.34 — Modüler kaynak yapısı
 Oyun artık tek dosyadan değil, `src/` altındaki 35 modülden üretiliyor. **Oynanış aynı**: derlenen oyun, v1.33 ile bayt bayt aynı (yalnızca sürüm numarası değişti).
 - Kaynak konuya göre bölündü: `cekirdek`, `karakter`, `savas`, `haritalar`, `editor`, `ekran`, `gorev`, `kontrol`.

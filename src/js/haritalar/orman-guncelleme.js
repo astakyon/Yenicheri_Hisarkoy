@@ -37,7 +37,7 @@ function updateOrman(dt){
       const def=ANIMAL_DEFS[en.animalType]||{col:0x3a2810};
       en.mesh.children[0].material.color.setHex(en.isBoss?0x3a2810:def.col);
     }
-    const dx=pl.x-en.x,dz=pl.z-en.z,dist=Math.hypot(dx,dz);
+    const tp=nearestPlayer(en.x,en.z);const dx=tp.x-en.x,dz=tp.z-en.z,dist=Math.hypot(dx,dz);
 
     // Durum makinesi
     if(en.isBoss){
@@ -81,14 +81,14 @@ function updateOrman(dt){
     en.mesh.children[6].lookAt(CAM.position);en.mesh.children[7].lookAt(CAM.position);
 
     // Saldırı hasarı
-    if(en.state==='attacking'&&dist<1.6&&pl.ifr===0){
-      if(abilityActive.f){addFX(pl.x,pl.z,0x3498db,4);}
+    if(en.state==='attacking'&&dist<1.6&&tp.ifr===0){
+      if(tp===pl&&abilityActive.f){addFX(tp.x,tp.z,0x3498db,4);}
       else{
         const armorDef=getArmorDef();const dmg=(en.atkDmg||3)*(1-armorDef);
-        pl.hp=Math.max(0,pl.hp-dmg);pl.ifr=28;addFX(pl.x,pl.z,0xcc2222,5);
-        if(pl.hp<=0){playing=false;showDeath();}
+        tp.hp=Math.max(0,tp.hp-dmg);tp.ifr=28;addFX(tp.x,tp.z,0xcc2222,5);
+        if(tp.hp<=0&&tp===pl){playing=false;showDeath();}
       }
-      pl.ifr=28;
+      tp.ifr=28;
     }
   });
 

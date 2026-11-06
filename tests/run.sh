@@ -9,4 +9,7 @@ if [ "${SMOKE:-1}" != "0" ]; then
   echo
   echo "== tarayıcı duman testi =="
   python3 tests/smoke.py
+  echo
+  echo "== altın test (davranış referansı) =="
+  python3 tests/altin.py
 fi
