@@ -1,5 +1,10 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.40 — Silah ve zırh oyuncu başına (oynanış aynı)
+- Zırh (`p.armor`) ve silah seçimi (`p.weapon`) oyuncuya ait. Düşman hasarı hedef oyuncunun zırhına, `doMelee(p)` / `doRanged(p, nişan)` saldıran oyuncuya göre çalışır. Yerel oyuncuda eski değerler (`SAVE.armor`, `selWeapon`) aynen geçerli.
+- Altın test değişmedi. Yeni test: zırh, silah ve mermi çıkışı oyuncuya göre.
+- Bilinen kalan: Maden patlama tuzağı yalnızca yerel oyuncuya hasar veriyor (F2'de tüm oyuncular).
+
 ## v1.39 — Yetenekler oyuncu başına (oynanış aynı)
 - Savaş Çığlığı, Demir Kalkan ve Hızlı Atış durumu (bekleme, süre, etkin) artık oyuncunun kendisinde (`p.ab`). Düşmanın hasar kontrolü hedef oyuncunun kalkanına bakıyor; silah hasarı da oyuncunun Hızlı Atış etkisini kullanıyor.
 - Eski global adlar (`abilityCDs` vb.) yerel oyuncuya bağlı kalıyor, mevcut kod aynen çalışıyor. Altın test değişmedi.

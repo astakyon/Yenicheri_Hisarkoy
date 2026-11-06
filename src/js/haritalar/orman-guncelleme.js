@@ -84,7 +84,7 @@ function updateOrman(dt){
     if(en.state==='attacking'&&dist<1.6&&tp.ifr===0){
       if(tp.ab&&tp.ab.active.f){addFX(tp.x,tp.z,0x3498db,4);}
       else{
-        const armorDef=getArmorDef();const dmg=(en.atkDmg||3)*(1-armorDef);
+        const armorDef=getArmorDef(tp);const dmg=(en.atkDmg||3)*(1-armorDef);
         tp.hp=Math.max(0,tp.hp-dmg);tp.ifr=28;addFX(tp.x,tp.z,0xcc2222,5);
         if(tp.hp<=0&&tp===pl){playing=false;showDeath();}
       }

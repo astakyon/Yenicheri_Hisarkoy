@@ -482,12 +482,14 @@ function getPassiveBonus(type){
   const tbl={guc:[0,.1,.2,.35],hiz:[0,.1,.2,.3],dayaniklilik:[0,25,50,80],loot:[1,1.2,1.4,1.6]};
   return(tbl[type]||[0])[Math.min(lvl,(tbl[type]||[0]).length-1)];
 }
-function getArmorDef(){const d={none:0,leather:.1,chain:.2,plate:.35,ottoman:.5};return d[SAVE.armor]||0;}
+// Zırh oyuncuya aittir (p.armor); yerel oyuncuda tanımsızsa kayıttaki zırh kullanılır
+function armorOf(p){return (p&&p.armor)||SAVE.armor;}
+function getArmorDef(p){const d={none:0,leather:.1,chain:.2,plate:.35,ottoman:.5};return d[armorOf(p)]||0;}
 function getArmorHpBonus(){const d={none:0,leather:25,chain:50,plate:80,ottoman:120};return d[SAVE.armor]||0;}
-function getArmorSpdPenalty(){const d={none:0,leather:0,chain:.05,plate:.1,ottoman:.08};return d[SAVE.armor]||0;}
+function getArmorSpdPenalty(p){const d={none:0,leather:0,chain:.05,plate:.1,ottoman:.08};return d[armorOf(p)]||0;}
 function getBaseMaxHp(){return Math.floor((100+getArmorHpBonus()+(getPassiveBonus('dayaniklilik'))+(SAVE.maxHpBonus||0))*getClassMult('hpMult'));}
 function getBaseMaxEn(){return 100+(SAVE.maxEnBonus||0);}
-function getBaseSpd(){return 4*(1+getPassiveBonus('hiz'))*(1-getArmorSpdPenalty())*getClassMult('spdMult');}
+function getBaseSpd(p){return 4*(1+getPassiveBonus('hiz'))*(1-getArmorSpdPenalty(p))*getClassMult('spdMult');}
 function getMagnetDist(){const b=[7,9,11,14];return b[SAVE.passives.loot||0]||7;}
 function getWeaponDmg(wid,p){
   p=p||pl;

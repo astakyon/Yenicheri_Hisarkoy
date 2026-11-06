@@ -149,7 +149,7 @@ function updateGorev(dt){
         // Demir Kalkan aktif — hasar engeli
         addFX(tp.x,tp.z,0x3498db,4);
       } else {
-        const def=getArmorDef();const dmg=(en.isBoss?6:2)*(1-def);
+        const def=getArmorDef(tp);const dmg=(en.isBoss?6:2)*(1-def);
         tp.hp=Math.max(0,tp.hp-dmg);tp.ifr=28;addFX(tp.x,tp.z,0xcc2222,5);
         if(tp.hp<=0&&tp===pl){playing=false;showDeath();}
       }

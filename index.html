@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Yeniçeri: Hisarköy Muhafızı v1.39</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.40</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -334,7 +334,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mTitle"><svg class="mOrn" viewBox="0 0 48 44" aria-hidden="true"><defs><mask id="mCres"><rect width="48" height="44" fill="#fff"/><circle cx="31" cy="22" r="14.5" fill="#000"/></mask></defs><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg><span class="mTx"><span>YENİÇERİ:</span> <span>HİSARKÖY MUHAFIZI</span></span><svg class="mOrn r" viewBox="0 0 48 44" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg></div>
       <div id="mDeco"><div class="ml"></div><div id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</div><div class="ml"></div></div>
-      <div id="mVer">v1.39</div>
+      <div id="mVer">v1.40</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
@@ -687,7 +687,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.39';
+const VERSION='v1.40';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -1328,12 +1328,14 @@ function getPassiveBonus(type){
   const tbl={guc:[0,.1,.2,.35],hiz:[0,.1,.2,.3],dayaniklilik:[0,25,50,80],loot:[1,1.2,1.4,1.6]};
   return(tbl[type]||[0])[Math.min(lvl,(tbl[type]||[0]).length-1)];
 }
-function getArmorDef(){const d={none:0,leather:.1,chain:.2,plate:.35,ottoman:.5};return d[SAVE.armor]||0;}
+// Zırh oyuncuya aittir (p.armor); yerel oyuncuda tanımsızsa kayıttaki zırh kullanılır
+function armorOf(p){return (p&&p.armor)||SAVE.armor;}
+function getArmorDef(p){const d={none:0,leather:.1,chain:.2,plate:.35,ottoman:.5};return d[armorOf(p)]||0;}
 function getArmorHpBonus(){const d={none:0,leather:25,chain:50,plate:80,ottoman:120};return d[SAVE.armor]||0;}
-function getArmorSpdPenalty(){const d={none:0,leather:0,chain:.05,plate:.1,ottoman:.08};return d[SAVE.armor]||0;}
+function getArmorSpdPenalty(p){const d={none:0,leather:0,chain:.05,plate:.1,ottoman:.08};return d[armorOf(p)]||0;}
 function getBaseMaxHp(){return Math.floor((100+getArmorHpBonus()+(getPassiveBonus('dayaniklilik'))+(SAVE.maxHpBonus||0))*getClassMult('hpMult'));}
 function getBaseMaxEn(){return 100+(SAVE.maxEnBonus||0);}
-function getBaseSpd(){return 4*(1+getPassiveBonus('hiz'))*(1-getArmorSpdPenalty())*getClassMult('spdMult');}
+function getBaseSpd(p){return 4*(1+getPassiveBonus('hiz'))*(1-getArmorSpdPenalty(p))*getClassMult('spdMult');}
 function getMagnetDist(){const b=[7,9,11,14];return b[SAVE.passives.loot||0]||7;}
 function getWeaponDmg(wid,p){
   p=p||pl;
@@ -1551,7 +1553,7 @@ function useAbility(key,p){
     // Hızlı Atış
     ab.active.r=true;
     ab.timer.r=(lvlData.duration||3)*60;
-    p.spd=getBaseSpd()*(lvlData.speedMult||1.8);
+    p.spd=getBaseSpd(p)*(lvlData.speedMult||1.8);
     p.rspd=p.spd*1.8;
     if(local)lootPop('🔥 Hızlı Atış aktif!');
   }
@@ -1575,7 +1577,7 @@ function tickAbilities(p,local){
       ab.timer[key]--;
       if(ab.timer[key]===0){
         ab.active[key]=false;
-        if(key==='r'){p.spd=getBaseSpd();p.rspd=p.spd*1.8;}
+        if(key==='r'){p.spd=getBaseSpd(p);p.rspd=p.spd*1.8;}
       }
     }
   });
@@ -1735,6 +1737,8 @@ function nearestPlayer(x,z){
   return best||localPlayer();
 }
 // Yerel oyuncunun yetenek durumuna takma adlar (yetenekler.js'deki eski adlar çalışmaya devam eder)
+// Silah seçimi oyuncuya aittir (p.weapon); yerel oyuncuda eski selWeapon ile aynı değer
+Object.defineProperty(pl,'weapon',{get:function(){return selWeapon;},set:function(v){selWeapon=v;},enumerable:true});
 abilityCDs=pl.ab.cd;abilityActive=pl.ab.active;abilityTimer=pl.ab.timer;
 // ═══════════════════════════════════════════════════════
 // OTURUM (Session) — tek ve çok oyunculu için ortak host yolu
@@ -3699,8 +3703,8 @@ function addFX(x,z,fxCol,n){n=n||7;for(let i=0;i<n;i++){const m=new THREE.Mesh(n
 // ═══════════════════════════════════════════════════════
 // SAVAŞ
 // ═══════════════════════════════════════════════════════
-function doMelee(){if(pl.atkCd>0)return;pl.atkCd=22;const ax=pl.x+Math.cos(pl.ang)*2.6,az=pl.z+Math.sin(pl.ang)*2.6;addFX(ax,az,0xFFD700,7);const dmg=getWeaponDmg('yatagan');enemies.forEach(function(en){if(Math.hypot(en.x-ax,en.z-az)<2.9){en.hp-=dmg;en.hurtT=9;addFX(en.x,en.z,0xcc2222,4);}});barrelsArr.forEach(function(b){if(b.hp>0&&Math.hypot(b.x-ax,b.z-az)<2.2){b.hp--;addFX(b.x,b.z,0x8B4513,4);if(b.hp<=0){S3.remove(b.mesh);dropLoot(b.x,b.z,3);lootPop('Varil patladı! 💥');if(b.collider){const ci=colliders.indexOf(b.collider);if(ci>-1)colliders.splice(ci,1);}}}});barrelsArr=barrelsArr.filter(function(b){return b.hp>0;});}
-function doRanged(){if(pl.en<8)return;const wids=['yatagan','tufek','ok'];const dmg=getWeaponDmg(wids[selWeapon])+Math.floor(pwr/100*28);const rCol=selWeapon===1?0xFFFDE7:0x8B4513;const m=new THREE.Mesh(new THREE.SphereGeometry(selWeapon===1?.1:.09,5,4),new THREE.MeshBasicMaterial({color:rCol}));m.position.set(pl.x,1.1,pl.z);S3.add(m);const dx=worldAim.x-pl.x,dz=worldAim.z-pl.z,l=Math.hypot(dx,dz)||1,sp=selWeapon===1?.44:.28;bullets.push({id:newNetId(),mesh:m,vx:dx/l*sp,vz:dz/l*sp,dmg:dmg,life:85});pl.en=Math.max(0,pl.en-8);addFX(pl.x,pl.z,rCol,3);}
+function doMelee(p){p=p||pl;if(p.atkCd>0)return;p.atkCd=22;const ax=p.x+Math.cos(p.ang)*2.6,az=p.z+Math.sin(p.ang)*2.6;addFX(ax,az,0xFFD700,7);const dmg=getWeaponDmg('yatagan',p);enemies.forEach(function(en){if(Math.hypot(en.x-ax,en.z-az)<2.9){en.hp-=dmg;en.hurtT=9;addFX(en.x,en.z,0xcc2222,4);}});barrelsArr.forEach(function(b){if(b.hp>0&&Math.hypot(b.x-ax,b.z-az)<2.2){b.hp--;addFX(b.x,b.z,0x8B4513,4);if(b.hp<=0){S3.remove(b.mesh);dropLoot(b.x,b.z,3);lootPop('Varil patladı! 💥');if(b.collider){const ci=colliders.indexOf(b.collider);if(ci>-1)colliders.splice(ci,1);}}}});barrelsArr=barrelsArr.filter(function(b){return b.hp>0;});}
+function doRanged(p,aim){p=p||pl;aim=aim||worldAim;const wp=p.weapon,pw=(p===pl)?pwr:0;if(p.en<8)return;const wids=['yatagan','tufek','ok'];const dmg=getWeaponDmg(wids[wp],p)+Math.floor(pw/100*28);const rCol=wp===1?0xFFFDE7:0x8B4513;const m=new THREE.Mesh(new THREE.SphereGeometry(wp===1?.1:.09,5,4),new THREE.MeshBasicMaterial({color:rCol}));m.position.set(p.x,1.1,p.z);S3.add(m);const dx=aim.x-p.x,dz=aim.z-p.z,l=Math.hypot(dx,dz)||1,sp=wp===1?.44:.28;bullets.push({id:newNetId(),mesh:m,vx:dx/l*sp,vz:dz/l*sp,dmg:dmg,life:85});p.en=Math.max(0,p.en-8);addFX(p.x,p.z,rCol,3);}
 
 // ═══════════════════════════════════════════════════════
 // MİNİHARİTA
@@ -3871,7 +3875,7 @@ function updateGorev(dt){
         // Demir Kalkan aktif — hasar engeli
         addFX(tp.x,tp.z,0x3498db,4);
       } else {
-        const def=getArmorDef();const dmg=(en.isBoss?6:2)*(1-def);
+        const def=getArmorDef(tp);const dmg=(en.isBoss?6:2)*(1-def);
         tp.hp=Math.max(0,tp.hp-dmg);tp.ifr=28;addFX(tp.x,tp.z,0xcc2222,5);
         if(tp.hp<=0&&tp===pl){playing=false;showDeath();}
       }
@@ -4001,7 +4005,7 @@ function updateOrman(dt){
     if(en.state==='attacking'&&dist<1.6&&tp.ifr===0){
       if(tp.ab&&tp.ab.active.f){addFX(tp.x,tp.z,0x3498db,4);}
       else{
-        const armorDef=getArmorDef();const dmg=(en.atkDmg||3)*(1-armorDef);
+        const armorDef=getArmorDef(tp);const dmg=(en.atkDmg||3)*(1-armorDef);
         tp.hp=Math.max(0,tp.hp-dmg);tp.ifr=28;addFX(tp.x,tp.z,0xcc2222,5);
         if(tp.hp<=0&&tp===pl){playing=false;showDeath();}
       }
@@ -4110,7 +4114,7 @@ function updateMaden(dt){
     if(en.state==='attacking'&&dist<1.6&&tp.ifr===0){
       if(tp.ab&&tp.ab.active.f){addFX(tp.x,tp.z,0x3498db,4);}
       else{
-        const armorDef=getArmorDef();const dmg=(en.atkDmg||3)*(1-armorDef);
+        const armorDef=getArmorDef(tp);const dmg=(en.atkDmg||3)*(1-armorDef);
         tp.hp=Math.max(0,tp.hp-dmg);tp.ifr=28;addFX(tp.x,tp.z,0xcc2222,5);
         if(tp.hp<=0&&tp===pl){playing=false;showDeath();}
       }

@@ -74,7 +74,7 @@ function useAbility(key,p){
     // Hızlı Atış
     ab.active.r=true;
     ab.timer.r=(lvlData.duration||3)*60;
-    p.spd=getBaseSpd()*(lvlData.speedMult||1.8);
+    p.spd=getBaseSpd(p)*(lvlData.speedMult||1.8);
     p.rspd=p.spd*1.8;
     if(local)lootPop('🔥 Hızlı Atış aktif!');
   }
@@ -98,7 +98,7 @@ function tickAbilities(p,local){
       ab.timer[key]--;
       if(ab.timer[key]===0){
         ab.active[key]=false;
-        if(key==='r'){p.spd=getBaseSpd();p.rspd=p.spd*1.8;}
+        if(key==='r'){p.spd=getBaseSpd(p);p.rspd=p.spd*1.8;}
       }
     }
   });

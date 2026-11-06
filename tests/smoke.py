@@ -222,6 +222,26 @@ def main():
         check(r['alias'], 'eski global adlar yerel oyuncunun durumuna bağlı')
         ctx.close()
 
+        print('Silah ve zırh oyuncu başına')
+        ctx, pg, errs = yeni_sayfa()
+        pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)
+        r = pg.evaluate("""() => {
+          REN.render = () => {};
+          SAVE.armor = 'none'; selWeapon = 0;
+          const p2 = Object.assign({}, pl, { mesh: pl.mesh.clone(), armor: 'ottoman', weapon: 1, x: 30, z: 30, en: 100 });
+          const yerelSilah = pl.weapon, ayna = (pl.weapon = 2, selWeapon === 2);
+          pl.weapon = 0;
+          const n0 = bullets.length; doRanged(p2, { x: 40, z: 30 });
+          const mermi = bullets[bullets.length - 1];
+          return { zirhP2: getArmorDef(p2), zirhYerel: getArmorDef(pl), yerelSilah, ayna,
+                   yeniMermi: bullets.length - n0, mermiX: mermi.mesh.position.x, p2En: p2.en, yerelEn: pl.en,
+                   hasarP2: getWeaponDmg('tufek', p2), id: Number.isInteger(mermi.id) };
+        }""")
+        check(r['zirhP2'] == 0.5 and r['zirhYerel'] == 0, 'zırh oyuncuya göre: %s / %s' % (r['zirhP2'], r['zirhYerel']))
+        check(r['ayna'] and r['yerelSilah'] == 0, 'pl.weapon eski selWeapon ile aynı değer')
+        check(r['yeniMermi'] == 1 and r['mermiX'] == 30 and r['p2En'] == 92 and r['yerelEn'] == 100 and r['id'], 'p2 mermisi p2 konumundan çıktı, yalnızca p2 enerjisi azaldı')
+        ctx.close()
+
         print('Kimlikler (düşman, mermi, ganimet)')
         ctx, pg, errs = yeni_sayfa()
         pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)

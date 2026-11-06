@@ -21,4 +21,6 @@ function nearestPlayer(x,z){
   return best||localPlayer();
 }
 // Yerel oyuncunun yetenek durumuna takma adlar (yetenekler.js'deki eski adlar çalışmaya devam eder)
+// Silah seçimi oyuncuya aittir (p.weapon); yerel oyuncuda eski selWeapon ile aynı değer
+Object.defineProperty(pl,'weapon',{get:function(){return selWeapon;},set:function(v){selWeapon=v;},enumerable:true});
 abilityCDs=pl.ab.cd;abilityActive=pl.ab.active;abilityTimer=pl.ab.timer;
