@@ -124,6 +124,63 @@ def main():
         uniq = sorted(set(errs))
         check(not uniq, 'JavaScript hatası yok' + ('' if not uniq else ': ' + uniq[0]))
         ctx.close()
+        print('Sabit tik (ekran hızından bağımsız oyun hızı)')
+        ctx, pg, errs = yeni_sayfa()
+        pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)
+        r = pg.evaluate("""() => {
+          const raf = window.requestAnimationFrame, gd = CLK.getDelta, rr = REN.render;
+          window.requestAnimationFrame = () => 0; REN.render = () => {};
+          const out = {};
+          for (const hz of [30, 60, 120, 144]) {
+            gt = 0; tikBirikim = 0; CLK.getDelta = () => 1 / hz;
+            for (let i = 0; i < hz * 2; i++) loop();      // 2 saniyelik oyun
+            out[hz] = gt;
+          }
+          window.requestAnimationFrame = raf; CLK.getDelta = gd; REN.render = rr;
+          return out;
+        }""")
+        check(all(abs(v - 120) <= 1 for v in r.values()), '2 sn oyun = ~120 tik; 30/60/120/144 Hz: %s' % r)
+        uniq = sorted(set(errs))
+        check(not uniq, 'JavaScript hatası yok' + ('' if not uniq else ': ' + uniq[0]))
+        ctx.close()
+
+        print('Tuzak yeniden kurulumu (oyun süresiyle, duraklatmada durur)')
+        ctx, pg, errs = yeni_sayfa()
+        pg.evaluate("SAVE.mapsUnlocked={maden:true}; BEGIN('maden')"); pg.wait_for_timeout(800)
+        r = pg.evaluate("""() => {
+          REN.render = () => {};
+          pl.maxHp = pl.hp = 1e9; enemies.forEach(e => { e.x = 500; e.z = 500; });
+          const t = madenTraps[0]; pl.x = t.x; pl.z = t.z; update(1 / 60);
+          const tetiklendi = t.triggered;
+          pl.x = -30; pl.z = 30;
+          paused = true; for (let i = 0; i < 2000; i++) update(1 / 60); paused = false;   // duraklatma: tik ilerlemez
+          const duraklatmadaKaldi = t.triggered;
+          for (let i = 0; i < 470; i++) update(1 / 60);
+          const erkenSonra = t.triggered;
+          for (let i = 0; i < 20; i++) update(1 / 60);
+          return { tetiklendi, duraklatmadaKaldi, erkenSonra, sonra: t.triggered };
+        }""")
+        check(r['tetiklendi'], 'tuzak patladı')
+        check(r['duraklatmadaKaldi'], 'duraklatmada geri sayım ilerlemiyor')
+        check(r['erkenSonra'] and not r['sonra'], '8 sn (480 tik) sonra yeniden kuruluyor')
+        uniq = sorted(set(errs))
+        check(not uniq, 'JavaScript hatası yok' + ('' if not uniq else ': ' + uniq[0]))
+        ctx.close()
+
+        print('Kimlikler (düşman, mermi, ganimet)')
+        ctx, pg, errs = yeni_sayfa()
+        pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)
+        r = pg.evaluate("""() => {
+          REN.render = () => {};
+          selWeapon = 1; pl.en = 100; worldAim.x = pl.x + 5; worldAim.z = pl.z; doRanged(); doRanged();
+          dropLoot(0, 0, 4);
+          const hepsi = [].concat(enemies, bullets, loots).map(o => o.id);
+          return { n: hepsi.length, bm: bullets.length, lt: loots.length,
+                   tam: hepsi.every(Number.isInteger), benzersiz: new Set(hepsi).size === hepsi.length };
+        }""")
+        check(r['bm'] == 2 and r['lt'] == 4, '2 mermi ve 4 ganimet oluştu')
+        check(r['tam'] and r['benzersiz'], 'düşman+mermi+ganimet: %d varlığın hepsinde benzersiz tamsayı id' % r['n'])
+        ctx.close()
         b.close()
 
     print()

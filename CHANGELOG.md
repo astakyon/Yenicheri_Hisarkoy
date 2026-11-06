@@ -1,5 +1,11 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.36 — Her ekranda aynı oyun hızı
+- **Düzeltme:** Oyun mantığı kare sayısına bağlıydı; 90/120/144 Hz ekranlı telefonlarda düşman yapay zekâsı ve dalgalar 1,5–2,4 kat hızlı akıyordu. Artık mantık sabit **60 tik/sn** çalışır, çizim ekranın hızında yapılır. Ekran hızı ne olursa olsun oyun hızı aynıdır.
+- **Demir Madeni tuzakları:** 8 saniyelik yeniden kurulum artık oyun süresiyle sayılır (duraklatınca durur).
+- **Altyapı:** Mermi ve ganimetler de benzersiz `id` alıyor (düşmanlarla birlikte ağda anılacak).
+- Yeni testler: 30/60/120/144 Hz'te eşit tik sayısı, tuzak yeniden kurulumu, id benzersizliği. Altın test değişmedi.
+
 ## v1.35 — Çok oyunculu altyapının ilk adımı (oynanış aynı)
 Oyuncular için görünür bir değişiklik yok; bu sürüm, tek ve çok oyunculu mod için ortak altyapıyı hazırlıyor.
 - **Oyuncu kaydı:** Oyun artık oyuncuları bir listede tutuyor (şimdilik tek yerel oyuncu). Düşmanlar hedeflerini bu listeden, **en yakın canlı oyuncuyu** seçerek belirliyor ve hasar da hedef oyuncuya uygulanıyor. Dört haritada da (Kışla/Devriye, Av Ormanı, Demir Madeni).

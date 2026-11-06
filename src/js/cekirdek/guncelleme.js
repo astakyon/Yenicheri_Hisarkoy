@@ -24,8 +24,10 @@ function update(dt){
   // HUD
   document.getElementById('hpf').style.width=(pl.hp/pl.maxHp*100)+'%';document.getElementById('enf').style.width=(pl.en/pl.maxEn*100)+'%';document.getElementById('hpn').textContent=Math.ceil(pl.hp);document.getElementById('enn').textContent=Math.ceil(pl.en);
   drawMM();
-  REN.render(S3,CAM);
 }
+
+// Çizim güncellemeden ayrıdır: simülasyon sabit tikle (TIK) çalışır, çizim ekran hızında (ana-dongu.js)
+function renderFrame(){REN.render(S3,CAM);}
 
 function updateMovement(dt){
   const run=keys['shift']&&pl.en>1,sp=(run?pl.rspd:pl.spd)*dt;

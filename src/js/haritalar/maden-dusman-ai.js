@@ -35,7 +35,11 @@ function spawnMadenWave(n){
 
 function checkMadenTraps(){
   madenTraps.forEach(function(trap){
-    if(trap.triggered)return;
+    if(trap.triggered){
+      // 8 sn sonra (480 tik) yeniden kurulur; tik sayacı duraklatmada da durur
+      if(gt>=trap.rearmAt){trap.triggered=false;trap.mesh.material.opacity=0;}
+      return;
+    }
     const d=Math.hypot(pl.x-trap.x,pl.z-trap.z);
     if(d<trap.r){
       trap.triggered=true;
@@ -47,7 +51,7 @@ function checkMadenTraps(){
       lootPop('💥 Patlama tuzağı! -'+Math.round(dmg)+' Can');
       if(pl.hp<=0){playing=false;showDeath();}
       trap.mesh.material.opacity=.4;trap.mesh.material.color.setHex(0x1a0a00);
-      setTimeout(()=>{trap.triggered=false;trap.mesh.material.opacity=0;},8000);
+      trap.rearmAt=gt+480;
     }
   });
 }
