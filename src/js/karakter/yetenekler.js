@@ -35,9 +35,9 @@ const ABILITY_DEFS={
 };
 
 // CD takip (saniye)
-let abilityCDs={q:0,f:0,r:0};
-let abilityActive={q:false,f:false,r:false};
-let abilityTimer={q:0,f:0,r:0};
+// Yetenek durumu oyuncuya aittir (p.ab). Aşağıdaki adlar yerel oyuncunun durumuna takma addır.
+// (atama cekirdek/dunya-modeli.js'de: pl o dosyadan önce tanımlı değil)
+let abilityCDs,abilityActive,abilityTimer;
 
 function getAbilityDef(key){
   const id=SAVE.abilities[key]?.id;
@@ -46,10 +46,11 @@ function getAbilityDef(key){
 function getAbilityLvl(key){return SAVE.abilities[key]?.lvl||0;}
 function isAbilityUnlocked(key){return SAVE.abilities[key]?.unlocked===true&&getAbilityLvl(key)>0;}
 
-function useAbility(key){
+function useAbility(key,p){
+  p=p||pl;const ab=p.ab,local=(p===pl);
   if(!playing||paused)return;
   if(!isAbilityUnlocked(key))return;
-  if(abilityCDs[key]>0)return;
+  if(ab.cd[key]>0)return;
   const def=getAbilityDef(key);if(!def)return;
   const lvl=getAbilityLvl(key);
   const lvlData=def.levels[lvl-1];
@@ -59,44 +60,48 @@ function useAbility(key){
     // Savaş Çığlığı — yakın düşmanları geri it
     const range=lvlData.range||4;
     enemies.forEach(function(en){
-      const dx=en.x-pl.x,dz=en.z-pl.z,d=Math.hypot(dx,dz);
+      const dx=en.x-p.x,dz=en.z-p.z,d=Math.hypot(dx,dz);
       if(d<range&&d>0){en.x+=dx/d*5;en.z+=dz/d*5;en.mesh.position.set(en.x,0,en.z);en.stunned=(lvlData.stunDur||1.5)*60;}
     });
-    addFX(pl.x,pl.z,0xFFFF00,12);
-    lootPop('⚡ Savaş Çığlığı!');
+    addFX(p.x,p.z,0xFFFF00,12);
+    if(local)lootPop('⚡ Savaş Çığlığı!');
   } else if(key==='f'){
     // Demir Kalkan
-    abilityActive.f=true;
-    abilityTimer.f=(lvlData.duration||2)*60;
-    lootPop('🛡 Demir Kalkan aktif!');
+    ab.active.f=true;
+    ab.timer.f=(lvlData.duration||2)*60;
+    if(local)lootPop('🛡 Demir Kalkan aktif!');
   } else if(key==='r'){
     // Hızlı Atış
-    abilityActive.r=true;
-    abilityTimer.r=(lvlData.duration||3)*60;
-    pl.spd=getBaseSpd()*(lvlData.speedMult||1.8);
-    pl.rspd=pl.spd*1.8;
-    lootPop('🔥 Hızlı Atış aktif!');
+    ab.active.r=true;
+    ab.timer.r=(lvlData.duration||3)*60;
+    p.spd=getBaseSpd()*(lvlData.speedMult||1.8);
+    p.rspd=p.spd*1.8;
+    if(local)lootPop('🔥 Hızlı Atış aktif!');
   }
 
-  abilityCDs[key]=lvlData.cd*60; // frame cinsine çevir
-  updateAbilityHUD();
+  ab.cd[key]=lvlData.cd*60; // tik cinsine çevir
+  if(local)updateAbilityHUD();
 }
 
 function updateAbilities(dt){
+  WORLD.players.forEach(function(p){tickAbilities(p,p===pl);});
+  updateAbilityHUD();
+}
+function tickAbilities(p,local){
+  const ab=p.ab;if(!ab)return;
   ['q','f','r'].forEach(function(key){
-    if(abilityCDs[key]>0){
-      abilityCDs[key]--;
-      if(abilityCDs[key]===0)lootPop(['⚡','🛡','🔥'][['q','f','r'].indexOf(key)]+' Yetenek hazır!');
+    if(ab.cd[key]>0){
+      ab.cd[key]--;
+      if(ab.cd[key]===0&&local)lootPop(['⚡','🛡','🔥'][['q','f','r'].indexOf(key)]+' Yetenek hazır!');
     }
-    if(abilityActive[key]&&abilityTimer[key]>0){
-      abilityTimer[key]--;
-      if(abilityTimer[key]===0){
-        abilityActive[key]=false;
-        if(key==='r'){pl.spd=getBaseSpd();pl.rspd=pl.spd*1.8;}
+    if(ab.active[key]&&ab.timer[key]>0){
+      ab.timer[key]--;
+      if(ab.timer[key]===0){
+        ab.active[key]=false;
+        if(key==='r'){p.spd=getBaseSpd();p.rspd=p.spd*1.8;}
       }
     }
   });
-  updateAbilityHUD();
 }
 
 function updateAbilityHUD(){

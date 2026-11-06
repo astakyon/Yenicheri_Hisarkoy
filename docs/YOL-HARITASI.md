@@ -57,3 +57,4 @@ PeerJS host-relay oda sistemi, Supabase hesap/kayıt, misafir modu, testler.
 - [ ] `Session` + `LoopbackTransport`: yerel girdi de aynı `InputCommand` kuyruğundan geçsin.
 - v1.36: sabit zaman adımı (`tikBirikim`, 60 tik/sn); çizim `renderFrame()` ile ayrıldı; mermi/ganimet `id`; `setTimeout` tuzağı tik tabanlı. Kalan: mesh/simülasyon ayrımı, `pl` → `localPlayer()` geçişi, `Session`+`LoopbackTransport`.
 - v1.37–v1.38: girdi komutu (`readLocalInput`/`movePlayer`), `SESSION` + `LoopbackTransport`. Kalan F1: mesh/simülasyon ayrımı, `pl` → `localPlayer()` geçişi (yetenekler, silah, zırh oyuncu başına).
+- v1.39: yetenekler oyuncu başına (`p.ab`). Kalan F1: silah/zırh seçimi oyuncu başına, mesh/simülasyon ayrımı, `pl` kullanımlarının `localPlayer()`e taşınması.

@@ -489,10 +489,11 @@ function getBaseMaxHp(){return Math.floor((100+getArmorHpBonus()+(getPassiveBonu
 function getBaseMaxEn(){return 100+(SAVE.maxEnBonus||0);}
 function getBaseSpd(){return 4*(1+getPassiveBonus('hiz'))*(1-getArmorSpdPenalty())*getClassMult('spdMult');}
 function getMagnetDist(){const b=[7,9,11,14];return b[SAVE.passives.loot||0]||7;}
-function getWeaponDmg(wid){
+function getWeaponDmg(wid,p){
+  p=p||pl;
   const base={yatagan:[14,20,28,38,50],tufek:[36,48,64,84,110],ok:[22,30,40,52,68]};
   const lvl=(SAVE.weapons[wid]?.lvl||1)-1;
-  const rBuff=abilityActive&&abilityActive.r?((ABILITY_DEFS.hizli_atis?.levels||[])[Math.max((getAbilityLvl('r')||1)-1,0)]?.dmgMult||1):1;
+  const rBuff=p.ab&&p.ab.active.r?((ABILITY_DEFS.hizli_atis?.levels||[])[Math.max((getAbilityLvl('r')||1)-1,0)]?.dmgMult||1):1;
   const dmgMult=(1+getPassiveBonus('guc'))*getClassMult('dmgMult')*rBuff;
   return Math.floor((base[wid]||[14])[Math.min(lvl,4)]*dmgMult);
 }

@@ -201,6 +201,27 @@ def main():
         check(r['p2'] > 0 and r['bos'] == 0, 'taşımadan gelen uzak girdi ikinci oyuncuyu hareket ettirdi, kuyruk boşaldı')
         ctx.close()
 
+        print('Yetenekler oyuncu başına')
+        ctx, pg, errs = yeni_sayfa()
+        pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)
+        r = pg.evaluate("""() => {
+          REN.render = () => {};
+          SAVE.abilities.f = { id: 'demir_kalkan', lvl: 1, unlocked: true };
+          const ab2 = { cd: { q: 0, f: 0, r: 0 }, active: { q: false, f: false, r: false }, timer: { q: 0, f: 0, r: 0 } };
+          const p2 = Object.assign({}, pl, { mesh: pl.mesh.clone(), ab: ab2 }); p2.x = 40; p2.z = 40;
+          WORLD.players.set('p2', p2);
+          useAbility('f', p2);
+          const p2Kalkan = p2.ab.active.f, yerelKalkan = pl.ab.active.f, cd2 = p2.ab.cd.f, cdYerel = pl.ab.cd.f;
+          for (let i = 0; i < 125; i++) updateAbilities(1 / 60);
+          const sonra = { aktif: p2.ab.active.f, cd: p2.ab.cd.f };
+          WORLD.players.delete('p2');
+          return { p2Kalkan, yerelKalkan, cd2, cdYerel, sonra, alias: abilityActive === pl.ab.active };
+        }""")
+        check(r['p2Kalkan'] and not r['yerelKalkan'] and r['cd2'] > 0 and r['cdYerel'] == 0, 'ikinci oyuncunun kalkanı yalnızca kendisinde')
+        check(not r['sonra']['aktif'] and r['sonra']['cd'] > 0, 'kalkan 2 sn sonra bitti, bekleme sürüyor')
+        check(r['alias'], 'eski global adlar yerel oyuncunun durumuna bağlı')
+        ctx.close()
+
         print('Kimlikler (düşman, mermi, ganimet)')
         ctx, pg, errs = yeni_sayfa()
         pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)

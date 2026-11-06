@@ -145,7 +145,7 @@ function updateGorev(dt){
     en.hpFl.scale.x=en.hp/en.maxHp;en.hpFl.position.x=(en.hp/en.maxHp-1)*(en.isBoss?.8:.55);
     en.mesh.children[2].lookAt(CAM.position);en.mesh.children[3].lookAt(CAM.position);
     if(d2<1.1&&tp.ifr===0){
-      if(tp===pl&&abilityActive.f){
+      if(tp.ab&&tp.ab.active.f){
         // Demir Kalkan aktif — hasar engeli
         addFX(tp.x,tp.z,0x3498db,4);
       } else {

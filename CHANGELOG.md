@@ -1,5 +1,9 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.39 — Yetenekler oyuncu başına (oynanış aynı)
+- Savaş Çığlığı, Demir Kalkan ve Hızlı Atış durumu (bekleme, süre, etkin) artık oyuncunun kendisinde (`p.ab`). Düşmanın hasar kontrolü hedef oyuncunun kalkanına bakıyor; silah hasarı da oyuncunun Hızlı Atış etkisini kullanıyor.
+- Eski global adlar (`abilityCDs` vb.) yerel oyuncuya bağlı kalıyor, mevcut kod aynen çalışıyor. Altın test değişmedi.
+
 ## v1.38 — Oturum ve LoopbackTransport (oynanış aynı)
 - Yeni `cekirdek/oturum.js`: `SESSION` + `LoopbackTransport`. Yerel oyuncunun girdisi artık bir taşıma kuyruğundan geçip host koduna ulaşıyor ("sıfır eşli host"). Çok oyunculuda uzak oyuncuların girdisi aynı yoldan gelecek.
 - Altın test değişmedi; yeni test: taşımadan gelen uzak girdi ikinci oyuncuyu hareket ettiriyor.

@@ -3,7 +3,7 @@
 // ═══════════════════════════════════════════════════════
 let S3=null,CAM=null,REN=null,CLK=null,RC=null,GP=null;
 let torches=[],barrelsArr=[],npcArr=[];
-let pl={x:0,z:8,hp:100,maxHp:100,en:100,maxEn:100,mesh:null,ang:0,spd:4,rspd:7,atkCd:0,ifr:0,nearZone:null,radius:0.45};
+let pl={x:0,z:8,hp:100,maxHp:100,en:100,maxEn:100,mesh:null,ang:0,spd:4,rspd:7,atkCd:0,ifr:0,nearZone:null,radius:0.45,ab:{cd:{q:0,f:0,r:0},active:{q:false,f:false,r:false},timer:{q:0,f:0,r:0}}};
 let MAP_HALF=28;
 let enemies=[],bullets=[],loots=[],parts=[];
 let keys={},mousePos={x:0,y:0};

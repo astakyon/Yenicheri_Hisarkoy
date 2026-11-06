@@ -20,3 +20,5 @@ function nearestPlayer(x,z){
   });
   return best||localPlayer();
 }
+// Yerel oyuncunun yetenek durumuna takma adlar (yetenekler.js'deki eski adlar çalışmaya devam eder)
+abilityCDs=pl.ab.cd;abilityActive=pl.ab.active;abilityTimer=pl.ab.timer;
