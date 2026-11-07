@@ -45,6 +45,12 @@ ON_SCRIPT = """
   Math.random = mulberry32;
   window.__tohum = n => { s = n | 0; };
   window.requestAnimationFrame = () => 0;      // döngüyü biz süreceğiz
+  // Günlük görevler bugünün tarihinden seçilir; tarih sabitlenmezse referans her gün değişir
+  const GercekTarih = Date, SABIT = GercekTarih.UTC(2026, 10, 6, 12, 0, 0);
+  window.Date = class extends GercekTarih {
+    constructor(...a) { if (a.length) super(...a); else super(SABIT); }
+    static now() { return SABIT; }
+  };
 })();
 """
 

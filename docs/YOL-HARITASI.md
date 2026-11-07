@@ -60,3 +60,4 @@ PeerJS host-relay oda sistemi, Supabase hesap/kayıt, misafir modu, testler.
 - v1.39: yetenekler oyuncu başına (`p.ab`). Kalan F1: silah/zırh seçimi oyuncu başına, mesh/simülasyon ayrımı, `pl` kullanımlarının `localPlayer()`e taşınması.
 - v1.40: silah ve zırh oyuncu başına. Kalan F1: mesh/simülasyon ayrımı, tuzakların tüm oyunculara etkisi, `pl` → `localPlayer()`.
 - v1.41: Maden tuzağı tüm oyuncular. `pl` kalan kullanımları çoğunlukla yerel arayüz/başlatma (oyun-baslat, menüler, girdi); simülasyon tarafı oyuncu listesine geçti. Kalan F1: mesh/simülasyon ayrımı (View katmanı).
+- v1.42: `snapshot()` (düz veri; 2 oyuncu+4 düşman ≈ 500 bayt JSON). Altın test tarihi sabitledi (günlük görevler tarihe bağlı). Kalan F1: `applySnapshot` + istemci görüntü katmanı (F2 ile birlikte), düşman/mermi mesh ayrımı.

@@ -261,6 +261,26 @@ def main():
         check(r['tetik'] and r['yerel'] == 82 and r['p2'] == 91 and r['uzak'] == 100, 'yakın iki oyuncu hasar aldı (zırhla 91), uzaktaki almadı: %s' % r)
         ctx.close()
 
+        print('Durum özeti (snapshot)')
+        ctx, pg, errs = yeni_sayfa()
+        pg.evaluate("SAVE.mapsUnlocked={maden:true}; BEGIN('maden')"); pg.wait_for_timeout(800)
+        r = pg.evaluate("""() => {
+          REN.render = () => {};
+          selWeapon = 1; pl.en = 100; worldAim.x = pl.x + 5; worldAim.z = pl.z; doRanged(); dropLoot(pl.x + 3, pl.z, 3);
+          const p2 = Object.assign({}, pl, { mesh: pl.mesh.clone(), x: 3, z: 3 }); WORLD.players.set('p2', p2);
+          for (let i = 0; i < 400; i++) update(1 / 60);       // dalga düşmanları doğsun
+          const s = snapshot(); const js = JSON.stringify(s);
+          const back = JSON.parse(js);
+          const ids = [].concat(back.e, back.b, back.l).map(o => o.id);
+          const o = { bayt: js.length, oyuncu: back.p.length, dusman: back.e.length, mermi: back.b.length, ganimet: back.l.length,
+                      esit: JSON.stringify(back) === js, benzersiz: new Set(ids).size === ids.length, t: back.t, gt };
+          WORLD.players.delete('p2'); return o;
+        }""")
+        check(r['oyuncu'] == 2 and r['dusman'] > 0, 'özet iki oyuncu ve %d düşman içeriyor' % r['dusman'])
+        check(r['esit'] and r['benzersiz'] and r['t'] == r['gt'], 'JSON gidiş-dönüş aynı, id\'ler benzersiz, tik numarası doğru')
+        print('      boyut: %d bayt (%d oyuncu, %d düşman, %d mermi, %d ganimet)' % (r['bayt'], r['oyuncu'], r['dusman'], r['mermi'], r['ganimet']))
+        ctx.close()
+
         print('Kimlikler (düşman, mermi, ganimet)')
         ctx, pg, errs = yeni_sayfa()
         pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)

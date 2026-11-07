@@ -1,5 +1,9 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.42 — Durum özeti (snapshot) ve test düzeltmesi (oynanış aynı)
+- Yeni `snapshot()` (`cekirdek/oturum.js`): oyuncuları, düşmanları, mermileri ve ganimeti yalnızca sayı ve metinden oluşan, JSON'a çevrilebilir bir pakete döker (3D nesne yok). Çok oyunculuda host bunu istemcilere yollayacak. Ölçüm: 2 oyuncu + 4 düşman ≈ 500 bayt.
+- **Test düzeltmesi:** Günlük görevler bugünün tarihinden seçildiği için altın test her gün farklı sonuç verebiliyordu (7 Kasım'da `gorev` haritasında fazladan 100 akçe). Testte tarih artık sabit. Oyunda hata yoktu; referans değişmedi.
+
 ## v1.41 — Maden tuzağı tüm oyuncular için (oynanış aynı)
 - Patlama tuzağını menzildeki herhangi bir oyuncu tetikler; patlama menzildeki herkese kendi zırhına göre hasar verir. Tek kişilik davranış aynı (altın test değişmedi). Ölüm ekranı yalnızca yerel oyuncu için açılır.
 
