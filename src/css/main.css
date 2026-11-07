@@ -417,7 +417,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 #bEN .bv{font-size:calc(10px*var(--ui));}
 #bXP .bv{font-size:calc(8.5px*var(--ui));right:calc(6px*var(--ui));}
 #gorevB{font-size:calc(12.5px*var(--ui));letter-spacing:.04em;padding:calc(7px*var(--ui)) calc(14px*var(--ui));background:linear-gradient(90deg,rgba(8,4,0,.86),rgba(8,4,0,.45));border:none;border-left:3px solid #E8C060;border-radius:0 8px 8px 0;max-width:calc(380px*var(--ui));text-shadow:0 1px 3px #000;}
-#lootFd{top:calc(150px*var(--ui));left:calc(12px*var(--ui));font-size:calc(12px*var(--ui));gap:calc(4px*var(--ui));}
+#lootFd{top:calc(186px*var(--ui));left:calc(12px*var(--ui));font-size:calc(12px*var(--ui));gap:calc(4px*var(--ui));}
 
 /* ── MİNİ HARİTA ── */
 #mmBox{top:calc(46px*var(--ui));right:calc(14px*var(--ui));width:calc(122px*var(--ui));height:calc(122px*var(--ui));border-radius:50%;border:3px solid #E8C060;box-shadow:0 0 0 2px #3a2208,0 6px 18px rgba(0,0,0,.75),inset 0 0 18px rgba(0,0,0,.8);}

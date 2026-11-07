@@ -326,6 +326,21 @@ def main():
         check(not errs, 'JavaScript hatası yok')
         ctx.close()
 
+        print('Harita denetimi (v1.57): doğma noktası ulaşılabilir, yeterli açık alan')
+        ctx, pg, errs = yeni_sayfa(1280, 720)
+        for m, asgariAcik, asgariUlas in (('kisla', .6, 5000), ('gorev', .5, 1500), ('orman', .8, 6000), ('maden', .7, 800)):
+            pg.evaluate("BEGIN('%s')" % m); pg.wait_for_timeout(700)
+            r = pg.evaluate("""() => { const H = MAP_HALF, hu = new Set(); let top = 0;
+              for (let x = -H + 2; x <= H - 2; x++) for (let z = -H + 2; z <= H - 2; z++) { top++; if (!checkCollision(x, z, .6)) hu.add(x + ',' + z); }
+              const bas = [Math.round(pl.x), Math.round(pl.z)], gor = new Set([bas.join(',')]), q = [bas];
+              while (q.length) { const [x, z] = q.pop(); [[1,0],[-1,0],[0,1],[0,-1]].forEach(([a, b]) => { const k = (x + a) + ',' + (z + b); if (hu.has(k) && !gor.has(k)) { gor.add(k); q.push([x + a, z + b]); } }); }
+              return { acik: hu.size / top, ulas: gor.size, basOk: hu.has(bas.join(',')) }; }""")
+            check(r['basOk'], '%s: doğma noktası çarpışmasız' % m)
+            check(r['acik'] >= asgariAcik, '%s: açık alan %%%d (en az %%%d)' % (m, r['acik'] * 100, asgariAcik * 100))
+            check(r['ulas'] >= asgariUlas, '%s: doğmadan ulaşılabilir alan %d hücre (en az %d)' % (m, r['ulas'], asgariUlas))
+        check(not errs, 'JavaScript hatası yok')
+        ctx.close()
+
         print('Oturum (SESSION + LoopbackTransport)')
         ctx, pg, errs = yeni_sayfa()
         pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)

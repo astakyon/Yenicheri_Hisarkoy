@@ -1,5 +1,11 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.57 — Harita denetimi
+- Dört harita ölçüldü (açık alan, doğmadan ulaşılabilirlik, dar geçit) ve görüntüsü incelendi; Kışla, Devriye, Orman sorunsuz.
+- Demir Madeni: pozlama düşünce fazla kararan tünel aydınlatıldı (ortam ışığı 1.0→1.9).
+- Küçük bildirim yazısı görev çubuğuna binmiyor.
+- Test: her haritada doğma noktası ulaşılabilir, açık alan ve ulaşılabilir hücre alt sınırı.
+
 ## v1.56 — Av Ormanı ve Demir Madeni baştan açık
 - Satın alma kilidi kalktı; eski kayıtlarda da açık yüklenir. Tarım Ovası, Yabancı Şehir ve Osmanlı Sarayı henüz yapılmadı ("yakında").
 

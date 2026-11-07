@@ -11,8 +11,8 @@ function buildMaden(){
   clearScene();
   // Çok karanlık atmosfer — sadece fenerler aydınlatır
   S3.fog=new THREE.Fog(0x0a0806,12,50);S3.background=new THREE.Color(0x0a0806);
-  S3.add(new THREE.AmbientLight(0x6a5a48,1.0)); // çok düşük ambient — karanlık his
-  const dim=new THREE.DirectionalLight(0x6a5238,0.6);dim.position.set(10,20,10);S3.add(dim);
+  S3.add(new THREE.AmbientLight(0x8a7458,1.9)); // çok düşük ambient — karanlık his
+  const dim=new THREE.DirectionalLight(0x8a6a48,1.1);dim.position.set(10,20,10);S3.add(dim);
 
   // Kaya zemin — koyu, pürüzlü doku hissi
   const gnd=new THREE.Mesh(new THREE.PlaneGeometry(100,100),new THREE.MeshLambertMaterial({color:0x3a342c}));
