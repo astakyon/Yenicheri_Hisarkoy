@@ -412,7 +412,7 @@
  ],
  "maden": [
   {
-   "akce": 9,
+   "akce": 17,
    "ana_altin": 0,
    "dalga": 1,
    "dalgaAktif": true,
@@ -420,40 +420,34 @@
    "dusman": [
     [
      "eskiya",
-     -23.202,
-     -9.187,
+     -29.97,
+     -15.178,
      34
     ],
     [
      "eskiya",
-     21.627,
-     5.842,
-     34
-    ],
-    [
-     "eskiya",
-     34.019,
-     9.248,
+     -31.888,
+     -13.122,
      34
     ]
    ],
    "ganimet": 0,
    "gt": 250,
    "harita": "maden",
-   "havuz_altin": 9,
+   "havuz_altin": 17,
    "mermi": 0,
-   "oldurme": 1,
+   "oldurme": 2,
    "oyuncu": {
     "en": 100,
-    "hp": 97,
-    "x": 4.4,
+    "hp": 100,
+    "x": 2.187,
     "z": 29.333
    },
    "seviye": 1,
-   "xp": 18
+   "xp": 36
   },
   {
-   "akce": 9,
+   "akce": 17,
    "ana_altin": 0,
    "dalga": 1,
    "dalgaAktif": true,
@@ -461,40 +455,34 @@
    "dusman": [
     [
      "eskiya",
-     -23.432,
-     -8.638,
+     -31.503,
+     -15.009,
      34
     ],
     [
      "eskiya",
-     19.483,
-     7.37,
-     34
-    ],
-    [
-     "eskiya",
-     35.39,
-     11.403,
+     -33.239,
+     -14.285,
      34
     ]
    ],
    "ganimet": 0,
    "gt": 500,
    "harita": "maden",
-   "havuz_altin": 9,
+   "havuz_altin": 17,
    "mermi": 0,
-   "oldurme": 1,
+   "oldurme": 2,
    "oyuncu": {
     "en": 91.6,
-    "hp": 79,
+    "hp": 82,
     "x": -0.267,
     "z": 19.333
    },
    "seviye": 1,
-   "xp": 18
+   "xp": 36
   },
   {
-   "akce": 9,
+   "akce": 17,
    "ana_altin": 0,
    "dalga": 1,
    "dalgaAktif": true,
@@ -502,40 +490,34 @@
    "dusman": [
     [
      "eskiya",
-     -20.941,
-     -10.144,
+     -28.929,
+     -15.517,
      34
     ],
     [
      "eskiya",
-     18.46,
-     8.794,
-     34
-    ],
-    [
-     "eskiya",
-     34.244,
-     10.677,
+     -35.525,
+     -13.445,
      34
     ]
    ],
    "ganimet": 0,
    "gt": 750,
    "harita": "maden",
-   "havuz_altin": 9,
+   "havuz_altin": 17,
    "mermi": 0,
-   "oldurme": 1,
+   "oldurme": 2,
    "oyuncu": {
     "en": 100,
-    "hp": 79,
+    "hp": 82,
     "x": 2,
     "z": -5.333
    },
    "seviye": 1,
-   "xp": 18
+   "xp": 36
   },
   {
-   "akce": 9,
+   "akce": 17,
    "ana_altin": 0,
    "dalga": 1,
    "dalgaAktif": true,
@@ -543,40 +525,34 @@
    "dusman": [
     [
      "eskiya",
-     -21.431,
-     -8.124,
+     -29.078,
+     -17.019,
      34
     ],
     [
      "eskiya",
-     15.317,
-     8.978,
-     34
-    ],
-    [
-     "eskiya",
-     36.067,
-     11.48,
+     -37,
+     -11.692,
      34
     ]
    ],
    "ganimet": 0,
    "gt": 1000,
    "harita": "maden",
-   "havuz_altin": 9,
+   "havuz_altin": 17,
    "mermi": 0,
-   "oldurme": 1,
+   "oldurme": 2,
    "oyuncu": {
     "en": 83.2,
-    "hp": 61,
+    "hp": 64,
     "x": 6.133,
     "z": -4
    },
    "seviye": 1,
-   "xp": 18
+   "xp": 36
   },
   {
-   "akce": 13,
+   "akce": 17,
    "ana_altin": 0,
    "dalga": 1,
    "dalgaAktif": true,
@@ -584,34 +560,34 @@
    "dusman": [
     [
      "eskiya",
-     14.144,
-     7.927,
+     -28.53,
+     -17.809,
      34
     ],
     [
      "eskiya",
-     37,
-     13.301,
+     -35.972,
+     -12.133,
      34
     ]
    ],
    "ganimet": 0,
    "gt": 1250,
    "harita": "maden",
-   "havuz_altin": 13,
+   "havuz_altin": 17,
    "mermi": 0,
    "oldurme": 2,
    "oyuncu": {
     "en": 100,
-    "hp": 55,
-    "x": -22,
-    "z": -8
+    "hp": 46,
+    "x": -18.933,
+    "z": -6.667
    },
    "seviye": 1,
    "xp": 36
   },
   {
-   "akce": 19,
+   "akce": 17,
    "ana_altin": 0,
    "dalga": 1,
    "dalgaAktif": true,
@@ -619,25 +595,31 @@
    "dusman": [
     [
      "eskiya",
-     35.355,
-     13.044,
+     -26.037,
+     -16.005,
+     34
+    ],
+    [
+     "eskiya",
+     -37,
+     -11.334,
      34
     ]
    ],
    "ganimet": 0,
    "gt": 1500,
    "harita": "maden",
-   "havuz_altin": 19,
+   "havuz_altin": 17,
    "mermi": 0,
-   "oldurme": 3,
+   "oldurme": 2,
    "oyuncu": {
     "en": 74.8,
-    "hp": 49,
+    "hp": 46,
     "x": 22,
     "z": 8
    },
    "seviye": 1,
-   "xp": 54
+   "xp": 36
   }
  ],
  "orman": [

@@ -294,12 +294,12 @@
   <!-- ── BÖLGE MENÜSÜ ── -->
   <div id="zoneMenuBox" style="display:none;align-items:center;justify-content:center;">
     <div id="zoneMenuPanel">
-      <div class="zoneTitle" id="zmTitle">⚔ Armory</div>
+      <div class="zmHead"><div class="zoneTitle" id="zmTitle">⚔ Armory</div><button class="zmX" onclick="closeZoneMenu()" aria-label="Kapat">✕</button></div>
       <div class="zoneGold">🪙 Ana Akçe: <span id="zmGold">0</span></div>
       <div class="divider"></div>
       <div id="zmContent"></div>
       <div class="divider"></div>
-      <button class="panBtn" style="margin-top:8px;" onclick="closeZoneMenu()">✕ Kapat</button>
+      <div class="zmFoot"><button class="panBtn" style="margin-top:0;" onclick="closeZoneMenu()">✕ Kapat</button></div>
     </div>
   </div>
 

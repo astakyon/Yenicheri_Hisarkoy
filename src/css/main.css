@@ -461,3 +461,22 @@ canvas{display:block;position:absolute;top:0;left:0;}
 /* v1.55: dikey telefonda "yatay çevir" uyarısı (dokunmayı engellemez) */
 #yatayUyari{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);z-index:99999;display:none;pointer-events:none;background:rgba(6,3,0,.88);color:#FFD24A;border:1.5px solid #E8C060;border-radius:30px;padding:8px 18px;font:700 13px 'Cinzel',serif;letter-spacing:.12em;white-space:nowrap;animation:yatayN 1.6s ease-in-out infinite;}
 @keyframes yatayN{0%,100%{opacity:1}50%{opacity:.45}}
+
+/* ── v1.58: kapat düğmeleri her zaman ekranda ── */
+#bmPanel.panel{zoom:1;}                       /* panel boyutu JS ile ekrana göre hesaplanır; zoom taşırıyordu */
+#zoneMenuPanel{max-height:calc(100vh - 16px);}
+.zmHead{position:sticky;top:-18px;z-index:4;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin:-18px -20px 4px;padding:14px 14px 6px 20px;background:linear-gradient(180deg,#1c0e00 82%,rgba(28,14,0,0));}
+.zmHead .zoneTitle{margin-bottom:0;}
+.zmX{flex-shrink:0;width:40px;height:40px;border-radius:50%;border:2px solid #c0392b;background:rgba(139,20,20,.45);color:#ff8a80;font-size:18px;line-height:1;cursor:pointer;font-family:'Cinzel',serif;font-weight:700;}
+.zmFoot{position:sticky;bottom:-18px;z-index:4;margin:6px -20px -18px;padding:10px 20px 14px;background:linear-gradient(0deg,#0e0600 78%,rgba(14,6,0,0));}
+
+/* yatay telefon (kısa ekran): mini harita ve kamera düğmeleri küçülür, eylem düğmelerine binmez */
+@media (max-height:520px) and (orientation:landscape){
+  #mmBox{width:calc(92px*var(--ui));height:calc(92px*var(--ui));}
+  #camBtns{top:calc(144px*var(--ui));width:calc(92px*var(--ui));gap:calc(8px*var(--ui));}
+  .camB{width:calc(30px*var(--ui));height:calc(30px*var(--ui));font-size:calc(16px*var(--ui));}
+  #actionCluster{transform:scale(1);}
+}
+@media (max-height:380px) and (orientation:landscape){
+  #camBtns{top:calc(50px*var(--ui));right:calc(112px*var(--ui));width:auto;}
+}

@@ -27,3 +27,17 @@
 
 ## Nasıl yeniden ölçülür
 `tests/smoke.py` içindeki "Harita performans bütçesi" bölümü her haritanın çizim çağrısı, mesh ve gerçek ışık sayısını sınırlar; bütçe aşılırsa test kırılır.
+
+## Demir Madeni — v1.58 yeniden tasarımı
+Eski düzende "kollar" dolu kaya bloğuydu, koridor iki yandan kapalıydı, düşmanlar ve boss kayanın içinde doğuyordu. Yeni düzen `MADEN_ODALAR` listesinden üretilir (açık dikdörtgenler); kalan her 2×2 hücre kaya, yatay/dikey birleştirilmiş kutular olarak çizilir.
+
+| Oda | Alan (x0..x1, z0..z1) |
+|---|---|
+| Giriş + Ana Koridor | -6..6, 2..37 |
+| Ana Kavşak | -16..16, -14..2 |
+| Bakır Damarı (batı kol) → Eski Ocak | -30..-14, -10..-2 → -36..-26, -30..4 |
+| Demir Ocağı (doğu kol) → Yeni Kanal | 14..30, -10..-2 → 26..36, -30..4 |
+| Kuzey Geçidi → Gizli Oda (boss) | -4..4, -24..-14 → -14..14, -36..-24 |
+| Batı / Doğu Bağlantısı (halka) | -30..-14 / 14..30, -30..-26 |
+
+Doğrulama: doğma noktasından tüm odalara ulaşılır, doğma ve tuzak noktaları açık alanda (`tests/smoke.py` → "Demir Madeni: bağlı mağara ağı").

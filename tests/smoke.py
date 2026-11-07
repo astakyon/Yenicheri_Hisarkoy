@@ -296,7 +296,7 @@ def main():
         }""")
         check(r['ui'] >= 1.1, 'arayüz ölçeği telefonda yeterli (%.2f)' % r['ui'])
         check(r['hpH'] >= 18, 'can çubuğu okunur yükseklikte (%dpx)' % r['hpH'])
-        check(r['mmW'] >= 120, 'mini harita yeterince büyük (%dpx)' % r['mmW'])
+        check(r['mmW'] >= 90, 'mini harita yeterince büyük (%dpx)' % r['mmW'])
         check(r['acik'] >= .7, 'doğma noktası çevresi ferah (%.0f%% açık)' % (r['acik'] * 100))
         r2 = pg.evaluate("""() => {
           // her etkileşim noktası caddeye yakın (|x|<=14) ve çarpışmasız; yanında görevli var
@@ -328,7 +328,7 @@ def main():
 
         print('Harita denetimi (v1.57): doğma noktası ulaşılabilir, yeterli açık alan')
         ctx, pg, errs = yeni_sayfa(1280, 720)
-        for m, asgariAcik, asgariUlas in (('kisla', .6, 5000), ('gorev', .5, 1500), ('orman', .8, 6000), ('maden', .7, 800)):
+        for m, asgariAcik, asgariUlas in (('kisla', .6, 5000), ('gorev', .5, 1500), ('orman', .8, 6000), ('maden', .3, 1500)):
             pg.evaluate("BEGIN('%s')" % m); pg.wait_for_timeout(700)
             r = pg.evaluate("""() => { const H = MAP_HALF, hu = new Set(); let top = 0;
               for (let x = -H + 2; x <= H - 2; x++) for (let z = -H + 2; z <= H - 2; z++) { top++; if (!checkCollision(x, z, .6)) hu.add(x + ',' + z); }
@@ -338,6 +338,42 @@ def main():
             check(r['basOk'], '%s: doğma noktası çarpışmasız' % m)
             check(r['acik'] >= asgariAcik, '%s: açık alan %%%d (en az %%%d)' % (m, r['acik'] * 100, asgariAcik * 100))
             check(r['ulas'] >= asgariUlas, '%s: doğmadan ulaşılabilir alan %d hücre (en az %d)' % (m, r['ulas'], asgariUlas))
+        check(not errs, 'JavaScript hatası yok')
+        ctx.close()
+
+        print('Kapat düğmeleri ekranda ve tıklanabilir (v1.58)')
+        for (w, h) in ((1366, 768), (844, 390), (412, 800)):
+            ctx, pg, errs = yeni_sayfa(w, h)
+            pg.evaluate("BEGIN('kisla')"); pg.wait_for_timeout(700)
+            kotu = []
+            for js, kutu, dugme in (("openZone('kervansaray')", 'zoneMenuBox', '.zmX'), ("openZone('carsi')", 'zoneMenuBox', '.zmFoot button'), ("openZone('drill')", 'zoneMenuBox', '.zmX'),
+                                    ("openBigMap()", 'bigMapBox', '#bmClose'), ("openSettings()", 'settingsBox', 'button')):
+                pg.evaluate(js); pg.wait_for_timeout(250)
+                ok = pg.evaluate("""([kutu, dugme]) => { const b = document.querySelector('#' + kutu + ' ' + dugme); if (!b) return false; const r = b.getBoundingClientRect();
+                  if (r.left < -1 || r.top < -1 || r.right > innerWidth + 1 || r.bottom > innerHeight + 1) return false;
+                  const e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !!e && (b === e || b.contains(e)); }""", [kutu, dugme])
+                if not ok: kotu.append(js)
+                pg.evaluate("document.querySelectorAll('[id$=Box]').forEach(e=>e.style.display='none');playing=true;paused=false")
+            check(not kotu, '%dx%d: kapat düğmeleri ekranda ve tıklanabilir (sorunlu: %s)' % (w, h, kotu or 'yok'))
+            ov = pg.evaluate("""() => { const ids = ['mmBox','camBtns','abilityBtns','runBtn','atkBtn','joyBase','wepSel']; const R = {};
+              ids.forEach(i => { const e = document.getElementById(i); if (!e || getComputedStyle(e).display === 'none') return; const b = e.getBoundingClientRect(); if (b.width > 0) R[i] = [b.left, b.top, b.right, b.bottom]; });
+              const k = Object.keys(R), o = []; for (let a = 0; a < k.length; a++) for (let c = a + 1; c < k.length; c++) { const A = R[k[a]], B = R[k[c]]; if (A[0] < B[2] && B[0] < A[2] && A[1] < B[3] && B[1] < A[3]) o.push(k[a] + 'x' + k[c]); } return o; }""")
+            check(not ov, '%dx%d: kamera düğmeleri ve eylem düğmeleri üst üste binmiyor (%s)' % (w, h, ov or 'yok'))
+            ctx.close()
+
+        print('Demir Madeni: bağlı mağara ağı (v1.58)')
+        ctx, pg, errs = yeni_sayfa(1280, 720)
+        pg.evaluate("BEGIN('maden')"); pg.wait_for_timeout(900)
+        r = pg.evaluate("""() => {
+          const bas = [Math.round(pl.x), Math.round(pl.z)], gor = new Set([bas.join(',')]), q = [bas];
+          const aciktir = (x, z) => !checkCollision(x, z, .6);
+          while (q.length) { const [x, z] = q.pop(); [[1,0],[-1,0],[0,1],[0,-1]].forEach(([a, b]) => { const k = (x + a) + ',' + (z + b); if (!gor.has(k) && Math.abs(x + a) < 37 && Math.abs(z + b) < 37 && aciktir(x + a, z + b)) { gor.add(k); q.push([x + a, z + b]); } }); }
+          const kapaliOda = MADEN_ODALAR.filter(o => !gor.has(Math.round((o.x0 + o.x1) / 4) * 2 + ',' + Math.round((o.z0 + o.z1) / 4) * 2) && !gor.has(Math.round((o.x0 + o.x1) / 2) + ',' + Math.round((o.z0 + o.z1) / 2))).map(o => o.id);
+          const spots = [[0,22],[0,6],[-8,-6],[8,-6],[-22,-6],[-31,-12],[22,-6],[31,-12],[-22,-28],[22,-28],[0,-30]];
+          return { kapaliOda, kayada: spots.filter(p => checkCollision(p[0], p[1], .6)).length, tuzakKayada: madenTraps.filter(t => checkCollision(t.x, t.z, .3)).length, oda: MADEN_ODALAR.length }; }""")
+        check(not r['kapaliOda'], 'doğma noktasından tüm odalara ulaşılıyor (ulaşılamayan: %s)' % (r['kapaliOda'] or 'yok'))
+        check(r['kayada'] == 0, 'düşman ve boss doğma noktaları kayanın içinde değil')
+        check(r['tuzakKayada'] == 0, 'tuzaklar kayanın içinde değil')
         check(not errs, 'JavaScript hatası yok')
         ctx.close()
 

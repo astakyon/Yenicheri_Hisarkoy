@@ -6,6 +6,19 @@
 // ═══════════════════════════════════════════════════════
 let madenTorches=[]; // fener ışıkları (oyuncu hareketiyle titreşir)
 let madenTraps=[];   // patlama tuzakları
+// Açık alanlar (dünya koordinatı, 2'nin katları); kalan her yer dolu kaya. Büyük harita çizimi ve düşman doğma noktaları da buradan okur.
+const MADEN_ODALAR=[
+  {id:'giris',  ad:'Giriş ve Ana Koridor',x0:-6, x1:6,  z0:2,  z1:37},
+  {id:'kavsak', ad:'Ana Kavşak',          x0:-16,x1:16, z0:-14,z1:2},
+  {id:'bakir',  ad:'Bakır Damarı',        x0:-30,x1:-14,z0:-10,z1:-2},
+  {id:'eski',   ad:'Eski Ocak',           x0:-36,x1:-26,z0:-30,z1:4},
+  {id:'demir',  ad:'Demir Ocağı',         x0:14, x1:30, z0:-10,z1:-2},
+  {id:'yeni',   ad:'Yeni Kanal',          x0:26, x1:36, z0:-30,z1:4},
+  {id:'kuzey',  ad:'Kuzey Geçidi',        x0:-4, x1:4,  z0:-24,z1:-14},
+  {id:'gizli',  ad:'Gizli Oda (Ocakbaşı)',x0:-14,x1:14, z0:-36,z1:-24},
+  {id:'bagB',   ad:'Batı Bağlantısı',     x0:-30,x1:-14,z0:-30,z1:-26},
+  {id:'bagD',   ad:'Doğu Bağlantısı',     x0:14, x1:30, z0:-30,z1:-26}
+];
 
 function buildMaden(){
   clearScene();
@@ -19,60 +32,54 @@ function buildMaden(){
   gnd.rotation.x=-Math.PI/2;gnd.receiveShadow=true;S3.add(gnd);
   for(let i=0;i<35;i++){const px=(Math.random()-.5)*70,pz=(Math.random()-.5)*70;const pm=new THREE.Mesh(new THREE.CircleGeometry(1+Math.random()*1.8,7),new THREE.MeshLambertMaterial({color:0x2a241c}));pm.rotation.x=-Math.PI/2;pm.position.set(px,.01,pz);S3.add(pm);}
 
-  // Dış sınır
+  // Dış sınır: kaya dolgusu zaten her yeri kapatır (aşağıda)
   MAP_HALF=38;
-  bx(0,3,-38,76,6,1.5,0x1a1612,null,true);bx(0,3,38,76,6,1.5,0x1a1612,null,true);
-  bx(-38,3,0,1.5,6,76,0x1a1612,null,true);bx(38,3,0,1.5,6,76,0x1a1612,null,true);
 
-  // ── Giriş (güney) ──
-  // Giriş açık bir geçit (dolu blok kamerayı karakterin önünde kapatıyordu) — sadece kemer var
+  // ── Giriş (güney) — kemer ──
   const entranceArch=new THREE.Mesh(new THREE.TorusGeometry(5,1.4,8,16,Math.PI),new THREE.MeshLambertMaterial({color:0x2a241c}));
   entranceArch.rotation.set(0,0,0);entranceArch.position.set(0,4,28);S3.add(entranceArch);
 
-  // ── Ana Koridor (dikey, merkez) ──
-  bx(-9,4,0,1.5,8,64,0x2a241c,null,true);  // sol duvar
-  bx(9,4,0,1.5,8,64,0x2a241c,null,true);   // sağ duvar
-  // Koridor tabanında kaya yığınları (süs)
-  for(let kz=-28;kz<=28;kz+=7){[-1,1].forEach(function(sg){const kk=modelYap('cevre_kaya',{s:.5+((kz+30)%3)*.25});kk.position.set(sg*7.6,0,kz+sg*1.5);kk.rotation.y=kz*sg;S3.add(kk);});}
-  // Kiriş desteği (görsel, dekoratif)
-  for(let cz=-26;cz<=26;cz+=8){
-    yapiKoy('cevre_destek',0,cz,{w:17,h:7});
-  }
+  // ── KAYA DOLGUSU: odalar dışındaki her 2×2'lik hücre dolu kaya (yatayda ve dikeyde birleştirilir) ──
+  const acik=function(cx,cz){return MADEN_ODALAR.some(function(o){return cx>o.x0&&cx<o.x1&&cz>o.z0&&cz<o.z1;});};
+  const N=38,hucre=[];
+  for(let j=0;j<N;j++){hucre.push([]);for(let i=0;i<N;i++)hucre[j].push(!acik(-38+i*2+1,-38+j*2+1));}
+  const kullan=hucre.map(function(r){return r.map(function(){return false;});});
+  const kayaRenk=[0x2a241c,0x241f18,0x2e2820];let kri=0;
+  for(let j=0;j<N;j++){for(let i=0;i<N;i++){
+    if(!hucre[j][i]||kullan[j][i])continue;
+    let w=0;while(i+w<N&&hucre[j][i+w]&&!kullan[j][i+w])w++;
+    let h=1;
+    while(j+h<N){let ok=true;for(let k=0;k<w;k++)if(!hucre[j+h][i+k]||kullan[j+h][i+k]){ok=false;break;}if(!ok)break;h++;}
+    for(let a2=0;a2<h;a2++)for(let k=0;k<w;k++)kullan[j+a2][i+k]=true;
+    bx(-38+i*2+w,3.5,-38+j*2+h,w*2,7,h*2,kayaRenk[(kri++)%3],0x14100c,true);
+  }}
 
-  // ── Bakır Damarı (batı kolu) ──
-  bx(-22,4,-8,26,8,8,0x2a241c,null,true);
-  // Cevher parçaları (görsel)
-  [[-16,-6],[-20,-9],[-26,-7],[-30,-5]].forEach(([x,z])=>{
+  // ── Kiriş destekleri (görsel; koridor boyunca ve kollarda) ──
+  for(let cz=26;cz>=6;cz-=8)yapiKoy('cevre_destek',0,cz,{w:13,h:6});
+  [-1,1].forEach(function(sg){[22,28].forEach(function(x){const g=yapiKoy('cevre_destek',sg*x,-6,{w:9,h:6});g.rotation.y=Math.PI/2;});});
+  // Koridor tabanında kaya yığınları (süs; duvar dibinde)
+  for(let kz=22;kz>=-2;kz-=6){[-1,1].forEach(function(sg){const kk=modelYap('cevre_kaya',{s:.5+((kz+30)%3)*.25});kk.position.set(sg*5,0,kz+sg*1.5);kk.rotation.y=kz*sg;S3.add(kk);});}
+
+  // ── Bakır Damarı (batı kol) ve Demir Ocağı (doğu kol): cevher parçaları ──
+  [[-18,-4],[-22,-8],[-26,-5],[-31,-3]].forEach(function(p){
     const ore=new THREE.Mesh(new THREE.DodecahedronGeometry(.6,0),new THREE.MeshLambertMaterial({color:0xB87333,emissive:0x5a3010,emissiveIntensity:.3}));
-    ore.position.set(x,1,z);S3.add(ore);
+    ore.position.set(p[0],1,p[1]);S3.add(ore);
   });
-
-  // ── Eski Ocak (sol tali, batı kolun ucu) ──
-  bx(-34,3.5,-8,8,7,12,0x221e18,null,true);
-
-  // ── Demir Ocağı (doğu kolu) ──
-  bx(22,4,8,26,8,8,0x2a241c,null,true);
-  [[16,6],[20,9],[26,7],[30,5]].forEach(([x,z])=>{
+  [[18,-4],[22,-8],[26,-5],[31,-3]].forEach(function(p){
     const ore=new THREE.Mesh(new THREE.DodecahedronGeometry(.6,0),new THREE.MeshLambertMaterial({color:0x9aa0a8,emissive:0x303438,emissiveIntensity:.3}));
-    ore.position.set(x,1,z);S3.add(ore);
+    ore.position.set(p[0],1,p[1]);S3.add(ore);
   });
-
-  // ── Yeni Kanal (sağ tali, doğu kolun ucu) ──
-  bx(34,3.5,8,8,7,12,0x221e18,null,true);
-
-  // ── Gizli Oda — BOSS alanı (kuzey, en uç) ──
-  bx(0,4,-34,20,8,10,0x1a1612,null,true);
-  // Nadir taş parıltıları (görsel ipucu, boss odası)
-  [[-6,-34],[0,-36],[6,-34],[-3,-32]].forEach(([x,z])=>{
+  // Gizli Oda (boss): nadir taş parıltıları
+  [[-10,-30],[0,-34],[10,-30],[-4,-27]].forEach(function(p){
     const gem=new THREE.Mesh(new THREE.OctahedronGeometry(.5,0),new THREE.MeshLambertMaterial({color:0x9b59b6,emissive:0x6c3483,emissiveIntensity:.6}));
-    gem.position.set(x,1.2,z);S3.add(gem);
+    gem.position.set(p[0],1.2,p[1]);S3.add(gem);
   });
 
-  // ── Meşaleler (fener noktaları, koridor boyunca) ──
+  // ── Meşaleler (her odada en az bir tane) ──
   madenTorches=[];
-  [[0,28],[0,16],[0,0],[0,-16],[-22,-8],[-34,-8],[22,8],[34,8],[0,-30]].forEach(([x,z])=>{
-    yapiKoy('cevre_mesale',x,z);
-    const pt=fenerLight(x,3,z,0xFF7722,2.2,11);
+  [[0,30],[0,16],[0,6],[-10,-6],[10,-6],[0,-18],[-22,-5],[22,-5],[-31,-12],[31,-12],[-22,-28],[22,-28],[-9,-31],[9,-31]].forEach(function(p){
+    yapiKoy('cevre_mesale',p[0],p[1]);
+    const pt=fenerLight(p[0],3,p[1],0xFF7722,2.2,11);
     madenTorches.push({light:pt,phase:Math.random()*Math.PI*2});
   });
 
@@ -83,7 +90,7 @@ function buildMaden(){
 
   // ── Patlama Tuzakları (görünmez, yere basınca tetiklenir) ──
   madenTraps=[];
-  [[0,22],[-3,10],[3,-6],[-22,-12],[22,4],[0,-26]].forEach(([x,z])=>{
+  [[0,22],[-3,10],[3,-6],[-22,-6],[22,-6],[0,-19]].forEach(([x,z])=>{
     const marker=new THREE.Mesh(new THREE.CircleGeometry(.7,8),new THREE.MeshLambertMaterial({color:0x3a2818,transparent:true,opacity:.0}));
     marker.rotation.x=-Math.PI/2;marker.position.set(x,.02,z);S3.add(marker);
     madenTraps.push({x,z,r:1.0,mesh:marker,triggered:false});

@@ -5,7 +5,7 @@ function spawnEskiya(isBoss){
   const hp=isBoss?260:30+wave*4;
   const g=modelYap(isBoss?'eskiya_boss':'eskiya',{cubuk:true});const hpBg=g.userData.hpBg,hpFl=g.userData.hpFl;
 
-  const spots=isBoss?[[0,-30]]:[[0,18],[0,-4],[-22,-10],[-34,-8],[22,6],[34,8],[-9,4]];
+  const spots=isBoss?[[0,-30]]:[[0,22],[0,6],[-8,-6],[8,-6],[-22,-6],[-31,-12],[22,-6],[31,-12],[-22,-28],[22,-28]];
   const sp=spots[Math.floor(Math.random()*spots.length)];
   const ex=sp[0]+(Math.random()-.5)*4,ez=sp[1]+(Math.random()-.5)*4;
   g.position.set(ex,0,ez);S3.add(g);

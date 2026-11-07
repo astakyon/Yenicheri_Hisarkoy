@@ -4,7 +4,7 @@
 function openZone(zoneId){
   const z=ZONES.find(function(z){return z.id===zoneId;});if(!z)return;
   playing=false;
-  document.getElementById('zmTitle').textContent=z.icon+' '+z.name;
+  document.getElementById('zmTitle').textContent=z.name;
   updateGoldHud();
   const content=document.getElementById('zmContent');
   if(zoneId==='demirKapi'){

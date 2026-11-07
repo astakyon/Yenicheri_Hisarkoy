@@ -272,26 +272,11 @@ function drawBlueprintMaden(ctx,W,H){
   ctx.fillStyle='#2a3a5c';ctx.font='bold 11px Georgia,serif';ctx.textAlign='center';
   ctx.fillText('Demir Madeni — Karanlık Tünel',W/2,sP1.y-8);
 
-  drawZoneRect(ctx,'maden',{x:0,z:32,w:14,d:8},'Giriş',{bold:true,fontSize:9});
-
-  drawZoneRect(ctx,'maden',{x:0,z:0,w:18,d:64},null,{lw:1.2});
-  ctx.font='10px Georgia,serif';ctx.fillText('Ana Koridor',W/2,worldToBlueprint('maden',0,0).y);
-
-  const bakir=drawZoneRect(ctx,'maden',{x:-22,z:-8,w:26,d:8},null,{lw:1.4});
-  ctx.font='bold 9px Georgia,serif';ctx.fillText('Bakır Damarı',bakir.cx,bakir.cy);
-
-  const eski=drawZoneRect(ctx,'maden',{x:-34,z:-8,w:8,d:12},null,{lw:1.2});
-  ctx.font='9px Georgia,serif';ctx.fillText('Eski Ocak',eski.cx,eski.cy);
-
-  const demir=drawZoneRect(ctx,'maden',{x:22,z:8,w:26,d:8},null,{lw:1.4});
-  ctx.font='bold 9px Georgia,serif';ctx.fillText('Demir Ocağı',demir.cx,demir.cy);
-
-  const yeni=drawZoneRect(ctx,'maden',{x:34,z:8,w:8,d:12},null,{lw:1.2});
-  ctx.font='9px Georgia,serif';ctx.fillText('Yeni Kanal',yeni.cx,yeni.cy);
-
-  const gizli=drawZoneRect(ctx,'maden',{x:0,z:-34,w:20,d:10},null,{lw:1.8});
-  ctx.font='bold 10px Georgia,serif';ctx.fillText('Gizli Oda',gizli.cx,gizli.cy-6);
-  ctx.font='9px Georgia,serif';ctx.fillText('(Ocakbaşı Eşkıya)',gizli.cx,gizli.cy+8);
+  MADEN_ODALAR.forEach(function(o){
+    const r=drawZoneRect(ctx,'maden',{x:(o.x0+o.x1)/2,z:(o.z0+o.z1)/2,w:o.x1-o.x0,d:o.z1-o.z0},null,{lw:o.id==='gizli'?1.8:1.2});
+    ctx.font=(o.id==='gizli'||o.id==='kavsak'?'bold ':'')+'9px Georgia,serif';ctx.fillText(o.ad,r.cx,r.cy);
+  });
+  drawZoneRect(ctx,'maden',{x:0,z:36,w:12,d:2},'Giriş',{bold:true,fontSize:9});
 
   ctx.textAlign='left';
   drawNorthArrow(ctx,W-30,28);

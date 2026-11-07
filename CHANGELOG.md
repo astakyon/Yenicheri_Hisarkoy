@@ -1,5 +1,11 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.58 — Demir Madeni baştan, kapat düğmeleri
+- **Demir Madeni yeniden tasarlandı:** eski haritada "kollar" dolu kaya bloklarıydı ve koridor iki yandan kapalıydı; düşmanlar ve boss kayanın içinde doğuyordu. Yeni harita oda listesinden (`MADEN_ODALAR`) üretilir, kalan her yer kaya: giriş koridoru → ana kavşak → batı (Bakır Damarı, Eski Ocak) ve doğu (Demir Ocağı, Yeni Kanal) kolları → kuzey geçidi → Gizli Oda; batı ve doğu odalardan Gizli Oda'ya ikinci bir halka yolu. Cevher, meşale, tuzak ve düşman doğma noktaları yeni odalara taşındı; büyük harita çizimi aynı listeyi kullanır.
+- **Kapat düğmeleri:** bölge menülerinde üstte sabit ✕ ve altta sabit Kapat (içerik uzasa da); büyük harita paneli `zoom` yüzünden ekrandan taşıyordu, düzeltildi. Bölge başlığındaki çift ikon kaldırıldı.
+- **Yatay telefon:** kısa ekranda mini harita küçülür, kamera düğmeleri eylem düğmelerine binmez (≤380 px yükseklikte haritanın soluna).
+- Test: kapat düğmeleri 3 ekran boyutunda, düğme çakışması, Maden'de tüm odalara ulaşım ve doğma noktaları. Altın referans Maden için yenilendi.
+
 ## v1.57 — Harita denetimi
 - Dört harita ölçüldü (açık alan, doğmadan ulaşılabilirlik, dar geçit) ve görüntüsü incelendi; Kışla, Devriye, Orman sorunsuz.
 - Demir Madeni: pozlama düşünce fazla kararan tünel aydınlatıldı (ortam ışığı 1.0→1.9).
