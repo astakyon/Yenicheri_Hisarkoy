@@ -32,10 +32,11 @@ function buildMaden(){
   // ── Ana Koridor (dikey, merkez) ──
   bx(-9,4,0,1.5,8,64,0x2a241c,null,true);  // sol duvar
   bx(9,4,0,1.5,8,64,0x2a241c,null,true);   // sağ duvar
+  // Koridor tabanında kaya yığınları (süs)
+  for(let kz=-28;kz<=28;kz+=7){[-1,1].forEach(function(sg){const kk=modelYap('cevre_kaya',{s:.5+((kz+30)%3)*.25});kk.position.set(sg*7.6,0,kz+sg*1.5);kk.rotation.y=kz*sg;S3.add(kk);});}
   // Kiriş desteği (görsel, dekoratif)
   for(let cz=-26;cz<=26;cz+=8){
-    const beam=new THREE.Mesh(new THREE.BoxGeometry(18,.6,.6),new THREE.MeshLambertMaterial({color:0x4a3018}));
-    beam.position.set(0,7,cz);S3.add(beam);
+    yapiKoy('cevre_destek',0,cz,{w:17,h:7});
   }
 
   // ── Bakır Damarı (batı kolu) ──

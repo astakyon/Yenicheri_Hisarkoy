@@ -21,10 +21,7 @@ function buildOrman(){
   bx(-46,2.5,0,1.5,5,96,0x3a5a28,null,true);bx(46,2.5,0,1.5,5,96,0x3a5a28,null,true);
 
   // ── Akarsu (batı kenar) ──
-  const riverShape=[];for(let t=-46;t<=46;t+=4){riverShape.push(new THREE.Vector3(-30+Math.sin(t*0.08)*4,0.05,t));}
-  const riverGeo=new THREE.BufferGeometry().setFromPoints(riverShape);
-  const river=new THREE.Mesh(new THREE.PlaneGeometry(6,96),new THREE.MeshLambertMaterial({color:0x3070b0,transparent:true,opacity:.75}));
-  river.rotation.x=-Math.PI/2;river.position.set(-30,0.05,0);S3.add(river);
+  yapiKoy('cevre_nehir',-30,0,{L:96,w:6}).rotation.y=0;
 
   // ── Sık Orman (merkez — yoğun ağaç kümesi) ──
   const ormanTrees=[];
@@ -43,9 +40,7 @@ function buildOrman(){
   yapiKoy('yapi_ev',-32,32,{w:9,d:7});
 
   // ── Mağara (doğu — Boss alanı) ──
-  bx(34,3,0,10,7,12,0x6B6258,null,true);
-  const caveArch=new THREE.Mesh(new THREE.TorusGeometry(4,1.2,8,16,Math.PI),new THREE.MeshLambertMaterial({color:0x4a4438}));
-  caveArch.rotation.set(0,Math.PI/2,Math.PI);caveArch.position.set(29,4,0);S3.add(caveArch);
+  yapiKoy('cevre_magara',34,0,{w:10,d:12,h:7},[10,12]);
   // Mağara içi karanlık zemin
   const caveFloor=new THREE.Mesh(new THREE.CircleGeometry(5,16),new THREE.MeshLambertMaterial({color:0x2a2620}));
   caveFloor.rotation.x=-Math.PI/2;caveFloor.position.set(34,.02,0);S3.add(caveFloor);

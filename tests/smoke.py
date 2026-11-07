@@ -211,6 +211,34 @@ def main():
         check(not errs, 'kamera testinde JavaScript hatası yok')
         ctx.close()
 
+        print('Bina saydamlaşması, harita modelleri, editör küçük resimleri')
+        ctx, pg, errs = yeni_sayfa()
+        pg.evaluate("SAVE.mapsUnlocked={orman:true,maden:true}; BEGIN('kisla')"); pg.wait_for_timeout(600)
+        r = pg.evaluate("""() => {
+          REN.render = () => {};
+          const kayit = kapatanlar.length;
+          const e = kapatanlar[0], c = e.box.getCenter(new THREE.Vector3());
+          pl.x = c.x; pl.z = c.z - (e.box.max.z - e.box.min.z) / 2 - 3; camYaw = 0; camYawS = 0;
+          CAM.position.set(pl.x, 14, pl.z + 15);
+          for (let i = 0; i < 60; i++) kapatanGuncelle();
+          const solan = kapatanlar.filter(k => k.a < .5).length;
+          pl.z = c.z + (e.box.max.z - e.box.min.z) / 2 + 3; CAM.position.set(pl.x, 14, pl.z + 15);
+          for (let i = 0; i < 80; i++) kapatanGuncelle();
+          const geri = kapatanlar[0].a;
+          const resim = assetResim('bina_kucuk') === null;      // ilk çağrıda yüklenmemiş olabilir
+          const ids = ['cevre_magara', 'cevre_destek', 'cevre_nehir'].map(i => { const g = modelYap(i, {}); return g.children.length > 0; });
+          return { kayit, solan, geri, ids, url: !!(_arImg['bina_kucuk'] && _arImg['bina_kucuk'].url) };
+        }""")
+        check(r['kayit'] > 0, 'yüksek yapılar saydamlaşma listesine girdi (%d)' % r['kayit'])
+        check(r['solan'] >= 1, 'kamera ile oyuncu arasına giren bina soldu')
+        check(r['geri'] > .95, 'oyuncu binanın önüne geçince bina geri döndü')
+        check(all(r['ids']), 'mağara, maden desteği ve akarsu modelleri kuruluyor')
+        check(r['url'], 'editör paleti model küçük resmi üretti')
+        for m in ('orman', 'maden'):
+            pg.evaluate("BEGIN('%s')" % m); pg.wait_for_timeout(500)
+        check(not errs, 'harita modellerinde JavaScript hatası yok')
+        ctx.close()
+
         print('Oturum (SESSION + LoopbackTransport)')
         ctx, pg, errs = yeni_sayfa()
         pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)

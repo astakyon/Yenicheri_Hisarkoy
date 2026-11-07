@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.49">
+<meta name="game-version" content="v1.50">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.49</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.50</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -244,7 +244,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 .meCatTab.on{background:#8B6914;color:#1c0e00;border-color:#FFD700;font-weight:700;}
 
 #meAssetPalette{display:flex;gap:5px;overflow-x:auto;margin-bottom:6px;flex-shrink:0;padding:2px;}
-.meAssetBtn{min-width:54px;height:54px;border-radius:5px;border:1.5px solid #5a3808;background:rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:2px;}
+.meAssetBtn{min-width:54px;height:66px;border-radius:5px;border:1.5px solid #5a3808;background:rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:2px;}
 .meAssetBtn .maIcon{font-size:18px;}
 .meAssetBtn .maName{font-size:6px;color:#aaa;margin-top:1px;text-align:center;line-height:1.1;}
 .meAssetBtn.on{border-color:#FFD700;background:rgba(255,215,0,.15);}
@@ -369,6 +369,8 @@ canvas{display:block;position:absolute;top:0;left:0;}
 #camBtns{position:absolute;top:128px;right:6px;display:flex;gap:6px;z-index:18;pointer-events:all;}
 .camB{width:38px;height:38px;border-radius:50%;background:rgba(4,2,0,.8);border:1.5px solid #8B6914;color:#e8c46a;font-size:20px;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none;cursor:pointer;}
 .camB.pr{background:rgba(90,60,10,.9);}
+.maImg{width:34px;height:34px;object-fit:contain;display:block;margin:0 auto;}
+.maBoy{font-size:9px;opacity:.6;text-align:center;}
 </style>
 </head>
 <body>
@@ -393,7 +395,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mTitle"><svg class="mOrn" viewBox="0 0 48 44" aria-hidden="true"><defs><mask id="mCres"><rect width="48" height="44" fill="#fff"/><circle cx="31" cy="22" r="14.5" fill="#000"/></mask></defs><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg><span class="mTx"><span>YENİÇERİ:</span> <span>HİSARKÖY MUHAFIZI</span></span><svg class="mOrn r" viewBox="0 0 48 44" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg></div>
       <div id="mDeco"><div class="ml"></div><div id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</div><div class="ml"></div></div>
-      <div id="mVer">v1.49</div>
+      <div id="mVer">v1.50</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
@@ -794,7 +796,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.49';
+const VERSION='v1.50';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -2295,6 +2297,43 @@ function _yapiSandik(o){
   return _ybitir();
 }
 
+// ── Mağara: kaya kütlesi + karanlık ağız (ağız -x yönüne bakar) ──
+function _yapiMagara(o){
+  const w=o.w||10,d=o.d||12,h=o.h||7;
+  _yk(w*.8,h*.9,d*.9,0x5a5248,.2,h*.45,0);
+  [[-.2,.5,-.35,.34],[.15,.6,.3,.3],[.1,.8,0,.38],[-.25,.35,.38,.26],[.3,.4,-.2,.3]].forEach(function(r,i){
+    _yk2(Math.min(w,d)*r[3]*1.5,i%2?0x6B6258:0x7a7066,r[0]*w,r[1]*h,r[2]*d,1.1,.85+i*.06,1.2);});
+  _yk(.8,h*.78,d*.55,0x0c0a08,-w/2+.5,h*.39,0);                                   // karanlık ağız
+  _yk(1.3,h*.12,d*.7,0x4a4438,-w/2+.2,h*.82,0);                                    // alın taşı
+  _yk(1.2,h*.8,1.3,0x4a4438,-w/2+.3,h*.4,d*.34);_yk(1.2,h*.8,1.3,0x4a4438,-w/2+.3,h*.4,-d*.34);   // ağız sütunları
+  for(let i=0;i<5;i++){_ykoni(.28,.9+i%3*.3,0x4a4438,-w/2+.9,h*.78,-d*.2+i*d*.1,5,0,1,1);}      // sarkıtlar
+  return _ybitir();
+}
+// ── Maden ahşap desteği: iki direk + kiriş + çapraz payanda ──
+function _yapiDestek(o){
+  const w=o.w||18,h=o.h||7;
+  [-1,1].forEach(function(sg){_yk(.6,h,.6,0x4a3018,sg*(w/2-.4),h/2,0);_yk(.9,.4,.9,0x2a1c10,sg*(w/2-.4),.2,0);
+    _yk(.2,2.2,.2,0x3a2410,sg*(w/2-1.6),h-1.2,0,0,0,sg*.8);});
+  _yk(w,.6,.7,0x4a3018,0,h,0);_yk(w-2,.25,.5,0x5a3c20,0,h-.55,0);
+  return _ybitir();
+}
+// ── Akarsu: su yüzeyi + taş kıyılar + kamışlar (uzunluk z boyunca) ──
+function _yapiNehir(o){
+  const L=o.L||96,w=o.w||6;
+  [-1,1].forEach(function(sg){
+    _yk(.9,.18,L,0x6a5c40,sg*(w/2+.45),.05,0);_yk(.5,.12,L,0x4a7a3a,sg*(w/2+1.1),.04,0);
+    for(let i=0;i<L/2.2;i++){const z=-L/2+i*2.2+((i*7)%5)*.2;const r=.25+((i*13)%5)*.07;
+      _yk2(r,i%2?0x787068:0x8a8478,sg*(w/2+.2+((i*3)%4)*.18),r*.35,z,1.3,.6,1);
+      if(i%3===0){_yk(.05,.8+(i%4)*.15,.05,0x6a8a3a,sg*(w/2+.9),.45,z+.3);_yk(.05,.7,.05,0x7a9a4a,sg*(w/2+.97),.4,z+.4);}}
+  });
+  const g=_ybitir();
+  const su=new THREE.Mesh(new THREE.PlaneGeometry(w,L),new THREE.MeshLambertMaterial({color:0x3070b0,transparent:true,opacity:.78}));
+  su.rotation.x=-Math.PI/2;su.position.y=.04;g.add(su);
+  const iz=new THREE.Mesh(new THREE.PlaneGeometry(w*.35,L),new THREE.MeshLambertMaterial({color:0x6aa8d8,transparent:true,opacity:.35}));
+  iz.rotation.x=-Math.PI/2;iz.position.y=.06;g.add(iz);
+  return g;
+}
+
 const _YD=[
   ['yapi_ev','Konut evi (cumbalı)',_yapiEv,{w:6,d:5},5.6],['yapi_kisla','Kışla / cebehane binası',_yapiKisla,{w:12,d:9},8.2],
   ['yapi_cami','Cami (kubbe ve minare)',_yapiCami,{w:9,d:9},15],['yapi_hamam','Sultan Hamamı',_yapiHamam,{w:16,d:16},9],
@@ -2302,7 +2341,7 @@ const _YD=[
   ['yapi_kule','Gözetleme kulesi',_yapiKule,{r:2.2,h:9},13],['yapi_sur','Sur parçası',_yapiSur,{w:10},6],['yapi_cit','Tahta çit',_yapiCit,{w:6},1.5],
   ['yapi_talim','Talim kuklası',_yapiMasa,{},3],
   ['cevre_agac','Meşe ağacı',_yapiAgac,{h:5},6],['cevre_cam','Çam ağacı',_yapiCam,{h:6.5},6.5],['cevre_kaya','Kaya',_yapiKaya,{s:1.2},1.7],
-  ['cevre_cadir','Çadır',_yapiCadir,{r:2.2},4.4],['cevre_mesale','Meşale',_yapiMesale,{},3.2],['cevre_varil','Varil',_yapiVaril,{},1],['cevre_sandik','Sandık',_yapiSandik,{},.75]
+  ['cevre_cadir','Çadır',_yapiCadir,{r:2.2},4.4],['cevre_magara','Mağara',_yapiMagara,{w:10,d:12,h:7},7],['cevre_destek','Maden desteği',_yapiDestek,{w:18,h:7},7],['cevre_nehir','Akarsu',_yapiNehir,{L:96,w:6},.5],['cevre_mesale','Meşale',_yapiMesale,{},3.2],['cevre_varil','Varil',_yapiVaril,{},1],['cevre_sandik','Sandık',_yapiSandik,{},.75]
 ];
 _YD.forEach(function(d){
   modelTanimla(d[0],{ad:d[1],grup:d[0].indexOf('yapi_')===0?'Yapı':'Çevre',boy:d[4],varsayilan:d[3],yap:function(op){return d[2](Object.assign({},d[3],op||{}));}});
@@ -2312,6 +2351,7 @@ _YD.forEach(function(d){
 function yapiKoy(id,x,z,op,carp){
   const g=modelYap(id,op);g.position.set(x,0,z);S3.add(g);
   if(carp)addCollider(x,z,carp[0],carp[1]);
+  if(id.indexOf('yapi_')===0||id==='cevre_magara'){g.updateMatrixWorld(true);kapatanKaydet(g,4);}
   return g;
 }
 // ═══════════════════════════════════════════════════════
@@ -3925,7 +3965,7 @@ const ASSET_DEFS={
   ];
   T.forEach(function(t){
     const d=ASSET_DEFS[t[0]];if(!d||!t[1])return;
-    d.w=t[2];d.d=t[3];
+    d.w=t[2];d.d=t[3];d.model=t[1];d.mop=t[4];
     d.build3D=function(x,z,rot,opt){
       const g=modelYap(t[1],t[4]);g.position.set(x,0,z);S3.add(g);
       const c=t[5];if(c){if(c[0]==='r')addCircleCollider(x,z,c[1]);else addCollider(x,z,c[0],c[1]);}
@@ -3946,12 +3986,41 @@ const ASSET_DEFS={
   };
   Object.keys(Y).forEach(function(k){
     const e=Y[k];
-    ASSET_DEFS[k]={cat:e.cat,name:e.name,icon:e.icon,w:e.w,d:e.d,build3D:function(x,z){
+    ASSET_DEFS[k]={cat:e.cat,name:e.name,icon:e.icon,w:e.w,d:e.d,model:e.m,mop:e.op,build3D:function(x,z){
       const g=modelYap(e.m,e.op);g.position.set(x,0,z);S3.add(g);
       if(e.c[0]==='r')addCircleCollider(x,z,e.c[1]);else addCollider(x,z,e.c[0],e.c[1]);
       return g;}};
   });
 })();
+
+// ── Editör küçük resimleri: model kütüphanesinden çevrimdışı çizilir ──
+let _arR=null,_arS=null,_arC=null;const _arImg={};
+function assetResimUret(modelId,op){
+  try{
+    if(!_arR){
+      const cv=document.createElement('canvas');cv.width=cv.height=112;
+      _arR=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true,preserveDrawingBuffer:true});_arR.setSize(112,112,false);_arR.setClearColor(0,0);
+      _arS=new THREE.Scene();_arS.add(new THREE.AmbientLight(0xffffff,1.1));const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(4,8,5);_arS.add(dl);
+      _arC=new THREE.PerspectiveCamera(30,1,.1,500);
+    }
+    const g=modelYap(modelId,op||{});_arS.add(g);g.updateMatrixWorld(true);
+    const b=new THREE.Box3().setFromObject(g),c=b.getCenter(new THREE.Vector3()),r=b.getSize(new THREE.Vector3()).length()/2||1;
+    const dist=r/Math.sin(15*Math.PI/180)*1.02;
+    _arC.position.set(c.x+dist*.55,c.y+dist*.5,c.z+dist*.68);_arC.lookAt(c);
+    _arR.render(_arS,_arC);const url=_arR.domElement.toDataURL('image/png');
+    _arS.remove(g);return url;
+  }catch(e){return null;}
+}
+function assetResim(key,sonra){
+  const d=ASSET_DEFS[key];if(!d||!d.model)return null;
+  let e=_arImg[key];
+  if(!e){
+    const url=assetResimUret(d.model,d.mop);if(!url){_arImg[key]={img:null};return null;}
+    const im=new Image();e=_arImg[key]={img:im,hazir:false,url:url};
+    im.onload=function(){e.hazir=true;if(sonra)sonra();};im.src=url;
+  }
+  return e.img&&e.hazir?e.img:null;
+}
 const ASSET_CATEGORIES=[
   {id:'bina',name:'Binalar',icon:'🏠'},
   {id:'doga',name:'Doğa',icon:'🌳'},
@@ -4307,7 +4376,10 @@ function meBuildAssetPalette(){
     if(def.cat!==meActiveCategory)return;
     const btn=document.createElement('div');
     btn.className='meAssetBtn'+(meActiveAsset===key?' on':'');
-    btn.innerHTML=`<div class="maIcon">${def.icon}</div><div class="maName">${def.name}</div>`;
+    assetResim(key);
+    const _e=_arImg[key];
+    const ikon=(_e&&_e.url)?`<img class="maImg" src="${_e.url}" alt="">`:def.icon;
+    btn.innerHTML=`<div class="maIcon">${ikon}</div><div class="maName">${def.name}</div><div class="maBoy">${def.w}×${def.d}</div>`;
     btn.onclick=()=>{
       meActiveAsset=key;meEraserMode=false;meSpawnMode=false;
       document.getElementById('meEraserBtn').classList.remove('on');
@@ -4371,9 +4443,11 @@ function meDrawGrid(){
     ctx.fillRect(px-ME_CELL_PX/2,py-ME_CELL_PX/2,boxW,boxH);
     ctx.strokeStyle='rgba(42,58,92,.55)';ctx.lineWidth=1.2;
     ctx.strokeRect(px-ME_CELL_PX/2,py-ME_CELL_PX/2,boxW,boxH);
-    ctx.font=(Math.min(boxW,boxH)*0.55)+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    const rs=assetResim(cell.asset,meDrawGrid);
+    if(rs){const sc=Math.min(boxW/rs.width,boxH/rs.height)*1.05,iw=rs.width*sc,ih=rs.height*sc;ctx.drawImage(rs,px-ME_CELL_PX/2+(boxW-iw)/2,py-ME_CELL_PX/2+(boxH-ih)/2,iw,ih);}
+    else{ctx.font=(Math.min(boxW,boxH)*0.55)+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillStyle='#1c0e00';
-    ctx.fillText(def.icon,px-ME_CELL_PX/2+boxW/2,py-ME_CELL_PX/2+boxH/2);
+    ctx.fillText(def.icon,px-ME_CELL_PX/2+boxW/2,py-ME_CELL_PX/2+boxH/2);}
   });
 
   // Spawn noktası
@@ -4566,6 +4640,7 @@ function bx(x,y,z,w,h,d,col,edgeCol,solid){
   m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;S3.add(m);
   m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:edgeCol||0x6B4A0C})));
   if(solid!==false) addCollider(x,z,w,d);
+  if(solid!==false&&h>=3.5){m.updateMatrixWorld(true);kapatanKaydet(m,3.5);}
   return m;
 }
 
@@ -4836,10 +4911,7 @@ function buildOrman(){
   bx(-46,2.5,0,1.5,5,96,0x3a5a28,null,true);bx(46,2.5,0,1.5,5,96,0x3a5a28,null,true);
 
   // ── Akarsu (batı kenar) ──
-  const riverShape=[];for(let t=-46;t<=46;t+=4){riverShape.push(new THREE.Vector3(-30+Math.sin(t*0.08)*4,0.05,t));}
-  const riverGeo=new THREE.BufferGeometry().setFromPoints(riverShape);
-  const river=new THREE.Mesh(new THREE.PlaneGeometry(6,96),new THREE.MeshLambertMaterial({color:0x3070b0,transparent:true,opacity:.75}));
-  river.rotation.x=-Math.PI/2;river.position.set(-30,0.05,0);S3.add(river);
+  yapiKoy('cevre_nehir',-30,0,{L:96,w:6}).rotation.y=0;
 
   // ── Sık Orman (merkez — yoğun ağaç kümesi) ──
   const ormanTrees=[];
@@ -4858,9 +4930,7 @@ function buildOrman(){
   yapiKoy('yapi_ev',-32,32,{w:9,d:7});
 
   // ── Mağara (doğu — Boss alanı) ──
-  bx(34,3,0,10,7,12,0x6B6258,null,true);
-  const caveArch=new THREE.Mesh(new THREE.TorusGeometry(4,1.2,8,16,Math.PI),new THREE.MeshLambertMaterial({color:0x4a4438}));
-  caveArch.rotation.set(0,Math.PI/2,Math.PI);caveArch.position.set(29,4,0);S3.add(caveArch);
+  yapiKoy('cevre_magara',34,0,{w:10,d:12,h:7},[10,12]);
   // Mağara içi karanlık zemin
   const caveFloor=new THREE.Mesh(new THREE.CircleGeometry(5,16),new THREE.MeshLambertMaterial({color:0x2a2620}));
   caveFloor.rotation.x=-Math.PI/2;caveFloor.position.set(34,.02,0);S3.add(caveFloor);
@@ -4919,10 +4989,11 @@ function buildMaden(){
   // ── Ana Koridor (dikey, merkez) ──
   bx(-9,4,0,1.5,8,64,0x2a241c,null,true);  // sol duvar
   bx(9,4,0,1.5,8,64,0x2a241c,null,true);   // sağ duvar
+  // Koridor tabanında kaya yığınları (süs)
+  for(let kz=-28;kz<=28;kz+=7){[-1,1].forEach(function(sg){const kk=modelYap('cevre_kaya',{s:.5+((kz+30)%3)*.25});kk.position.set(sg*7.6,0,kz+sg*1.5);kk.rotation.y=kz*sg;S3.add(kk);});}
   // Kiriş desteği (görsel, dekoratif)
   for(let cz=-26;cz<=26;cz+=8){
-    const beam=new THREE.Mesh(new THREE.BoxGeometry(18,.6,.6),new THREE.MeshLambertMaterial({color:0x4a3018}));
-    beam.position.set(0,7,cz);S3.add(beam);
+    yapiKoy('cevre_destek',0,cz,{w:17,h:7});
   }
 
   // ── Bakır Damarı (batı kolu) ──
@@ -5183,6 +5254,7 @@ function kameraGuncelle(){
   CAM.position.y+=(camHeight-CAM.position.y)*smooth;
   CAM.position.z+=((pl.z+Math.cos(camYawS)*camDist)-CAM.position.z)*smooth;
   CAM.lookAt(pl.x,0,pl.z);
+  kapatanGuncelle();
 }
 function update(dt){
   if(!playing||paused||!pl.mesh)return;
@@ -5270,7 +5342,32 @@ function checkCollision(px,pz,pr){
   }
   return false;
 }
-function clearColliders(){colliders=[];}
+function clearColliders(){colliders=[];kapatanlar=[];}
+// ── Bina arkasında saydamlaşma: kamera ile oyuncu arasına giren yüksek yapılar solar ──
+let kapatanlar=[];
+const _kRay=new THREE.Ray(),_kHedef=new THREE.Vector3(),_kYon=new THREE.Vector3(),_kNokta=new THREE.Vector3();
+function kapatanKaydet(o,minH){
+  if(!o||!S3)return;
+  const b=new THREE.Box3().setFromObject(o);
+  if(b.max.y-b.min.y<(minH||3))return;
+  const mats=[];o.traverse(function(m){if(m.material&&!m.isSprite)mats.push(m.material);});
+  b.expandByVector(new THREE.Vector3(-.2,0,-.2));
+  kapatanlar.push({box:b,mats:mats,a:1});
+}
+function kapatanGuncelle(){
+  if(!kapatanlar.length||!CAM||!pl)return;
+  _kHedef.set(pl.x,1.4,pl.z);_kYon.subVectors(_kHedef,CAM.position);const L=_kYon.length();_kYon.divideScalar(L||1);
+  _kRay.set(CAM.position,_kYon);
+  for(let i=0;i<kapatanlar.length;i++){
+    const k=kapatanlar[i];
+    const hit=_kRay.intersectBox(k.box,_kNokta);
+    const hedef=(hit&&CAM.position.distanceTo(_kNokta)<L-.5)?.2:1;
+    if(Math.abs(hedef-k.a)<.01)continue;
+    k.a+=(hedef-k.a)*.2;
+    const sey=k.a<.99;
+    for(let j=0;j<k.mats.length;j++){const m=k.mats[j];m.transparent=sey;m.opacity=k.a;m.depthWrite=!sey;}
+  }
+}
 
 // ── KIŞLA GÜNCELLEME ──
 function updateKisla(dt){

@@ -1,5 +1,11 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.50 — Bina saydamlaşması, mağara/maden/nehir modelleri, editör küçük resimleri
+- **Saydamlaşma:** kamera ile oyuncu arasına giren yüksek yapı (bina, kule, mağara, uzun duvar) yarı saydam olur, çıkınca geri döner. Kamera döndürme ile birlikte çalışır.
+- **Yeni modeller:** mağara (kaya kütlesi, karanlık ağız, sarkıt), maden ahşap desteği (direk, kiriş, payanda), akarsu (su, taş kıyı, kamış). Av Ormanı mağarası ve akarsuyu, Demir Madeni kirişleri bunlarla kuruldu; maden koridoruna kaya yığınları eklendi.
+- **Editör:** palet ve ızgara artık model küçük resimlerini gösterir (gerçek modelden çizilir); her varlıkta ızgara boyutu yazar.
+- Testler: saydamlaşma, yeni modeller, editör küçük resmi. Altın test değişmedi.
+
 ## v1.49 — Editör ve haritalar yeni modellerle, karakter ayrıntıları
 - **Harita editörü:** bina, ağaç, çam, kaya, meşale, cami, hamam, kervansaray varlıkları model kütüphanesinden çizilir; yeni varlıklar: gözetleme kulesi, sur, çarşı tezgâhı, çit, çadır, talim kuklası, varil, sandık. Özel haritalar bu modellerle kurulur.
 - **Av Ormanı:** ağaçlar (meşe/çam karışık), kayalar ve avcı kulübesi; **Demir Madeni:** meşaleler model kütüphanesinden. Çarpışmalar ve rastgelelik sırası aynı (altın test değişmedi).

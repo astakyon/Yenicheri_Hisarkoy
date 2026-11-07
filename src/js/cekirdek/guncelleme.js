@@ -30,6 +30,7 @@ function kameraGuncelle(){
   CAM.position.y+=(camHeight-CAM.position.y)*smooth;
   CAM.position.z+=((pl.z+Math.cos(camYawS)*camDist)-CAM.position.z)*smooth;
   CAM.lookAt(pl.x,0,pl.z);
+  kapatanGuncelle();
 }
 function update(dt){
   if(!playing||paused||!pl.mesh)return;
@@ -117,7 +118,32 @@ function checkCollision(px,pz,pr){
   }
   return false;
 }
-function clearColliders(){colliders=[];}
+function clearColliders(){colliders=[];kapatanlar=[];}
+// ── Bina arkasında saydamlaşma: kamera ile oyuncu arasına giren yüksek yapılar solar ──
+let kapatanlar=[];
+const _kRay=new THREE.Ray(),_kHedef=new THREE.Vector3(),_kYon=new THREE.Vector3(),_kNokta=new THREE.Vector3();
+function kapatanKaydet(o,minH){
+  if(!o||!S3)return;
+  const b=new THREE.Box3().setFromObject(o);
+  if(b.max.y-b.min.y<(minH||3))return;
+  const mats=[];o.traverse(function(m){if(m.material&&!m.isSprite)mats.push(m.material);});
+  b.expandByVector(new THREE.Vector3(-.2,0,-.2));
+  kapatanlar.push({box:b,mats:mats,a:1});
+}
+function kapatanGuncelle(){
+  if(!kapatanlar.length||!CAM||!pl)return;
+  _kHedef.set(pl.x,1.4,pl.z);_kYon.subVectors(_kHedef,CAM.position);const L=_kYon.length();_kYon.divideScalar(L||1);
+  _kRay.set(CAM.position,_kYon);
+  for(let i=0;i<kapatanlar.length;i++){
+    const k=kapatanlar[i];
+    const hit=_kRay.intersectBox(k.box,_kNokta);
+    const hedef=(hit&&CAM.position.distanceTo(_kNokta)<L-.5)?.2:1;
+    if(Math.abs(hedef-k.a)<.01)continue;
+    k.a+=(hedef-k.a)*.2;
+    const sey=k.a<.99;
+    for(let j=0;j<k.mats.length;j++){const m=k.mats[j];m.transparent=sey;m.opacity=k.a;m.depthWrite=!sey;}
+  }
+}
 
 // ── KIŞLA GÜNCELLEME ──
 function updateKisla(dt){

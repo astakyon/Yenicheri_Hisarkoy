@@ -136,7 +136,10 @@ function meBuildAssetPalette(){
     if(def.cat!==meActiveCategory)return;
     const btn=document.createElement('div');
     btn.className='meAssetBtn'+(meActiveAsset===key?' on':'');
-    btn.innerHTML=`<div class="maIcon">${def.icon}</div><div class="maName">${def.name}</div>`;
+    assetResim(key);
+    const _e=_arImg[key];
+    const ikon=(_e&&_e.url)?`<img class="maImg" src="${_e.url}" alt="">`:def.icon;
+    btn.innerHTML=`<div class="maIcon">${ikon}</div><div class="maName">${def.name}</div><div class="maBoy">${def.w}×${def.d}</div>`;
     btn.onclick=()=>{
       meActiveAsset=key;meEraserMode=false;meSpawnMode=false;
       document.getElementById('meEraserBtn').classList.remove('on');
@@ -200,9 +203,11 @@ function meDrawGrid(){
     ctx.fillRect(px-ME_CELL_PX/2,py-ME_CELL_PX/2,boxW,boxH);
     ctx.strokeStyle='rgba(42,58,92,.55)';ctx.lineWidth=1.2;
     ctx.strokeRect(px-ME_CELL_PX/2,py-ME_CELL_PX/2,boxW,boxH);
-    ctx.font=(Math.min(boxW,boxH)*0.55)+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    const rs=assetResim(cell.asset,meDrawGrid);
+    if(rs){const sc=Math.min(boxW/rs.width,boxH/rs.height)*1.05,iw=rs.width*sc,ih=rs.height*sc;ctx.drawImage(rs,px-ME_CELL_PX/2+(boxW-iw)/2,py-ME_CELL_PX/2+(boxH-ih)/2,iw,ih);}
+    else{ctx.font=(Math.min(boxW,boxH)*0.55)+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillStyle='#1c0e00';
-    ctx.fillText(def.icon,px-ME_CELL_PX/2+boxW/2,py-ME_CELL_PX/2+boxH/2);
+    ctx.fillText(def.icon,px-ME_CELL_PX/2+boxW/2,py-ME_CELL_PX/2+boxH/2);}
   });
 
   // Spawn noktası
@@ -395,6 +400,7 @@ function bx(x,y,z,w,h,d,col,edgeCol,solid){
   m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;S3.add(m);
   m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:edgeCol||0x6B4A0C})));
   if(solid!==false) addCollider(x,z,w,d);
+  if(solid!==false&&h>=3.5){m.updateMatrixWorld(true);kapatanKaydet(m,3.5);}
   return m;
 }
 

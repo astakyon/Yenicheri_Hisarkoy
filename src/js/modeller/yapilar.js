@@ -178,6 +178,43 @@ function _yapiSandik(o){
   return _ybitir();
 }
 
+// ── Mağara: kaya kütlesi + karanlık ağız (ağız -x yönüne bakar) ──
+function _yapiMagara(o){
+  const w=o.w||10,d=o.d||12,h=o.h||7;
+  _yk(w*.8,h*.9,d*.9,0x5a5248,.2,h*.45,0);
+  [[-.2,.5,-.35,.34],[.15,.6,.3,.3],[.1,.8,0,.38],[-.25,.35,.38,.26],[.3,.4,-.2,.3]].forEach(function(r,i){
+    _yk2(Math.min(w,d)*r[3]*1.5,i%2?0x6B6258:0x7a7066,r[0]*w,r[1]*h,r[2]*d,1.1,.85+i*.06,1.2);});
+  _yk(.8,h*.78,d*.55,0x0c0a08,-w/2+.5,h*.39,0);                                   // karanlık ağız
+  _yk(1.3,h*.12,d*.7,0x4a4438,-w/2+.2,h*.82,0);                                    // alın taşı
+  _yk(1.2,h*.8,1.3,0x4a4438,-w/2+.3,h*.4,d*.34);_yk(1.2,h*.8,1.3,0x4a4438,-w/2+.3,h*.4,-d*.34);   // ağız sütunları
+  for(let i=0;i<5;i++){_ykoni(.28,.9+i%3*.3,0x4a4438,-w/2+.9,h*.78,-d*.2+i*d*.1,5,0,1,1);}      // sarkıtlar
+  return _ybitir();
+}
+// ── Maden ahşap desteği: iki direk + kiriş + çapraz payanda ──
+function _yapiDestek(o){
+  const w=o.w||18,h=o.h||7;
+  [-1,1].forEach(function(sg){_yk(.6,h,.6,0x4a3018,sg*(w/2-.4),h/2,0);_yk(.9,.4,.9,0x2a1c10,sg*(w/2-.4),.2,0);
+    _yk(.2,2.2,.2,0x3a2410,sg*(w/2-1.6),h-1.2,0,0,0,sg*.8);});
+  _yk(w,.6,.7,0x4a3018,0,h,0);_yk(w-2,.25,.5,0x5a3c20,0,h-.55,0);
+  return _ybitir();
+}
+// ── Akarsu: su yüzeyi + taş kıyılar + kamışlar (uzunluk z boyunca) ──
+function _yapiNehir(o){
+  const L=o.L||96,w=o.w||6;
+  [-1,1].forEach(function(sg){
+    _yk(.9,.18,L,0x6a5c40,sg*(w/2+.45),.05,0);_yk(.5,.12,L,0x4a7a3a,sg*(w/2+1.1),.04,0);
+    for(let i=0;i<L/2.2;i++){const z=-L/2+i*2.2+((i*7)%5)*.2;const r=.25+((i*13)%5)*.07;
+      _yk2(r,i%2?0x787068:0x8a8478,sg*(w/2+.2+((i*3)%4)*.18),r*.35,z,1.3,.6,1);
+      if(i%3===0){_yk(.05,.8+(i%4)*.15,.05,0x6a8a3a,sg*(w/2+.9),.45,z+.3);_yk(.05,.7,.05,0x7a9a4a,sg*(w/2+.97),.4,z+.4);}}
+  });
+  const g=_ybitir();
+  const su=new THREE.Mesh(new THREE.PlaneGeometry(w,L),new THREE.MeshLambertMaterial({color:0x3070b0,transparent:true,opacity:.78}));
+  su.rotation.x=-Math.PI/2;su.position.y=.04;g.add(su);
+  const iz=new THREE.Mesh(new THREE.PlaneGeometry(w*.35,L),new THREE.MeshLambertMaterial({color:0x6aa8d8,transparent:true,opacity:.35}));
+  iz.rotation.x=-Math.PI/2;iz.position.y=.06;g.add(iz);
+  return g;
+}
+
 const _YD=[
   ['yapi_ev','Konut evi (cumbalı)',_yapiEv,{w:6,d:5},5.6],['yapi_kisla','Kışla / cebehane binası',_yapiKisla,{w:12,d:9},8.2],
   ['yapi_cami','Cami (kubbe ve minare)',_yapiCami,{w:9,d:9},15],['yapi_hamam','Sultan Hamamı',_yapiHamam,{w:16,d:16},9],
@@ -185,7 +222,7 @@ const _YD=[
   ['yapi_kule','Gözetleme kulesi',_yapiKule,{r:2.2,h:9},13],['yapi_sur','Sur parçası',_yapiSur,{w:10},6],['yapi_cit','Tahta çit',_yapiCit,{w:6},1.5],
   ['yapi_talim','Talim kuklası',_yapiMasa,{},3],
   ['cevre_agac','Meşe ağacı',_yapiAgac,{h:5},6],['cevre_cam','Çam ağacı',_yapiCam,{h:6.5},6.5],['cevre_kaya','Kaya',_yapiKaya,{s:1.2},1.7],
-  ['cevre_cadir','Çadır',_yapiCadir,{r:2.2},4.4],['cevre_mesale','Meşale',_yapiMesale,{},3.2],['cevre_varil','Varil',_yapiVaril,{},1],['cevre_sandik','Sandık',_yapiSandik,{},.75]
+  ['cevre_cadir','Çadır',_yapiCadir,{r:2.2},4.4],['cevre_magara','Mağara',_yapiMagara,{w:10,d:12,h:7},7],['cevre_destek','Maden desteği',_yapiDestek,{w:18,h:7},7],['cevre_nehir','Akarsu',_yapiNehir,{L:96,w:6},.5],['cevre_mesale','Meşale',_yapiMesale,{},3.2],['cevre_varil','Varil',_yapiVaril,{},1],['cevre_sandik','Sandık',_yapiSandik,{},.75]
 ];
 _YD.forEach(function(d){
   modelTanimla(d[0],{ad:d[1],grup:d[0].indexOf('yapi_')===0?'Yapı':'Çevre',boy:d[4],varsayilan:d[3],yap:function(op){return d[2](Object.assign({},d[3],op||{}));}});
@@ -195,5 +232,6 @@ _YD.forEach(function(d){
 function yapiKoy(id,x,z,op,carp){
   const g=modelYap(id,op);g.position.set(x,0,z);S3.add(g);
   if(carp)addCollider(x,z,carp[0],carp[1]);
+  if(id.indexOf('yapi_')===0||id==='cevre_magara'){g.updateMatrixWorld(true);kapatanKaydet(g,4);}
   return g;
 }

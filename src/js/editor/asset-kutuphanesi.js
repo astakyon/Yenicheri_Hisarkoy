@@ -91,7 +91,7 @@ const ASSET_DEFS={
   ];
   T.forEach(function(t){
     const d=ASSET_DEFS[t[0]];if(!d||!t[1])return;
-    d.w=t[2];d.d=t[3];
+    d.w=t[2];d.d=t[3];d.model=t[1];d.mop=t[4];
     d.build3D=function(x,z,rot,opt){
       const g=modelYap(t[1],t[4]);g.position.set(x,0,z);S3.add(g);
       const c=t[5];if(c){if(c[0]==='r')addCircleCollider(x,z,c[1]);else addCollider(x,z,c[0],c[1]);}
@@ -112,12 +112,41 @@ const ASSET_DEFS={
   };
   Object.keys(Y).forEach(function(k){
     const e=Y[k];
-    ASSET_DEFS[k]={cat:e.cat,name:e.name,icon:e.icon,w:e.w,d:e.d,build3D:function(x,z){
+    ASSET_DEFS[k]={cat:e.cat,name:e.name,icon:e.icon,w:e.w,d:e.d,model:e.m,mop:e.op,build3D:function(x,z){
       const g=modelYap(e.m,e.op);g.position.set(x,0,z);S3.add(g);
       if(e.c[0]==='r')addCircleCollider(x,z,e.c[1]);else addCollider(x,z,e.c[0],e.c[1]);
       return g;}};
   });
 })();
+
+// ── Editör küçük resimleri: model kütüphanesinden çevrimdışı çizilir ──
+let _arR=null,_arS=null,_arC=null;const _arImg={};
+function assetResimUret(modelId,op){
+  try{
+    if(!_arR){
+      const cv=document.createElement('canvas');cv.width=cv.height=112;
+      _arR=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true,preserveDrawingBuffer:true});_arR.setSize(112,112,false);_arR.setClearColor(0,0);
+      _arS=new THREE.Scene();_arS.add(new THREE.AmbientLight(0xffffff,1.1));const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(4,8,5);_arS.add(dl);
+      _arC=new THREE.PerspectiveCamera(30,1,.1,500);
+    }
+    const g=modelYap(modelId,op||{});_arS.add(g);g.updateMatrixWorld(true);
+    const b=new THREE.Box3().setFromObject(g),c=b.getCenter(new THREE.Vector3()),r=b.getSize(new THREE.Vector3()).length()/2||1;
+    const dist=r/Math.sin(15*Math.PI/180)*1.02;
+    _arC.position.set(c.x+dist*.55,c.y+dist*.5,c.z+dist*.68);_arC.lookAt(c);
+    _arR.render(_arS,_arC);const url=_arR.domElement.toDataURL('image/png');
+    _arS.remove(g);return url;
+  }catch(e){return null;}
+}
+function assetResim(key,sonra){
+  const d=ASSET_DEFS[key];if(!d||!d.model)return null;
+  let e=_arImg[key];
+  if(!e){
+    const url=assetResimUret(d.model,d.mop);if(!url){_arImg[key]={img:null};return null;}
+    const im=new Image();e=_arImg[key]={img:im,hazir:false,url:url};
+    im.onload=function(){e.hazir=true;if(sonra)sonra();};im.src=url;
+  }
+  return e.img&&e.hazir?e.img:null;
+}
 const ASSET_CATEGORIES=[
   {id:'bina',name:'Binalar',icon:'🏠'},
   {id:'doga',name:'Doğa',icon:'🌳'},
