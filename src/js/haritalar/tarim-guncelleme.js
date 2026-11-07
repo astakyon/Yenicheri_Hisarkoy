@@ -13,16 +13,19 @@ function spawnTarimEskiya(isBoss,kenar){
   const sp=kenar||TARIM_BASKIN[Math.floor(Math.random()*TARIM_BASKIN.length)];
   const ex=sp[0]+(Math.random()-.5)*3,ez=sp[1]+(Math.random()-.5)*3;
   g.position.set(ex,0,ez);S3.add(g);
-  enemies.push({id:newNetId(),mesh:g,hpFl,hpBg,govde:g.userData.govde,mid:isBoss?'eskiya_boss':'eskiya',hp,maxHp:hp,x:ex,z:ez,spd:isBoss?.05:.055+wave*.004,isBoss,hurtT:0,animalType:'eskiya',aggressive:true,atkDmg:isBoss?10:3,state:'attacking',wanderAng:0,wanderT:0,xpReward:isBoss?320:18,goldReward:[10,18]});
+  enemies.push({id:newNetId(),mesh:g,hpFl,hpBg,govde:g.userData.govde,mid:isBoss?'eskiya_boss':'eskiya',hp,maxHp:hp,x:ex,z:ez,spd:isBoss?.036:.03+wave*.002,isBoss,hurtT:0,animalType:'eskiya',aggressive:true,atkDmg:isBoss?10:3,state:'attacking',wanderAng:0,wanderT:0,xpReward:isBoss?320:18,goldReward:[10,18]});
 }
 
+const TARIM_YON=['kuzeybatıdan','kuzeyden','kuzeydoğudan','batıdan','doğudan','güneybatıdan','güneydoğudan'];
+// Baskın uyarıyla ve tek tek gelir: ilk eşkıya 4 sn sonra, sonrakiler ~1.7 sn arayla aynı yönden
 function spawnTarimWave(n){
   waveActive=true;
   tarimTahilYenile();
   const isBoss=n%5===0;
-  const cnt=isBoss?3:3+Math.floor(n*1.3);
-  showWave(isBoss?'⚠ EŞKIYA BAŞI BASKIN YAPIYOR!':'🌾 Baskın '+n+' — '+cnt+' Eşkıya');
-  for(let i=0;i<cnt;i++)spawnTarimEskiya(isBoss&&i===0);
+  const cnt=isBoss?3:2+Math.floor(n*.8);
+  const yon=Math.floor(Math.random()*TARIM_BASKIN.length);
+  showWave(isBoss?'⚠ EŞKIYA BAŞI '+TARIM_YON[yon]+' geliyor!':'🌾 Baskın '+n+' — '+cnt+' eşkıya '+TARIM_YON[yon]+' geliyor');
+  for(let i=0;i<cnt;i++)tarimKuyruk.push({t:240+i*100,boss:isBoss&&i===0,nokta:TARIM_BASKIN[yon]});
 }
 
 function tarimKoyluGuncelle(){
@@ -30,7 +33,9 @@ function tarimKoyluGuncelle(){
   tarimKoyluler.forEach(function(k){
     if(k.hp<=0)return;
     // en yakın eşkıya
-    let en0=null,ed=9;enemies.forEach(function(en){const d=Math.hypot(en.x-k.x,en.z-k.z);if(d<ed){ed=d;en0=en;}});
+    let en0=null,ed=7;enemies.forEach(function(en){const d=Math.hypot(en.x-k.x,en.z-k.z);if(d<ed){ed=d;en0=en;}});
+    // köylü de kendini savunur: yanındaki eşkıyaya tırmıkla vurur
+    if(en0&&ed<2){k.vurT=(k.vurT||0)-1;if(k.vurT<=0){k.vurT=40;en0.hp-=2;en0.hurtT=9;addFX(en0.x,en0.z,0xFFD24A,3);}}
     let vx=0,vz=0;
     if(k.donuk){/* köşeye sıkışmış / test */}
     else if(en0){const dx=k.x-en0.x,dz=k.z-en0.z,d=Math.hypot(dx,dz)||1;vx=dx/d*.075;vz=dz/d*.075;k.ang=Math.atan2(vz,vx);}   // kaç
@@ -97,6 +102,7 @@ function updateTarim(dt){
   tarimEtkilesim();
   tarimTahilTopla();
   const canli=tarimKoyluGuncelle();
+  tarimKuyruk=tarimKuyruk.filter(function(q){q.t--;if(q.t<=0){spawnTarimEskiya(q.boss,q.nokta);return false;}return true;});
 
   const magDist=getMagnetDist();
   lootGuncelle(magDist,'+Deri','+Metal',false);
@@ -137,7 +143,7 @@ function updateTarim(dt){
           tp.ifr=28;
         }
       }else if(en.vurT<=0){
-        en.vurT=40;hedefK.hp-=(en.atkDmg||3)*1.3;addFX(hedefK.x,hedefK.z,0xcc2222,5);
+        en.vurT=50;hedefK.hp-=(en.atkDmg||3);addFX(hedefK.x,hedefK.z,0xcc2222,5);
         if(hedefK.hp<=0){S3.remove(hedefK.mesh);lootPop('☠ Bir köylü düştü! ('+(tarimKoyluler.filter(function(k){return k.hp>0;}).length)+' kaldı)');}
       }
     }
@@ -166,7 +172,7 @@ function updateTarim(dt){
 
   if(canli===0&&playing){tarimKoyYandi();return;}
 
-  if(enemies.length===0&&waveActive){
+  if(enemies.length===0&&tarimKuyruk.length===0&&waveActive){
     waveActive=false;
     // Hayatta kalan her köylü için şükran armağanı
     const bonus=canli*6;if(bonus>0){addPoolGold(bonus);akce+=bonus;lootPop('🌾 '+canli+' köylü hayatta: +'+bonus+' Akçe');}

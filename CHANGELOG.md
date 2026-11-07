@@ -1,5 +1,15 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.63 — Çiftlik haritası (ek, biç, sat)
+- **Çiftlik** (🌱): düşmansız tarım haritası, 12 parsel. Tohum rafında ekin seç (Arpa 3 akçe/30 sn, Buğday 5/60 sn, Pamuk 9/100 sn, Üzüm 14/150 sn), parsele ek, olgunlaşınca [E] ile biç, pazar tezgâhında sat (satış 8 / 16 / 30 / 48 akçe). Doğrudan ana akçeye yazılır.
+- Parseller gerçek zamanla büyür ve kayıtlıdır: oyundan çıksan da büyümeye devam eder.
+- Test: ulaşılabilirlik, ek/büyü/biç/sat/çıkış akışı, performans bütçesi.
+
+## v1.62 — Karakter özelleştirme, silah gösterimi, Tarım dengesi
+- **Karakterim** (ana menü): kıyafet, kemer, şalvar, yaka, düğme, toka, börk, kaşık ve bıyık rengi; 6 bıyık/sakal tipi (yok, klasik, kalın, sivri, uzun, sakallı); 4 başlık (börk, kısa börk, sarık, fes). Seçimler kayıtlıdır ve canlı önizlenir. Co-op'ta diğer oyuncular şimdilik varsayılan görünümü görür.
+- **Silahlar:** sırttaki tahta (tüfek) ve elde sürekli duran kılıç kaldırıldı. Kılıç kınında belde; tüfek/yay seçiliyken sırtta; saldırınca, yakında düşman varken ya da silah seçince ele gelir, ~5 sn sonra geri takılır.
+- **Tarım Ovası:** eşkıyalar 2 kat yavaş ve tek tek gelir (uyarı + yön: "kuzeyden geliyor"), ilk eşkıya 4 sn sonra; baskın başına sayı azaldı; köylüler 70 can ve yanındaki eşkıyaya tırmıkla vurur, eşkıyadan daha geç kaçmaya başlar.
+
 ## v1.61 — Yeni harita: Tarım Ovası
 - **Tarım Ovası açıldı** (🌾 haritalar listesinde ve büyük haritada): 4 tarla (buğday sıraları, çit ve geçitlerle), ortada köy yolu, 6 ev, kuyu, ağaçlar. Harita `TARIM_TARLALAR` / `TARIM_EVLER` verisinden üretilir.
 - **Görev:** 6 köylüyü eşkıya baskınlarından koru. Eşkıyalar 7 kenar noktasından girer, en yakın köylüye ya da sana saldırır; köylüler eşkıyadan kaçar. Her baskın sonunda hayatta kalan köylü başına 6 akçe ve biraz can yenilenmesi. 5. baskın Eşkıya Başı. Tüm köylüler ölürse "Köy Yandı" ve havuzdaki akçe kaybolur.

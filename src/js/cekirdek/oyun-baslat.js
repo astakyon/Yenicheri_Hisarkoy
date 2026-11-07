@@ -7,7 +7,7 @@ function BEGIN(mapId){
   document.getElementById('hudLayer').style.display='block';
   document.getElementById('topBar').style.display='flex';document.getElementById('mmBox').style.display='block';document.getElementById('topLeftHud').style.display='flex';
   initThree();
-  if(mapId==='kisla')startKisla();else if(mapId==='orman')startOrman();else if(mapId==='maden')startMaden();else if(mapId==='tarim')startTarim();else startGorev();
+  if(mapId==='kisla')startKisla();else if(mapId==='orman')startOrman();else if(mapId==='maden')startMaden();else if(mapId==='tarim')startTarim();else if(mapId==='ciftlik')startCiftlik();else startGorev();
   setTimeout(()=>{ initTouch(); applyAllSettings(); },100);
   updateGoldHud();
   updateXPHud();
@@ -165,4 +165,24 @@ function startTarim(){
   questTracker={kills:0,waves:0,bossKills:0};
   setTimeout(()=>lootPop('🌾 Köylüleri koru, tarlalardan tahıl topla!'),1500);
   spawnTarimWave(1);
+}
+
+function startCiftlik(){
+  currentMap='ciftlik';
+  clearAll();
+  buildCiftlik(); // içinde MAP_HALF=38 set ediliyor
+  pl.x=0;pl.z=28;
+  pl.maxHp=getBaseMaxHp();pl.hp=pl.maxHp;
+  pl.maxEn=getBaseMaxEn();pl.en=pl.maxEn;
+  pl.spd=getBaseSpd();pl.rspd=pl.spd*1.8;
+  buildPlayer();
+  akce=0;kills=0;wave=1;waveTimer=0;waveActive=false;gt=0;
+  poolGold=0;updateGoldHud();
+  document.getElementById('akceV').textContent=0;
+  document.getElementById('killV').textContent=0;
+  playing=true;paused=false;
+  document.getElementById('mapIndicator').textContent='🌱 ÇİFTLİK — Ek, Biç, Sat';
+  const btmBarEl=document.getElementById('btmBar');if(btmBarEl)btmBarEl.style.display='flex';
+  questTracker={kills:0,waves:0,bossKills:0};
+  setTimeout(()=>lootPop('🌱 Tohum rafından ekin seç, parsele ek, olgunlaşınca biç, pazarda sat!'),1500);
 }

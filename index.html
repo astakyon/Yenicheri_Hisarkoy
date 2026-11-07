@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.61">
+<meta name="game-version" content="v1.63">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.61</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.63</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -519,12 +519,13 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.61</div>
+      <div id="mVer">v1.63</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
       <button class="mBtn" onclick="openChapters()">🗺 BÖLÜMLER</button>
       <button class="mBtn" onclick="coopAc()">👥 ÇOK OYUNCULU</button>
+      <button class="mBtn" onclick="gorunumAc()">🎨 KARAKTERİM</button>
       <button class="mBtn" onclick="kutuphaneAc()">🧰 MODEL KÜTÜPHANESİ</button>
       <button class="mBtn" onclick="openMapEditor()">🛠 HARİTA EDİTÖRÜ</button>
       <button class="mBtn" onclick="showDlg('📜 Nasıl Oynanır','WASD / Joystick → Hareket\nShift / 🏃 → Koşma\nFare / ⚔ → Saldır\n1/2/3 → Silah seç\nE / Kapı → Bölgeye Gir\nKışlada Demir Kapı → Göreve Çık\nEsc → Duraklat','Anlaşıldı!',hideDlg)">📜 NASIL OYNANIR</button>
@@ -537,6 +538,18 @@ canvas{display:block;position:absolute;top:0;left:0;}
   </div>
 
   <!-- ── AYARLAR PANELİ ── -->
+  <!-- ── KARAKTER ÖZELLEŞTİRME ── -->
+  <div id="gorunumBox" style="display:none;position:absolute;inset:0;z-index:22;background:rgba(0,0,0,.35);align-items:center;justify-content:flex-start;padding-left:3vw;">
+    <div class="panel" id="gorunumPanel" style="width:min(400px,94vw);max-height:92vh;overflow-y:auto;">
+      <div class="panTitle">🎨 KARAKTERİM</div>
+      <div class="panSub">RENK, BIYIK VE BÖRK</div>
+      <div id="gorunumIc"></div>
+      <div class="divider"></div>
+      <button class="panBtn" onclick="gorunumSifirla()">↺ Varsayılana dön</button>
+      <button class="panBtn grn" onclick="gorunumKapat()">✔ Tamam</button>
+    </div>
+  </div>
+
   <div id="settingsBox" style="display:none;position:absolute;inset:0;z-index:22;background:rgba(0,0,0,.82);align-items:center;justify-content:center;">
     <div class="panel" style="width:min(320px,92vw);">
       <div class="panTitle">⚙ AYARLAR</div>
@@ -920,7 +933,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.61';
+const VERSION='v1.63';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -945,7 +958,7 @@ let SAVE={
   daily:{date:'', quests:[], completed:[]},
   achievements:{},
   stats:{kills:0,bossKills:0,highWave:0,totalXp:0,totalGoldEarned:0,animalsHunted:0},
-  mapsUnlocked:{orman:true,maden:true,tarim:true}
+  mapsUnlocked:{orman:true,maden:true,tarim:true,ciftlik:true}
 };
 function saveGame(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(SAVE));}catch(e){}}
 function loadGame(){
@@ -961,7 +974,7 @@ function loadGame(){
       SAVE.daily={...SAVE.daily,...(p.daily||{})};
       SAVE.achievements={...SAVE.achievements,...(p.achievements||{})};
       SAVE.stats={...SAVE.stats,...(p.stats||{})};
-      SAVE.mapsUnlocked={...SAVE.mapsUnlocked,...(p.mapsUnlocked||{}),orman:true,maden:true,tarim:true}; // v1.56: Orman, Maden (v1.61: Tarım) herkese açık
+      SAVE.mapsUnlocked={...SAVE.mapsUnlocked,...(p.mapsUnlocked||{}),orman:true,maden:true,tarim:true,ciftlik:true}; // v1.56: Orman, Maden (v1.61: Tarım) herkese açık
     }
   }catch(e){}
 }
@@ -2013,6 +2026,49 @@ function menuKahramanCiz(){
   try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(function(){});}catch(e){}
 })();
 // ═══════════════════════════════════════════════════════
+// KARAKTER ÖZELLEŞTİRME (v1.62) — renkler, bıyık ve börk tipi; SAVE.gorunum'a kaydedilir
+// ═══════════════════════════════════════════════════════
+const GORUNUM_SATIRLAR=[
+  {k:'gov',ad:'Kıyafet',renk:[0x9B2020,0x1F5FA8,0x2E7D32,0x6A1B9A,0x1a1a1a,0xB8860B,0x6D4C41,0x00796B]},
+  {k:'sash',ad:'Kemer (kuşak)',renk:[0x2a3f8a,0x8B1818,0x2E7D32,0x1a1a1a,0xD4A82A,0x6A1B9A,0xEFE6CE,0x6D4C41]},
+  {k:'sal',ad:'Şalvar',renk:[0x2a3f8a,0x8B1818,0x1a1a1a,0x2E7D32,0x6D4C41,0x6A1B9A,0xEFE6CE,0x455A64]},
+  {k:'yaka',ad:'Yaka ve şerit',renk:[0xD4A82A,0xC0C0C8,0x8B1818,0x1F5FA8,0x2E7D32,0xEFE6CE,0x1a1a1a,0xB87333]},
+  {k:'dugme',ad:'Düğme',renk:[0xD4A82A,0xC0C0C8,0x8B1818,0x1F5FA8,0x2E7D32,0xEFE6CE,0x1a1a1a,0xB87333]},
+  {k:'toka',ad:'Kemer tokası',renk:[0xD4A82A,0xC0C0C8,0xB87333,0x1a1a1a,0x8B1818,0x1F5FA8,0x2E7D32,0xEFE6CE]},
+  {k:'bork',ad:'Börk',renk:[0xE8DCC0,0xFFFFFF,0xB02020,0x1F5FA8,0x2E7D32,0x3a2a1a,0x1a1a1a,0xD4A82A]},
+  {k:'kasik',ad:'Kaşık',renk:[0xC8C8CC,0xD4A82A,0xB87333,0x3a2a1a,0xFFFFFF,0x8B1818,0x1F5FA8,0x1a1a1a]},
+  {k:'biyik',ad:'Bıyık / sakal rengi',renk:[0x3a2000,0x1a1008,0x6a4a1a,0x9a6a2a,0xB0B0B0,0xE8E8E8,0x8B1818,0xC8941C]}
+];
+const GORUNUM_TIPLER=[
+  {k:'biyikTip',ad:'Bıyık',sec:[['yok','Yok'],['klasik','Klasik'],['kalin','Kalın'],['sivri','Sivri uçlu'],['uzun','Uzun sarkık'],['sakal','Sakallı']]},
+  {k:'borkTip',ad:'Başlık',sec:[['klasik','Börk'],['kisa','Kısa börk'],['sarik','Sarık'],['fes','Fes']]}
+];
+function _hex6(n){return '#'+('000000'+n.toString(16)).slice(-6);}
+function gorunumCiz(){
+  const g=gorunumOku(),ic=document.getElementById('gorunumIc');if(!ic)return;
+  let h='';
+  GORUNUM_TIPLER.forEach(function(t){
+    h+='<div class="toggleLabel" style="margin:8px 0 4px">'+t.ad+'</div><div style="display:flex;flex-wrap:wrap;gap:5px">';
+    t.sec.forEach(function(o){h+='<button class="panBtn'+(g[t.k]===o[0]?' grn':'')+'" style="width:auto;margin:0;padding:6px 10px" onclick="gorunumDegis(\''+t.k+'\',\''+o[0]+'\')">'+o[1]+'</button>';});
+    h+='</div>';
+  });
+  GORUNUM_SATIRLAR.forEach(function(r){
+    h+='<div class="toggleLabel" style="margin:10px 0 4px">'+r.ad+'</div><div style="display:flex;flex-wrap:wrap;gap:6px">';
+    r.renk.forEach(function(c){h+='<button aria-label="'+_hex6(c)+'" onclick="gorunumDegis(\''+r.k+'\','+c+')" style="width:32px;height:32px;border-radius:50%;cursor:pointer;background:'+_hex6(c)+';border:3px solid '+(g[r.k]===c?'#FFD24A':'#4a3410')+'"></button>';});
+    h+='</div>';
+  });
+  ic.innerHTML=h;
+}
+function gorunumAc(){document.getElementById('gorunumBox').style.display='flex';gorunumCiz();}
+function gorunumKapat(){document.getElementById('gorunumBox').style.display='none';}
+function gorunumYenile(){
+  if(typeof HERO!=='undefined'&&HERO.s&&HERO.g){HERO.s.remove(HERO.g);HERO.g=modelYap('yeniceri');HERO.s.add(HERO.g);}
+}
+function gorunumDegis(k,v){
+  SAVE.gorunum=Object.assign(gorunumOku(),{[k]:v});saveGame();gorunumCiz();gorunumYenile();
+}
+function gorunumSifirla(){SAVE.gorunum=null;saveGame();gorunumCiz();gorunumYenile();}
+// ═══════════════════════════════════════════════════════
 // OYUN STATE
 // ═══════════════════════════════════════════════════════
 let S3=null,CAM=null,REN=null,CLK=null,RC=null,GP=null;
@@ -2183,10 +2239,16 @@ function _insanGeo(o){
   G.push([sph(.06,6,5),o.ten||_TEN,-.27,2.13,0,0,0,0,.6,1,.8]);G.push([sph(.06,6,5),o.ten||_TEN,.27,2.13,0,0,0,0,.6,1,.8]);   // kulaklar
   G.push([cyl(.575,.575,.06,12),o.yaka||o.sash,0,.47,0]);               // etek şeridi
   G.push([box(.1,.42,.05),o.sash,.3,.9,.44,0,0,.15]);G.push([box(.1,.36,.05),o.sash,.22,.92,.45,0,0,-.2]);   // kuşak uçları
-  G.push([box(.12,.12,.05),0xD4A82A,0,1.1,.46]);                        // kemer tokası
-  [1.62,1.48,1.34].forEach(function(yy){G.push([sph(.028,5,4),o.yaka||0xD4A82A,0,yy,.385]);});   // düğmeler
+  G.push([box(.12,.12,.05),o.tokaC||0xD4A82A,0,1.1,.46]);                        // kemer tokası
+  [1.62,1.48,1.34].forEach(function(yy){G.push([sph(.028,5,4),o.dugmeC||o.yaka||0xD4A82A,0,yy,.385]);});   // düğmeler
   if(o.fisek){G.push([box(.09,.95,.05),0x5a3a1a,0,1.45,.4,0,0,.62]);for(let i=0;i<4;i++)G.push([box(.07,.09,.07),0xC8B070,-.2+i*.13,1.28+i*.17,.43,0,0,.62]);}   // fişeklik
-  if(o.biyik)G.push([box(.3,.06,.08),o.biyik,0,2.05,.25]);
+  if(o.biyik){const bt=o.biyikTip||'klasik',bc2=o.biyik;
+    if(bt==='klasik')G.push([box(.3,.06,.08),bc2,0,2.05,.25]);
+    else if(bt==='kalin'){G.push([box(.36,.1,.1),bc2,0,2.05,.25]);}
+    else if(bt==='sivri'){G.push([box(.22,.06,.08),bc2,0,2.05,.25]);G.push([box(.14,.05,.07),bc2,-.17,2.09,.25,0,0,.5]);G.push([box(.14,.05,.07),bc2,.17,2.09,.25,0,0,-.5]);}
+    else if(bt==='uzun'){G.push([box(.2,.06,.08),bc2,0,2.05,.25]);G.push([box(.05,.2,.06),bc2,-.14,1.96,.25]);G.push([box(.05,.2,.06),bc2,.14,1.96,.25]);}
+    else if(bt==='sakal'){G.push([box(.3,.06,.08),bc2,0,2.05,.25]);G.push([box(.3,.26,.1),bc2,0,1.93,.2,.2]);}
+  }
   if(o.sakal)G.push([box(.3,.22,.1),o.sakal,0,1.95,.2,.2]);
   const sp=o.sapka;
   if(sp==='bork'){
@@ -2196,12 +2258,13 @@ function _insanGeo(o){
     G.push([cyl(.22,.3,.52,14),keçe,0,2.7,-.02,-.05]);                               // gövde: yukarı daralan, hafif geriye yatık
     G.push([sph(.23,12,8),keçe,0,2.98,-.06,0,0,0,1,.5,1]);                           // yuvarlak tepe
     G.push([cyl(.17,.2,.14,12),0xD8C9A0,0,2.95,-.05,-.05]);                          // tepe kıvrımı
-    G.push([cyl(.09,.2,.9,8),keçe,0,2.2,-.36,.14,0,0,1,1,.38]);                      // sırta sarkan uzun kuyruk (yeniçeri börkü)
-    G.push([cyl(.215,.215,.05,12),altin,0,1.78,-.4,.14,0,0,1,.4,.45]);               // kuyruk ucu şeridi
+    if(o.borkTip!=='kisa'){G.push([cyl(.09,.2,.9,8),keçe,0,2.2,-.36,.14,0,0,1,1,.38]);G.push([cyl(.215,.215,.05,12),altin,0,1.78,-.4,.14,0,0,1,.4,.45]);}   // sırta sarkan uzun kuyruk (yeniçeri börkü)
     G.push([box(.22,.28,.06),altin,0,2.42,.33]);                                     // kaşıklık yuvası (altın plaka)
     G.push([box(.14,.2,.04),0x8a6a14,0,2.42,.365]);                                  // plaka kabartması
-    G.push([cyl(.025,.025,.3,6),0xC8C8CC,.05,2.66,.34,.18,0,-.12]);                  // kaşık sapı
-    G.push([sph(.065,8,6),0xC8C8CC,.075,2.84,.33,0,0,0,1,1.4,.5]);                   // kaşık yuvarlağı
+    G.push([cyl(.025,.025,.3,6),o.kasikC||0xC8C8CC,.05,2.66,.34,.18,0,-.12]);                  // kaşık sapı
+    G.push([sph(.065,8,6),o.kasikC||0xC8C8CC,.075,2.84,.33,0,0,0,1,1.4,.5]);                   // kaşık yuvarlağı
+  }else if(sp==='fes'){
+    const fc=o.sapkaC||0xB02020;G.push([cyl(.27,.31,.34,14),fc,0,2.46,0]);G.push([cyl(.27,.27,.03,14),0x2a1a0a,0,2.64,0]);G.push([cyl(.012,.012,.3,5),0xD4A82A,.1,2.62,0,0,0,.3]);G.push([sph(.045,6,5),0xD4A82A,.19,2.46,0]);
   }else if(sp==='kask'){
     G.push([_g('SphereGeometry',.32,10,6,0,Math.PI*2,0,Math.PI/2),o.sapkaC,0,2.26,0]);G.push([_g('ConeGeometry',.05,.28,6),0xC0C0C0,0,2.66,0]);
     G.push([box(.06,.22,.04),o.sapkaC,0,2.12,.3]);
@@ -2213,13 +2276,6 @@ function _insanGeo(o){
   }
   if(o.omuz){G.push([sph(.2,8,6),o.omuz,-.52,1.82,0,0,0,0,1,.7,1.1]);G.push([sph(.2,8,6),o.omuz,.52,1.82,0,0,0,0,1,.7,1.1]);}
   if(o.pelerin)G.push([box(.8,1.25,.05),o.pelerin,0,1.4,-.34,.1]);
-  if(o.tufekSirt){
-    G.push([box(.09,.2,.62),0x5a3a1a,.16,1.2,-.38,.0,0,.62]);                       // dipçik (sağ kalça arkası)
-    G.push([cyl(.025,.025,1.25,6),0x6b6b72,-.12,1.85,-.4,0,0,.62]);                 // namlu (sol omuz üstüne uzanır)
-    G.push([box(.07,.07,.5),0x4a2c12,.0,1.62,-.38,0,0,.62]);                        // gövde
-    G.push([box(.07,.9,.03),0x3a2410,0,1.5,.39,0,0,.65]);                           // göğüsten geçen kayış
-    G.push([box(.08,.08,.04),0xD4A82A,.18,1.3,.41]);                                // kayış tokası
-  }
   if(o.taç)G.push([_g('ConeGeometry',.26,.3,6),0xFFD700,0,2.8,0]);
   const govde=_birles(G);
   const bc=[[cyl(.2,.15,.55,8),o.sal,0,-.28,0],[cyl(.12,.11,.34,8),o.sal2||o.sal,0,-.62,0],[cyl(.15,.15,.12,8),o.bot,0,-.72,0],[box(.27,.18,.42),o.bot,0,-.82,.06],[box(.25,.1,.16),0x1a0e04,0,-.86,.22],[box(.29,.04,.44),0x1a0e04,0,-.92,.06]];
@@ -2241,21 +2297,45 @@ function _insanYap(o,s){
   const bs=_pivot(ic,-.2,.92,0),bg=_pivot(ic,.2,.92,0);bs.add(_parca(gm.bacak));bg.add(_parca(gm.bacak));
   const ks=_pivot(ic,-.5,1.74,0),kg=_pivot(ic,.5,1.74,0);ks.add(_parca(gm.kolSol));kg.add(_parca(gm.kolSag));
   kg.rotation.x=-.35;
-  if(o.adliBicak){   // oyuncunun silah rengi (kılıç/tüfek/…) seçime göre değişir: kendi malzemesi
-    const celik=new THREE.MeshLambertMaterial({color:0xC9CED8});
-    const bl=new THREE.Mesh(_g('BoxGeometry',.075,.95,.025),celik);bl.name='wpn';bl.position.set(0,-.05,.06);bl.rotation.x=-.12;kg.add(bl);
-    const tip=new THREE.Mesh(_g('BoxGeometry',.06,.2,.025),celik);tip.position.set(.04,.55,0);tip.rotation.z=-.4;bl.add(tip);tip.name='wpn2';
-    const kor=new THREE.Mesh(_g('BoxGeometry',.1,.012,.012),new THREE.MeshLambertMaterial({color:0x8a9098}));kor.position.set(0,0,.016);bl.add(kor);
-    const kabze=new THREE.Mesh(_g('BoxGeometry',.07,.2,.07),new THREE.MeshLambertMaterial({color:0x4a2c12}));kabze.position.set(0,-.58,.04);kg.add(kabze);
-    const siper=new THREE.Mesh(_g('BoxGeometry',.24,.04,.07),new THREE.MeshLambertMaterial({color:0xD4A82A}));siper.position.set(0,-.46,.06);kg.add(siper);
+  if(o.adliBicak){   // oyuncunun silahları: kılıç kınında, tüfek/yay sırtta; savaşta ya da silah seçilince ele gelir (modelSilahGoster)
+    const celik=0xC9CED8,altin=o.tokaC||0xD4A82A,deri=0x2a1a0a,ahsap=0x5a3a1a;
+    const mk=function(par,k){const key='silah_'+k+'_'+altin;if(!_GC[key])_GC[key]=_birles(par);return _parca(_GC[key]);};
+    const box2=function(w,h,d){return _g('BoxGeometry',w,h,d);},cy=function(a,b,h,n){return _g('CylinderGeometry',a,b,h,n||6);};
+    const yay=function(c,ry){return[[_g('TorusGeometry',.5,.025,6,16,Math.PI),0x6a4a2a,0,0,0,0,ry,-Math.PI/2,1,.55,1],[box2(.012,1.0,.012),0xE8E0D0,0,0,0]].map(function(q){return q;});};
+    const elKilic=mk([[box2(.075,.95,.025),celik,0,-.05,.06,-.12],[box2(.06,.2,.025),celik,.03,.52,.07,-.12,0,-.4],[box2(.1,.012,.012),0x8a9098,0,-.05,.076,-.12],[box2(.07,.2,.07),0x4a2c12,0,-.58,.04],[box2(.24,.04,.07),altin,0,-.46,.06]],'kilic');
+    elKilic.name='wpn';kg.add(elKilic);
+    const elTufek=mk([[box2(.07,.07,1.0),ahsap,0,-.55,.4],[box2(.05,.05,.5),0x888888,0,-.55,.9]],'tufek_el');kg.add(elTufek);
+    const elYay=mk(yay(0,-Math.PI/2).map(function(q,i){return[q[0],q[1],0,-.55,.3+0,q[5],q[6],q[7],q[8],q[9],q[10]];}),'yay_el');kg.add(elYay);
+    const kin=mk([[box2(.07,.8,.08),deri,0,0,0],[box2(.09,.1,.1),altin,0,-.4,0],[box2(.07,.2,.07),0x4a2c12,0,.5,0],[box2(.22,.04,.07),altin,0,.4,0]],'kin');
+    kin.position.set(-.52,.82,-.08);kin.rotation.z=.3;ic.add(kin);
+    const sirtTufek=mk([[box2(.09,.2,.62),ahsap,.16,1.2,-.38,0,0,.62],[cy(.025,.025,1.25),0x6b6b72,-.12,1.85,-.4,0,0,.62],[box2(.07,.07,.5),0x4a2c12,0,1.62,-.38,0,0,.62]],'tufek_sirt');ic.add(sirtTufek);
+    const sirtYay=mk(yay(0,Math.PI/2).map(function(q){return[q[0],q[1],0,1.5,-.42,q[5],q[6],q[7],q[8],q[9],q[10]];}),'yay_sirt');ic.add(sirtYay);
+    g.userData.silah={elKilic:elKilic,elTufek:elTufek,elYay:elYay,kin:kin,sirtTufek:sirtTufek,sirtYay:sirtYay};
+    modelSilahGoster(g,0,false);
   }
   ic.scale.setScalar(s);
   g.userData.govde=gv;g.userData.anim={tip:'insan',bs:bs,bg:bg,ks:ks,kg:kg,govde:ic,s:s};
   return g;
 }
 
-const _OY={id:'yeniceri',etek:0x8B1818,gov:0x9B2020,sash:0x2a3f8a,yaka:0xD4A82A,sal:0x2a3f8a,sal2:0xE8E0D0,bot:0x2a1000,biyik:0x3a2000,sapka:'bork',sapkaC:0xE8DCC0,silah:'yatagan',tufekSirt:true,adliBicak:true,fisek:true};
-function _yeniceriYap(){const g=_insanYap(_OY,1);return g;}
+// Oyuncunun görünümü (SAVE.gorunum) — renkler ve bıyık/börk tipleri; karakter menüsünden değişir
+const GORUNUM_VARSAYILAN={gov:0x9B2020,sash:0x2a3f8a,yaka:0xD4A82A,dugme:0xD4A82A,toka:0xD4A82A,bork:0xE8DCC0,kasik:0xC8C8CC,sal:0x2a3f8a,biyik:0x3a2000,biyikTip:'klasik',borkTip:'klasik'};
+function gorunumOku(){let s=null;try{s=SAVE.gorunum;}catch(e){}return Object.assign({},GORUNUM_VARSAYILAN,s||{});}
+function _koyult(c,k){return(Math.round(((c>>16)&255)*k)<<16)|(Math.round(((c>>8)&255)*k)<<8)|Math.round((c&255)*k);}
+function _oyuncuOpt(){
+  const g=gorunumOku(),t=g.borkTip;
+  return{id:'yeniceri_'+[g.gov,g.sash,g.yaka,g.dugme,g.toka,g.bork,g.kasik,g.sal,g.biyik,g.biyikTip,g.borkTip].join('_'),
+    etek:_koyult(g.gov,.9),gov:g.gov,sash:g.sash,yaka:g.yaka,dugmeC:g.dugme,tokaC:g.toka,kasikC:g.kasik,sal:g.sal,sal2:0xE8E0D0,bot:0x2a1000,
+    biyik:g.biyikTip==='yok'?0:g.biyik,biyikTip:g.biyikTip,sapka:t==='sarik'?'sarik':t==='fes'?'fes':'bork',sapkaC:g.bork,sapkaC2:g.yaka,borkTip:t,adliBicak:true};
+}
+// Silah gösterimi: kılıç kınında; tüfek/yay seçiliyken sırtta; savaşta (cekili) seçili silah elde
+function modelSilahGoster(g,w,cekili){
+  const q=g&&g.userData&&g.userData.silah;if(!q||!q.kin)return;
+  q.elKilic.visible=cekili&&w===0;q.elTufek.visible=cekili&&w===1;q.elYay.visible=cekili&&w===2;
+  q.kin.visible=!(cekili&&w===0);
+  q.sirtTufek.visible=!(cekili&&w===1)&&w===1;q.sirtYay.visible=!(cekili&&w===2)&&w===2;
+}
+function _yeniceriYap(){const g=_insanYap(_oyuncuOpt(),1);return g;}
 modelTanimla('yeniceri',{ad:'Yeniçeri (oyuncu)',grup:'Karakter',boy:2.82,yap:_yeniceriYap});
 
 const _OD={id:'dusman',etek:0x3a1800,gov:0x4a2000,sash:0x7a1a1a,sal:0x3a3a3a,bot:0x1a1008,biyik:0x1a1008,sapka:'sarik',sapkaC:0x8a7a5a,sapkaC2:0x5a1a1a,silah:'kilic',kalkan:0x6a4a2a};
@@ -3489,6 +3569,7 @@ const WORLD_MAPS=[
   {id:'gorev', name:'Hisarköy Devriye',icon:'⚔',desc:'Haydutlara karşı savaş, akçe kazan',unlocked:true,action:()=>{closeChapters();BEGIN('gorev');}},
   {id:'orman', name:'Av Ormanı',      icon:'🏹',desc:'Hayvan avla, deri ve et kazan',unlockKey:'orman',action:()=>{closeChapters();BEGIN('orman');}},
   {id:'maden', name:'Demir Madeni',   icon:'⛏', desc:'Metal ve nadir maden topla, tuzaklara dikkat et',unlockKey:'maden',action:()=>{closeChapters();BEGIN('maden');}},
+  {id:'ciftlik', name:'Çiftlik',        icon:'🌱',desc:'Ekin ek, büyüt, biç ve pazarda sat',unlockKey:'ciftlik',action:()=>{closeChapters();BEGIN('ciftlik');}},
   {id:'tarim', name:'Tarım Ovası',    icon:'🌾',desc:'Köylüleri eşkıyalardan koru, tahıl topla',unlockKey:'tarim',action:()=>{closeChapters();BEGIN('tarim');}},
   {id:'sehir', name:'Yabancı Şehir',  icon:'🏙',desc:'Tehlikeli sokaklarda düzen sağla',unlocked:false,desc2:'Yakında açılacak'},
   {id:'saray', name:'Osmanlı Sarayı', icon:'👑',desc:'Son görev — Hain Veziri durdur',unlocked:false,desc2:'Yakında açılacak'},
@@ -3535,6 +3616,7 @@ const BLUEPRINT_MAPS=[
   {id:'gorev', name:'Hisarköy Devriye',icon:'⚔',unlocked:true},
   {id:'orman', name:'Av Ormanı',      icon:'🏹',unlockKey:'orman'},
   {id:'maden', name:'Demir Madeni',   icon:'⛏', unlockKey:'maden'},
+  {id:'ciftlik', name:'Çiftlik',       icon:'🌱',unlockKey:'ciftlik'},
   {id:'tarim', name:'Tarım Ovası',    icon:'🌾',unlockKey:'tarim'},
   {id:'sehir', name:'Yabancı Şehir',  icon:'🏙',unlocked:false},
   {id:'saray', name:'Osmanlı Sarayı', icon:'👑',unlocked:false},
@@ -3631,8 +3713,8 @@ function drawBlueprintMap(mapId){
   const cv=document.getElementById('bmCanvas');
   if(!cv)return;
   const ctx=cv.getContext('2d');
-  const half=(mapId==='kisla')?48:(mapId==='orman'||mapId==='tarim')?46:(mapId==='maden')?38:28;
-  BM_SCALE=(mapId==='kisla')?7.2:(mapId==='orman'||mapId==='tarim')?7.6:(mapId==='maden')?8.4:11;
+  const half=(mapId==='kisla')?48:(mapId==='orman'||mapId==='tarim')?46:(mapId==='maden'||mapId==='ciftlik')?38:28;
+  BM_SCALE=(mapId==='kisla')?7.2:(mapId==='orman'||mapId==='tarim')?7.6:(mapId==='maden'||mapId==='ciftlik')?8.4:11;
   const W=Math.round(half*2*BM_SCALE+50),H=W; // kare canvas — dünya zaten kare
   cv.width=W;cv.height=H;
   bmCanvasW=W;bmCanvasH=H;
@@ -3655,6 +3737,7 @@ function drawBlueprintMap(mapId){
   else if(mapId==='gorev')   drawBlueprintGorev(ctx,W,H);
   else if(mapId==='orman'&&mInfo&&isMapUnlocked(mInfo)) drawBlueprintOrman(ctx,W,H);
   else if(mapId==='maden'&&mInfo&&isMapUnlocked(mInfo)) drawBlueprintMaden(ctx,W,H);
+  else if(mapId==='ciftlik'&&mInfo&&isMapUnlocked(mInfo)) drawBlueprintCiftlik(ctx,W,H);
   else if(mapId==='tarim'&&mInfo&&isMapUnlocked(mInfo)) drawBlueprintTarim(ctx,W,H);
   else                       drawBlueprintLocked(ctx,info,W,H);
 
@@ -3965,6 +4048,19 @@ function drawBlueprintMaden(ctx,W,H){
   drawNorthArrow(ctx,W-30,28);
 }
 
+function drawBlueprintCiftlik(ctx,W,H){
+  const sP1=worldToBlueprint('ciftlik',-38,-38),sP2=worldToBlueprint('ciftlik',38,38);
+  ctx.strokeStyle='#2a3a5c';ctx.lineWidth=2;ctx.strokeRect(sP1.x,sP1.y,sP2.x-sP1.x,sP2.y-sP1.y);
+  ctx.fillStyle='#2a3a5c';ctx.font='bold 11px Georgia,serif';ctx.textAlign='center';
+  ctx.fillText('Çiftlik — Ek, Biç, Sat',W/2,sP1.y-8);
+  CIFTLIK_PARSELLER.forEach(function(q,i){const r=drawZoneRect(ctx,'ciftlik',q,null,{lw:1.1});ctx.font='9px Georgia,serif';ctx.fillText('🌱'+(i+1),r.cx,r.cy);});
+  drawZoneRect(ctx,'ciftlik',{x:CIFTLIK_RAF.x,z:CIFTLIK_RAF.z,w:4,d:3},'Tohum Rafı',{bold:true,fontSize:8});
+  drawZoneRect(ctx,'ciftlik',{x:CIFTLIK_PAZAR.x,z:CIFTLIK_PAZAR.z+1.5,w:6,d:5},'Pazar',{bold:true,fontSize:9});
+  drawZoneRect(ctx,'ciftlik',{x:0,z:35,w:6,d:2},'Çıkış',{bold:true,fontSize:9});
+  ctx.textAlign='left';
+  drawNorthArrow(ctx,W-30,28);
+}
+
 function drawBlueprintTarim(ctx,W,H){
   const sP1=worldToBlueprint('tarim',-46,-46),sP2=worldToBlueprint('tarim',46,46);
   ctx.strokeStyle='#2a3a5c';ctx.lineWidth=2;ctx.strokeRect(sP1.x,sP1.y,sP2.x-sP1.x,sP2.y-sP1.y);
@@ -4010,7 +4106,7 @@ function lootPop(t){const f=document.getElementById('lootFd'),d=document.createE
 function showWave(t){const e=document.getElementById('wvAnn');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2700);}
 const WEAPON_ICONS=['🗡','🔫','🏹'];
 function selW(i){
-  selWeapon=i;
+  selWeapon=i;pl.cekiT=300;
   const sel=document.getElementById('wepSel');if(sel)sel.textContent=WEAPON_ICONS[i];
   [0,1,2].forEach(j=>{const e=document.getElementById('wf'+j);if(e)e.classList.toggle('on',j===i);});
 }
@@ -5427,7 +5523,8 @@ const TARIM_CIKIS={id:'tarimCikis',icon:'🏰',name:'Ovadan Çık',x:0,z:41.5};
 const TARIM_BASKIN=[[-40,-43],[0,-43],[40,-43],[-43,-4],[43,-4],[-43,12],[43,12]];
 let tarimTahillar=[];   // toplanabilir tahıl demetleri
 let tarimKoyluler=[];   // korunacak köylüler
-let tarimTahilSayac=0;  // bu seferde toplanan demet
+let tarimTahilSayac=0;
+let tarimKuyruk=[];     // sırayla gelecek eşkıyalar {t,boss,nokta}  // bu seferde toplanan demet
 
 function tarimYaziSprite(t,renk,x,y,z){return madenYaziSprite(t,renk,x,y,z);}
 
@@ -5493,7 +5590,7 @@ function buildTarim(){
   halka.rotation.x=-Math.PI/2;halka.position.set(TARIM_CIKIS.x,.06,TARIM_CIKIS.z);S3.add(halka);window._tarimHalka=halka;
   S3.add(tarimYaziSprite('⬇ ÇIKIŞ — KIŞLA',0x66ff99,0,3.4,TARIM_CIKIS.z));
 
-  tarimTahillar=[];tarimKoyluler=[];tarimTahilSayac=0;
+  tarimTahillar=[];tarimKoyluler=[];tarimTahilSayac=0;tarimKuyruk=[];
   tarimTahilYenile();
 }
 
@@ -5527,8 +5624,100 @@ function tarimKoyluDogur(){
     const bg=new THREE.Mesh(new THREE.PlaneGeometry(1.2,.16),new THREE.MeshBasicMaterial({color:0x222222,depthTest:false}));
     const fl=new THREE.Mesh(new THREE.PlaneGeometry(1.2,.16),new THREE.MeshBasicMaterial({color:0x4ade80,depthTest:false}));
     bg.position.set(0,3.2,0);fl.position.set(0,3.2,.01);bg.renderOrder=fl.renderOrder=30;g.add(bg);g.add(fl);
-    return{mesh:g,bg:bg,fl:fl,x:h[0],z:h[1],hx:h[0],hz:h[1],hp:40,maxHp:40,ang:Math.random()*6.28,t:0,ayak:0};
+    return{mesh:g,bg:bg,fl:fl,x:h[0],z:h[1],hx:h[0],hz:h[1],hp:70,maxHp:70,ang:Math.random()*6.28,t:0,ayak:0};
   });
+}
+// ═══════════════════════════════════════════════════════
+// ÇİFTLİK — sadece tarım haritası (v1.63): ek, büyümesini bekle, biç, pazarda sat
+// Parseller SAVE.ciftlik içinde gerçek zamanla büyür (oyundan çıksan da büyümeye devam eder).
+// ═══════════════════════════════════════════════════════
+const CIFTLIK_EKIN={
+  arpa:   {ad:'Arpa',   simge:'🌾',tohum:3, sure:30, deger:8,  renk:0xC9B458},
+  bugday: {ad:'Buğday', simge:'🌾',tohum:5, sure:60, deger:16, renk:0xE2B94C},
+  pamuk:  {ad:'Pamuk',  simge:'☁',tohum:9, sure:100,deger:30, renk:0xF4F4EC},
+  uzum:   {ad:'Üzüm',   simge:'🍇',tohum:14,sure:150,deger:48, renk:0x7A2C9C}
+};
+const CIFTLIK_SIRA=['arpa','bugday','pamuk','uzum'];
+// Parsel merkezleri: 4 sütun × 3 sıra, her biri 7×7
+const CIFTLIK_PARSELLER=(function(){const a=[];[-14,-4,6].forEach(function(z){[-13.5,-4.5,4.5,13.5].forEach(function(x){a.push({x:x,z:z,w:7,d:7});});});return a;})();
+const CIFTLIK_RAF={id:'ciftlikRaf',icon:'🌰',name:'Tohum Rafı',x:-9,z:22};
+const CIFTLIK_PAZAR={id:'ciftlikPazar',icon:'💰',name:'Pazar Tezgâhı',x:9,z:22};
+const CIFTLIK_CIKIS={id:'ciftlikCikis',icon:'🏰',name:'Çiftlikten Çık',x:0,z:33.5};
+let ciftlikMeshler=[];   // parsel başına ekin meshi
+
+function ciftlikHazirla(){
+  const c=SAVE.ciftlik||(SAVE.ciftlik={});
+  if(!c.parsel||c.parsel.length!==CIFTLIK_PARSELLER.length)c.parsel=CIFTLIK_PARSELLER.map(function(){return{e:null,t:0};});
+  c.depo=Object.assign({arpa:0,bugday:0,pamuk:0,uzum:0},c.depo||{});
+  if(!CIFTLIK_EKIN[c.secili])c.secili='arpa';
+  return c;
+}
+// 0..1 büyüme oranı (boş parselde -1)
+function ciftlikOran(p){
+  if(!p.e)return -1;
+  return Math.min(1,Math.max(0,(Date.now()-p.t)/(CIFTLIK_EKIN[p.e].sure*1000)));
+}
+function ciftlikEkinGeo(ekin,olgun){
+  const key='ekin_'+ekin+(olgun?'_o':'_y');if(_GC[key])return _GC[key];
+  const col=olgun?CIFTLIK_EKIN[ekin].renk:0x5a9a3a,G=[];
+  for(let i=0;i<5;i++)for(let j=0;j<5;j++){
+    const x=-2.4+i*1.2+((j%2)?.25:0),z=-2.4+j*1.2;
+    G.push([_g('ConeGeometry',.38,1.5,5),col,x,.75,z]);
+    if(olgun&&ekin==='pamuk')G.push([_g('SphereGeometry',.28,5,4),0xFFFFFF,x,1.55,z]);
+    if(olgun&&ekin==='uzum')G.push([_g('SphereGeometry',.24,5,4),0x4a1a6a,x+.2,.55,z]);
+  }
+  return _GC[key]=_birles(G);
+}
+function ciftlikGorselYenile(){
+  const c=ciftlikHazirla();
+  ciftlikMeshler.forEach(function(m,i){
+    const p=c.parsel[i],o=ciftlikOran(p);
+    if(o<0){m.visible=false;return;}
+    const olgun=o>=1;
+    if(m.userData.durum!==p.e+(olgun?'o':'y')){m.geometry=ciftlikEkinGeo(p.e,olgun);m.userData.durum=p.e+(olgun?'o':'y');}
+    m.visible=true;m.scale.set(1,.25+.75*o,1);
+  });
+}
+
+function buildCiftlik(){
+  clearScene();
+  S3.fog=new THREE.Fog(0xb4cf98,40,100);S3.background=new THREE.Color(0xa8d0ec);
+  const sun=new THREE.DirectionalLight(0xFFF2D0,1.8);sun.position.set(-20,34,14);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
+  sun.shadow.camera.left=-45;sun.shadow.camera.right=45;sun.shadow.camera.top=45;sun.shadow.camera.bottom=-45;S3.add(sun);
+  S3.add(new THREE.AmbientLight(0xE8F0D0,.75));S3.add(new THREE.HemisphereLight(0xa8d0ec,0x6a8a38,.5));
+  const gnd=new THREE.Mesh(new THREE.PlaneGeometry(100,100),new THREE.MeshLambertMaterial({color:0x6a9434}));
+  gnd.rotation.x=-Math.PI/2;gnd.receiveShadow=true;S3.add(gnd);
+  MAP_HALF=38;
+  bx(0,2.5,-38,78,5,1.5,0x5a7a30,null,true);bx(0,2.5,38,78,5,1.5,0x5a7a30,null,true);
+  bx(-38,2.5,0,1.5,5,78,0x5a7a30,null,true);bx(38,2.5,0,1.5,5,78,0x5a7a30,null,true);
+  // Patikalar
+  const yolMat=new THREE.MeshLambertMaterial({color:0x9c8250});
+  [[0,10,5,52],[0,-4,64,3]].forEach(function(r){const y=new THREE.Mesh(new THREE.PlaneGeometry(r[2],r[3]),yolMat);y.rotation.x=-Math.PI/2;y.position.set(r[0],.015,r[1]);y.receiveShadow=true;S3.add(y);});
+  // Parseller
+  const c=ciftlikHazirla();ciftlikMeshler=[];
+  const toprakMat=new THREE.MeshLambertMaterial({color:0x5a3e1c});
+  CIFTLIK_PARSELLER.forEach(function(p){
+    const t=new THREE.Mesh(new THREE.PlaneGeometry(p.w,p.d),toprakMat);t.rotation.x=-Math.PI/2;t.position.set(p.x,.03,p.z);t.receiveShadow=true;S3.add(t);
+    const m=new THREE.Mesh(ciftlikEkinGeo('arpa',false),new THREE.MeshLambertMaterial({vertexColors:true}));
+    m.position.set(p.x,0,p.z);m.visible=false;S3.add(m);ciftlikMeshler.push(m);
+  });
+  // Çiftlik evi, ambar, raf, pazar
+  yapiKoy('yapi_ev',-24,-26,{w:7,d:5.5},[7,5.5]);
+  yapiKoy('yapi_ev',24,-26,{w:7,d:5.5},[7,5.5]);
+  yapiKoy('yapi_dukkan',CIFTLIK_PAZAR.x,CIFTLIK_PAZAR.z+3.2,{w:6,d:3},[6,2.6]);
+  [[-9,25],[-7,25]].forEach(function(p){const g=modelYap('cevre_sandik');g.position.set(p[0],0,p[1]);S3.add(g);addCircleCollider(p[0],p[1],.8);});
+  const raf=modelYap('cevre_varil');raf.position.set(CIFTLIK_RAF.x,0,CIFTLIK_RAF.z+1.6);S3.add(raf);addCircleCollider(CIFTLIK_RAF.x,CIFTLIK_RAF.z+1.6,.8);
+  [[-5,18],[5,18],[-5,-30],[5,-30]].forEach(function(p){yapiKoy('cevre_mesale',p[0],p[1]);});
+  [[-34,-34],[-34,-10],[-34,14],[34,-34],[34,-10],[34,14],[-20,-34],[20,-34],[-34,30],[34,30]].forEach(function(p,i){
+    const a=modelYap(i%3===0?'cevre_cam':'cevre_agac',{h:4.2+(i%3)*.5});a.position.set(p[0],0,p[1]);a.rotation.y=i*2.1;S3.add(a);addCircleCollider(p[0],p[1],.6);
+  });
+  // Çıkış halkası
+  const halka=new THREE.Mesh(new THREE.RingGeometry(1.7,2.4,32),new THREE.MeshBasicMaterial({color:0x66ff99,transparent:true,opacity:.65,side:THREE.DoubleSide}));
+  halka.rotation.x=-Math.PI/2;halka.position.set(CIFTLIK_CIKIS.x,.06,CIFTLIK_CIKIS.z);S3.add(halka);window._ciftlikHalka=halka;
+  S3.add(madenYaziSprite('⬇ ÇIKIŞ — KIŞLA',0x66ff99,0,3.4,CIFTLIK_CIKIS.z));
+  S3.add(madenYaziSprite('TOHUM RAFI',0xE8C060,CIFTLIK_RAF.x,3.2,CIFTLIK_RAF.z));
+  S3.add(madenYaziSprite('PAZAR',0xE8C060,CIFTLIK_PAZAR.x,3.2,CIFTLIK_PAZAR.z));
+  ciftlikGorselYenile();
 }
 // ═══════════════════════════════════════════════════════
 // HAYVAN AI — Sessiz Yaklaşma + İz Takibi
@@ -5727,6 +5916,9 @@ function oyuncuGoruntuGuncelle(p){
   yuzGuncelle(p);
   const dd=Math.hypot(p.x-(p.lx===undefined?p.x:p.lx),p.z-(p.lz===undefined?p.z:p.lz));p.lx=p.x;p.lz=p.z;
   p.faz=(p.faz||0)+dd*2.6;
+  // silah: savaşta (saldırı ya da yakın düşman) ya da silah seçilince ele gelir, yoksa kında/sırtta
+  if(p.atkCd>0)p.cekiT=300;else if(enemies.some(function(e){return Math.hypot(e.x-p.x,e.z-p.z)<11;}))p.cekiT=Math.max(p.cekiT||0,150);
+  p.cekiT=Math.max(0,(p.cekiT||0)-1);modelSilahGoster(p.mesh,p.weapon||0,p.cekiT>0);
   modelAnim(p.mesh,p.faz,dd>.0005?Math.min(1.7,dd/Math.max(.001,p.spd*TIK)):0,p.atkCd>0?1-p.atkCd/22:0,p.ifr>20?(p.ifr-20)/8:0);
 }
 function kameraGuncelle(){
@@ -5749,6 +5941,7 @@ function update(dt){
   else if(currentMap==='orman'){updateOrman(dt);}
   else if(currentMap==='maden'){updateMaden(dt);}
   else if(currentMap==='tarim'){updateTarim(dt);}
+  else if(currentMap==='ciftlik'){updateCiftlik(dt);}
   else if(currentMap&&currentMap.startsWith('custom_')){updateCustomMap(dt);}
   else{updateKisla(dt);}
   updateAim();
@@ -5756,7 +5949,6 @@ function update(dt){
   // Bakış yönü ve model animasyonu (yalnızca görüntü; simülasyonu etkilemez)
   WORLD.players.forEach(function(p){oyuncuGoruntuGuncelle(p);});
   enemies.forEach(function(e){const dd=Math.hypot(e.x-(e.lx===undefined?e.x:e.lx),e.z-(e.lz===undefined?e.z:e.lz));e.lx=e.x;e.lz=e.z;e.faz=(e.faz||e.id)+dd*3.2;modelAnim(e.mesh,e.faz,Math.min(1.6,dd/Math.max(.001,e.spd||.05)),0,e.hurtT>0?e.hurtT/9:0);});
-  const wpnM=pl.mesh.getObjectByName('wpn');if(wpnM)wpnM.material.color.setHex([0xD0D0D0,0x505050,0x8B4513][selWeapon]);
   if(pwrOn){pwr=Math.min(100,pwr+2.4);document.getElementById('pwrFl').style.width=pwr+'%';document.getElementById('pwrW').style.display='block';}
   torches.forEach(function(t){t.phase+=.06;t.light.intensity=2.4+Math.sin(t.phase)*.5+Math.sin(t.phase*1.8)*.2;});
   // Kamera (zoom destekli — camZoom çarpanı yükseklik+mesafeyi orantılı değiştirir)
@@ -6232,16 +6424,19 @@ function spawnTarimEskiya(isBoss,kenar){
   const sp=kenar||TARIM_BASKIN[Math.floor(Math.random()*TARIM_BASKIN.length)];
   const ex=sp[0]+(Math.random()-.5)*3,ez=sp[1]+(Math.random()-.5)*3;
   g.position.set(ex,0,ez);S3.add(g);
-  enemies.push({id:newNetId(),mesh:g,hpFl,hpBg,govde:g.userData.govde,mid:isBoss?'eskiya_boss':'eskiya',hp,maxHp:hp,x:ex,z:ez,spd:isBoss?.05:.055+wave*.004,isBoss,hurtT:0,animalType:'eskiya',aggressive:true,atkDmg:isBoss?10:3,state:'attacking',wanderAng:0,wanderT:0,xpReward:isBoss?320:18,goldReward:[10,18]});
+  enemies.push({id:newNetId(),mesh:g,hpFl,hpBg,govde:g.userData.govde,mid:isBoss?'eskiya_boss':'eskiya',hp,maxHp:hp,x:ex,z:ez,spd:isBoss?.036:.03+wave*.002,isBoss,hurtT:0,animalType:'eskiya',aggressive:true,atkDmg:isBoss?10:3,state:'attacking',wanderAng:0,wanderT:0,xpReward:isBoss?320:18,goldReward:[10,18]});
 }
 
+const TARIM_YON=['kuzeybatıdan','kuzeyden','kuzeydoğudan','batıdan','doğudan','güneybatıdan','güneydoğudan'];
+// Baskın uyarıyla ve tek tek gelir: ilk eşkıya 4 sn sonra, sonrakiler ~1.7 sn arayla aynı yönden
 function spawnTarimWave(n){
   waveActive=true;
   tarimTahilYenile();
   const isBoss=n%5===0;
-  const cnt=isBoss?3:3+Math.floor(n*1.3);
-  showWave(isBoss?'⚠ EŞKIYA BAŞI BASKIN YAPIYOR!':'🌾 Baskın '+n+' — '+cnt+' Eşkıya');
-  for(let i=0;i<cnt;i++)spawnTarimEskiya(isBoss&&i===0);
+  const cnt=isBoss?3:2+Math.floor(n*.8);
+  const yon=Math.floor(Math.random()*TARIM_BASKIN.length);
+  showWave(isBoss?'⚠ EŞKIYA BAŞI '+TARIM_YON[yon]+' geliyor!':'🌾 Baskın '+n+' — '+cnt+' eşkıya '+TARIM_YON[yon]+' geliyor');
+  for(let i=0;i<cnt;i++)tarimKuyruk.push({t:240+i*100,boss:isBoss&&i===0,nokta:TARIM_BASKIN[yon]});
 }
 
 function tarimKoyluGuncelle(){
@@ -6249,7 +6444,9 @@ function tarimKoyluGuncelle(){
   tarimKoyluler.forEach(function(k){
     if(k.hp<=0)return;
     // en yakın eşkıya
-    let en0=null,ed=9;enemies.forEach(function(en){const d=Math.hypot(en.x-k.x,en.z-k.z);if(d<ed){ed=d;en0=en;}});
+    let en0=null,ed=7;enemies.forEach(function(en){const d=Math.hypot(en.x-k.x,en.z-k.z);if(d<ed){ed=d;en0=en;}});
+    // köylü de kendini savunur: yanındaki eşkıyaya tırmıkla vurur
+    if(en0&&ed<2){k.vurT=(k.vurT||0)-1;if(k.vurT<=0){k.vurT=40;en0.hp-=2;en0.hurtT=9;addFX(en0.x,en0.z,0xFFD24A,3);}}
     let vx=0,vz=0;
     if(k.donuk){/* köşeye sıkışmış / test */}
     else if(en0){const dx=k.x-en0.x,dz=k.z-en0.z,d=Math.hypot(dx,dz)||1;vx=dx/d*.075;vz=dz/d*.075;k.ang=Math.atan2(vz,vx);}   // kaç
@@ -6316,6 +6513,7 @@ function updateTarim(dt){
   tarimEtkilesim();
   tarimTahilTopla();
   const canli=tarimKoyluGuncelle();
+  tarimKuyruk=tarimKuyruk.filter(function(q){q.t--;if(q.t<=0){spawnTarimEskiya(q.boss,q.nokta);return false;}return true;});
 
   const magDist=getMagnetDist();
   lootGuncelle(magDist,'+Deri','+Metal',false);
@@ -6356,7 +6554,7 @@ function updateTarim(dt){
           tp.ifr=28;
         }
       }else if(en.vurT<=0){
-        en.vurT=40;hedefK.hp-=(en.atkDmg||3)*1.3;addFX(hedefK.x,hedefK.z,0xcc2222,5);
+        en.vurT=50;hedefK.hp-=(en.atkDmg||3);addFX(hedefK.x,hedefK.z,0xcc2222,5);
         if(hedefK.hp<=0){S3.remove(hedefK.mesh);lootPop('☠ Bir köylü düştü! ('+(tarimKoyluler.filter(function(k){return k.hp>0;}).length)+' kaldı)');}
       }
     }
@@ -6385,7 +6583,7 @@ function updateTarim(dt){
 
   if(canli===0&&playing){tarimKoyYandi();return;}
 
-  if(enemies.length===0&&waveActive){
+  if(enemies.length===0&&tarimKuyruk.length===0&&waveActive){
     waveActive=false;
     // Hayatta kalan her köylü için şükran armağanı
     const bonus=canli*6;if(bonus>0){addPoolGold(bonus);akce+=bonus;lootPop('🌾 '+canli+' köylü hayatta: +'+bonus+' Akçe');}
@@ -6402,6 +6600,69 @@ function updateTarim(dt){
   document.getElementById('akceV').textContent=akce;
 }
 // ═══════════════════════════════════════════════════════
+// ÇİFTLİK — etkileşim ve güncelleme (v1.63)
+// ═══════════════════════════════════════════════════════
+function ciftlikCik(){if(currentMap!=='ciftlik'||pl.hp<=0)return;BEGIN('kisla');}
+function ciftlikAltin(d){mainGold+=d;SAVE.mainGold=mainGold;saveGame();updateGoldHud();}
+
+function ciftlikSat(){
+  const c=ciftlikHazirla();let top=0,adet=0;
+  CIFTLIK_SIRA.forEach(function(k){top+=c.depo[k]*CIFTLIK_EKIN[k].deger;adet+=c.depo[k];c.depo[k]=0;});
+  if(!adet){lootPop('Depoda satacak ürün yok');return;}
+  ciftlikAltin(top);SAVE.stats.satis=(SAVE.stats.satis||0)+top;saveGame();
+  lootPop('💰 '+adet+' ürün satıldı: +'+top+' Akçe');addFX(CIFTLIK_PAZAR.x,CIFTLIK_PAZAR.z,0xFFD700,8);
+}
+function ciftlikEtkilesim(z){
+  const c=ciftlikHazirla();
+  if(z.id==='ciftlikCikis'){ciftlikCik();return;}
+  if(z.id==='ciftlikPazar'){ciftlikSat();return;}
+  if(z.id==='ciftlikRaf'){const i=(CIFTLIK_SIRA.indexOf(c.secili)+1)%CIFTLIK_SIRA.length;c.secili=CIFTLIK_SIRA[i];saveGame();const e=CIFTLIK_EKIN[c.secili];lootPop('🌰 Tohum: '+e.ad+' ('+e.tohum+' akçe, '+e.sure+' sn, satış '+e.deger+')');return;}
+  if(z.id==='ciftlikParsel'){
+    const p=c.parsel[z.i],o=ciftlikOran(p);
+    if(!p.e){
+      const e=CIFTLIK_EKIN[c.secili];
+      if(mainGold<e.tohum){lootPop('Tohum için '+e.tohum+' akçe gerek');return;}
+      ciftlikAltin(-e.tohum);p.e=c.secili;p.t=Date.now();saveGame();ciftlikGorselYenile();addFX(CIFTLIK_PARSELLER[z.i].x,CIFTLIK_PARSELLER[z.i].z,0x8a6a3a,6);lootPop('🌱 '+e.ad+' ekildi');
+    }else if(o>=1){
+      const k=p.e;c.depo[k]++;p.e=null;saveGame();ciftlikGorselYenile();SAVE.stats.hasat=(SAVE.stats.hasat||0)+1;
+      addFX(CIFTLIK_PARSELLER[z.i].x,CIFTLIK_PARSELLER[z.i].z,CIFTLIK_EKIN[k].renk,8);lootPop('✂ '+CIFTLIK_EKIN[k].ad+' biçildi (depoda '+c.depo[k]+')');
+    }
+  }
+}
+function ciftlikDepoMetin(c){return CIFTLIK_SIRA.filter(function(k){return c.depo[k]>0;}).map(function(k){return CIFTLIK_EKIN[k].ad+' '+c.depo[k];}).join(', ')||'boş';}
+
+function ciftlikYakin(){
+  const c=ciftlikHazirla();
+  [CIFTLIK_CIKIS,CIFTLIK_RAF,CIFTLIK_PAZAR].forEach(function(z){z._d=Math.hypot(pl.x-z.x,pl.z-z.z);});
+  if(CIFTLIK_CIKIS._d<3.8)return{z:CIFTLIK_CIKIS,t:'[ E ] 🏰 Çiftlikten Çık'};
+  if(CIFTLIK_RAF._d<3.4)return{z:CIFTLIK_RAF,t:'[ E ] 🌰 Tohum seç — şimdiki: '+CIFTLIK_EKIN[c.secili].ad+' ('+CIFTLIK_EKIN[c.secili].tohum+' akçe)'};
+  if(CIFTLIK_PAZAR._d<3.6)return{z:CIFTLIK_PAZAR,t:'[ E ] 💰 Sat — depo: '+ciftlikDepoMetin(c)};
+  for(let i=0;i<CIFTLIK_PARSELLER.length;i++){
+    const q=CIFTLIK_PARSELLER[i];
+    if(Math.abs(pl.x-q.x)<q.w/2+.6&&Math.abs(pl.z-q.z)<q.d/2+.6){
+      const p=c.parsel[i],o=ciftlikOran(p),zz={id:'ciftlikParsel',i:i,name:'Parsel'};
+      if(!p.e)return{z:zz,t:'[ E ] 🌱 '+CIFTLIK_EKIN[c.secili].ad+' ek ('+CIFTLIK_EKIN[c.secili].tohum+' akçe)'};
+      if(o>=1)return{z:zz,t:'[ E ] ✂ '+CIFTLIK_EKIN[p.e].ad+' olgun — biç'};
+      return{z:null,t:'🌱 '+CIFTLIK_EKIN[p.e].ad+' büyüyor — %'+Math.floor(o*100)+' (kalan '+Math.ceil((1-o)*CIFTLIK_EKIN[p.e].sure)+' sn)'};
+    }
+  }
+  return null;
+}
+
+function updateCiftlik(dt){
+  updateMovement(dt);
+  if(window._ciftlikHalka)window._ciftlikHalka.material.opacity=.5+Math.sin(gt*.08)*.2;
+  if(gt%30===0)ciftlikGorselYenile();
+  const intH=document.getElementById('intH'),zBtn=document.getElementById('zoneBtn'),y=ciftlikYakin();
+  if(y){
+    intH.textContent=y.t;intH.style.display='block';
+    if(y.z){pl.nearZone=y.z;zBtn.innerHTML=(y.z.icon||'🌱')+'<br>Yap';zBtn.style.display='flex';}else{pl.nearZone=null;zBtn.style.display='none';}
+  }else{pl.nearZone=null;zBtn.style.display='none';intH.style.display='none';}
+  parts=parts.filter(function(p){p.mesh.position.x+=p.vx;p.mesh.position.y+=p.vy;p.mesh.position.z+=p.vz;p.vy-=.006;p.vx*=.9;p.vz*=.9;p.life--;p.mesh.material.opacity=p.life/p.maxLife;p.mesh.material.transparent=true;if(p.life<=0){S3.remove(p.mesh);return false;}return true;});
+  const c=ciftlikHazirla();
+  document.getElementById('gorevT').textContent='Çiftlik — 🌰 '+CIFTLIK_EKIN[c.secili].ad+' — 📦 '+ciftlikDepoMetin(c);
+}
+// ═══════════════════════════════════════════════════════
 // OYUN BAŞLAT
 // ═══════════════════════════════════════════════════════
 function BEGIN(mapId){
@@ -6410,7 +6671,7 @@ function BEGIN(mapId){
   document.getElementById('hudLayer').style.display='block';
   document.getElementById('topBar').style.display='flex';document.getElementById('mmBox').style.display='block';document.getElementById('topLeftHud').style.display='flex';
   initThree();
-  if(mapId==='kisla')startKisla();else if(mapId==='orman')startOrman();else if(mapId==='maden')startMaden();else if(mapId==='tarim')startTarim();else startGorev();
+  if(mapId==='kisla')startKisla();else if(mapId==='orman')startOrman();else if(mapId==='maden')startMaden();else if(mapId==='tarim')startTarim();else if(mapId==='ciftlik')startCiftlik();else startGorev();
   setTimeout(()=>{ initTouch(); applyAllSettings(); },100);
   updateGoldHud();
   updateXPHud();
@@ -6568,6 +6829,26 @@ function startTarim(){
   questTracker={kills:0,waves:0,bossKills:0};
   setTimeout(()=>lootPop('🌾 Köylüleri koru, tarlalardan tahıl topla!'),1500);
   spawnTarimWave(1);
+}
+
+function startCiftlik(){
+  currentMap='ciftlik';
+  clearAll();
+  buildCiftlik(); // içinde MAP_HALF=38 set ediliyor
+  pl.x=0;pl.z=28;
+  pl.maxHp=getBaseMaxHp();pl.hp=pl.maxHp;
+  pl.maxEn=getBaseMaxEn();pl.en=pl.maxEn;
+  pl.spd=getBaseSpd();pl.rspd=pl.spd*1.8;
+  buildPlayer();
+  akce=0;kills=0;wave=1;waveTimer=0;waveActive=false;gt=0;
+  poolGold=0;updateGoldHud();
+  document.getElementById('akceV').textContent=0;
+  document.getElementById('killV').textContent=0;
+  playing=true;paused=false;
+  document.getElementById('mapIndicator').textContent='🌱 ÇİFTLİK — Ek, Biç, Sat';
+  const btmBarEl=document.getElementById('btmBar');if(btmBarEl)btmBarEl.style.display='flex';
+  questTracker={kills:0,waves:0,bossKills:0};
+  setTimeout(()=>lootPop('🌱 Tohum rafından ekin seç, parsele ek, olgunlaşınca biç, pazarda sat!'),1500);
 }
 // ═══════════════════════════════════════════════════════
 // BÖLGE MENÜSÜ SİSTEMİ
@@ -6844,7 +7125,7 @@ document.addEventListener('keydown',function(e){
   if(e.key==='Escape'||e.key==='p'||e.key==='P'){if(document.getElementById('dlgLayer').style.display==='flex'){hideDlg();return;}if(document.getElementById('zoneMenuBox').style.display==='flex'){closeZoneMenu();return;}if(playing)doPause();else if(paused)doResume();}
   if((e.key==='e'||e.key==='E')){
     if(pl.nearZone){
-      if(pl.nearZone.id==='madenCikis')madenCik();else if(pl.nearZone.id==='tarimCikis')tarimCik();
+      if(pl.nearZone.id==='madenCikis')madenCik();else if(pl.nearZone.id==='tarimCikis')tarimCik();else if(String(pl.nearZone.id).indexOf('ciftlik')===0)ciftlikEtkilesim(pl.nearZone);
       else if(pl.nearZone.id==='demirKapi')BEGIN('gorev');
       else openZone(pl.nearZone.id);
     }
@@ -6872,7 +7153,7 @@ function initTouch(){
   document.addEventListener('touchend',function(e){for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===joyId)joyEnd();}});
   document.addEventListener('touchcancel',function(e){for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===joyId)joyEnd();}});
   const atkBtn=document.getElementById('atkBtn');
-  atkBtn.addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();atkBtn.classList.add('pr');if(!playing||paused)return;if(currentMap==='gorev'||currentMap==='orman'||currentMap==='maden'||currentMap==='tarim'||(currentMap&&currentMap.startsWith('custom_'))){if(selWeapon===0)doMelee();else{pwrOn=true;pwr=0;}}else if(pl.nearZone){if(pl.nearZone.id==='madenCikis')madenCik();else if(pl.nearZone.id==='tarimCikis')tarimCik();else if(pl.nearZone.id==='demirKapi')BEGIN('gorev');else openZone(pl.nearZone.id);}},{passive:false});
+  atkBtn.addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();atkBtn.classList.add('pr');if(!playing||paused)return;if(currentMap==='gorev'||currentMap==='orman'||currentMap==='maden'||currentMap==='tarim'||(currentMap&&currentMap.startsWith('custom_'))){if(selWeapon===0)doMelee();else{pwrOn=true;pwr=0;}}else if(pl.nearZone){if(pl.nearZone.id==='madenCikis')madenCik();else if(pl.nearZone.id==='tarimCikis')tarimCik();else if(String(pl.nearZone.id).indexOf('ciftlik')===0)ciftlikEtkilesim(pl.nearZone);else if(pl.nearZone.id==='demirKapi')BEGIN('gorev');else openZone(pl.nearZone.id);}},{passive:false});
   atkBtn.addEventListener('touchend',function(e){e.preventDefault();atkBtn.classList.remove('pr');if(pwrOn){doRanged();pwrOn=false;pwr=0;document.getElementById('pwrW').style.display='none';}},{passive:false});
   const runBtn=document.getElementById('runBtn');
   runBtn.addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();runBtn.classList.add('pr');keys['shift']=true;},{passive:false});

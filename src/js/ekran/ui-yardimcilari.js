@@ -7,7 +7,7 @@ function lootPop(t){const f=document.getElementById('lootFd'),d=document.createE
 function showWave(t){const e=document.getElementById('wvAnn');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2700);}
 const WEAPON_ICONS=['🗡','🔫','🏹'];
 function selW(i){
-  selWeapon=i;
+  selWeapon=i;pl.cekiT=300;
   const sel=document.getElementById('wepSel');if(sel)sel.textContent=WEAPON_ICONS[i];
   [0,1,2].forEach(j=>{const e=document.getElementById('wf'+j);if(e)e.classList.toggle('on',j===i);});
 }

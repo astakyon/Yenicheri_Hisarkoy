@@ -19,6 +19,9 @@ function oyuncuGoruntuGuncelle(p){
   yuzGuncelle(p);
   const dd=Math.hypot(p.x-(p.lx===undefined?p.x:p.lx),p.z-(p.lz===undefined?p.z:p.lz));p.lx=p.x;p.lz=p.z;
   p.faz=(p.faz||0)+dd*2.6;
+  // silah: savaşta (saldırı ya da yakın düşman) ya da silah seçilince ele gelir, yoksa kında/sırtta
+  if(p.atkCd>0)p.cekiT=300;else if(enemies.some(function(e){return Math.hypot(e.x-p.x,e.z-p.z)<11;}))p.cekiT=Math.max(p.cekiT||0,150);
+  p.cekiT=Math.max(0,(p.cekiT||0)-1);modelSilahGoster(p.mesh,p.weapon||0,p.cekiT>0);
   modelAnim(p.mesh,p.faz,dd>.0005?Math.min(1.7,dd/Math.max(.001,p.spd*TIK)):0,p.atkCd>0?1-p.atkCd/22:0,p.ifr>20?(p.ifr-20)/8:0);
 }
 function kameraGuncelle(){
@@ -41,6 +44,7 @@ function update(dt){
   else if(currentMap==='orman'){updateOrman(dt);}
   else if(currentMap==='maden'){updateMaden(dt);}
   else if(currentMap==='tarim'){updateTarim(dt);}
+  else if(currentMap==='ciftlik'){updateCiftlik(dt);}
   else if(currentMap&&currentMap.startsWith('custom_')){updateCustomMap(dt);}
   else{updateKisla(dt);}
   updateAim();
@@ -48,7 +52,6 @@ function update(dt){
   // Bakış yönü ve model animasyonu (yalnızca görüntü; simülasyonu etkilemez)
   WORLD.players.forEach(function(p){oyuncuGoruntuGuncelle(p);});
   enemies.forEach(function(e){const dd=Math.hypot(e.x-(e.lx===undefined?e.x:e.lx),e.z-(e.lz===undefined?e.z:e.lz));e.lx=e.x;e.lz=e.z;e.faz=(e.faz||e.id)+dd*3.2;modelAnim(e.mesh,e.faz,Math.min(1.6,dd/Math.max(.001,e.spd||.05)),0,e.hurtT>0?e.hurtT/9:0);});
-  const wpnM=pl.mesh.getObjectByName('wpn');if(wpnM)wpnM.material.color.setHex([0xD0D0D0,0x505050,0x8B4513][selWeapon]);
   if(pwrOn){pwr=Math.min(100,pwr+2.4);document.getElementById('pwrFl').style.width=pwr+'%';document.getElementById('pwrW').style.display='block';}
   torches.forEach(function(t){t.phase+=.06;t.light.intensity=2.4+Math.sin(t.phase)*.5+Math.sin(t.phase*1.8)*.2;});
   // Kamera (zoom destekli — camZoom çarpanı yükseklik+mesafeyi orantılı değiştirir)

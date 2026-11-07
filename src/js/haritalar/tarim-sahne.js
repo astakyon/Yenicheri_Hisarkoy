@@ -17,7 +17,8 @@ const TARIM_CIKIS={id:'tarimCikis',icon:'🏰',name:'Ovadan Çık',x:0,z:41.5};
 const TARIM_BASKIN=[[-40,-43],[0,-43],[40,-43],[-43,-4],[43,-4],[-43,12],[43,12]];
 let tarimTahillar=[];   // toplanabilir tahıl demetleri
 let tarimKoyluler=[];   // korunacak köylüler
-let tarimTahilSayac=0;  // bu seferde toplanan demet
+let tarimTahilSayac=0;
+let tarimKuyruk=[];     // sırayla gelecek eşkıyalar {t,boss,nokta}  // bu seferde toplanan demet
 
 function tarimYaziSprite(t,renk,x,y,z){return madenYaziSprite(t,renk,x,y,z);}
 
@@ -83,7 +84,7 @@ function buildTarim(){
   halka.rotation.x=-Math.PI/2;halka.position.set(TARIM_CIKIS.x,.06,TARIM_CIKIS.z);S3.add(halka);window._tarimHalka=halka;
   S3.add(tarimYaziSprite('⬇ ÇIKIŞ — KIŞLA',0x66ff99,0,3.4,TARIM_CIKIS.z));
 
-  tarimTahillar=[];tarimKoyluler=[];tarimTahilSayac=0;
+  tarimTahillar=[];tarimKoyluler=[];tarimTahilSayac=0;tarimKuyruk=[];
   tarimTahilYenile();
 }
 
@@ -117,6 +118,6 @@ function tarimKoyluDogur(){
     const bg=new THREE.Mesh(new THREE.PlaneGeometry(1.2,.16),new THREE.MeshBasicMaterial({color:0x222222,depthTest:false}));
     const fl=new THREE.Mesh(new THREE.PlaneGeometry(1.2,.16),new THREE.MeshBasicMaterial({color:0x4ade80,depthTest:false}));
     bg.position.set(0,3.2,0);fl.position.set(0,3.2,.01);bg.renderOrder=fl.renderOrder=30;g.add(bg);g.add(fl);
-    return{mesh:g,bg:bg,fl:fl,x:h[0],z:h[1],hx:h[0],hz:h[1],hp:40,maxHp:40,ang:Math.random()*6.28,t:0,ayak:0};
+    return{mesh:g,bg:bg,fl:fl,x:h[0],z:h[1],hx:h[0],hz:h[1],hp:70,maxHp:70,ang:Math.random()*6.28,t:0,ayak:0};
   });
 }

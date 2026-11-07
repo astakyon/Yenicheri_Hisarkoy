@@ -9,6 +9,7 @@ gorev/gorev-basari.js
 karakter/xp-sinif.js
 karakter/yetenekler.js
 ekran/menu-animasyon.js
+ekran/karakter-menu.js
 cekirdek/oyun-durumu.js
 modeller/kayit.js
 modeller/yapilar.js
@@ -34,6 +35,7 @@ haritalar/devriye.js
 haritalar/orman-sahne.js
 haritalar/maden-sahne.js
 haritalar/tarim-sahne.js
+haritalar/ciftlik-sahne.js
 haritalar/orman-hayvan-ai.js
 haritalar/maden-dusman-ai.js
 karakter/karakter-modeli.js
@@ -46,6 +48,7 @@ cekirdek/guncelleme.js
 haritalar/orman-guncelleme.js
 haritalar/maden-guncelleme.js
 haritalar/tarim-guncelleme.js
+haritalar/ciftlik-guncelleme.js
 cekirdek/oyun-baslat.js
 ekran/bolge-menusu.js
 kontrol/girdi.js

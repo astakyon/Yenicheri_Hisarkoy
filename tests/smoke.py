@@ -74,9 +74,9 @@ def main():
         ctx.close()
 
         print('Haritalar')
-        for m in ('kisla', 'gorev', 'orman', 'maden', 'tarim'):
+        for m in ('kisla', 'gorev', 'orman', 'maden', 'tarim', 'ciftlik'):
             ctx, pg, errs = yeni_sayfa()
-            pg.evaluate("SAVE.mapsUnlocked={orman:true,maden:true,tarim:true}; BEGIN('%s')" % m)
+            pg.evaluate("SAVE.mapsUnlocked={orman:true,maden:true,tarim:true,ciftlik:true}; BEGIN('%s')" % m)
             pg.wait_for_timeout(4000)
             st = pg.evaluate('({map:currentMap,playing})')
             check(st['map'] == m and st['playing'], '%s açıldı' % m)
@@ -271,8 +271,8 @@ def main():
 
         print('Harita performans bütçesi')
         ctx, pg, errs = yeni_sayfa()
-        pg.evaluate("SAVE.mapsUnlocked={orman:true,maden:true,tarim:true}"); 
-        for m, azamiCizim, azamiMesh in (('kisla', 90, 260), ('gorev', 90, 200), ('orman', 100, 200), ('maden', 110, 200), ('tarim', 100, 200)):
+        pg.evaluate("SAVE.mapsUnlocked={orman:true,maden:true,tarim:true,ciftlik:true}"); 
+        for m, azamiCizim, azamiMesh in (('kisla', 90, 260), ('gorev', 90, 200), ('orman', 100, 200), ('maden', 110, 200), ('tarim', 100, 200), ('ciftlik', 100, 200)):
             pg.evaluate("BEGIN('%s')" % m); pg.wait_for_timeout(700)
             r = pg.evaluate("""() => { REN.info.reset(); REN.render(S3, CAM); let mesh = 0, gercekIsik = 0; S3.traverse(o => { if (o.isMesh) mesh++; if (o.isPointLight) gercekIsik++; });
               return { cizim: REN.info.render.calls, mesh, gercekIsik, sanal: FENER.liste.length }; }""")
@@ -328,7 +328,7 @@ def main():
 
         print('Harita denetimi (v1.57): doğma noktası ulaşılabilir, yeterli açık alan')
         ctx, pg, errs = yeni_sayfa(1280, 720)
-        for m, asgariAcik, asgariUlas in (('kisla', .6, 5000), ('gorev', .5, 1500), ('orman', .8, 6000), ('maden', .3, 1500), ('tarim', .7, 6000)):
+        for m, asgariAcik, asgariUlas in (('kisla', .6, 5000), ('gorev', .5, 1500), ('orman', .8, 6000), ('maden', .3, 1500), ('tarim', .7, 6000), ('ciftlik', .7, 3500)):
             pg.evaluate("BEGIN('%s')" % m); pg.wait_for_timeout(700)
             r = pg.evaluate("""() => { const H = MAP_HALF, hu = new Set(); let top = 0;
               for (let x = -H + 2; x <= H - 2; x++) for (let z = -H + 2; z <= H - 2; z++) { top++; if (!checkCollision(x, z, .6)) hu.add(x + ',' + z); }
@@ -357,13 +357,13 @@ def main():
         check(r['cikis'], 'Tarım: çıkışa ulaşılıyor')
         check(r['baskin'] == 0, 'Tarım: eşkıya giriş noktaları ulaşılabilir alanda (kapalı: %d)' % r['baskin'])
         check(r['evKapali'] == 0, 'Tarım: evlerin içi dolu (çarpışmalı)')
-        check(r['dusman'] >= 4, 'Tarım: ilk baskın başladı (%d eşkıya)' % r['dusman'])
-        r = pg.evaluate("""() => { enemies.forEach(e => S3.remove(e.mesh)); enemies.length = 0; const t = tarimTahillar[0], m0 = akce, c0 = tarimTahilSayac;
+        check(r['dusman'] == 0 and pg.evaluate('tarimKuyruk.length') >= 2, 'Tarım: ilk baskın uyarıyla ve sırayla gelecek (kuyrukta %d)' % pg.evaluate('tarimKuyruk.length'))
+        r = pg.evaluate("""() => { enemies.forEach(e => S3.remove(e.mesh)); enemies.length = 0; tarimKuyruk.length = 0; const t = tarimTahillar[0], m0 = akce, c0 = tarimTahilSayac;
           pl.x = t.x; pl.z = t.z; return { m0, c0 }; }""")
         pg.wait_for_timeout(400)
         r2 = pg.evaluate("() => ({ akce, sayac: tarimTahilSayac, kalan: tarimTahillar.length })")
         check(r2['sayac'] == r['c0'] + 1 and r2['akce'] > r['m0'] and r2['kalan'] == 35, 'Tarım: tahıl demetine gidince toplanıyor, akçe artıyor')
-        r = pg.evaluate("""() => { const k = tarimKoyluler[0]; enemies.length = 0; spawnTarimEskiya(false, [k.x + 1.2, k.z]); const e = enemies[0]; const h0 = k.hp; k.donuk = true;
+        r = pg.evaluate("""() => { const k = tarimKoyluler[0]; enemies.length = 0; tarimKuyruk.length = 0; spawnTarimEskiya(false, [k.x + 1.2, k.z]); const e = enemies[0]; const h0 = k.hp; k.donuk = true;
           pl.x = 40; pl.z = 40; return { h0 }; }""")
         pg.wait_for_timeout(1800)
         r2 = pg.evaluate("() => tarimKoyluler[0].hp")
@@ -376,6 +376,63 @@ def main():
         yakin = pg.evaluate("pl.nearZone && pl.nearZone.id")
         pg.keyboard.press('e'); pg.wait_for_timeout(1000)
         check(yakin == 'tarimCikis' and pg.evaluate('currentMap') == 'kisla', 'Tarım: çıkışta E ile Kışla\'ya dönülüyor')
+        check(not errs, 'JavaScript hatası yok')
+        ctx.close()
+
+        print('Karakter özelleştirme ve silah gösterimi (v1.62)')
+        ctx, pg, errs = yeni_sayfa(1280, 720)
+        pg.evaluate("BEGIN('kisla')"); pg.wait_for_timeout(900)
+        g = lambda: pg.evaluate("() => { const q = pl.mesh.userData.silah, v = k => q[k].visible; return { kin: v('kin'), kilic: v('elKilic'), tufek: v('elTufek'), yay: v('elYay'), sTufek: v('sirtTufek'), sYay: v('sirtYay') }; }")
+        pg.evaluate("pl.cekiT = 0; selW(0); pl.cekiT = 0"); pg.wait_for_timeout(200)
+        a = g()
+        check(a['kin'] and not a['kilic'] and not a['tufek'] and not a['yay'] and not a['sTufek'] and not a['sYay'], 'Sakin durumda kılıç kınında, elde silah ve sırtta tahta yok')
+        pg.evaluate("pl.atkCd = 0; doMelee(pl)"); pg.wait_for_timeout(200)
+        a = g(); check(a['kilic'] and not a['kin'], 'Saldırınca kılıç ele geliyor, kın boşalıyor')
+        pg.evaluate("selW(2); pl.atkCd = 0; pl.cekiT = 0"); pg.wait_for_timeout(200)
+        a = g(); check(a['sYay'] and not a['yay'] and a['kin'], 'Yay seçili ama savaş yokken yay sırtta, kılıç kınında')
+        pg.evaluate("selW(2)"); pg.wait_for_timeout(200)
+        a = g(); check(a['yay'] and not a['sYay'], 'Silah seçince yay ele geliyor')
+        pg.evaluate("selW(1); pl.atkCd = 0; pl.cekiT = 0"); pg.wait_for_timeout(200)
+        a = g(); check(a['sTufek'] and not a['tufek'], 'Tüfek seçili, savaş yok: tüfek sırtta')
+        pg.evaluate("selW(0)")
+        r = pg.evaluate("""() => { const eski = modelYap('yeniceri').userData.govde.geometry; gorunumDegis('gov', 0x1F5FA8); gorunumDegis('biyikTip', 'sivri'); gorunumDegis('borkTip', 'fes');
+          const yeni = modelYap('yeniceri').userData.govde.geometry, kayit = SAVE.gorunum && SAVE.gorunum.gov; gorunumSifirla(); return { fark: eski !== yeni, kayit, sifir: modelYap('yeniceri').userData.govde.geometry === eski }; }""")
+        check(r['fark'] and r['kayit'] == 0x1F5FA8, 'Renk, bıyık ve başlık seçimi modeli değiştiriyor ve kaydediliyor')
+        check(r['sifir'], 'Varsayılana dönünce model eski haline geliyor')
+        check(not errs, 'JavaScript hatası yok')
+        ctx.close()
+
+        print('Çiftlik: ek, büyüt, biç, sat (v1.63)')
+        ctx, pg, errs = yeni_sayfa(1280, 720)
+        pg.evaluate("SAVE.ciftlik = null; SAVE.mainGold = 100; mainGold = 100; BEGIN('ciftlik')"); pg.wait_for_timeout(900)
+        r = pg.evaluate("""() => {
+          const bas = [Math.round(pl.x), Math.round(pl.z)], gor = new Set([bas.join(',')]), q = [bas];
+          while (q.length) { const [x, z] = q.pop(); [[1,0],[-1,0],[0,1],[0,-1]].forEach(([a, b]) => { const k = (x + a) + ',' + (z + b); if (!gor.has(k) && Math.abs(x + a) < 37 && Math.abs(z + b) < 37 && !checkCollision(x + a, z + b, .6)) { gor.add(k); q.push([x + a, z + b]); } }); }
+          const ul = (x, z) => gor.has(Math.round(x) + ',' + Math.round(z));
+          return { parsel: CIFTLIK_PARSELLER.length, kapali: CIFTLIK_PARSELLER.filter(p => !ul(p.x, p.z)).length, raf: ul(CIFTLIK_RAF.x, CIFTLIK_RAF.z), pazar: ul(CIFTLIK_PAZAR.x, CIFTLIK_PAZAR.z), cikis: ul(CIFTLIK_CIKIS.x, CIFTLIK_CIKIS.z - 2), dusman: enemies.length }; }""")
+        check(r['parsel'] == 12 and r['kapali'] == 0, 'Çiftlik: 12 parselin hepsine ulaşılıyor')
+        check(r['raf'] and r['pazar'] and r['cikis'], 'Çiftlik: raf, pazar ve çıkışa ulaşılıyor')
+        check(r['dusman'] == 0, 'Çiftlik: düşman yok')
+        pg.evaluate("() => { const q = CIFTLIK_PARSELLER[0]; pl.x = q.x; pl.z = q.z; }"); pg.wait_for_timeout(300)
+        pg.keyboard.press('e'); pg.wait_for_timeout(300)
+        r = pg.evaluate("() => ({ e: SAVE.ciftlik.parsel[0].e, altin: mainGold })")
+        check(r['e'] == 'arpa' and r['altin'] == 97, 'Çiftlik: parsele arpa ekilince 3 akçe düşüyor (%s, %s akçe)' % (r['e'], r['altin']))
+        pg.keyboard.press('e'); pg.wait_for_timeout(200)
+        check(pg.evaluate("SAVE.ciftlik.depo.arpa") == 0, 'Çiftlik: olgunlaşmadan biçilmiyor')
+        pg.evaluate("SAVE.ciftlik.parsel[0].t = Date.now() - 31000"); pg.wait_for_timeout(300)
+        pg.keyboard.press('e'); pg.wait_for_timeout(300)
+        r = pg.evaluate("() => ({ depo: SAVE.ciftlik.depo.arpa, bos: SAVE.ciftlik.parsel[0].e })")
+        check(r['depo'] == 1 and r['bos'] is None, 'Çiftlik: olgun ekin biçilince depoya giriyor')
+        pg.evaluate("() => { pl.x = CIFTLIK_RAF.x; pl.z = CIFTLIK_RAF.z + .5; }"); pg.wait_for_timeout(300)
+        pg.keyboard.press('e'); pg.wait_for_timeout(200)
+        check(pg.evaluate("SAVE.ciftlik.secili") == 'bugday', 'Çiftlik: tohum rafı ekini değiştiriyor')
+        pg.evaluate("() => { pl.x = CIFTLIK_PAZAR.x; pl.z = CIFTLIK_PAZAR.z; }"); pg.wait_for_timeout(300)
+        pg.keyboard.press('e'); pg.wait_for_timeout(300)
+        r = pg.evaluate("() => ({ altin: mainGold, depo: SAVE.ciftlik.depo.arpa })")
+        check(r['depo'] == 0 and r['altin'] == 105, 'Çiftlik: pazarda satınca akçe kazanılıyor (%s akçe)' % r['altin'])
+        pg.evaluate("() => { pl.x = 0; pl.z = 32; }"); pg.wait_for_timeout(300)
+        pg.keyboard.press('e'); pg.wait_for_timeout(900)
+        check(pg.evaluate('currentMap') == 'kisla', 'Çiftlik: çıkışta E ile Kışla\'ya dönülüyor')
         check(not errs, 'JavaScript hatası yok')
         ctx.close()
 

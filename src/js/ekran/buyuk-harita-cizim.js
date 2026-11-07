@@ -282,6 +282,19 @@ function drawBlueprintMaden(ctx,W,H){
   drawNorthArrow(ctx,W-30,28);
 }
 
+function drawBlueprintCiftlik(ctx,W,H){
+  const sP1=worldToBlueprint('ciftlik',-38,-38),sP2=worldToBlueprint('ciftlik',38,38);
+  ctx.strokeStyle='#2a3a5c';ctx.lineWidth=2;ctx.strokeRect(sP1.x,sP1.y,sP2.x-sP1.x,sP2.y-sP1.y);
+  ctx.fillStyle='#2a3a5c';ctx.font='bold 11px Georgia,serif';ctx.textAlign='center';
+  ctx.fillText('Çiftlik — Ek, Biç, Sat',W/2,sP1.y-8);
+  CIFTLIK_PARSELLER.forEach(function(q,i){const r=drawZoneRect(ctx,'ciftlik',q,null,{lw:1.1});ctx.font='9px Georgia,serif';ctx.fillText('🌱'+(i+1),r.cx,r.cy);});
+  drawZoneRect(ctx,'ciftlik',{x:CIFTLIK_RAF.x,z:CIFTLIK_RAF.z,w:4,d:3},'Tohum Rafı',{bold:true,fontSize:8});
+  drawZoneRect(ctx,'ciftlik',{x:CIFTLIK_PAZAR.x,z:CIFTLIK_PAZAR.z+1.5,w:6,d:5},'Pazar',{bold:true,fontSize:9});
+  drawZoneRect(ctx,'ciftlik',{x:0,z:35,w:6,d:2},'Çıkış',{bold:true,fontSize:9});
+  ctx.textAlign='left';
+  drawNorthArrow(ctx,W-30,28);
+}
+
 function drawBlueprintTarim(ctx,W,H){
   const sP1=worldToBlueprint('tarim',-46,-46),sP2=worldToBlueprint('tarim',46,46);
   ctx.strokeStyle='#2a3a5c';ctx.lineWidth=2;ctx.strokeRect(sP1.x,sP1.y,sP2.x-sP1.x,sP2.y-sP1.y);

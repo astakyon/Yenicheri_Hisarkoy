@@ -25,6 +25,7 @@
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
       <button class="mBtn" onclick="openChapters()">🗺 BÖLÜMLER</button>
       <button class="mBtn" onclick="coopAc()">👥 ÇOK OYUNCULU</button>
+      <button class="mBtn" onclick="gorunumAc()">🎨 KARAKTERİM</button>
       <button class="mBtn" onclick="kutuphaneAc()">🧰 MODEL KÜTÜPHANESİ</button>
       <button class="mBtn" onclick="openMapEditor()">🛠 HARİTA EDİTÖRÜ</button>
       <button class="mBtn" onclick="showDlg('📜 Nasıl Oynanır','WASD / Joystick → Hareket\nShift / 🏃 → Koşma\nFare / ⚔ → Saldır\n1/2/3 → Silah seç\nE / Kapı → Bölgeye Gir\nKışlada Demir Kapı → Göreve Çık\nEsc → Duraklat','Anlaşıldı!',hideDlg)">📜 NASIL OYNANIR</button>
@@ -37,6 +38,18 @@
   </div>
 
   <!-- ── AYARLAR PANELİ ── -->
+  <!-- ── KARAKTER ÖZELLEŞTİRME ── -->
+  <div id="gorunumBox" style="display:none;position:absolute;inset:0;z-index:22;background:rgba(0,0,0,.35);align-items:center;justify-content:flex-start;padding-left:3vw;">
+    <div class="panel" id="gorunumPanel" style="width:min(400px,94vw);max-height:92vh;overflow-y:auto;">
+      <div class="panTitle">🎨 KARAKTERİM</div>
+      <div class="panSub">RENK, BIYIK VE BÖRK</div>
+      <div id="gorunumIc"></div>
+      <div class="divider"></div>
+      <button class="panBtn" onclick="gorunumSifirla()">↺ Varsayılana dön</button>
+      <button class="panBtn grn" onclick="gorunumKapat()">✔ Tamam</button>
+    </div>
+  </div>
+
   <div id="settingsBox" style="display:none;position:absolute;inset:0;z-index:22;background:rgba(0,0,0,.82);align-items:center;justify-content:center;">
     <div class="panel" style="width:min(320px,92vw);">
       <div class="panTitle">⚙ AYARLAR</div>
