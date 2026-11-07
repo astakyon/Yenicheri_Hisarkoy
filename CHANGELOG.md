@@ -1,5 +1,9 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.65 — Yeniçeri silahları: yatağan, hançer
+- Silahlar karakterden bağımsız modeller oldu (`silah_yatagan`, `silah_hancer`, `silah_tufek`, `silah_yay`): model kütüphanesinde ayrı görünür, karaktere takılıp çıkarılır.
+- **Yatağan** (öne eğimli tek ağızlı, kulaklı kabzalı): kını belin sol arkasında, koldan ayrı; **hançer** kuşağa sokulu. Karakterim menüsünde "Kemer silahı": Yatağan + Hançer / Yatağan / Hançer / Yok. Yakın dövüşte ele yatağan gelir (yoksa hançer). Görünüm dışında hasar değişmez.
+
 ## v1.64 — Karakter paneli düzeltmesi
 - Karakter paneli ekrana sığar (telefonda taşıyordu): sabit başlık + ✕, kaydırılan seçenekler, hep görünen Sıfırla / Tamam.
 - Panelin dışındaki boş alanda sürükleyerek karakteri sağa sola istediğin kadar döndürebilirsin.

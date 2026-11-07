@@ -14,6 +14,7 @@ const GORUNUM_SATIRLAR=[
 ];
 const GORUNUM_TIPLER=[
   {k:'biyikTip',ad:'Bıyık',sec:[['yok','Yok'],['klasik','Klasik'],['kalin','Kalın'],['sivri','Sivri uçlu'],['uzun','Uzun sarkık'],['sakal','Sakallı']]},
+  {k:'kemer',ad:'Kemer silahı (yatağan belde, hançer kuşakta)',sec:[['ikisi','Yatağan + Hançer'],['yatagan','Yatağan'],['hancer','Hançer'],['yok','Yok']]},
   {k:'borkTip',ad:'Başlık',sec:[['klasik','Börk'],['kisa','Kısa börk'],['sarik','Sarık'],['fes','Fes']]}
 ];
 function _hex6(n){return '#'+('000000'+n.toString(16)).slice(-6);}

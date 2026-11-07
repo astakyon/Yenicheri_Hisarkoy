@@ -382,7 +382,7 @@ def main():
         print('Karakter özelleştirme ve silah gösterimi (v1.62)')
         ctx, pg, errs = yeni_sayfa(1280, 720)
         pg.evaluate("BEGIN('kisla')"); pg.wait_for_timeout(900)
-        g = lambda: pg.evaluate("() => { const q = pl.mesh.userData.silah, v = k => q[k].visible; return { kin: v('kin'), kilic: v('elKilic'), tufek: v('elTufek'), yay: v('elYay'), sTufek: v('sirtTufek'), sYay: v('sirtYay') }; }")
+        g = lambda: pg.evaluate("() => { const q = pl.mesh.userData.silah, v = k => q[k].visible; return { kin: v('kinYat'), kilic: v('elYat'), tufek: v('elTufek'), yay: v('elYay'), sTufek: v('sirtTufek'), sYay: v('sirtYay') }; }")
         pg.evaluate("pl.cekiT = 0; selW(0); pl.cekiT = 0"); pg.wait_for_timeout(200)
         a = g()
         check(a['kin'] and not a['kilic'] and not a['tufek'] and not a['yay'] and not a['sTufek'] and not a['sYay'], 'Sakin durumda kılıç kınında, elde silah ve sırtta tahta yok')
@@ -395,6 +395,11 @@ def main():
         pg.evaluate("selW(1); pl.atkCd = 0; pl.cekiT = 0"); pg.wait_for_timeout(200)
         a = g(); check(a['sTufek'] and not a['tufek'], 'Tüfek seçili, savaş yok: tüfek sırtta')
         pg.evaluate("selW(0)")
+        r = pg.evaluate("""() => { const say = k => { const q = modelYap('yeniceri').userData.silah; return Object.keys(q).filter(a => /Yat|Han/.test(a)).sort().join(','); };
+          const ikisi = say(); gorunumDegis('kemer', 'hancer'); const han = say(); gorunumDegis('kemer', 'yatagan'); const yat = say(); gorunumDegis('kemer', 'yok'); const yok = say(); gorunumSifirla();
+          return { ikisi, han, yat, yok, modeller: ['silah_yatagan','silah_hancer','silah_tufek','silah_yay'].every(i => !!MODEL_KAYIT.harita[i]) }; }""")
+        check(r['ikisi'] == 'elYat,kinHan,kinYat' and r['han'] == 'elHan,kinHan' and r['yat'] == 'elYat,kinYat' and r['yok'] == '', 'Yatağan ve hançer bağımsız takılıp çıkarılıyor (%s | %s | %s | %s)' % (r['ikisi'], r['han'], r['yat'], r['yok']))
+        check(r['modeller'], 'Silahlar model kütüphanesinde ayrı modeller (silah_yatagan, silah_hancer, silah_tufek, silah_yay)')
         r = pg.evaluate("""() => { const eski = modelYap('yeniceri').userData.govde.geometry; gorunumDegis('gov', 0x1F5FA8); gorunumDegis('biyikTip', 'sivri'); gorunumDegis('borkTip', 'fes');
           const yeni = modelYap('yeniceri').userData.govde.geometry, kayit = SAVE.gorunum && SAVE.gorunum.gov; gorunumSifirla(); return { fark: eski !== yeni, kayit, sifir: modelYap('yeniceri').userData.govde.geometry === eski }; }""")
         check(r['fark'] and r['kayit'] == 0x1F5FA8, 'Renk, bıyık ve başlık seçimi modeli değiştiriyor ve kaydediliyor')
