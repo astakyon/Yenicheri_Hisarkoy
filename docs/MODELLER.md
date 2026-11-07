@@ -5,7 +5,7 @@ Oyundaki tüm 3B modeller tek bir kayıttan (`src/js/modeller/kayit.js`, `modelT
 ## Modeller (14)
 | Grup | Kimlikler |
 |---|---|
-| Karakter | `yeniceri` |
+| Karakter | `yeniceri`, `npc_halk` |
 | Düşman | `dusman`, `dusman_boss`, `eskiya`, `eskiya_boss` |
 | Hayvan | `geyik`, `kurt`, `domuz`, `ayi` |
 | Eşya | `mermi_tufek`, `mermi_ok`, `ganimet_akce`, `ganimet_deri`, `ganimet_metal` |

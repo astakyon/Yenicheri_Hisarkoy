@@ -157,6 +157,7 @@ function libBoyUygula(){
   const id=KUT.secili,t=MODEL_KAYIT.harita[id],v=parseFloat(document.getElementById('libBoy').value);
   if(!(v>0.05&&v<30)){libMesaj('Boy 0,05 ile 30 metre arasında olmalı.');return;}
   t.boy=v;
+  try{const ob=JSON.parse(localStorage.getItem('yc_model_boy')||'{}');if(t.boy0&&Math.abs(v/t.boy0-1)>.001)ob[id]=v;else delete ob[id];localStorage.setItem('yc_model_boy',JSON.stringify(ob));}catch(e){}
   if(MODEL_KAYIT.glb[id]&&MODEL_KAYIT.kaynak[id]==='cihaz'){
     const a=MODEL_KAYIT.glbAyar[id];a.boy=v;
     modelDbIslem('readonly',function(st){return st.get(id);}).then(function(k){if(k){k.boy=v;return modelDbKaydet(k);}});

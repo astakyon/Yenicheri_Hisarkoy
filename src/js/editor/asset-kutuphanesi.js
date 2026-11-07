@@ -57,8 +57,8 @@ const ASSET_DEFS={
     build3D:(x,z,rot)=>{const d=bx(x,1.4,z,1.6,2.8,.3,0x3a1800,null,false);return d;}},
 
   // ── NPC ──
-  npc_asker:{cat:'npc',name:'Asker NPC',icon:'💂',w:1,d:1,
-    build3D:(x,z)=>{const g=new THREE.Group();const body=new THREE.Mesh(new THREE.BoxGeometry(.85,1.4,.5),new THREE.MeshLambertMaterial({color:0x1a3060}));body.position.y=1;g.add(body);const head=new THREE.Mesh(new THREE.BoxGeometry(.58,.52,.5),new THREE.MeshLambertMaterial({color:0xC8956C}));head.position.y=2;g.add(head);g.position.set(x,0,z);S3.add(g);npcArr.push(g);return g;}},
+  npc_asker:{cat:'npc',name:'Asker NPC',icon:'💂',w:1,d:1,model:'npc_halk',mop:{col:0x1a3060},
+    build3D:(x,z)=>{const g=modelYap('npc_halk',{col:0x1a3060});g.position.set(x,0,z);S3.add(g);addCircleCollider(x,z,.5);return g;}},
 
   // ── SU ──
   nehir_parca:{cat:'su',name:'Nehir Parçası',icon:'🌊',w:4,d:4,

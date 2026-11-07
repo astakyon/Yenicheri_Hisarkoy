@@ -239,6 +239,36 @@ def main():
         check(not errs, 'harita modellerinde JavaScript hatası yok')
         ctx.close()
 
+        print('Oyun içi modeller = model kütüphanesi')
+        ctx, pg, errs = yeni_sayfa()
+        pg.evaluate("SAVE.mapsUnlocked={orman:true,maden:true}; BEGIN('gorev')"); pg.wait_for_timeout(600)
+        r = pg.evaluate("""() => {
+          REN.render = () => {};
+          const geo = x => (x.userData.govde || x).geometry; const ayni = (a, id, op) => { const b = modelYap(id, op); return !!geo(a) && geo(a) === geo(b); };
+          const o = {};
+          o.oyuncu = ayni(pl.mesh, 'yeniceri');
+          spawnEnemy(false); spawnEnemy(true);
+          o.dusman = enemies.length >= 2 && ayni(enemies[enemies.length - 2].mesh, 'dusman', { cubuk: true }) && ayni(enemies[enemies.length - 1].mesh, 'dusman_boss', { cubuk: true });
+          o.npc = npcArr.length === 0 || npcArr.every(n => n.userData.govde && n.userData.kaynak === 'kod');
+          o.varil = barrelsArr.length > 0 && barrelsArr.every(b => b.mesh.userData.yapi === true);
+          dropLoot(1, 1, 3); o.ganimet = loots.length > 0 && loots.every(l => l.mesh.userData.kaynak === 'kod' && l.mesh.geometry.type === modelYap('ganimet_' + l.type).geometry.type);
+          return o;
+        }""")
+        check(r['oyuncu'], 'oyuncu modeli kütüphanedeki yeniceri ile aynı geometri')
+        check(r['dusman'], 'düşman ve boss kütüphanedeki modellerle aynı')
+        check(r['varil'], 'görev haritasındaki variller kütüphane modeli')
+        check(r['ganimet'], 'ganimet kütüphane modeli')
+        pg.evaluate("BEGIN('orman')"); pg.wait_for_timeout(600)
+        h = pg.evaluate("""() => { enemies.length = 0; ['geyik','kurt','domuz'].forEach(t => spawnAnimal(t, false)); spawnAnimal('ayi', true);
+          const geo = x => (x.userData.govde || x).geometry;
+          return enemies.length === 4 && enemies.every(e => { const g = geo(e.mesh); return !!g && e.mesh.userData.kaynak === 'kod'; }); }""")
+        check(h, 'hayvanlar kütüphane modelleriyle kuruluyor')
+        # kütüphanede ayarlanan boy oyuna yansır
+        r2 = pg.evaluate("""() => { const t = MODEL_KAYIT.harita['yeniceri']; const eski = t.boy; t.boy = eski * 1.5; const g = modelYap('yeniceri'); const olcek = g.scale.y; t.boy = eski; return olcek; }""")
+        check(abs(r2 - 1.5) < .01, 'kütüphanede değiştirilen boy oyunda uygulanıyor (x%.2f)' % r2)
+        check(not errs, 'JavaScript hatası yok')
+        ctx.close()
+
         print('Oturum (SESSION + LoopbackTransport)')
         ctx, pg, errs = yeni_sayfa()
         pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)

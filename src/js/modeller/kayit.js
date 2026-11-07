@@ -8,7 +8,8 @@
 const MODEL_KAYIT={liste:[],harita:{},glb:{},glbDosya:{},kaynak:{}};
 
 function modelTanimla(id,tanim){
-  tanim.id=id;
+  tanim.id=id;tanim.boy0=tanim.boy;
+  try{const ob=JSON.parse(localStorage.getItem('yc_model_boy')||'{}');if(ob[id]>0)tanim.boy=ob[id];}catch(e){}
   if(MODEL_KAYIT.harita[id]){MODEL_KAYIT.liste[MODEL_KAYIT.liste.indexOf(MODEL_KAYIT.harita[id])]=tanim;}
   else MODEL_KAYIT.liste.push(tanim);
   MODEL_KAYIT.harita[id]=tanim;
@@ -35,6 +36,7 @@ function modelYap(id,opsiyon){
   const glb=MODEL_KAYIT.glb[id];
   if(glb)g=glbKopya(id,glb,t);
   else{g=t.yap(opsiyon||{});g.userData.kaynak='kod';}
+  if(t.boy0&&t.boy&&Math.abs(t.boy/t.boy0-1)>.001&&g.userData.kaynak==='kod')g.scale.multiplyScalar(t.boy/t.boy0);
   if(!g.userData.govde){let ilk=null;g.traverse(function(o){if(!ilk&&o.isMesh&&o.material&&o.material.color)ilk=o;});g.userData.govde=ilk;}
   if(opsiyon&&opsiyon.cubuk&&t.bar){const c=modelHpCubuk(id);g.add(c.bg);g.add(c.fl);g.userData.hpBg=c.bg;g.userData.hpFl=c.fl;}
   return g;
@@ -201,6 +203,12 @@ modelTanimla('yeniceri',{ad:'Yeniçeri (oyuncu)',grup:'Karakter',boy:2.82,yap:_y
 
 const _OD={id:'dusman',etek:0x3a1800,gov:0x4a2000,sash:0x7a1a1a,sal:0x3a3a3a,bot:0x1a1008,biyik:0x1a1008,sapka:'sarik',sapkaC:0x8a7a5a,sapkaC2:0x5a1a1a,silah:'kilic',kalkan:0x6a4a2a};
 const _ODB={id:'dusman_boss',etek:0x5a0000,gov:0x7B0000,sash:0x1a1a1a,yaka:0xFFD700,sal:0x2a2a2a,bot:0x1a1008,sakal:0x1a1008,sapka:'kask',sapkaC:0x4a4a52,omuz:0x8a8a92,pelerin:0x3a0000,silah:'kilic',kalkan:0x555560,taç:true};
+// Halk / nöbetçi (haritalardaki NPC'ler): renk seçenekle gelir
+function _npcYap(op){
+  const c=(op&&op.col)||0x1a3060;
+  return _insanYap({id:'npc_'+c,etek:c,gov:c,sash:0x3a2810,yaka:0xD4A82A,sal:0x3a3a3a,bot:0x2a1808,biyik:0x2a1808,sapka:'bork',sapkaC:0xD4B050},.95);
+}
+modelTanimla('npc_halk',{ad:'Halk / nöbetçi (NPC)',grup:'Karakter',boy:2.6,varsayilan:{col:0x1a3060},yap:_npcYap});
 modelTanimla('dusman',{ad:'Düşman askeri',grup:'Düşman',boy:2.7,bar:{w:1.1,y:3.1,renk:0x22cc55},yap:function(){return _insanYap(_OD,.82);}});
 modelTanimla('dusman_boss',{ad:'Düşman komutanı (boss)',grup:'Düşman',boy:3.65,bar:{w:1.6,y:3.95,renk:0xFFD700},yap:function(){return _insanYap(_ODB,1.15);}});
 

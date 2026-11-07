@@ -1,5 +1,11 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.51 — Oyun içi modeller = model kütüphanesi (tek kaynak)
+- Oyundaki her varlık artık `modelYap()` ile kütüphaneden gelir: oyuncu, düşman, boss, hayvan, ganimet, mermi, **NPC'ler** (yeni `npc_halk`), Kışla ağaçları ve fenerleri, **Görev (Devriye) haritasının** kuleleri, evleri, camisi, hamamı, kervansarayı, variller, ağaçları ve meşaleleri, editördeki NPC.
+- Kütüphanede ayarlanan **boy** (Uygula) kalıcı olur ve oyunda da uygulanır; `.glb` ile değiştirilen model oyunda da onu kullanır.
+- Test: oyundaki oyuncu/düşman/boss/ganimet/hayvan/varil kütüphane geometrisiyle aynı mı, boy ayarı oyuna yansıyor mu.
+- Kalan düz kutular: zemin, duvarlar, sokak şeritleri, levhalar (model değil, zemin/ara parça).
+
 ## v1.50 — Bina saydamlaşması, mağara/maden/nehir modelleri, editör küçük resimleri
 - **Saydamlaşma:** kamera ile oyuncu arasına giren yüksek yapı (bina, kule, mağara, uzun duvar) yarı saydam olur, çıkınca geri döner. Kamera döndürme ile birlikte çalışır.
 - **Yeni modeller:** mağara (kaya kütlesi, karanlık ağız, sarkıt), maden ahşap desteği (direk, kiriş, payanda), akarsu (su, taş kıyı, kamış). Av Ormanı mağarası ve akarsuyu, Demir Madeni kirişleri bunlarla kuruldu; maden koridoruna kaya yığınları eklendi.

@@ -125,26 +125,20 @@ function buildKisla(){
     {x:-13,z:18,col:0x1a3060},{x:32,z:14,col:0x602010}
   ];
   npcDefs.forEach(n=>{
-    const g=new THREE.Group();
-    const body=new THREE.Mesh(new THREE.BoxGeometry(.85,1.4,.5),new THREE.MeshLambertMaterial({color:n.col}));body.position.y=1;g.add(body);
-    const skirt=new THREE.Mesh(new THREE.CylinderGeometry(.46,.56,.7,8),new THREE.MeshLambertMaterial({color:n.col}));skirt.position.y=.45;g.add(skirt);
-    const head=new THREE.Mesh(new THREE.BoxGeometry(.58,.52,.5),new THREE.MeshLambertMaterial({color:0xC8956C}));head.position.y=1.9;g.add(head);
-    const bork=new THREE.Mesh(new THREE.CylinderGeometry(.18,.3,.65,8),new THREE.MeshLambertMaterial({color:0xD4B050}));bork.position.set(0,2.4,0);g.add(bork);
+    const g=modelYap('npc_halk',{col:n.col});
     g.position.set(n.x,0,n.z);S3.add(g);npcArr.push(g);
   });
 
   // ── Ağaçlar (sur kenarlarında, dekoratif) ──
   [[-44,-40],[-44,40],[44,-40],[44,40],[-30,-44],[30,-44],[-30,44],[30,44],[44,0],[-44,18]].forEach(([x,z])=>{
-    const tr=new THREE.Mesh(new THREE.CylinderGeometry(.25,.3,2.5,8),new THREE.MeshLambertMaterial({color:0x5a3800}));tr.position.set(x,1.25,z);tr.castShadow=true;S3.add(tr);
-    const lv=new THREE.Mesh(new THREE.SphereGeometry(2,10,8),new THREE.MeshLambertMaterial({color:0x3a7030}));lv.position.set(x,4,z);lv.castShadow=true;S3.add(lv);
+    const ag=modelYap('cevre_agac',{h:4.5});ag.position.set(x,0,z);ag.rotation.y=x*.37+z;S3.add(ag);
   });
 
   // ── Fenerler (cadde boyunca + meydanlarda) ──
   [[0,-40],[0,-20],[0,0],[0,20],[0,40],[-23,-30],[-23,28],[23,-30],[23,28]].forEach(([x,z])=>{
-    const pole=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,2,7),new THREE.MeshLambertMaterial({color:0x4a2800}));pole.position.set(x,1.5,z);S3.add(pole);
+    yapiKoy('cevre_mesale',x,z);
     const pt=new THREE.PointLight(0xFF9933,2.2,11);pt.position.set(x,3.2,z);S3.add(pt);
     torches.push({light:pt,phase:Math.random()*Math.PI*2});
-    const fl=new THREE.Mesh(new THREE.SphereGeometry(.2,6,4),new THREE.MeshLambertMaterial({color:0xFF8800,emissive:0xFF5500,emissiveIntensity:2}));fl.position.set(x,3.2,z);S3.add(fl);
   });
 }
 
