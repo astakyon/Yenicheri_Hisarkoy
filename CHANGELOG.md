@@ -1,5 +1,12 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.54 — Binalar caddeye bakar, kapalı talim alanı, ölçek
+- **Kışla:** bina kapıları artık orta caddeye açılır (batı sütunu doğuya, doğu sütunu batıya); görevliler kapıların önünde, caddede durur. Binalar arası dar boşluklar kalktı.
+- **Talim alanı:** dört kenarı kapalı çit; caddeye bakan kenarda 5 birimlik kapı, direkler ve kiriş.
+- **Levhalar:** havada asılı duran yazısız levhalar kaldırıldı; çarşı levhası direkli (`cevre_levha` `ayak` seçeneği).
+- **Arayüz ölçeği** PC'de küçüldü (1.0–1.2), yatay telefonda 1.12.
+- Test: etkileşim noktaları ve görevliler, talim alanı kapısı.
+
 ## v1.53 — AAA arayüz ve ana menü, ferah Kışla, börk/silah
 - **Ana menü:** sol hizalı büyük altın başlık, soldan vurgulu düğme listesi, sağda model kütüphanesinden dönen 3B yeniçeri (ayrı çizim alanı), alt sağda Ayarlar/Skor.
 - **HUD:** yuvarlak portre, kalın can/enerji/XP çubukları (değer çubuğun içinde), görev kartı, dairesel büyük mini harita, büyük duyuru ve ipucu yazıları. Ölçek `--ui/--uiP/--uiT` (yatay telefon ≥1.12, PC ≤1.8, dikey telefon genişliğe göre); paneller `zoom` ile büyür.

@@ -232,11 +232,12 @@ function _yapiSokak(o){
 }
 // Levha: çerçeveli tahta, kenarlıkta metal köşebentler (orijin merkezde)
 function _yapiLevha(o){
-  const w=o.w||4,h=o.h||.8,d=o.d||.2,c=o.renk||0x5a2800;
-  _yk(w,h,d,c,0,0,0);_yk(w+.2,.1,d+.06,0x2a1808,0,h/2,0);_yk(w+.2,.1,d+.06,0x2a1808,0,-h/2,0);
-  _yk(.1,h+.1,d+.06,0x2a1808,-w/2,0,0);_yk(.1,h+.1,d+.06,0x2a1808,w/2,0,0);
-  _yk(w*.7,h*.28,d+.04,0xD4A82A,0,0,0);        // yazı bandı
-  [-1,1].forEach(function(sg){_yk(.12,.12,.12,0x8a8a8a,sg*(w/2-.15),h/2-.1,d/2+.04);});
+  const w=o.w||4,h=o.h||.8,d=o.d||.2,c=o.renk||0x5a2800,Y=o.ayak||0;   // ayak: direk boyu (0 = asılı levha)
+  if(Y){[-1,1].forEach(function(sg){_yk(.16,Y+h/2,.16,0x3a2410,sg*(w/2-.3),(Y+h/2)/2,0);});}
+  _yk(w,h,d,c,0,Y,0);_yk(w+.2,.1,d+.06,0x2a1808,0,Y+h/2,0);_yk(w+.2,.1,d+.06,0x2a1808,0,Y-h/2,0);
+  _yk(.1,h+.1,d+.06,0x2a1808,-w/2,Y,0);_yk(.1,h+.1,d+.06,0x2a1808,w/2,Y,0);
+  _yk(w*.7,h*.28,d+.04,0xD4A82A,0,Y,0);        // yazı bandı
+  [-1,1].forEach(function(sg){_yk(.12,.12,.12,0x8a8a8a,sg*(w/2-.15),Y+h/2-.1,d/2+.04);});
   return _ybitir();
 }
 
@@ -269,8 +270,8 @@ _YD.forEach(function(d){
 });
 
 // Haritada kullanım: yapıyı sahneye koyar ve (verildiyse) çarpışma kutusu ekler
-function yapiKoy(id,x,z,op,carp){
-  const g=modelYap(id,op);g.position.set(x,0,z);S3.add(g);
+function yapiKoy(id,x,z,op,carp,rot){
+  const g=modelYap(id,op);g.position.set(x,0,z);if(rot)g.rotation.y=rot;S3.add(g);
   if(carp)addCollider(x,z,carp[0],carp[1]);
   if(id.indexOf('yapi_')===0||id==='cevre_magara'){g.updateMatrixWorld(true);kapatanKaydet(g,4);}
   return g;

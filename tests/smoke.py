@@ -298,6 +298,22 @@ def main():
         check(r['hpH'] >= 18, 'can çubuğu okunur yükseklikte (%dpx)' % r['hpH'])
         check(r['mmW'] >= 120, 'mini harita yeterince büyük (%dpx)' % r['mmW'])
         check(r['acik'] >= .7, 'doğma noktası çevresi ferah (%.0f%% açık)' % (r['acik'] * 100))
+        r2 = pg.evaluate("""() => {
+          // her etkileşim noktası caddeye yakın (|x|<=14) ve çarpışmasız; yanında görevli var
+          const kotu = [], npc = [];
+          ZONES.filter(z => INTERACTABLE_ZONES.includes(z.id) && z.id !== 'demirKapi' && z.id !== 'carsi').forEach(z => {
+            if (Math.abs(z.dx) > 14 || checkCollision(z.dx, z.dz, .5)) kotu.push(z.id);
+            if (!npcArr.some(n => Math.hypot(n.position.x - z.dx, n.position.z - z.dz) < 5)) npc.push(z.id);
+          });
+          // talim alanı: dört kenar kapalı, caddeye bakan kenarda geçilebilir kapı
+          const d = ZONES.find(z => z.id === 'drill');
+          const kapi = !checkCollision(d.x + d.w / 2, d.z, .6);
+          const kuzey = checkCollision(d.x, d.z - d.d / 2, .6), guney = checkCollision(d.x, d.z + d.d / 2, .6), bati = checkCollision(d.x - d.w / 2, d.z, .6), dogu = checkCollision(d.x + d.w / 2, d.z + d.d / 2 - 1, .6);
+          return { kotu, npc, kapi, kapali: kuzey && guney && bati && dogu };
+        }""")
+        check(not r2['kotu'], 'etkileşim noktaları caddede ve ulaşılabilir (sorunlu: %s)' % (r2['kotu'] or 'yok'))
+        check(not r2['npc'], 'her kapının önünde görevli var (eksik: %s)' % (r2['npc'] or 'yok'))
+        check(r2['kapi'] and r2['kapali'], 'talim alanı kapalı, caddeye bakan kapıdan girilir')
         check(r['ince'] == 0, 'Kışla ortasında uzun ince dekoratif duvar yok')
         check(not errs, 'JavaScript hatası yok')
         ctx.close()
