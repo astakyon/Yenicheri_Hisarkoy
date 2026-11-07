@@ -7,7 +7,7 @@ const BLUEPRINT_MAPS=[
   {id:'gorev', name:'Hisarköy Devriye',icon:'⚔',unlocked:true},
   {id:'orman', name:'Av Ormanı',      icon:'🏹',unlockKey:'orman'},
   {id:'maden', name:'Demir Madeni',   icon:'⛏', unlockKey:'maden'},
-  {id:'tarim', name:'Tarım Ovası',    icon:'🌾',unlocked:false},
+  {id:'tarim', name:'Tarım Ovası',    icon:'🌾',unlockKey:'tarim'},
   {id:'sehir', name:'Yabancı Şehir',  icon:'🏙',unlocked:false},
   {id:'saray', name:'Osmanlı Sarayı', icon:'👑',unlocked:false},
 ];
@@ -103,8 +103,8 @@ function drawBlueprintMap(mapId){
   const cv=document.getElementById('bmCanvas');
   if(!cv)return;
   const ctx=cv.getContext('2d');
-  const half=(mapId==='kisla')?48:(mapId==='orman')?46:(mapId==='maden')?38:28;
-  BM_SCALE=(mapId==='kisla')?7.2:(mapId==='orman')?7.6:(mapId==='maden')?8.4:11;
+  const half=(mapId==='kisla')?48:(mapId==='orman'||mapId==='tarim')?46:(mapId==='maden')?38:28;
+  BM_SCALE=(mapId==='kisla')?7.2:(mapId==='orman'||mapId==='tarim')?7.6:(mapId==='maden')?8.4:11;
   const W=Math.round(half*2*BM_SCALE+50),H=W; // kare canvas — dünya zaten kare
   cv.width=W;cv.height=H;
   bmCanvasW=W;bmCanvasH=H;
@@ -127,6 +127,7 @@ function drawBlueprintMap(mapId){
   else if(mapId==='gorev')   drawBlueprintGorev(ctx,W,H);
   else if(mapId==='orman'&&mInfo&&isMapUnlocked(mInfo)) drawBlueprintOrman(ctx,W,H);
   else if(mapId==='maden'&&mInfo&&isMapUnlocked(mInfo)) drawBlueprintMaden(ctx,W,H);
+  else if(mapId==='tarim'&&mInfo&&isMapUnlocked(mInfo)) drawBlueprintTarim(ctx,W,H);
   else                       drawBlueprintLocked(ctx,info,W,H);
 
   // Oyuncu konumu + bakış yönü (sadece şu an o haritadaysak)

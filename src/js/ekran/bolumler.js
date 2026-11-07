@@ -6,7 +6,7 @@ const WORLD_MAPS=[
   {id:'gorev', name:'Hisarköy Devriye',icon:'⚔',desc:'Haydutlara karşı savaş, akçe kazan',unlocked:true,action:()=>{closeChapters();BEGIN('gorev');}},
   {id:'orman', name:'Av Ormanı',      icon:'🏹',desc:'Hayvan avla, deri ve et kazan',unlockKey:'orman',action:()=>{closeChapters();BEGIN('orman');}},
   {id:'maden', name:'Demir Madeni',   icon:'⛏', desc:'Metal ve nadir maden topla, tuzaklara dikkat et',unlockKey:'maden',action:()=>{closeChapters();BEGIN('maden');}},
-  {id:'tarim', name:'Tarım Ovası',    icon:'🌾',desc:'Köylüleri koru, tahıl kazan',unlocked:false,desc2:'Yakında açılacak'},
+  {id:'tarim', name:'Tarım Ovası',    icon:'🌾',desc:'Köylüleri eşkıyalardan koru, tahıl topla',unlockKey:'tarim',action:()=>{closeChapters();BEGIN('tarim');}},
   {id:'sehir', name:'Yabancı Şehir',  icon:'🏙',desc:'Tehlikeli sokaklarda düzen sağla',unlocked:false,desc2:'Yakında açılacak'},
   {id:'saray', name:'Osmanlı Sarayı', icon:'👑',desc:'Son görev — Hain Veziri durdur',unlocked:false,desc2:'Yakında açılacak'},
 ];

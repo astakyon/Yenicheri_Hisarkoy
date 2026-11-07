@@ -7,7 +7,7 @@ function BEGIN(mapId){
   document.getElementById('hudLayer').style.display='block';
   document.getElementById('topBar').style.display='flex';document.getElementById('mmBox').style.display='block';document.getElementById('topLeftHud').style.display='flex';
   initThree();
-  if(mapId==='kisla')startKisla();else if(mapId==='orman')startOrman();else if(mapId==='maden')startMaden();else startGorev();
+  if(mapId==='kisla')startKisla();else if(mapId==='orman')startOrman();else if(mapId==='maden')startMaden();else if(mapId==='tarim')startTarim();else startGorev();
   setTimeout(()=>{ initTouch(); applyAllSettings(); },100);
   updateGoldHud();
   updateXPHud();
@@ -144,3 +144,25 @@ function startMaden(){
   spawnMadenWave(1);
 }
 
+
+function startTarim(){
+  currentMap='tarim';
+  clearAll();
+  buildTarim(); // içinde MAP_HALF=46 set ediliyor
+  tarimKoyluDogur();
+  pl.x=0;pl.z=36; // Köy yolu (güney)
+  pl.maxHp=getBaseMaxHp();pl.hp=pl.maxHp;
+  pl.maxEn=getBaseMaxEn();pl.en=pl.maxEn;
+  pl.spd=getBaseSpd();pl.rspd=pl.spd*1.8;
+  buildPlayer();
+  akce=0;kills=0;wave=1;waveTimer=170;waveActive=false;gt=0;
+  poolGold=0;updateGoldHud();
+  document.getElementById('akceV').textContent=0;
+  document.getElementById('killV').textContent=0;
+  playing=true;paused=false;
+  document.getElementById('mapIndicator').textContent='🌾 TARIM OVASI — Hisarköy Çiftlikleri';
+  const btmBarEl=document.getElementById('btmBar');if(btmBarEl)btmBarEl.style.display='flex';
+  questTracker={kills:0,waves:0,bossKills:0};
+  setTimeout(()=>lootPop('🌾 Köylüleri koru, tarlalardan tahıl topla!'),1500);
+  spawnTarimWave(1);
+}

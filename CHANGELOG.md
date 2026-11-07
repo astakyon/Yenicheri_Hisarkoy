@@ -1,5 +1,13 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.61 — Yeni harita: Tarım Ovası
+- **Tarım Ovası açıldı** (🌾 haritalar listesinde ve büyük haritada): 4 tarla (buğday sıraları, çit ve geçitlerle), ortada köy yolu, 6 ev, kuyu, ağaçlar. Harita `TARIM_TARLALAR` / `TARIM_EVLER` verisinden üretilir.
+- **Görev:** 6 köylüyü eşkıya baskınlarından koru. Eşkıyalar 7 kenar noktasından girer, en yakın köylüye ya da sana saldırır; köylüler eşkıyadan kaçar. Her baskın sonunda hayatta kalan köylü başına 6 akçe ve biraz can yenilenmesi. 5. baskın Eşkıya Başı. Tüm köylüler ölürse "Köy Yandı" ve havuzdaki akçe kaybolur.
+- **Tahıl toplama:** her tarlada 9 demet (toplam 36); üstüne yürüyerek toplanır, akçe verir, her baskında yenilenir.
+- **Çıkış:** yolun güney ucunda yeşil halka; [E] ile Kışla'ya dönülür, akçe aktarılır.
+- Bilinen sınır: Tarım Ovası şimdilik yalnızca tek oyunculu; ortak oyun (co-op) odalarına eklenmedi (köylüler ve tahıllar istemciye eşlenmiyor).
+- Test: ulaşılabilirlik (tahıl, köylü, çıkış, baskın noktaları), tahıl toplama, köylüye saldırı, görev başarısızlığı, çıkış; performans ve altın (golden) testlerine eklendi.
+
 ## v1.60 — Maden: kazma ile kazılabilir damarlar, çıkış
 - **Kazılabilir damarlar:** 22 nokta; Kaya (akçe), Bakır, Demir, Gümüş ve Altın damarı. Yakın saldırı kazma gibi vurur (kaya 3, bakır 4, demir 5, gümüş 5, altın 7 vuruş); kazılınca ganimet düşer (bakır/demir 3'er, gümüş 3, altın 6 akçe). Yaklaşınca ipucu yazısı ad ve kalan dayanıklılığı gösterir. Her dalgada yenilenir. Eski süs kaya yığınları artık kazılabilir kaya.
 - **Çıkış:** giriş koridorunun ucunda yeşil çıkış halkası ve "ÇIKIŞ — KIŞLA" yazısı; yaklaşınca [E] / "Çık" düğmesi. Sağ çıkınca havuzdaki akçe kışlaya aktarılır (duraklat menüsündeki "Kışlaya Dön" havuzu kaybettirir).

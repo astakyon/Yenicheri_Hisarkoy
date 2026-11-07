@@ -26,7 +26,7 @@ from playwright.sync_api import sync_playwright  # noqa: E402
 import ortak  # noqa: E402
 
 REFERANS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'altin-referans.json')
-HARITALAR = ['kisla', 'gorev', 'orman', 'maden']
+HARITALAR = ['kisla', 'gorev', 'orman', 'maden', 'tarim']
 KARE = 1500          # harita başına 25 saniyelik oyun
 KONTROL_ARALIGI = 250
 
@@ -35,6 +35,7 @@ ISINLANMA = {
     'maden': {400: 'tuzak', 700: [0, -4], 1000: [-22, -8], 1250: [22, 8]},
     'orman': {600: [0, 0], 1000: [-10, 10]},
     'gorev': {700: [0, 0]},
+    'tarim': {500: [-26, -28], 900: [26, 0], 1200: [0, 24]},
 }
 
 ON_SCRIPT = """
@@ -56,7 +57,7 @@ ON_SCRIPT = """
 
 KOS_JS = """
 ([harita, kare, aralik, ISIN]) => {
-  SAVE.mapsUnlocked = { orman: true, maden: true };
+  SAVE.mapsUnlocked = { orman: true, maden: true, tarim: true };
   __tohum(20260101);
   BEGIN(harita);
   REN.render = () => {};                        // çizim simülasyonu etkilemez, hız için kapat

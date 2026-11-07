@@ -74,9 +74,9 @@ def main():
         ctx.close()
 
         print('Haritalar')
-        for m in ('kisla', 'gorev', 'orman', 'maden'):
+        for m in ('kisla', 'gorev', 'orman', 'maden', 'tarim'):
             ctx, pg, errs = yeni_sayfa()
-            pg.evaluate("SAVE.mapsUnlocked={orman:true,maden:true}; BEGIN('%s')" % m)
+            pg.evaluate("SAVE.mapsUnlocked={orman:true,maden:true,tarim:true}; BEGIN('%s')" % m)
             pg.wait_for_timeout(4000)
             st = pg.evaluate('({map:currentMap,playing})')
             check(st['map'] == m and st['playing'], '%s açıldı' % m)
@@ -271,8 +271,8 @@ def main():
 
         print('Harita performans bütçesi')
         ctx, pg, errs = yeni_sayfa()
-        pg.evaluate("SAVE.mapsUnlocked={orman:true,maden:true}"); 
-        for m, azamiCizim, azamiMesh in (('kisla', 90, 260), ('gorev', 90, 200), ('orman', 100, 200), ('maden', 110, 200)):
+        pg.evaluate("SAVE.mapsUnlocked={orman:true,maden:true,tarim:true}"); 
+        for m, azamiCizim, azamiMesh in (('kisla', 90, 260), ('gorev', 90, 200), ('orman', 100, 200), ('maden', 110, 200), ('tarim', 100, 200)):
             pg.evaluate("BEGIN('%s')" % m); pg.wait_for_timeout(700)
             r = pg.evaluate("""() => { REN.info.reset(); REN.render(S3, CAM); let mesh = 0, gercekIsik = 0; S3.traverse(o => { if (o.isMesh) mesh++; if (o.isPointLight) gercekIsik++; });
               return { cizim: REN.info.render.calls, mesh, gercekIsik, sanal: FENER.liste.length }; }""")
@@ -328,7 +328,7 @@ def main():
 
         print('Harita denetimi (v1.57): doğma noktası ulaşılabilir, yeterli açık alan')
         ctx, pg, errs = yeni_sayfa(1280, 720)
-        for m, asgariAcik, asgariUlas in (('kisla', .6, 5000), ('gorev', .5, 1500), ('orman', .8, 6000), ('maden', .3, 1500)):
+        for m, asgariAcik, asgariUlas in (('kisla', .6, 5000), ('gorev', .5, 1500), ('orman', .8, 6000), ('maden', .3, 1500), ('tarim', .7, 6000)):
             pg.evaluate("BEGIN('%s')" % m); pg.wait_for_timeout(700)
             r = pg.evaluate("""() => { const H = MAP_HALF, hu = new Set(); let top = 0;
               for (let x = -H + 2; x <= H - 2; x++) for (let z = -H + 2; z <= H - 2; z++) { top++; if (!checkCollision(x, z, .6)) hu.add(x + ',' + z); }
@@ -338,6 +338,44 @@ def main():
             check(r['basOk'], '%s: doğma noktası çarpışmasız' % m)
             check(r['acik'] >= asgariAcik, '%s: açık alan %%%d (en az %%%d)' % (m, r['acik'] * 100, asgariAcik * 100))
             check(r['ulas'] >= asgariUlas, '%s: doğmadan ulaşılabilir alan %d hücre (en az %d)' % (m, r['ulas'], asgariUlas))
+        check(not errs, 'JavaScript hatası yok')
+        ctx.close()
+
+        print('Tarım Ovası: köylüler, tahıl, baskın (v1.61)')
+        ctx, pg, errs = yeni_sayfa(1280, 720)
+        pg.evaluate("BEGIN('tarim')"); pg.wait_for_timeout(900)
+        r = pg.evaluate("""() => {
+          const bas = [Math.round(pl.x), Math.round(pl.z)], gor = new Set([bas.join(',')]), q = [bas];
+          while (q.length) { const [x, z] = q.pop(); [[1,0],[-1,0],[0,1],[0,-1]].forEach(([a, b]) => { const k = (x + a) + ',' + (z + b); if (!gor.has(k) && Math.abs(x + a) < 45 && Math.abs(z + b) < 45 && !checkCollision(x + a, z + b, .6)) { gor.add(k); q.push([x + a, z + b]); } }); }
+          const ulas = (x, z) => gor.has(Math.round(x) + ',' + Math.round(z));
+          return { tahil: tarimTahillar.length, tahilKapali: tarimTahillar.filter(t => !ulas(t.x, t.z)).length,
+            koylu: tarimKoyluler.length, koyluKapali: tarimKoyluler.filter(k => !ulas(k.x, k.z)).length,
+            cikis: ulas(TARIM_CIKIS.x, TARIM_CIKIS.z - 2), baskin: TARIM_BASKIN.filter(p => !ulas(Math.max(-44, Math.min(44, p[0])), Math.max(-44, Math.min(44, p[1])))).length,
+            evKapali: TARIM_EVLER.filter(e => ulas(e[0], e[1])).length, dusman: enemies.length }; }""")
+        check(r['tahil'] == 36 and r['tahilKapali'] == 0, 'Tarım: 36 tahıl demeti var ve hepsine ulaşılıyor (%d, ulaşılamayan %d)' % (r['tahil'], r['tahilKapali']))
+        check(r['koylu'] == 6 and r['koyluKapali'] == 0, 'Tarım: 6 köylü ve hepsi ulaşılabilir yerde')
+        check(r['cikis'], 'Tarım: çıkışa ulaşılıyor')
+        check(r['baskin'] == 0, 'Tarım: eşkıya giriş noktaları ulaşılabilir alanda (kapalı: %d)' % r['baskin'])
+        check(r['evKapali'] == 0, 'Tarım: evlerin içi dolu (çarpışmalı)')
+        check(r['dusman'] >= 4, 'Tarım: ilk baskın başladı (%d eşkıya)' % r['dusman'])
+        r = pg.evaluate("""() => { enemies.forEach(e => S3.remove(e.mesh)); enemies.length = 0; const t = tarimTahillar[0], m0 = akce, c0 = tarimTahilSayac;
+          pl.x = t.x; pl.z = t.z; return { m0, c0 }; }""")
+        pg.wait_for_timeout(400)
+        r2 = pg.evaluate("() => ({ akce, sayac: tarimTahilSayac, kalan: tarimTahillar.length })")
+        check(r2['sayac'] == r['c0'] + 1 and r2['akce'] > r['m0'] and r2['kalan'] == 35, 'Tarım: tahıl demetine gidince toplanıyor, akçe artıyor')
+        r = pg.evaluate("""() => { const k = tarimKoyluler[0]; enemies.length = 0; spawnTarimEskiya(false, [k.x + 1.2, k.z]); const e = enemies[0]; const h0 = k.hp; k.donuk = true;
+          pl.x = 40; pl.z = 40; return { h0 }; }""")
+        pg.wait_for_timeout(1800)
+        r2 = pg.evaluate("() => tarimKoyluler[0].hp")
+        check(r2 < r['h0'], 'Tarım: eşkıya köylüye saldırıyor (can %d → %d)' % (r['h0'], r2))
+        pg.evaluate("() => { enemies.forEach(e => S3.remove(e.mesh)); enemies.length = 0; tarimKoyluler.forEach(k => { k.hp = 0; S3.remove(k.mesh); }); }")
+        pg.wait_for_timeout(500)
+        check(pg.evaluate("playing") is False and 'Köy Yandı' in pg.evaluate("document.getElementById('dlgT').textContent"), 'Tarım: tüm köylüler ölünce görev başarısız')
+        pg.evaluate("hideDlg(); BEGIN('tarim')"); pg.wait_for_timeout(600)
+        pg.evaluate("() => { pl.x = 0; pl.z = 40; }"); pg.wait_for_timeout(300)
+        yakin = pg.evaluate("pl.nearZone && pl.nearZone.id")
+        pg.keyboard.press('e'); pg.wait_for_timeout(1000)
+        check(yakin == 'tarimCikis' and pg.evaluate('currentMap') == 'kisla', 'Tarım: çıkışta E ile Kışla\'ya dönülüyor')
         check(not errs, 'JavaScript hatası yok')
         ctx.close()
 

@@ -41,3 +41,16 @@ Eski düzende "kollar" dolu kaya bloğuydu, koridor iki yandan kapalıydı, dü�
 | Batı / Doğu Bağlantısı (halka) | -30..-14 / 14..30, -30..-26 |
 
 Doğrulama: doğma noktasından tüm odalara ulaşılır, doğma ve tuzak noktaları açık alanda (`tests/smoke.py` → "Demir Madeni: bağlı mağara ağı").
+
+
+## Tarım Ovası — v1.61
+Açık hava haritası (±46). Alanlar `src/js/haritalar/tarim-sahne.js` içindeki veri listelerinde: `TARIM_TARLALAR` (4 tarla), `TARIM_KOY`, `TARIM_EVLER`, `TARIM_BASKIN` (eşkıya giriş noktaları), `TARIM_CIKIS`.
+
+| Alan | x0..x1, z0..z1 |
+|---|---|
+| Kuzeybatı / Kuzeydoğu tarla | -40..-12 / 12..40, -40..-16 |
+| Batı / Doğu tarla | -40..-14 / 14..40, -10..10 |
+| Köy (6 ev, kuyu) | -24..24, 14..36 |
+| Ana yol | x -3..3, tüm harita; çıkış z=41.5 |
+
+Mantık `tarim-guncelleme.js`: köylüler (40 can) eşkıyadan kaçar, eşkıyalar en yakın köylüye saldırır; tahıl demetleri 3×3 sabit konumda. Doğrulama: `tests/smoke.py` → "Tarım Ovası: köylüler, tahıl, baskın" (BFS ulaşılabilirlik).

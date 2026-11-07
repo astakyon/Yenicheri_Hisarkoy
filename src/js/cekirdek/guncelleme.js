@@ -40,6 +40,7 @@ function update(dt){
   if(currentMap==='gorev'){updateGorev(dt);}
   else if(currentMap==='orman'){updateOrman(dt);}
   else if(currentMap==='maden'){updateMaden(dt);}
+  else if(currentMap==='tarim'){updateTarim(dt);}
   else if(currentMap&&currentMap.startsWith('custom_')){updateCustomMap(dt);}
   else{updateKisla(dt);}
   updateAim();

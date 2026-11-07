@@ -33,6 +33,7 @@ haritalar/kisla.js
 haritalar/devriye.js
 haritalar/orman-sahne.js
 haritalar/maden-sahne.js
+haritalar/tarim-sahne.js
 haritalar/orman-hayvan-ai.js
 haritalar/maden-dusman-ai.js
 karakter/karakter-modeli.js
@@ -44,6 +45,7 @@ kontrol/nisan.js
 cekirdek/guncelleme.js
 haritalar/orman-guncelleme.js
 haritalar/maden-guncelleme.js
+haritalar/tarim-guncelleme.js
 cekirdek/oyun-baslat.js
 ekran/bolge-menusu.js
 kontrol/girdi.js

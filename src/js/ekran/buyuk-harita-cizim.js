@@ -282,6 +282,23 @@ function drawBlueprintMaden(ctx,W,H){
   drawNorthArrow(ctx,W-30,28);
 }
 
+function drawBlueprintTarim(ctx,W,H){
+  const sP1=worldToBlueprint('tarim',-46,-46),sP2=worldToBlueprint('tarim',46,46);
+  ctx.strokeStyle='#2a3a5c';ctx.lineWidth=2;ctx.strokeRect(sP1.x,sP1.y,sP2.x-sP1.x,sP2.y-sP1.y);
+  ctx.fillStyle='#2a3a5c';ctx.font='bold 11px Georgia,serif';ctx.textAlign='center';
+  ctx.fillText('Tarım Ovası — Hisarköy Çiftlikleri',W/2,sP1.y-8);
+  drawZoneRect(ctx,'tarim',{x:0,z:0,w:6,d:92},null,{lw:.8});
+  TARIM_TARLALAR.forEach(function(f){
+    const r=drawZoneRect(ctx,'tarim',{x:(f.x0+f.x1)/2,z:(f.z0+f.z1)/2,w:f.x1-f.x0,d:f.z1-f.z0},null,{lw:1.2});
+    ctx.font='9px Georgia,serif';ctx.fillText('🌾 '+f.ad,r.cx,r.cy);
+  });
+  drawZoneRect(ctx,'tarim',{x:0,z:25,w:TARIM_KOY.x1-TARIM_KOY.x0,d:TARIM_KOY.z1-TARIM_KOY.z0},TARIM_KOY.ad,{bold:true,fontSize:9});
+  TARIM_EVLER.forEach(function(e){drawZoneRect(ctx,'tarim',{x:e[0],z:e[1],w:6,d:5},null,{lw:1});});
+  drawZoneRect(ctx,'tarim',{x:0,z:43,w:6,d:2},'Çıkış',{bold:true,fontSize:9});
+  ctx.textAlign='left';
+  drawNorthArrow(ctx,W-30,28);
+}
+
 function drawNorthArrow(ctx,x,y){
   ctx.save();
   ctx.fillStyle='#2a3a5c';ctx.font='bold 13px Georgia,serif';ctx.textAlign='center';

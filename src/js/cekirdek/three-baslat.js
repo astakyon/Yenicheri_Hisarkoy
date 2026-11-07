@@ -19,7 +19,7 @@ function initThree(){
   cv3.addEventListener('contextmenu',e=>e.preventDefault());
   window.addEventListener('mousemove',e=>{if(camSurukle){camYaw-=(e.clientX-camSurukleX)*.008;camSurukleX=e.clientX;}});
   window.addEventListener('mouseup',e=>{if(e.button===1||e.button===2)camSurukle=false;});
-  cv3.addEventListener('mousedown',e=>{mousePos.x=e.clientX;mousePos.y=e.clientY;if(e.button===1||e.button===2){e.preventDefault();camSurukle=true;camSurukleX=e.clientX;return;}if(e.button!==0)return;if(!playing||paused)return;if(currentMap==='gorev'||currentMap==='orman'||currentMap==='maden'||(currentMap&&currentMap.startsWith('custom_'))){if(selWeapon===0)doMelee();else{pwrOn=true;pwr=0;}}});
+  cv3.addEventListener('mousedown',e=>{mousePos.x=e.clientX;mousePos.y=e.clientY;if(e.button===1||e.button===2){e.preventDefault();camSurukle=true;camSurukleX=e.clientX;return;}if(e.button!==0)return;if(!playing||paused)return;if(currentMap==='gorev'||currentMap==='orman'||currentMap==='maden'||currentMap==='tarim'||(currentMap&&currentMap.startsWith('custom_'))){if(selWeapon===0)doMelee();else{pwrOn=true;pwr=0;}}});
   cv3.addEventListener('mouseup',()=>{if(!playing||paused)return;if(pwrOn){doRanged();pwrOn=false;pwr=0;document.getElementById('pwrW').style.display='none';}});
   cv3.addEventListener('mousemove',e=>{mousePos.x=e.clientX;mousePos.y=e.clientY;});
   // Kamera zoom — fare tekerleği
