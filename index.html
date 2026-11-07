@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Yeniçeri: Hisarköy Muhafızı v1.42</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.43</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -334,7 +334,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mTitle"><svg class="mOrn" viewBox="0 0 48 44" aria-hidden="true"><defs><mask id="mCres"><rect width="48" height="44" fill="#fff"/><circle cx="31" cy="22" r="14.5" fill="#000"/></mask></defs><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg><span class="mTx"><span>YENİÇERİ:</span> <span>HİSARKÖY MUHAFIZI</span></span><svg class="mOrn r" viewBox="0 0 48 44" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg></div>
       <div id="mDeco"><div class="ml"></div><div id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</div><div class="ml"></div></div>
-      <div id="mVer">v1.42</div>
+      <div id="mVer">v1.43</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
@@ -687,7 +687,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.42';
+const VERSION='v1.43';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -1758,9 +1758,10 @@ const SESSION={
   // Bir tik: gelen girdileri al, her oyuncuyu kendi komutuyla hareket ettir
   step:function(dt){
     this.transport.poll().forEach(function(m){if(m.t==='input')SESSION.inputs.set(m.id,m.cmd);});
+    if(this.pollPeers)this.pollPeers();
     WORLD.players.forEach(function(p,id){
       const c=SESSION.inputs.get(id);
-      if(c&&p.mesh)movePlayer(p,c,dt);
+      if(c)movePlayer(p,c,dt);
     });
   }
 };
@@ -1781,6 +1782,65 @@ function snapshot(){
     b:bullets.map(function(b){return {id:b.id,x:r(b.mesh.position.x),z:r(b.mesh.position.z),vx:r(b.vx),vz:r(b.vz)};}),
     l:loots.filter(function(l){return !l.collected;}).map(function(l){return {id:l.id,k:l.type,x:r(l.x),z:r(l.z)};})
   };
+}
+// ═══════════════════════════════════════════════════════
+// ISTEMCI / BAĞLANTI KATMANI (F2)
+// PairTransport : iki uç arasında bellek içi taşıma (test ve yerel deneme). PeerJS aynı arayüzü sunacak: send(msg), poll().
+// SESSION.addPeer: host bir uzak oyuncuyu kabul eder; girdisi taşımadan gelir, kimliği host damgalar.
+// ClientView    : istemcinin gördüğü dünya — host özetlerini (snapshot) alır, ~100 ms geriden interpolasyonla gösterir.
+// ═══════════════════════════════════════════════════════
+const SNAP_ARALIK=4;            // her 4 tikte bir özet = 15 Hz
+const GORUNTU_GECIKME=100;      // ms: istemci dünyayı bu kadar geriden gösterir
+
+class PairTransport{
+  constructor(){this.kuyruk=[];this.es=null;}
+  send(msg){if(this.es)this.es.kuyruk.push(JSON.parse(JSON.stringify(msg)));}  // gerçek ağ gibi: kopya gider
+  poll(){const m=this.kuyruk;this.kuyruk=[];return m;}
+}
+function makePair(){const a=new PairTransport(),b=new PairTransport();a.es=b;b.es=a;return [a,b];}
+
+// ── Host tarafı ──
+SESSION.peers=new Map();         // oyuncu id -> taşıma
+SESSION.addPeer=function(id,transport){
+  const sp=localPlayer();
+  const p={x:sp.x+1.5,z:sp.z,hp:100,maxHp:100,en:100,maxEn:100,mesh:null,ang:0,spd:sp.spd,rspd:sp.rspd,atkCd:0,ifr:0,nearZone:null,radius:0.45,
+    weapon:0,armor:'none',ab:{cd:{q:0,f:0,r:0},active:{q:false,f:false,r:false},timer:{q:0,f:0,r:0}}};
+  WORLD.players.set(id,p);this.peers.set(id,transport);return p;
+};
+SESSION.removePeer=function(id){WORLD.players.delete(id);this.peers.delete(id);this.inputs.delete(id);};
+SESSION.pollPeers=function(){
+  this.peers.forEach(function(tr,id){
+    tr.poll().forEach(function(m){if(m.t==='input')SESSION.inputs.set(id,m.cmd);});   // id'yi taşıma belirler, mesaj değil
+  });
+};
+SESSION.afterTick=function(){
+  if(this.peers.size===0||gt%SNAP_ARALIK!==0)return;
+  const msg={t:'snap',s:snapshot()};
+  this.peers.forEach(function(tr){tr.send(msg);});
+};
+
+// ── İstemci tarafı ──
+class ClientView{
+  constructor(transport){this.tr=transport;this.buf=[];this.last=null;}
+  sendInput(cmd){this.tr.send({t:'input',cmd:cmd});}
+  poll(nowMs){
+    const self=this;
+    this.tr.poll().forEach(function(m){if(m.t==='snap'){self.buf.push({at:nowMs,s:m.s});self.last=m.s;}});
+    while(this.buf.length>20)this.buf.shift();
+  }
+  // Çizim anı için dünya: iki özet arasında doğrusal geçiş
+  view(nowMs){
+    const target=nowMs-GORUNTU_GECIKME,b=this.buf;
+    if(b.length===0)return null;
+    let i=b.length-1;while(i>0&&b[i].at>target)i--;
+    const a=b[i],c=b[Math.min(i+1,b.length-1)];
+    const k=(c.at===a.at)?0:Math.max(0,Math.min(1,(target-a.at)/(c.at-a.at)));
+    function mix(la,lc){
+      const map=new Map(lc.map(function(o){return [o.id,o];}));
+      return la.filter(function(o){return map.has(o.id);}).map(function(o){const n=map.get(o.id);return Object.assign({},n,{x:o.x+(n.x-o.x)*k,z:o.z+(n.z-o.z)*k});});
+    }
+    return {t:c.s.t,wave:c.s.wave,kills:c.s.kills,map:c.s.map,p:mix(a.s.p,c.s.p),e:mix(a.s.e,c.s.e),b:c.s.b,l:c.s.l};
+  }
 }
 // ═══════════════════════════════════════════════════════
 // BÖLÜMLER (Chapters) — ana menüden açılır, bölge kilidi/seçimi
@@ -3772,6 +3832,7 @@ function update(dt){
   CAM.position.z+=((pl.z+camDist)-CAM.position.z)*smooth;
   CAM.lookAt(pl.x,0,pl.z);
   // HUD
+  SESSION.afterTick();
   document.getElementById('hpf').style.width=(pl.hp/pl.maxHp*100)+'%';document.getElementById('enf').style.width=(pl.en/pl.maxEn*100)+'%';document.getElementById('hpn').textContent=Math.ceil(pl.hp);document.getElementById('enn').textContent=Math.ceil(pl.en);
   drawMM();
 }
@@ -3798,10 +3859,10 @@ function movePlayer(p,cmd,dt){
   const r=p.radius||0.45;
   if(!checkCollision(nx,p.z,r)) p.x=nx;
   if(!checkCollision(p.x,nz,r)) p.z=nz;
-  p.mesh.position.set(p.x,0,p.z);
+  if(p.mesh)p.mesh.position.set(p.x,0,p.z);
   if(run&&mov)p.en=Math.max(0,p.en-.42);else if(!mov)p.en=Math.min(p.maxEn,p.en+.48);else p.en=Math.min(p.maxEn,p.en+.20);
   const adx=cmd.aimX-p.x,adz=cmd.aimZ-p.z;
-  if(Math.abs(adx)+Math.abs(adz)>.4){p.ang=Math.atan2(adz,adx);p.mesh.rotation.y=-p.ang+Math.PI/2;}
+  if(Math.abs(adx)+Math.abs(adz)>.4){p.ang=Math.atan2(adz,adx);if(p.mesh)p.mesh.rotation.y=-p.ang+Math.PI/2;}
 }
 
 function updateMovement(dt){

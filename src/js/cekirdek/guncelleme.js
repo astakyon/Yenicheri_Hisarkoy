@@ -22,6 +22,7 @@ function update(dt){
   CAM.position.z+=((pl.z+camDist)-CAM.position.z)*smooth;
   CAM.lookAt(pl.x,0,pl.z);
   // HUD
+  SESSION.afterTick();
   document.getElementById('hpf').style.width=(pl.hp/pl.maxHp*100)+'%';document.getElementById('enf').style.width=(pl.en/pl.maxEn*100)+'%';document.getElementById('hpn').textContent=Math.ceil(pl.hp);document.getElementById('enn').textContent=Math.ceil(pl.en);
   drawMM();
 }
@@ -48,10 +49,10 @@ function movePlayer(p,cmd,dt){
   const r=p.radius||0.45;
   if(!checkCollision(nx,p.z,r)) p.x=nx;
   if(!checkCollision(p.x,nz,r)) p.z=nz;
-  p.mesh.position.set(p.x,0,p.z);
+  if(p.mesh)p.mesh.position.set(p.x,0,p.z);
   if(run&&mov)p.en=Math.max(0,p.en-.42);else if(!mov)p.en=Math.min(p.maxEn,p.en+.48);else p.en=Math.min(p.maxEn,p.en+.20);
   const adx=cmd.aimX-p.x,adz=cmd.aimZ-p.z;
-  if(Math.abs(adx)+Math.abs(adz)>.4){p.ang=Math.atan2(adz,adx);p.mesh.rotation.y=-p.ang+Math.PI/2;}
+  if(Math.abs(adx)+Math.abs(adz)>.4){p.ang=Math.atan2(adz,adx);if(p.mesh)p.mesh.rotation.y=-p.ang+Math.PI/2;}
 }
 
 function updateMovement(dt){

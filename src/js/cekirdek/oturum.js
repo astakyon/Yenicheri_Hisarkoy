@@ -16,9 +16,10 @@ const SESSION={
   // Bir tik: gelen girdileri al, her oyuncuyu kendi komutuyla hareket ettir
   step:function(dt){
     this.transport.poll().forEach(function(m){if(m.t==='input')SESSION.inputs.set(m.id,m.cmd);});
+    if(this.pollPeers)this.pollPeers();
     WORLD.players.forEach(function(p,id){
       const c=SESSION.inputs.get(id);
-      if(c&&p.mesh)movePlayer(p,c,dt);
+      if(c)movePlayer(p,c,dt);
     });
   }
 };

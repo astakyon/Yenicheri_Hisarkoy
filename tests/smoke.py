@@ -281,6 +281,41 @@ def main():
         print('      boyut: %d bayt (%d oyuncu, %d düşman, %d mermi, %d ganimet)' % (r['bayt'], r['oyuncu'], r['dusman'], r['mermi'], r['ganimet']))
         ctx.close()
 
+        print('Host + istemci (PairTransport)')
+        ctx, pg, errs = yeni_sayfa()
+        pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)
+        r = pg.evaluate("""() => {
+          REN.render = () => {};
+          const [hostUcu, istemciUcu] = makePair();
+          const p2 = SESSION.addPeer('c1', hostUcu);
+          for (let x = -20; x <= 20; x += 2) { for (let z = -20; z <= 20; z += 2) { if (!checkCollision(x, z, 2) && !checkCollision(x + 8, z, 2)) { p2.x = x; p2.z = z; x = 99; break; } } }
+          const istemci = new ClientView(istemciUcu), bx = p2.x;
+          const MS = 1000 / 60; let sahte = 0, ihlal = 0, onceki = -1e9, goruntuSayisi = 0, enBuyukFark = 0;
+          // sahte kimlik denemesi: istemci kendini 'local' diye tanıtmaya çalışır
+          istemciUcu.send({ t: 'input', id: 'local', cmd: { dx: 0, dz: -1, run: false, aimX: 0, aimZ: 0 } });
+          const yerel0 = pl.z;
+          for (let i = 0; i < 180; i++) {
+            istemci.sendInput({ dx: 1, dz: 0, run: false, aimX: p2.x + 50, aimZ: p2.z });
+            update(1 / 60);
+            sahte += MS; istemci.poll(sahte);
+            const v = istemci.view(sahte);
+            if (v && i > 30) {
+              const o = v.p.find(q => q.id === 'c1');
+              if (o) { goruntuSayisi++; if (o.x < onceki - 1e-6) ihlal++; onceki = o.x; enBuyukFark = Math.max(enBuyukFark, p2.x - o.x); }
+            }
+          }
+          const v = istemci.view(sahte), o = v.p.find(q => q.id === 'c1');
+          const res = { hostX: p2.x - bx, gorunenX: o.x - bx, fark: p2.x - o.x, enBuyukFark, ihlal, goruntuSayisi,
+                        oyuncuSayisi: v.p.length, yerelZ: Math.abs(pl.z - yerel0) < 1e-9, sonSnapTik: istemci.last.t, gt };
+          SESSION.removePeer('c1'); return res;
+        }""")
+        check(r['hostX'] > 2 and r['oyuncuSayisi'] == 2, 'host uzak oyuncuyu girdisiyle yürüttü (%.2f birim), istemci iki oyuncu görüyor' % r['hostX'])
+        check(r['ihlal'] == 0 and r['goruntuSayisi'] > 100, 'istemci görüntüsü akıcı: geriye sıçrama yok (%d kare)' % r['goruntuSayisi'])
+        check(0 <= r['enBuyukFark'] < 1.5, 'görüntü hosttan en çok %.2f birim geride (~100 ms + 15 Hz)' % r['enBuyukFark'])
+        check(r['yerelZ'], 'sahte \'local\' kimliği yerel oyuncuyu oynatamadı')
+        check(r['gt'] - r['sonSnapTik'] <= 4, 'özetler 15 Hz geliyor (son özet %d tik önce)' % (r['gt'] - r['sonSnapTik']))
+        ctx.close()
+
         print('Kimlikler (düşman, mermi, ganimet)')
         ctx, pg, errs = yeni_sayfa()
         pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)

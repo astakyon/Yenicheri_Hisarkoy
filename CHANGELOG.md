@@ -1,5 +1,10 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.43 — Host ve istemci arasında ilk bağlantı katmanı (oynanış aynı)
+- Yeni `cekirdek/istemci.js`: `PairTransport` (bellek içi taşıma; mesajlar gerçek ağ gibi kopyalanır), `SESSION.addPeer/removePeer` (host uzak oyuncuyu kabul eder, kimliği taşıma damgalar; istemci başkasının kimliğine bürünemez), her 4 tikte (15 Hz) özet yayını, `ClientView` (özetleri alır, 100 ms geriden doğrusal interpolasyonla gösterir).
+- Hareket kodu görüntü nesnesi olmayan (uzak) oyuncularla da çalışır.
+- Yeni test: host + istemci aynı sayfada 3 sn. Görüntü hosttan en çok 0,4 birim geride, geriye sıçrama yok, sahte kimlik işe yaramadı. Altın test değişmedi.
+
 ## v1.42 — Durum özeti (snapshot) ve test düzeltmesi (oynanış aynı)
 - Yeni `snapshot()` (`cekirdek/oturum.js`): oyuncuları, düşmanları, mermileri ve ganimeti yalnızca sayı ve metinden oluşan, JSON'a çevrilebilir bir pakete döker (3D nesne yok). Çok oyunculuda host bunu istemcilere yollayacak. Ölçüm: 2 oyuncu + 4 düşman ≈ 500 bayt.
 - **Test düzeltmesi:** Günlük görevler bugünün tarihinden seçildiği için altın test her gün farklı sonuç verebiliyordu (7 Kasım'da `gorev` haritasında fazladan 100 akçe). Testte tarih artık sabit. Oyunda hata yoktu; referans değişmedi.
