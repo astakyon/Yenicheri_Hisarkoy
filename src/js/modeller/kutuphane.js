@@ -105,8 +105,7 @@ function kutuphaneCiz(){
   const g=KUT.nesne;
   if(g){
     // yürüme denemesi: hafif sıçrama ve sallanma; vuruş denemesi: gövde kırmızıya döner
-    g.position.y=KUT.yuru?Math.abs(Math.sin(KUT.zaman*7))*.12:0;
-    g.rotation.z=KUT.yuru?Math.sin(KUT.zaman*7)*.05:0;
+    modelAnim(g,KUT.zaman*8,KUT.yuru?1:0,KUT.vurus>0?KUT.vurus/18:0);   // kod modellerinde uzuvlar sallanır
     if(KUT.vurus>0){KUT.vurus--;modelVurus(g.userData.govde,true);if(KUT.vurus===0)modelVurus(g.userData.govde,false,KUT.govdeRenk);}
     if(g.userData.hpBg){g.userData.hpBg.lookAt(KUT.kam.position);g.userData.hpFl.lookAt(KUT.kam.position);}
   }

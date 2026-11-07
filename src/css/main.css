@@ -345,3 +345,8 @@ canvas{display:block;position:absolute;top:0;left:0;}
 @media (max-height:480px) and (min-width:641px){#libListe{width:150px;}#libYan{width:215px;}}
 /* Kısa yatay ekran (telefon): ana menü düğmeleri iki sütun */
 @media (max-height:480px){#mBtns{top:92px;display:grid;grid-template-columns:1fr 1fr;width:min(560px,92vw);gap:8px 14px;}.mBtn{padding:8px 0;font-size:12px;}}
+#downBox{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);z-index:60;text-align:center;padding:12px 22px;background:rgba(20,0,0,.78);border:2px solid #8B1a1a;border-radius:6px;color:#ffb3b3;font-family:'Cinzel',serif;letter-spacing:2px;pointer-events:none;}
+#downBox small{display:block;margin-top:4px;font-size:11px;letter-spacing:1px;color:#e0c9a6;}
+#downBar{margin-top:8px;height:8px;background:#2a0a0a;border-radius:4px;overflow:hidden;}
+#downFl{height:100%;width:0;background:linear-gradient(90deg,#2ecc71,#9affc0);}
+#netBox{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:70;padding:8px 16px;background:rgba(40,20,0,.88);border:2px solid #C8A030;border-radius:6px;color:#FFE9A8;font-family:'Cinzel',serif;font-size:13px;pointer-events:none;}

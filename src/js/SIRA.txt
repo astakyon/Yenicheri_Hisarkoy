@@ -14,6 +14,7 @@ modeller/kayit.js
 modeller/dosyalar.js
 modeller/kutuphane.js
 cekirdek/dunya-modeli.js
+cekirdek/olum.js
 cekirdek/oturum.js
 cekirdek/istemci.js
 cekirdek/istemci-oyun.js

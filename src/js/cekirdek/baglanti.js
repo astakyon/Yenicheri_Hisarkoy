@@ -80,8 +80,9 @@ function odaKur(deneme){
 }
 
 function odaKapat(){
-  if(ODA.peer){try{ODA.peer.destroy();}catch(e){}}
-  SESSION.peers.forEach(function(tr,id){try{tr.close();}catch(e){}SESSION.removePeer(id);});
+  if(ODA.peer){const pe=ODA.peer;setTimeout(function(){try{pe.destroy();}catch(e){}},400);}
+  SESSION.peers.forEach(function(tr,id){try{tr.send({t:'bye'});}catch(e){}setTimeout(function(){try{tr.close();}catch(e){}},300);SESSION.removePeer(id);});
+  SESSION.offline.forEach(function(o,id){SESSION.removePeer(id);});
   ODA.peer=null;ODA.host=false;ODA.kod=null;ODA.durum='yok';
 }
 
@@ -127,3 +128,52 @@ function coopAc(){
   coopDurum(ODA.host?'Oda açık.':'Bir oda kur ya da bir koda katıl.');
 }
 function coopKapat(){document.getElementById('coopBox').style.display='none';}
+
+// ── İSTEMCİ: koparsa aynı odaya anahtarıyla geri dön (8 deneme × ~7 sn) ──
+function ag_goster(g,t){const k=document.getElementById('netBox');if(!k)return;k.style.display=g?'block':'none';if(t)k.textContent=t;}
+function clientYenidenBaglan(){
+  if(CLIENT.baglaniyor)return true;
+  if(!CLIENT.key||!ODA.kod||typeof Peer==='undefined')return false;
+  CLIENT.baglaniyor=true;CLIENT.kopuk=true;
+  try{if(CLIENT.tr&&CLIENT.tr.close)CLIENT.tr.close();}catch(e){}
+  try{if(ODA.peer)ODA.peer.destroy();}catch(e){}
+  let deneme=0;
+  const dene=function(){
+    if(!CLIENT.aktif||!CLIENT.baglaniyor)return;
+    deneme++;
+    if(deneme>8){CLIENT.baglaniyor=false;clientBaglantiKoptu();return;}
+    ag_goster(true,'📡 Bağlantı koptu — yeniden bağlanılıyor… ('+deneme+'/8)');
+    let bitti=false;
+    const sonraki=function(){if(bitti)return;bitti=true;try{peer.destroy();}catch(e){}setTimeout(dene,800);};
+    const peer=new Peer(peerSecenekleri());
+    ODA.peer=peer;
+    const zaman=setTimeout(sonraki,7000);
+    peer.on('error',function(){clearTimeout(zaman);sonraki();});
+    peer.on('open',function(){
+      const conn=peer.connect('yenicheri-'+ODA.kod,{reliable:true,serialization:'json'});
+      conn.on('open',function(){
+        const tr=new PeerTransport(conn);
+        const bekle=setInterval(function(){
+          if(bitti){clearInterval(bekle);return;}
+          const ms=tr.poll();
+          for(let i=0;i<ms.length;i++){
+            if(ms[i].t==='dolu'){clearInterval(bekle);clearTimeout(zaman);sonraki();return;}
+            if(ms[i].t==='hos')tr.send({t:'rejoin',id:CLIENT.id,key:CLIENT.key});
+            if(ms[i].t==='rj'){
+              clearInterval(bekle);clearTimeout(zaman);
+              if(!ms[i].ok){bitti=true;CLIENT.baglaniyor=false;CLIENT.key=null;clientBaglantiKoptu();return;}
+              bitti=true;
+              for(let j=i+1;j<ms.length;j++)tr.kuyruk.push(ms[j]);
+              CLIENT.tr=tr;CLIENT.gorunum=new ClientView(tr);CLIENT.bekleyen=[];CLIENT.kopuk=false;CLIENT.baglaniyor=false;
+              pl.x=ms[i].x;pl.z=ms[i].z;ag_goster(false);lootPop('📶 Yeniden bağlandın');
+              return;
+            }
+          }
+          if(tr.kapali){clearInterval(bekle);clearTimeout(zaman);sonraki();}
+        },50);
+      });
+    });
+  };
+  dene();
+  return true;
+}

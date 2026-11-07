@@ -9,6 +9,7 @@ Ortam değişkenleri (hepsi isteğe bağlı):
 import functools
 import http.server
 import os
+import re
 import threading
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -56,9 +57,15 @@ def sunucu():
     return srv, 'http://127.0.0.1:%d/index.html' % srv.server_address[1]
 
 
-def yonlendirici():
-    """three.js'i yerel kopyadan verir, Google Fonts isteklerini boş yanıtlar."""
+def yonlendirici(sabit_uuid=False):
+    """three.js'i yerel kopyadan verir, Google Fonts isteklerini boş yanıtlar.
+    sabit_uuid: THREE nesne kimliği (UUID) Math.random yerine sayaçtan gelir. Aksi halde model ayrıntısı
+    (nesne sayısı) tek kişilik altın testin rastgele sayı akışını kaydırır."""
     three = three_source()
+    if three and sabit_uuid:
+        three, n = re.subn(r'function ct\(\)\{const t=4294967295\*Math\.random\(\)\|0.*?toUpperCase\(\)\}', 'function ct(){window.__uuidN=(window.__uuidN||0)+1;return"U"+window.__uuidN}', three, count=1, flags=re.S)
+        if n != 1:
+            raise SystemExit('three.min.js içinde generateUUID bulunamadı (sabit_uuid için)')
     peer = peer_source()
 
     ornek = ornek_dizini()

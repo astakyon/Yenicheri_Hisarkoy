@@ -49,10 +49,13 @@ function isAbilityUnlocked(key){return SAVE.abilities[key]?.unlocked===true&&get
 function useAbility(key,p){
   p=p||pl;const ab=p.ab,local=(p===pl);
   if(!playing||paused)return;
-  if(!isAbilityUnlocked(key))return;
+  if(p.hp<=0)return;
+  if(local&&!isAbilityUnlocked(key))return;
+  if(local&&CLIENT.aktif){if(ab.cd[key]<=0)CLIENT_eylem('ab',{key:key});return;}   // istemci: host uygular
+  const lvl=local?getAbilityLvl(key):((p.abLv&&p.abLv[key])|0);
+  if(!local&&lvl<1)return;
   if(ab.cd[key]>0)return;
   const def=getAbilityDef(key);if(!def)return;
-  const lvl=getAbilityLvl(key);
   const lvlData=def.levels[lvl-1];
   if(!lvlData)return;
 

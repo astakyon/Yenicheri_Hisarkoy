@@ -61,56 +61,166 @@ function glbKopya(id,glb,t){
 function modelVurus(govde,aktif,tabanRenk){
   if(!govde||!govde.material)return;
   const glb=govde.parent&&govde.parent.parent&&govde.parent.parent.userData&&govde.parent.parent.userData.kaynak==='glb';
-  if(glb&&govde.material.emissive){govde.material.emissive.setHex(aktif?0x661111:0x000000);return;}
+  if((glb||govde.material.vertexColors)&&govde.material.emissive){govde.material.emissive.setHex(aktif?0x661111:0x000000);return;}
   if(aktif)govde.material.color.setHex(0xff3333);else if(tabanRenk!==undefined)govde.material.color.setHex(tabanRenk);
 }
 
 // ── Kod modelleri ──
-function _kutu(w,h,d,renk,x,y,z){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshLambertMaterial({color:renk}));m.position.set(x||0,y||0,z||0);return m;}
+// Parçalar tek geometride birleştirilir (köşe renkli); bir model ~5 çizim çağrısıdır: gövde, iki bacak, iki kol.
+// Birleşik geometri tipe göre önbelleklenir, malzeme her kopyada ayrıdır (vuruş parlaması için).
+const _GC={};
+function _g(tip){const a=Array.prototype.slice.call(arguments,1),k=tip+a.join(',');
+  return _GC[k]||(_GC[k]=new THREE[tip](...a));}
+// p: [geo, hex, x,y,z, rx,ry,rz, sx,sy,sz]
+function _birles(liste){
+  const pos=[],nor=[],col=[],m=new THREE.Matrix4(),q=new THREE.Quaternion(),e=new THREE.Euler(),c=new THREE.Color();
+  liste.forEach(function(p){
+    const gg=p[0].index?p[0].toNonIndexed():p[0].clone();
+    e.set(p[5]||0,p[6]||0,p[7]||0);q.setFromEuler(e);
+    m.compose(new THREE.Vector3(p[2]||0,p[3]||0,p[4]||0),q,new THREE.Vector3(p[8]||1,p[9]||1,p[10]||1));
+    gg.applyMatrix4(m);c.setHex(p[1]);
+    const pa=gg.attributes.position.array,na=gg.attributes.normal.array;
+    for(let i=0;i<pa.length;i+=3){pos.push(pa[i],pa[i+1],pa[i+2]);nor.push(na[i],na[i+1],na[i+2]);col.push(c.r,c.g,c.b);}
+  });
+  const bg=new THREE.BufferGeometry();
+  bg.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  bg.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));
+  bg.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
+  return bg;
+}
+function _vm(){return new THREE.MeshLambertMaterial({vertexColors:true});}
+function _parca(geo,x,y,z){const m=new THREE.Mesh(geo,_vm());m.position.set(x||0,y||0,z||0);m.castShadow=true;return m;}
+function _pivot(g,x,y,z){const p=new THREE.Group();p.position.set(x,y,z);g.add(p);return p;}
 
-modelTanimla('yeniceri',{ad:'Yeniçeri (oyuncu)',grup:'Karakter',boy:3.0,yap:function(){return createPlayerMesh();}});
+// Yürüme / saldırı animasyonu: model.userData.anim. t: faz, hareket: 0..1, saldiri: 0..1 (kol savurma)
+function modelAnim(g,t,hareket,saldiri){
+  const a=g&&g.userData&&g.userData.anim;if(!a||!(a.bs||a.ca)||!(a.bs||a.ca).rotation)return;   // clone() userData'yı düz nesneye çevirir
+  const sw=Math.sin(t)*.75*hareket;
+  if(a.tip==='insan'){
+    a.bs.rotation.x=sw;a.bg.rotation.x=-sw;a.ks.rotation.x=-sw*.7;
+    a.kg.rotation.x=sw*.7-(saldiri>0?Math.sin(saldiri*Math.PI)*2.1:.35);
+    if(a.govde)a.govde.position.y=Math.abs(Math.sin(t))*.05*hareket;
+  }else if(a.tip==='hayvan'){
+    a.ca.rotation.x=sw*.65;a.cb.rotation.x=-sw*.65;
+    if(a.govde)a.govde.position.y=Math.abs(Math.sin(t*2))*.04*hareket;
+  }
+}
 
-function _dusmanGovde(boss){
-  const g=new THREE.Group();
-  const bw=boss?1.3:.88,bh=boss?1.7:1.35;
-  const body=_kutu(bw,bh,boss?.75:.48,boss?0x7B0000:0x4a2000,0,boss?1.25:1,0);body.castShadow=true;g.add(body);
-  const head=_kutu(boss?.78:.58,boss?.65:.52,boss?.65:.5,0xA06840,0,boss?2.25:2,0);g.add(head);
-  if(boss){const crown=new THREE.Mesh(new THREE.ConeGeometry(.5,.5,6),new THREE.MeshLambertMaterial({color:0xFFD700}));crown.position.y=.75;head.add(crown);}
-  g.userData.govde=body;
+// ── İnsan ──
+const _TEN=0xC8956C;
+function _insanGeo(o){
+  const k='insan_'+o.id;if(_GC[k])return _GC[k];
+  const cyl=function(a,b,h,n){return _g('CylinderGeometry',a,b,h,n||10);},sph=function(r,w,h){return _g('SphereGeometry',r,w||10,h||8);},box=function(w,h,d){return _g('BoxGeometry',w,h,d);};
+  const G=[];
+  G.push([cyl(.40,.56,.72),o.etek,0,.80,0]);                       // kaftan eteği
+  G.push([cyl(.36,.42,.78),o.gov,0,1.43,0]);                       // gövde
+  G.push([cyl(.45,.45,.16),o.sash,0,1.10,0]);                      // kuşak
+  G.push([cyl(.20,.31,.12),o.yaka||o.sash,0,1.86,0]);              // yaka
+  G.push([cyl(.10,.10,.14,6),o.ten||_TEN,0,1.93,0]);               // boyun
+  G.push([sph(.27),o.ten||_TEN,0,2.14,0,0,0,0,1,1.05,1]);          // baş
+  G.push([box(.06,.05,.04),0x1a1008,-.1,2.17,.24]);G.push([box(.06,.05,.04),0x1a1008,.1,2.17,.24]);   // gözler
+  if(o.biyik)G.push([box(.3,.06,.08),o.biyik,0,2.05,.25]);
+  if(o.sakal)G.push([box(.3,.22,.1),o.sakal,0,1.95,.2,.2]);
+  const sp=o.sapka;
+  if(sp==='bork'){
+    G.push([cyl(.2,.3,.55),o.sapkaC,0,2.55,0]);G.push([cyl(.31,.31,.1),0xD4A82A,0,2.34,0]);
+    G.push([box(.2,.55,.07),o.sapkaC,0,2.36,-.32,.25]);G.push([box(.12,.12,.04),0xD4A82A,0,2.5,.31]);
+  }else if(sp==='kask'){
+    G.push([_g('SphereGeometry',.32,10,6,0,Math.PI*2,0,Math.PI/2),o.sapkaC,0,2.26,0]);G.push([_g('ConeGeometry',.05,.28,6),0xC0C0C0,0,2.66,0]);
+    G.push([box(.06,.22,.04),o.sapkaC,0,2.12,.3]);
+  }else if(sp==='sarik'){
+    G.push([sph(.34),o.sapkaC,0,2.44,0,0,0,0,1,.62,1]);G.push([cyl(.3,.3,.09),o.sapkaC2||0xB89B5E,0,2.3,0]);
+    G.push([box(.1,.3,.06),o.sapkaC,.28,2.2,-.05,0,0,.3]);
+  }else if(sp==='kasket'){
+    G.push([cyl(.3,.32,.2),o.sapkaC,0,2.36,0]);G.push([box(.42,.04,.24),o.sapkaC,0,2.28,.28]);G.push([sph(.07,6,5),0xFFD27A,0,2.4,.33]);
+  }
+  if(o.omuz){G.push([sph(.2,8,6),o.omuz,-.52,1.82,0,0,0,0,1,.7,1.1]);G.push([sph(.2,8,6),o.omuz,.52,1.82,0,0,0,0,1,.7,1.1]);}
+  if(o.pelerin)G.push([box(.8,1.25,.05),o.pelerin,0,1.4,-.34,.1]);
+  if(o.tufekSirt){G.push([box(.07,.07,1.0),0x5a3a1a,.1,1.55,-.36,.5,0,0]);}
+  if(o.taç)G.push([_g('ConeGeometry',.26,.3,6),0xFFD700,0,2.8,0]);
+  const govde=_birles(G);
+  const bc=[[cyl(.2,.15,.55,8),o.sal,0,-.28,0],[cyl(.12,.11,.34,8),o.sal2||o.sal,0,-.62,0],[box(.27,.18,.42),o.bot,0,-.82,.06]];
+  const bacak=_birles(bc);
+  const kolA=[[cyl(.1,.09,.5,8),o.gov,0,-.25,0],[sph(.09,6,5),_TEN,0,-.53,0]];
+  const kolSol=kolA.slice();
+  if(o.kalkan){kolSol.push([cyl(.34,.34,.06,12),o.kalkan,-.14,-.38,.12,0,0,Math.PI/2]);kolSol.push([sph(.09,6,5),0xD4A82A,-.19,-.38,.12]);}
+  let kolSag=kolA.slice();
+  const si=o.silah;
+  if(si==='yatagan'||si==='kilic'){kolSag.push([box(.05,.1,.05),0x6a4a1a,0,-.58,.0]);kolSag.push([box(.16,.04,.05),0xD4A82A,0,-.52,0]);}
+  else if(si==='tufek'){kolSag.push([box(.07,.07,1.0),0x5a3a1a,0,-.55,.4]);kolSag.push([box(.05,.05,.5),0x888888,0,-.55,.9]);}
+  else if(si==='kazma'){kolSag.push([cyl(.04,.04,1.15,6),0x6a4a2a,0,-.1,0]);kolSag.push([box(.6,.07,.07),0x777777,0,.48,0]);kolSag.push([_g('ConeGeometry',.05,.2,5),0x777777,.38,.48,0,0,0,-Math.PI/2]);kolSag.push([_g('ConeGeometry',.05,.2,5),0x777777,-.38,.48,0,0,0,Math.PI/2]);}
+  else if(si==='balta'){kolSag.push([cyl(.04,.04,1.0,6),0x6a4a2a,0,-.05,0]);kolSag.push([box(.34,.3,.05),0x888888,.12,.42,0]);}
+  return _GC[k]={govde:govde,bacak:bacak,kolSol:_birles(kolSol),kolSag:_birles(kolSag)};
+}
+function _insanYap(o,s){
+  s=s||1;const gm=_insanGeo(o),g=new THREE.Group(),ic=new THREE.Group();g.add(ic);
+  const gv=_parca(gm.govde);ic.add(gv);
+  const bs=_pivot(ic,-.2,.92,0),bg=_pivot(ic,.2,.92,0);bs.add(_parca(gm.bacak));bg.add(_parca(gm.bacak));
+  const ks=_pivot(ic,-.5,1.74,0),kg=_pivot(ic,.5,1.74,0);ks.add(_parca(gm.kolSol));kg.add(_parca(gm.kolSag));
+  kg.rotation.x=-.35;
+  if(o.adliBicak){   // oyuncunun silah rengi (kılıç/tüfek/…) seçime göre değişir: kendi malzemesi
+    const bl=new THREE.Mesh(_g('BoxGeometry',.09,1.15,.03),new THREE.MeshLambertMaterial({color:0xD0D0D0}));bl.name='wpn';bl.position.set(0,.05,.0);bl.rotation.z=0;kg.add(bl);
+    const tip=new THREE.Mesh(_g('BoxGeometry',.06,.2,.03),new THREE.MeshLambertMaterial({color:0xD0D0D0}));tip.position.set(.07,.55,0);tip.rotation.z=-.5;bl.add(tip);
+    tip.name='wpn2';
+  }
+  ic.scale.setScalar(s);
+  g.userData.govde=gv;g.userData.anim={tip:'insan',bs:bs,bg:bg,ks:ks,kg:kg,govde:ic};
   return g;
 }
-modelTanimla('dusman',{ad:'Düşman askeri',grup:'Düşman',boy:2.3,bar:{w:1.1,y:2.9,renk:0x22cc55},yap:function(){return _dusmanGovde(false);}});
-modelTanimla('dusman_boss',{ad:'Düşman komutanı (boss)',grup:'Düşman',boy:2.7,bar:{w:1.6,y:3.1,renk:0xFFD700},yap:function(){return _dusmanGovde(true);}});
 
-function _eskiyaGovde(boss){
-  const size=boss?1.3:1,g=new THREE.Group();
-  const body=_kutu(.9*size,1.4*size,.5*size,boss?0x5a1010:0x4a3828,0,1*size,0);body.castShadow=true;g.add(body);
-  const head=_kutu(.6*size,.55*size,.55*size,0x8a6048,0,2*size,0);g.add(head);
-  const helmet=new THREE.Mesh(new THREE.SphereGeometry(.32*size,8,6,0,Math.PI*2,0,Math.PI/2),new THREE.MeshLambertMaterial({color:0x2a2018}));
-  helmet.position.y=.25*size;head.add(helmet);
-  if(boss){const crown=new THREE.Mesh(new THREE.ConeGeometry(.45,.5,6),new THREE.MeshLambertMaterial({color:0xFFD700}));crown.position.y=.7*size;head.add(crown);}
-  g.userData.govde=body;
+const _OY={id:'yeniceri',etek:0x8B1818,gov:0x9B2020,sash:0x2a3f8a,yaka:0xD4A82A,sal:0x2a3f8a,sal2:0xE8E0D0,bot:0x2a1000,biyik:0x3a2000,sapka:'bork',sapkaC:0xE8DCC0,silah:'yatagan',tufekSirt:true,adliBicak:true};
+function _yeniceriYap(){const g=_insanYap(_OY,1);return g;}
+modelTanimla('yeniceri',{ad:'Yeniçeri (oyuncu)',grup:'Karakter',boy:2.82,yap:_yeniceriYap});
+
+const _OD={id:'dusman',etek:0x3a1800,gov:0x4a2000,sash:0x7a1a1a,sal:0x3a3a3a,bot:0x1a1008,biyik:0x1a1008,sapka:'sarik',sapkaC:0x8a7a5a,sapkaC2:0x5a1a1a,silah:'kilic',kalkan:0x6a4a2a};
+const _ODB={id:'dusman_boss',etek:0x5a0000,gov:0x7B0000,sash:0x1a1a1a,yaka:0xFFD700,sal:0x2a2a2a,bot:0x1a1008,sakal:0x1a1008,sapka:'kask',sapkaC:0x4a4a52,omuz:0x8a8a92,pelerin:0x3a0000,silah:'kilic',kalkan:0x555560,taç:true};
+modelTanimla('dusman',{ad:'Düşman askeri',grup:'Düşman',boy:2.7,bar:{w:1.1,y:3.1,renk:0x22cc55},yap:function(){return _insanYap(_OD,.82);}});
+modelTanimla('dusman_boss',{ad:'Düşman komutanı (boss)',grup:'Düşman',boy:3.65,bar:{w:1.6,y:3.95,renk:0xFFD700},yap:function(){return _insanYap(_ODB,1.15);}});
+
+const _OE={id:'eskiya',etek:0x3a2c1c,gov:0x4a3828,sash:0x2a1c10,yaka:0x2a1c10,sal:0x4a4a40,bot:0x2a1c10,biyik:0x2a1808,sapka:'kasket',sapkaC:0x2a2018,silah:'kazma'};
+const _OEB={id:'eskiya_boss',etek:0x3a0a0a,gov:0x5a1010,sash:0x1a1a1a,yaka:0x8a2020,sal:0x2a2a2a,bot:0x1a1008,sakal:0x2a1808,sapka:'kask',sapkaC:0x2a2018,omuz:0x4a4a4a,silah:'balta',taç:true};
+modelTanimla('eskiya',{ad:'Eşkıya madenci',grup:'Düşman',boy:2.55,bar:{w:1.0,y:2.9,renk:0x22cc55},yap:function(){return _insanYap(_OE,.85);}});
+modelTanimla('eskiya_boss',{ad:'Ocakbaşı eşkıyası (boss)',grup:'Düşman',boy:3.55,bar:{w:1.7,y:3.85,renk:0xFFD700},yap:function(){return _insanYap(_OEB,1.2);}});
+
+// ── Dört ayaklı ──
+function _hayvanGeo(o){
+  const k='hayvan_'+o.id;if(_GC[k])return _GC[k];
+  const sph=function(r){return _g('SphereGeometry',r,10,8);},cone=function(r,h,n){return _g('ConeGeometry',r,h,n||6);},cyl=function(a,b,h,n){return _g('CylinderGeometry',a,b,h,n||7);},box=function(w,h,d){return _g('BoxGeometry',w,h,d);};
+  const L=o.lh,by=L+.3;
+  const G=[];
+  G.push([sph(.5),o.col,0,by,0,0,0,0,o.gen||1,.85,1.6]);                                        // gövde
+  G.push([sph(.4),o.alt||o.col,0,by-.12,.15,0,0,0,.95,.8,1.4]);                                  // karın
+  G.push([cyl(.2,.3,.55),o.col,0,by+.28,.62,.9]);                                                // boyun
+  G.push([sph(.27),o.col,0,by+.52,.98,0,0,0,.9,.9,1.15]);                                         // kafa
+  G.push([box(.2,.18,.34),o.burun||0x2a2018,0,by+.42,1.3,.15]);                                    // burun/namlu
+  G.push([sph(.05),0x111111,-.16,by+.6,1.1]);G.push([sph(.05),0x111111,.16,by+.6,1.1]);          // gözler
+  G.push([cone(.07,.24),o.col,-.15,by+.86,.9,-.2,0,.15]);G.push([cone(.07,.24),o.col,.15,by+.86,.9,-.2,0,-.15]); // kulaklar
+  G.push([cone(.1,.5),o.kuyruk||o.col,0,by+.1,-.95,-1.3]);                                      // kuyruk
+  if(o.boynuz){[-1,1].forEach(function(sg){G.push([cyl(.025,.04,.6,5),0xC9B08A,sg*.14,by+1.15,.86,-.2,0,-sg*.35]);G.push([cyl(.02,.03,.35,5),0xC9B08A,sg*.28,by+1.35,.8,-.2,0,-sg*.9]);G.push([cyl(.02,.03,.3,5),0xC9B08A,sg*.2,by+1.2,.78,-.5,0,-sg*.2]);});}
+  if(o.diş){[-1,1].forEach(function(sg){G.push([cone(.04,.22,5),0xF0EAD6,sg*.12,by+.4,1.38,-.3,0,sg*.4]);});}
+  if(o.kil){for(let i=0;i<5;i++)G.push([cone(.06,.2,4),o.kil,0,by+.45,.5-i*.26]);}
+  if(o.hörgüç)G.push([sph(.4),o.col,0,by+.42,.3,0,0,0,1,.8,1]);
+  if(o.yuvarlakKulak){G.push([sph(.1),o.col,-.18,by+.78,.9]);G.push([sph(.1),o.col,.18,by+.78,.9]);}
+  if(o.taç)G.push([cone(.22,.35,6),0xFFD700,0,by+.98,.95]);
+  const bacak=function(pts){const q=[];pts.forEach(function(p){q.push([cyl(.1*(o.kal||1),.07*(o.kal||1),L,7),o.col,p[0],-L/2,p[1]]);q.push([box(.12*(o.kal||1),.07,.16*(o.kal||1)),0x1a1208,p[0],-L+.03,p[1]+.03]);});return _birles(q);};
+  return _GC[k]={govde:_birles(G),ca:bacak([[-.3,.55],[.3,-.55]]),cb:bacak([[.3,.55],[-.3,-.55]]),L:L};
+}
+function _hayvanYap(o,s){
+  s=s||1;const gm=_hayvanGeo(o),g=new THREE.Group(),ic=new THREE.Group();g.add(ic);
+  const gv=_parca(gm.govde);ic.add(gv);
+  const ca=_pivot(ic,0,gm.L,0),cb=_pivot(ic,0,gm.L,0);ca.add(_parca(gm.ca));cb.add(_parca(gm.cb));
+  ic.scale.setScalar(s);
+  g.userData.govde=gv;g.userData.anim={tip:'hayvan',ca:ca,cb:cb,govde:ic};
   return g;
 }
-modelTanimla('eskiya',{ad:'Eşkıya madenci',grup:'Düşman',boy:2.4,bar:{w:1.0,y:2.6,renk:0x22cc55},yap:function(){return _eskiyaGovde(false);}});
-modelTanimla('eskiya_boss',{ad:'Ocakbaşı eşkıyası (boss)',grup:'Düşman',boy:3.1,bar:{w:1.7,y:3.38,renk:0xFFD700},yap:function(){return _eskiyaGovde(true);}});
-
-function _hayvanGovde(col,s,boss){
-  const g=new THREE.Group();
-  const body=_kutu(1.1*s,.8*s,1.7*s,col,0,.7*s,0);body.castShadow=true;g.add(body);
-  const head=_kutu(.6*s,.55*s,.6*s,col,0,.85*s,.9*s);g.add(head);
-  [-0.35*s,0.35*s].forEach(function(ox){[-0.5*s,0.5*s].forEach(function(oz){
-    const leg=new THREE.Mesh(new THREE.CylinderGeometry(.08*s,.08*s,.65*s,6),new THREE.MeshLambertMaterial({color:col}));
-    leg.position.set(ox,.32*s,oz);g.add(leg);
-  });});
-  if(boss){const crown=new THREE.Mesh(new THREE.ConeGeometry(.5,.6,6),new THREE.MeshLambertMaterial({color:0xFFD700}));crown.position.set(0,1.3*s,.9*s);head.add(crown);}
-  g.userData.govde=body;
-  return g;
-}
-modelTanimla('geyik',{ad:'Geyik',grup:'Hayvan',boy:1.5,bar:{w:1.0,y:1.36,renk:0x22cc55},yap:function(){return _hayvanGovde(0x8B6030,.85,false);}});
-modelTanimla('kurt',{ad:'Kurt',grup:'Hayvan',boy:1.6,bar:{w:1.0,y:1.52,renk:0x22cc55},yap:function(){return _hayvanGovde(0x4a4a4a,.95,false);}});
-modelTanimla('domuz',{ad:'Yaban domuzu',grup:'Hayvan',boy:1.7,bar:{w:1.0,y:1.68,renk:0x22cc55},yap:function(){return _hayvanGovde(0x5a3a20,1.05,false);}});
-modelTanimla('ayi',{ad:'Koca Ayı (boss)',grup:'Hayvan',boy:2.9,bar:{w:1.8,y:2.72,renk:0xFFD700},yap:function(){return _hayvanGovde(0x3a2810,1.7,true);}});
+const _HGEYIK={id:'geyik',col:0x8B6030,alt:0xD8C39A,lh:.75,kal:.8,boynuz:true,kuyruk:0xF0EAD6,gen:.85};
+const _HKURT={id:'kurt',col:0x4a4a4a,alt:0x8a8a8a,lh:.55,kal:.85,kuyruk:0x3a3a3a,burun:0x111111,gen:.8};
+const _HDOMUZ={id:'domuz',col:0x5a3a20,alt:0x7a5a40,lh:.4,kal:1.1,diş:true,kil:0x2a1808,gen:1.15};
+const _HAYI={id:'ayi',col:0x3a2810,alt:0x5a4028,lh:.65,kal:1.5,hörgüç:true,yuvarlakKulak:true,burun:0x8a6a48,gen:1.25,taç:true};
+modelTanimla('geyik',{ad:'Geyik',grup:'Hayvan',boy:2.5,bar:{w:1.0,y:2.8,renk:0x22cc55},yap:function(){return _hayvanYap(_HGEYIK,1);}});
+modelTanimla('kurt',{ad:'Kurt',grup:'Hayvan',boy:1.8,bar:{w:1.0,y:2.2,renk:0x22cc55},yap:function(){return _hayvanYap(_HKURT,1);}});
+modelTanimla('domuz',{ad:'Yaban domuzu',grup:'Hayvan',boy:1.75,bar:{w:1.0,y:2.1,renk:0x22cc55},yap:function(){return _hayvanYap(_HDOMUZ,1);}});
+modelTanimla('ayi',{ad:'Koca Ayı (boss)',grup:'Hayvan',boy:3.6,bar:{w:1.8,y:4.0,renk:0xFFD700},yap:function(){return _hayvanYap(_HAYI,1.7);}});
 
 // Mermi ve ganimet
 modelTanimla('mermi_tufek',{ad:'Tüfek mermisi',grup:'Eşya',boy:.2,yap:function(){return new THREE.Mesh(new THREE.SphereGeometry(.1,5,4),new THREE.MeshBasicMaterial({color:0xFFFDE7}));}});

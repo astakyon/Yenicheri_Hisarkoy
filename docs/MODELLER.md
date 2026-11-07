@@ -10,6 +10,9 @@ Oyundaki tüm 3B modeller tek bir kayıttan (`src/js/modeller/kayit.js`, `modelT
 | Hayvan | `geyik`, `kurt`, `domuz`, `ayi` |
 | Eşya | `mermi_tufek`, `mermi_ok`, `ganimet_akce`, `ganimet_deri`, `ganimet_metal` |
 
+## Model yapısı (v1.47)
+Kod modelleri insan ve dört ayaklı iki kalıptan üretilir (`_insanYap`, `_hayvanYap`). Parçalar köşe renkli tek geometride **birleştirilir** (`_birles`): bir model ≈ 5 çizim çağrısı (gövde, iki bacak, iki kol) ve ≈ 1.000 üçgen; geometri tipe göre önbelleklenir, malzeme her kopyada ayrıdır (vuruş parlaması `emissive` ile). Yürüme ve saldırı savurması `modelAnim(model,faz,hareket,saldiri)` ile oynar; kütüphanede **Yürü** düğmesi bunu gösterir. Yeni insan/hayvan türü için `_OD` / `_HKURT` gibi tek bir tanım nesnesi yazmak yeter.
+
 ## Kütüphane ekranı
 Ana menü → **🧰 MODEL KÜTÜPHANESİ**. Listeden model seçilir; önizlemede döndürme, tel kafes, can çubuğu, vuruş parlaması, yürüme, karşılaştırma (gerçek boy), üçgen/nesne sayısı, **.glb indir**, **.glb içe aktar**, boy uygulama, 90° döndürme, sıfırlama ve JSON kopyalama vardır.
 

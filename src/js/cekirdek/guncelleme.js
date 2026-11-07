@@ -11,6 +11,9 @@ function update(dt){
   else{updateKisla(dt);}
   updateAim();
   WORLD.players.forEach(function(p){if(p.atkCd>0)p.atkCd--;if(p.ifr>0)p.ifr--;});
+  // Model animasyonu (yalnızca görüntü; simülasyonu etkilemez): yürüme ve saldırı savurması
+  WORLD.players.forEach(function(p){if(!p.mesh||p.hp<=0)return;const mv=Math.hypot(p.x-(p.lx===undefined?p.x:p.lx),p.z-(p.lz===undefined?p.z:p.lz))>.003;p.lx=p.x;p.lz=p.z;modelAnim(p.mesh,gt*.45,mv?1:0,p.atkCd>0?p.atkCd/22:0);});
+  enemies.forEach(function(e){const mv=Math.hypot(e.x-(e.lx===undefined?e.x:e.lx),e.z-(e.lz===undefined?e.z:e.lz))>.004;e.lx=e.x;e.lz=e.z;modelAnim(e.mesh,gt*.4+e.id,mv?1:0,0);});
   const wpnM=pl.mesh.getObjectByName('wpn');if(wpnM)wpnM.material.color.setHex([0xD0D0D0,0x505050,0x8B4513][selWeapon]);
   if(pwrOn){pwr=Math.min(100,pwr+2.4);document.getElementById('pwrFl').style.width=pwr+'%';document.getElementById('pwrW').style.display='block';}
   torches.forEach(function(t){t.phase+=.06;t.light.intensity=2.4+Math.sin(t.phase)*.5+Math.sin(t.phase*1.8)*.2;});
@@ -23,6 +26,7 @@ function update(dt){
   CAM.lookAt(pl.x,0,pl.z);
   // HUD
   SESSION.afterTick();
+  if(SESSION.peers.size>0){canlandirmaTik();dususGoster(pl.hp<=0,pl.rev||0);}
   document.getElementById('hpf').style.width=(pl.hp/pl.maxHp*100)+'%';document.getElementById('enf').style.width=(pl.en/pl.maxEn*100)+'%';document.getElementById('hpn').textContent=Math.ceil(pl.hp);document.getElementById('enn').textContent=Math.ceil(pl.en);
   drawMM();
 }
@@ -39,6 +43,7 @@ function readLocalInput(){
 }
 
 function movePlayer(p,cmd,dt){
+  if(p.hp<=0)return;
   const run=cmd.run&&p.en>1,sp=(run?p.rspd:p.spd)*dt;
   let dx=cmd.dx,dz=cmd.dz;
   const mov=dx||dz;if(mov){const l=Math.hypot(dx,dz);dx/=l;dz/=l;}
@@ -125,13 +130,7 @@ function updateGorev(dt){
   updateMovement(dt);
   // Loot manyeti
   const magDist=getMagnetDist();
-  loots.forEach(function(l){if(l.collected)return;const d=Math.hypot(pl.x-l.x,pl.z-l.z);
-    if(d<1.3){S3.remove(l.mesh);l.collected=true;
-      if(l.type==='akce'){const amt=4+Math.floor(Math.random()*7);addPoolGold(amt);akce+=amt;document.getElementById('akceV').textContent=akce;lootPop('+Akçe 🪙');}
-      else if(l.type==='deri'){deri++;lootPop('+Deri 🟤');}else{metal++;lootPop('+Metal ⚙');}
-      addFX(l.x,l.z,l.col,4);
-    }else if(d<magDist){l.vx+=(pl.x-l.x)/d*.1;l.vz+=(pl.z-l.z)/d*.1;l.vx*=.82;l.vz*=.82;}else{l.vx*=.9;l.vz*=.9;}
-    l.x+=l.vx;l.z+=l.vz;l.mesh.position.set(l.x,.28+Math.sin(gt*.09+l.x)*.07,l.z);l.mesh.rotation.y+=.05;});
+  lootGuncelle(magDist,'+Deri 🟤','+Metal ⚙',false);
   loots=loots.filter(function(l){return!l.collected;});
   // Mermiler
   bullets.forEach(function(b){b.mesh.position.x+=b.vx;b.mesh.position.z+=b.vz;b.life--;const bx2=b.mesh.position.x,bz2=b.mesh.position.z;enemies.forEach(function(en){if(Math.hypot(en.x-bx2,en.z-bz2)<1.1&&b.life>0){en.hp-=b.dmg;b.life=0;en.hurtT=9;addFX(en.x,en.z,0xcc2222,4);}});if(b.life<=0)S3.remove(b.mesh);});
@@ -152,7 +151,7 @@ function updateGorev(dt){
       } else {
         const def=getArmorDef(tp);const dmg=(en.isBoss?6:2)*(1-def);
         tp.hp=Math.max(0,tp.hp-dmg);tp.ifr=28;addFX(tp.x,tp.z,0xcc2222,5);
-        if(tp.hp<=0&&tp===pl){playing=false;showDeath();}
+        if(tp.hp<=0)oyuncuOldu(tp);
       }
       tp.ifr=28;
     }
@@ -164,7 +163,7 @@ function updateGorev(dt){
       // XP ve Ün ver
       const xpAmt=en.isBoss?200:10+wave*2;
       const fameAmt=en.isBoss?20:1;
-      addXP(xpAmt); addFame(fameAmt);
+      addXP(xpAmt);kazancDagit(xpAmt);addFame(fameAmt);
       // Görev takibi
       trackQuest('kills',1);
       checkAchievements('kills');

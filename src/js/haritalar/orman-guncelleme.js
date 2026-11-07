@@ -17,13 +17,7 @@ function updateOrman(dt){
 
   // Loot manyeti (aynı görev sistemi)
   const magDist=getMagnetDist();
-  loots.forEach(function(l){if(l.collected)return;const d=Math.hypot(pl.x-l.x,pl.z-l.z);
-    if(d<1.3){S3.remove(l.mesh);l.collected=true;
-      if(l.type==='akce'){const amt=4+Math.floor(Math.random()*7);addPoolGold(amt);akce+=amt;document.getElementById('akceV').textContent=akce;lootPop('+Akçe 🪙');}
-      else if(l.type==='deri'){deri++;lootPop('+Deri 🟤');}else{metal++;lootPop('+Et 🍖');}
-      addFX(l.x,l.z,l.col,4);
-    }else if(d<magDist){l.vx+=(pl.x-l.x)/d*.1;l.vz+=(pl.z-l.z)/d*.1;l.vx*=.82;l.vz*=.82;}else{l.vx*=.9;l.vz*=.9;}
-    l.x+=l.vx;l.z+=l.vz;l.mesh.position.set(l.x,.28+Math.sin(gt*.09+l.x)*.07,l.z);l.mesh.rotation.y+=.05;});
+  lootGuncelle(magDist,'+Deri 🟤','+Et 🍖',false);
   loots=loots.filter(function(l){return!l.collected;});
 
   // Mermiler (ok-yay öncelikli av silahı)
@@ -86,7 +80,7 @@ function updateOrman(dt){
       else{
         const armorDef=getArmorDef(tp);const dmg=(en.atkDmg||3)*(1-armorDef);
         tp.hp=Math.max(0,tp.hp-dmg);tp.ifr=28;addFX(tp.x,tp.z,0xcc2222,5);
-        if(tp.hp<=0&&tp===pl){playing=false;showDeath();}
+        if(tp.hp<=0)oyuncuOldu(tp);
       }
       tp.ifr=28;
     }
@@ -100,7 +94,7 @@ function updateOrman(dt){
       kills++;document.getElementById('killV').textContent=kills;
       SAVE.stats.kills=(SAVE.stats.kills||0)+1;
       SAVE.stats.animalsHunted=(SAVE.stats.animalsHunted||0)+1;
-      addXP(en.xpReward||14);addFame(en.isBoss?25:1);
+      addXP(en.xpReward||14);kazancDagit(en.xpReward||14);addFame(en.isBoss?25:1);
       trackQuest('kills',1);checkAchievements('kills');
       if(en.isBoss){
         SAVE.stats.bossKills=(SAVE.stats.bossKills||0)+1;

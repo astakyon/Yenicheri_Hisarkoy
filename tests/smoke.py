@@ -210,7 +210,7 @@ def main():
           const ab2 = { cd: { q: 0, f: 0, r: 0 }, active: { q: false, f: false, r: false }, timer: { q: 0, f: 0, r: 0 } };
           const p2 = Object.assign({}, pl, { mesh: pl.mesh.clone(), ab: ab2 }); p2.x = 40; p2.z = 40;
           WORLD.players.set('p2', p2);
-          useAbility('f', p2);
+          p2.abLv = { q: 1, f: 1, r: 1 }; useAbility('f', p2);
           const p2Kalkan = p2.ab.active.f, yerelKalkan = pl.ab.active.f, cd2 = p2.ab.cd.f, cdYerel = pl.ab.cd.f;
           for (let i = 0; i < 125; i++) updateAbilities(1 / 60);
           const sonra = { aktif: p2.ab.active.f, cd: p2.ab.cd.f };
@@ -337,6 +337,27 @@ def main():
         except Exception as e:
             baslik = 'HATA ' + str(e)[:80]
         check('Yeniçeri' in baslik, 'ağ yokken sayfa önbellekten açıldı: %s' % baslik)
+        ctx.close()
+
+        print('Ağ şeridi (4 oyuncu, 40 düşman)')
+        ctx, pg, errs = yeni_sayfa()
+        r = pg.evaluate("""() => { BEGIN('orman'); REN.render = () => {};
+          for (let i = 1; i <= 3; i++) SESSION.addPeer('c' + i, { send() {}, poll() { return []; } });
+          enemies.forEach(e => S3.remove(e.mesh)); enemies = [];
+          for (let i = 0; i < 40; i++) spawnAnimal(['geyik', 'kurt', 'domuz'][i % 3], false);
+          for (let i = 0; i < 16; i++) { const m = modelYap('mermi_tufek'); S3.add(m); bullets.push({ id: newNetId(), mesh: m, vx: .3, vz: .1, life: 60 }); }
+          for (let i = 0; i < 12; i++) dropLoot(Math.random() * 10, Math.random() * 10, 1);
+          const s = snapshot(), tel = JSON.stringify(ozetPakla(s)), eski = JSON.stringify(s);
+          const g = ozetAc(JSON.parse(tel));
+          let fark = 0; s.e.forEach((e, i) => { fark = Math.max(fark, Math.abs(e.x - g.e[i].x), Math.abs(e.z - g.e[i].z)); });
+          s.p.forEach((q, i) => { fark = Math.max(fark, Math.abs(q.x - g.p[i].x)); });
+          return { tel: tel.length, eski: eski.length, fark: fark, ok: g.p.length === s.p.length && g.e.length === s.e.length && g.b.length === s.b.length && g.l.length === s.l.length && g.p[1].id === s.p[1].id && g.e[7].k === s.e[7].k && g.e[7].hp === s.e[7].hp };
+        }""")
+        print('      boyut: %d bayt (okunaklı biçim %d); 15 Hz ile %.0f KB/sn/istemci' % (r['tel'], r['eski'], r['tel'] * 15 / 1024))
+        check(r['ok'], 'kompakt özet açılınca aynı oyuncu, düşman, mermi ve ganimet sayısı ve kimlikleri')
+        check(r['fark'] <= .051, 'yuvarlama farkı en çok %.3f birim' % r['fark'])
+        check(r['tel'] < r['eski'] * .62 and r['tel'] < 2800, 'kompakt özet küçük: %d bayt' % r['tel'])
+        check(not errs, 'JavaScript hatası yok')
         ctx.close()
 
         print('Model kütüphanesi')

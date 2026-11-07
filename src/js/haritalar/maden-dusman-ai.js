@@ -40,8 +40,8 @@ function checkMadenTraps(){
         p.hp=Math.max(0,p.hp-dmg);
         if(p===pl){
           lootPop('💥 Patlama tuzağı! -'+Math.round(dmg)+' Can');
-          if(pl.hp<=0){playing=false;showDeath();}
         }
+        if(p.hp<=0)oyuncuOldu(p);
       });
       trap.mesh.material.opacity=.4;trap.mesh.material.color.setHex(0x1a0a00);
       trap.rearmAt=gt+480;

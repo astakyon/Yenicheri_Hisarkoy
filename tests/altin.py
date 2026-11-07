@@ -88,7 +88,7 @@ KOS_JS = """
 def calistir():
     sonuc = {}
     srv, url = ortak.sunucu()
-    route = ortak.yonlendirici()
+    route = ortak.yonlendirici(sabit_uuid=True)
     with sync_playwright() as p:
         b = ortak.tarayici(p)
         for h in HARITALAR:

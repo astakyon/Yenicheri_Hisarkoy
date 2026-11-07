@@ -18,7 +18,7 @@ PeerJS host-relay oda sistemi, Supabase hesap/kayıt, misafir modu, testler.
 | Aşama | Kapsam | Süre | Durum |
 |---|---|---|---|
 | **F0 Modülerleştirme** | `src/` yapısı, `build.py`, testler (kaynak + tarayıcı) | 1–2 hafta | **TAMAM (v1.34)** |
-| **F1 Simülasyon/render ayrımı** | `World`/`Entity`/`Player` modeli, `netId`, sabit tik, `player` uyumluluk katmanı, `Session` + `LoopbackTransport`, tek kişilik "altın test" | 3–4 hafta | **sürüyor** (altın test ✔, oyuncu kaydı ✔, düşman kimlikleri ✔, mermi/ganimet id ✔, sabit 60 Hz tik ✔, tuzak zamanlayıcısı tik tabanlı ✔) |
+| **F1 Simülasyon/render ayrımı** | `World`/`Entity`/`Player` modeli, `netId`, sabit tik, `player` uyumluluk katmanı, `Session` + `LoopbackTransport`, tek kişilik "altın test" | 3–4 hafta | **TAMAM (v1.47)** (kalan teknik borç aşağıda) |
 | **F2 İlk co-op (minimum kilometre taşı)** | tek harita, 2 oyuncu, PeerJS iki kanal, lobi/oda kodu, girdi→host, JSON snapshot 15 Hz, interpolasyon + yerel tahmin | 3–4 hafta | **TAMAM (v1.45)** |
 | **F3 Saha doğrulaması** | Cloudflare TURN + Worker, yeniden bağlanma, `LagSimTransport`, Playwright iki sayfa testi, **iki gerçek cihazla mobil veride test** | 1–2 hafta | |
 | **F4 Tam co-op** | 4 oyuncu, tüm haritalar, boss telegraph olayları, oyuncu başına ganimet, canlandırma, ikili kodlama | 4–6 hafta | |
@@ -65,22 +65,32 @@ PeerJS host-relay oda sistemi, Supabase hesap/kayıt, misafir modu, testler.
 - v1.44: PWA + TWA hazırlığı (karar: öncelik Android, TWA; Capacitor seçilmedi). F3 denemeleri iki telefonda PWA olarak, mobil veriyle yapılacak. Supabase F3'te gerekmez (PeerJS eşleştirmesi yeter); hesap/kayıt F5.
 - v1.45 (F2 tamam, F3 hazırlığı): oda kur/katıl, PeerJS taşıması, istemci modu (tahmin + yumuşatma), `LagTransport`, uçtan uca test (`tests/coop.py`). Sıradaki: F3 gerçek cihaz denemesi (TURN, yeniden bağlanma, ikinci güvenilmez kanal), F4 (yetenekler, oyuncu başına ganimet, yeniden doğma, gerçek düşman modelleri).
 
-## Bilinen eksikler ve iş listesi (v1.46 itibarıyla)
+## Bilinen eksikler ve iş listesi (v1.47 itibarıyla)
+**F1 (tamam sayılır):** altın test (v1.47'den beri nesne sayısından bağımsız), oyuncu kaydı, kimlikler, sabit tik, oturum. Kalan teknik borç: `pl` global değişkeni yerel oyuncu için sürüyor (`localPlayer()` ile değiştirilecek), mesh/simülasyon tam ayrımı yok.
+
 **Çok oyunculu (F3–F4)**
+- [x] Ölünce yeniden doğma ve canlandırma (yoldaş yanında 2 sn / 30 sn sonra kendiliğinden), herkes düşünce oyun sonu
+- [x] İstemcide yetenekler (Q/F/R) ve bekleme süresi göstergesi
+- [x] Oyuncu başına ganimet (akçe, deri, metal) ve XP; uzak oyuncu ganimeti toplayabiliyor
+- [x] Yeniden bağlanma (60 sn bekleme, gizli anahtarla aynı kimliğe dönüş); temiz çıkış ve host kapatması ayrı ele alınır
+- [x] Host harita değiştirince istemci de geçer
+- [x] Host uzak oyuncuları ekranda görür; yürüme ve saldırı animasyonu
+- [x] Özet boyutu ölçüldü: 4 oyuncu + 40 düşman = 2,0 KB (okunaklı biçimde 4,3 KB); kompakt ağ biçimi
 - [ ] Gerçek iki telefonla mobil veride deneme (kullanıcı yapacak); operatör/CGNAT davranışı ölçümü
 - [ ] Cloudflare TURN + Worker (`window.YC_ICE`), bağlantı tipi (`relay`/`srflx`) kaydı
-- [ ] Yeniden bağlanma (kopan istemci aynı koda dönebilsin)
-- [ ] İstemcide yetenekler (Q/F/R) — şimdi host'un kayıtlı verisini kullanıyor
-- [ ] Oyuncu başına akçe/XP/ganimet (şimdi host `SAVE`)
-- [ ] Ölünce yeniden doğma / canlandırma
-- [ ] İstemcide mini harita boş; saldırı efektleri yalnız host'ta
-- [ ] Özel (editör) haritalar odada; 4 oyunculu ve ~40 düşmanlı özet boyutu/kare süresi ölçümü
-- [ ] İkinci güvenilmez kanal ve ikili paket; özet boyutu küçültme
-- [ ] Sekme arka plana alınınca host durması bildirimi
+- [ ] İstemcide mini harita, saldırı ve yetenek efektleri
+- [ ] Özel (editör) haritalar odada
+- [ ] İkinci güvenilmez kanal / ikili paket (yalnızca ölçümde gerekirse); yakın düşman süzmesi
+- [ ] Sekme arka plana alınınca host durması uyarısı
+- [ ] Oyuncu başına zırh/silah görünümü (uzak oyuncunun silahı ekranda)
+- [ ] Büyük oyuncu-düşman sayısında (4 oyuncu, 40 düşman) gerçek telefonda kare süresi ölçümü
+
 **Modeller**
-- [x] Model kütüphanesi (v1.46), `.glb` içe/dışa aktarma, `models.json`
-- [ ] Gerçek (Blender) `.glb` modeller; animasyon düğümleri (yürüme, kılıç) ve `models.json` alanları
-- [ ] Renk/görünüm özelleştirme (oyuncu kostümü), model LOD
+- [x] Model kütüphanesi, `.glb` içe/dışa aktarma, `models.json` (v1.46)
+- [x] Daha gerçekçi kod modelleri: insan (börk, kaftan, kuşak, kılıç/kalkan/kazma), dört ayaklılar (boynuz, diş, kürk), yürüme animasyonu (v1.47)
+- [ ] Gerçek (Blender) `.glb` modeller; `.glb` animasyon klipleri (şimdilik yalnızca kod modellerinde yürüme)
+- [ ] Oyuncu kostüm/renk seçimi, model LOD (uzak düşman için basit model)
+
 **Yayın**
 - [ ] Anahtar deposu (keystore) sırları, `assetlinks.json`, Play Store hesabı ve mağaza kaydı, paket adı kararı
 - [ ] iOS için "Ana ekrana ekle" yönergesi

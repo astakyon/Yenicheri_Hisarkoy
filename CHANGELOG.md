@@ -1,5 +1,15 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.47 — Kooperatif tamamlanıyor: canlandırma, yeniden bağlanma, yetenek/ganimet payı, gerçekçi modeller
+- **Ölme ve canlandırma:** odada düşen oyuncu yerde kalır; yoldaşı 2 sn yanında dururse %50 canla kalkar, 30 sn içinde kimse gelmezse kendiliğinden kalkar. Herkes düşünce oyun biter. Ekranda "YERE DÜŞTÜN" göstergesi. Tek kişilik oyun aynı.
+- **Yeniden bağlanma:** bağlantı kopunca host oyuncuyu 60 sn bekletir; istemci aynı odaya gizli anahtarla geri döner ve kaldığı yerden devam eder. Üstte "yeniden bağlanılıyor" şeridi.
+- **Harita değişimi:** host başka haritaya geçince istemci de geçer (önceden istemci eski haritada kalıyordu). Host artık uzak oyuncuları ekranında görür (önceden görünmüyorlardı).
+- **Oyuncu başına pay:** Q/F/R yetenekleri istemciden çalışır; ganimeti en yakın canlı oyuncu toplar (uzak oyuncu ganimet toplayamıyordu); XP herkesin kendi kaydına, akçe oyuncunun kendi kışlasına yazılır.
+- **Ağ şeridi:** özet 4,3 KB → 2,0 KB (4 oyuncu + 40 düşman). 15 Hz'de istemci başına ≈ 30 KB/sn.
+- **Gerçekçi modeller:** yeniçeri (börk, kaftan, kuşak, tüfek, yatağan), düşman askeri ve komutan (sarık/miğfer, kalkan, pelerin, omuz zırhı), eşkıya ve ocakbaşı (maden başlığı, kazma, balta), geyik (boynuz), kurt, yaban domuzu (diş, kıl), ayı. Hepsi ~1.000 üçgen, ~5 çizim çağrısı; yürüme ve saldırı animasyonu (host, istemci ve kütüphanede).
+- **Test altyapısı:** altın test artık THREE nesne kimliklerini sayaçtan alır; model ayrıntısı davranış referansını bozmaz. Referans v1.46 koduyla yeniden üretildi ve bu sürümle birebir aynı çıktı verdi. Çok oyunculu test: harita değişimi, yetenek/ganimet/XP, ölme/canlandırma, bağlantı kopup dönme, oyun sonu eklendi.
+- Yol haritasına F1 kapanışı ve güncel iş listesi işlendi.
+
 ## v1.46 — Model kütüphanesi (oynanış aynı)
 - **🧰 MODEL KÜTÜPHANESİ** (ana menü): 14 modelin (oyuncu, düşmanlar, hayvanlar, mermi, ganimet) önizlemesi, tel kafes, can çubuğu, vuruş denemesi, gerçek boy karşılaştırma, üçgen sayısı, **.glb indir / içe aktar** (cihazda kalıcı), `assets/models.json`.
 - Tüm modeller tek kayıttan (`modeller/kayit.js`) gelir; tek kişilik oyun ve çok oyunculu istemci artık aynı gerçek modelleri çizer (istemcideki sade kutular kalktı).
