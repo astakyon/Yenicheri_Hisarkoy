@@ -1,0 +1,85 @@
+name: Android paketi (Play Store)
+# Google Play için imzalı .aab (yüklenecek paket) ve telefonda denemek için .apk üretir — Bubblewrap ile TWA.
+# Çalıştırma: GitHub → Actions → "Android paketi (Play Store)" → Run workflow. Sonuç: işin altında "Artifacts" → android-paket.
+# İmza anahtarı GitHub Secrets'ta durur (docs/ANDROID.md):
+#   ANDROID_KEYSTORE_B64      android.keystore dosyasının base64 hâli
+#   ANDROID_KEYSTORE_PASSWORD anahtar deposu şifresi
+#   ANDROID_KEY_PASSWORD      anahtar şifresi (çoğu zaman aynı)
+# Secrets yoksa geçici bir DENEME anahtarı üretilir: .apk telefonda denenebilir ama Play'e YÜKLENMEZ.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  aab:
+    runs-on: ubuntu-24.04   # Android SDK hazır kurulu
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with: { distribution: temurin, java-version: '17' }
+      - uses: actions/setup-node@v5
+        with: { node-version: '22' }
+      - name: Android SDK lisansları
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"; ls "$ANDROID_HOME" || true
+          SM=$(ls "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager | head -n 1); echo "sdkmanager: $SM"
+          yes | "$SM" --licenses > /dev/null || true
+          "$SM" "build-tools;34.0.0" "platforms;android-35" > /dev/null || true
+      - name: Bubblewrap kur
+        run: |
+          npm i -g @bubblewrap/cli@1
+          mkdir -p ~/.bubblewrap
+          # Bubblewrap SDK içinde eski "tools/bin/sdkmanager" yolunu arar: hazır SDK'nın bağlantılarından bir kopya klasör kur
+          SDK=$HOME/android-sdk; mkdir -p "$SDK"; for f in "$ANDROID_HOME"/*; do ln -sfn "$f" "$SDK/$(basename "$f")"; done
+          L=$(ls -d "$ANDROID_HOME"/cmdline-tools/latest 2>/dev/null || ls -d "$ANDROID_HOME"/cmdline-tools/* | tail -n 1); rm -rf "$SDK/tools"; ln -sfn "$L" "$SDK/tools"
+          ls -la "$SDK" "$SDK/tools/bin" | head -n 30
+          printf '{"jdkPath":"%s","androidSdkPath":"%s"}\n' "$JAVA_HOME" "$SDK" > ~/.bubblewrap/config.json
+      - name: Sürüm ve imza anahtarı
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          mkdir -p twa && cd twa
+          V=$(tr -d ' \r\nv' < ../VERSION)   # v1.43 → 1.43
+          CODE=$(echo "$V" | awk -F. '{ printf "%d", $1*100+$2 }')   # 1.43 → 143
+          jq --arg v "$V" --argjson c "$CODE" '.appVersionName=$v | .appVersionCode=$c' ../twa-manifest.json > twa-manifest.json
+          if [ -n "$KS_B64" ]; then
+            echo "$KS_B64" | base64 -d > android.keystore
+            echo "KIND=play" >> "$GITHUB_ENV"
+            echo "BUBBLEWRAP_KEYSTORE_PASSWORD=$KS_PASS" >> "$GITHUB_ENV"
+            echo "BUBBLEWRAP_KEY_PASSWORD=${KEY_PASS:-$KS_PASS}" >> "$GITHUB_ENV"
+          else
+            echo "::warning::İmza anahtarı (Secrets) yok — DENEME anahtarı üretiliyor; bu paket Play'e yüklenemez."
+            keytool -genkeypair -keystore android.keystore -alias yenicheri -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass deneme123 -keypass deneme123 -dname "CN=Yenicheri Deneme"
+            echo "KIND=deneme" >> "$GITHUB_ENV"
+            echo "BUBBLEWRAP_KEYSTORE_PASSWORD=deneme123" >> "$GITHUB_ENV"
+            echo "BUBBLEWRAP_KEY_PASSWORD=deneme123" >> "$GITHUB_ENV"
+          fi
+          echo "Sürüm $V (kod $CODE)"
+      - name: Android projesini üret ve derle
+        working-directory: twa
+        run: |
+          unset ANDROID_SDK_ROOT; export ANDROID_HOME=$HOME/android-sdk   # Gradle tek SDK yolu ister
+          note(){ t=$( { grep -A10 'What went wrong' "$1" | head -n 14; grep -m6 -i 'caused by\|error:' "$1"; tail -n 6 "$1"; } | sed 's/\x1b\[[0-9;]*m//g' | tr -d '\r' | sed ':a;N;$!ba;s/%/%25/g;s/\n/%0A/g'); echo "::error title=$2::$t"; }
+          yes 2>/dev/null | bubblewrap update --skipVersionUpgrade 2>&1 | tee update.log; [ "${PIPESTATUS[1]}" = 0 ] || { note update.log "bubblewrap update"; exit 1; }
+          yes 2>/dev/null | bubblewrap build --skipPwaValidation 2>&1 | tee build.log; [ "${PIPESTATUS[1]}" = 0 ] || { note build.log "bubblewrap build"; exit 1; }
+          ls -la
+      - name: Digital Asset Links dosyası
+        working-directory: twa
+        run: |
+          SHA=$(keytool -list -v -keystore android.keystore -alias yenicheri -storepass "$BUBBLEWRAP_KEYSTORE_PASSWORD" | awk '/SHA256:/{print $2; exit}')
+          PKG=$(jq -r .packageId twa-manifest.json)
+          printf '[{"relation":["delegate_permission/common.handle_all_urls"],"target":{"namespace":"android_app","package_name":"%s","sha256_cert_fingerprints":["%s"]}}]\n' "$PKG" "$SHA" > assetlinks-yukleme-anahtari.json
+          cat assetlinks-yukleme-anahtari.json
+          rm -f android.keystore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-paket-${{ env.KIND }}
+          path: |
+            twa/app-release-bundle.aab
+            twa/app-release-signed.apk
+            twa/assetlinks-yukleme-anahtari.json
+            twa/twa-manifest.json
+          if-no-files-found: error

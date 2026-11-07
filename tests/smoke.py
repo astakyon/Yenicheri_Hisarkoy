@@ -316,6 +316,29 @@ def main():
         check(r['gt'] - r['sonSnapTik'] <= 4, 'özetler 15 Hz geliyor (son özet %d tik önce)' % (r['gt'] - r['sonSnapTik']))
         ctx.close()
 
+        print('PWA (servis çalışanı, manifest, çevrimdışı açılış)')
+        ctx, pg, errs = yeni_sayfa()
+        pg.wait_for_timeout(500)
+        r = pg.evaluate("""async () => {
+          const reg = await navigator.serviceWorker.ready;
+          await new Promise(r => setTimeout(r, 800));
+          const adlar = await caches.keys();
+          const onbellek = adlar.length ? (await (await caches.open(adlar[0])).keys()).map(k => new URL(k.url).pathname) : [];
+          const mf = await (await fetch('manifest.webmanifest')).json();
+          return { kapsam: new URL(reg.scope).pathname, adlar, onbellek, ad: mf.short_name, surum: document.querySelector('meta[name="game-version"]').content, yukle: getComputedStyle(document.getElementById('btnInstall')).display };
+        }""")
+        check(r['adlar'] and r['adlar'][0] == 'yenicheri-' + r['surum'], 'servis çalışanı kuruldu, önbellek adı sürümle aynı: %s' % r['adlar'])
+        check(any(x.endswith('index.html') or x == '/' for x in r['onbellek']) and any('manifest' in x for x in r['onbellek']), 'sayfa ve manifest önbellekte')
+        check(r['yukle'] == 'none', 'kurulum düğmesi, kurulum olayı gelmeden gizli')
+        ctx.set_offline(True)
+        try:
+            pg.reload(wait_until='domcontentloaded')
+            baslik = pg.title()
+        except Exception as e:
+            baslik = 'HATA ' + str(e)[:80]
+        check('Yeniçeri' in baslik, 'ağ yokken sayfa önbellekten açıldı: %s' % baslik)
+        ctx.close()
+
         print('Kimlikler (düşman, mermi, ganimet)')
         ctx, pg, errs = yeni_sayfa()
         pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)

@@ -2,9 +2,16 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Yeniçeri: Hisarköy Muhafızı v1.43</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#7a1414">
+<meta name="game-version" content="v1.44">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<title>Yeniçeri: Hisarköy Muhafızı v1.44</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -334,13 +341,14 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mTitle"><svg class="mOrn" viewBox="0 0 48 44" aria-hidden="true"><defs><mask id="mCres"><rect width="48" height="44" fill="#fff"/><circle cx="31" cy="22" r="14.5" fill="#000"/></mask></defs><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg><span class="mTx"><span>YENİÇERİ:</span> <span>HİSARKÖY MUHAFIZI</span></span><svg class="mOrn r" viewBox="0 0 48 44" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg></div>
       <div id="mDeco"><div class="ml"></div><div id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</div><div class="ml"></div></div>
-      <div id="mVer">v1.43</div>
+      <div id="mVer">v1.44</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
       <button class="mBtn" onclick="openChapters()">🗺 BÖLÜMLER</button>
       <button class="mBtn" onclick="openMapEditor()">🛠 HARİTA EDİTÖRÜ</button>
       <button class="mBtn" onclick="showDlg('📜 Nasıl Oynanır','WASD / Joystick → Hareket\nShift / 🏃 → Koşma\nFare / ⚔ → Saldır\n1/2/3 → Silah seç\nE / Kapı → Bölgeye Gir\nKışlada Demir Kapı → Göreve Çık\nEsc → Duraklat','Anlaşıldı!',hideDlg)">📜 NASIL OYNANIR</button>
+      <button class="mBtn" id="btnInstall" style="display:none" onclick="installApp()">⬇ UYGULAMAYI YÜKLE</button>
     </div>
     <div id="mIcos">
       <div class="mIco" onclick="openSettings()"><span>⚙</span><p>AYARLAR</p></div>
@@ -687,7 +695,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.43';
+const VERSION='v1.44';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -748,6 +756,31 @@ function addPoolGold(n){poolGold+=Math.floor(n*(getPassiveBonus('loot')));update
 function transferPool(){if(poolGold>0){addMainGold(poolGold);lootPop('+'+poolGold+' Akçe kışlaya aktarıldı! 🪙');poolGold=0;updateGoldHud();}}
 function losePool(){if(poolGold>0){lootPop(poolGold+' Akçe kaybedildi! 💸');poolGold=0;updateGoldHud();}}
 function spendMain(n){if(mainGold<n)return false;mainGold-=n;SAVE.mainGold=mainGold;saveGame();updateGoldHud();return true;}
+// ═══════════════════════════════════════════════════════
+// UYGULAMA OLARAK YÜKLEME (PWA) VE ÇEVRİMDIŞI ÖNBELLEK
+// Android Chrome'da ana menüde "⬇ UYGULAMAYI YÜKLE" görünür; yüklenince tam ekran, uygulama gibi açılır.
+// Aynı sayfa Google Play'e TWA ile paketlenir (docs/ANDROID.md).
+// ═══════════════════════════════════════════════════════
+let kurulumOlayi=null;
+function uygulamaIcindeMi(){
+  return (window.matchMedia&&(matchMedia('(display-mode: fullscreen)').matches||matchMedia('(display-mode: standalone)').matches))||navigator.standalone===true||/[?&]src=app/.test(location.search);
+}
+function kurulumDugmesiniGuncelle(){
+  const b=document.getElementById('btnInstall');
+  if(b)b.style.display=(kurulumOlayi&&!uygulamaIcindeMi())?'':'none';
+}
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();kurulumOlayi=e;kurulumDugmesiniGuncelle();});
+window.addEventListener('appinstalled',function(){kurulumOlayi=null;kurulumDugmesiniGuncelle();});
+function installApp(){
+  if(!kurulumOlayi)return;
+  kurulumOlayi.prompt();
+  kurulumOlayi.userChoice.then(function(){kurulumOlayi=null;kurulumDugmesiniGuncelle();}).catch(function(){});
+}
+try{
+  // Servis çalışanı yalnızca güvenli adreste (https) ve yerel denemede çalışır; sürüm değişince önbellek yenilenir
+  if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1'))
+    navigator.serviceWorker.register('sw.js?v='+encodeURIComponent(document.querySelector('meta[name="game-version"]').content)).catch(function(){});
+}catch(e){}
 // ═══════════════════════════════════════════════════════
 // AYARLAR SİSTEMİ
 // ═══════════════════════════════════════════════════════

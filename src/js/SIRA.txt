@@ -3,6 +3,7 @@
 # yükleme anında yalnızca önceki dosyalardan erişin (aksi halde 'before initialization' hatası olur).
 # Yeni dosyayı kullandığı dosyalardan sonra, cekirdek/ana-dongu.js'den önce ekleyin.
 cekirdek/surum-kayit.js
+cekirdek/pwa.js
 cekirdek/ayarlar.js
 gorev/gorev-basari.js
 karakter/xp-sinif.js

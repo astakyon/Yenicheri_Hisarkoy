@@ -62,3 +62,4 @@ PeerJS host-relay oda sistemi, Supabase hesap/kayıt, misafir modu, testler.
 - v1.41: Maden tuzağı tüm oyuncular. `pl` kalan kullanımları çoğunlukla yerel arayüz/başlatma (oyun-baslat, menüler, girdi); simülasyon tarafı oyuncu listesine geçti. Kalan F1: mesh/simülasyon ayrımı (View katmanı).
 - v1.42: `snapshot()` (düz veri; 2 oyuncu+4 düşman ≈ 500 bayt JSON). Altın test tarihi sabitledi (günlük görevler tarihe bağlı). Kalan F1: `applySnapshot` + istemci görüntü katmanı (F2 ile birlikte), düşman/mermi mesh ayrımı.
 - v1.43 (F2 başlangıcı): `PairTransport`, `SESSION.addPeer`, 15 Hz özet, `ClientView` (100 ms interpolasyon). Sıradaki: istemci çizimi (id'ye göre mesh), yerel tahmin, lobi/oda kodu, PeerJS taşıması.
+- v1.44: PWA + TWA hazırlığı (karar: öncelik Android, TWA; Capacitor seçilmedi). F3 denemeleri iki telefonda PWA olarak, mobil veriyle yapılacak. Supabase F3'te gerekmez (PeerJS eşleştirmesi yeter); hesap/kayıt F5.

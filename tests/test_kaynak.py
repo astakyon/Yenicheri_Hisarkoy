@@ -86,6 +86,42 @@ if eksik:
 else:
     ok("%d id isteniyor, hepsi tanımlı" % len(istenen))
 
+# 5 — PWA / TWA dosyaları ------------------------------------------------
+import json as _json
+def _json_oku(yol):
+    with open(os.path.join(build.ROOT, yol), encoding='utf-8') as f:
+        return _json.load(f)
+try:
+    mf = _json_oku('manifest.webmanifest')
+    eksik_simge = [i['src'] for i in mf['icons'] if not os.path.isfile(os.path.join(build.ROOT, i['src']))]
+    if eksik_simge:
+        fail('manifest simgeleri diskte yok: ' + ', '.join(eksik_simge))
+    elif not any('maskable' in i['purpose'] for i in mf['icons']) or not any(i['sizes'] == '512x512' for i in mf['icons']):
+        fail('manifest: 512x512 ve maskable simge şart')
+    elif not (mf.get('start_url') and mf.get('scope') and mf.get('display') and mf.get('name')):
+        fail('manifest: start_url, scope, display, name zorunlu')
+    else:
+        ok('manifest geçerli, %d simge diskte' % len(mf['icons']))
+    twa = _json_oku('twa-manifest.json')
+    surum = build.read(os.path.join(build.ROOT, 'VERSION')).strip()
+    ana, alt = surum.lstrip('v').split('.')
+    # twa-manifest sürümü iş akışında VERSION'dan yazılır; dosyadaki değer yalnızca başlangıç değeridir
+    if twa['themeColor'].lower() != mf['theme_color'].lower() or twa['orientation'] != mf['orientation']:
+        fail('twa-manifest.json ile manifest.webmanifest tema rengi ya da yön olarak ayrışmış')
+    elif not re.fullmatch(r'[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+', twa['packageId']):
+        fail('twa-manifest packageId geçersiz: ' + twa['packageId'])
+    else:
+        ok('twa-manifest tutarlı (%s, sürüm kodu iş akışında %d%02d)' % (twa['packageId'], int(ana), int(alt)))
+    html = build.read(os.path.join(build.ROOT, 'index.html'))
+    if 'rel="manifest"' not in html or 'game-version' not in html:
+        fail('index.html: manifest bağlantısı ya da game-version etiketi yok')
+    else:
+        ok('index.html manifest ve sürüm etiketini taşıyor')
+    r = subprocess.run(['node', '--check', os.path.join(build.ROOT, 'sw.js')], capture_output=True, text=True)
+    ok('sw.js söz dizimi geçerli') if r.returncode == 0 else fail('sw.js söz dizimi hatası: ' + r.stderr[:300])
+except FileNotFoundError as e:
+    fail('PWA dosyası eksik: ' + str(e))
+
 print()
 if fails:
     print('BAŞARISIZ: %d sorun' % len(fails))

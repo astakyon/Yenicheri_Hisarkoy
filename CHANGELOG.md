@@ -1,5 +1,10 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.44 — Telefona uygulama gibi yükleme (PWA) ve TWA hazırlığı (oynanış aynı)
+- **PWA:** `manifest.webmanifest`, `sw.js` (çevrimdışı önbellek, sürüm değişince yenilenir), özgün simge seti (`tools/ikonlar.py` ile üretilir: normal, maskable, tek renk). Android Chrome'da ana menüde **⬇ UYGULAMAYI YÜKLE** düğmesi çıkar; yüklenince tam ekran ve yatay açılır.
+- **TWA (Google Play) hazırlığı:** `twa-manifest.json` (paket adı `tr.yenicheri.hisarkoy`), GitHub Actions iş akışı **Android paketi** (imzalı `.aab` ve denemelik `.apk`), `privacy.html`, `docs/ANDROID.md` (adımlar, Digital Asset Links).
+- Yeni testler: manifest ve simgeler, TWA tutarlılığı, `sw.js` söz dizimi, servis çalışanı kurulumu ve ağ yokken açılış. Altın test değişmedi.
+
 ## v1.43 — Host ve istemci arasında ilk bağlantı katmanı (oynanış aynı)
 - Yeni `cekirdek/istemci.js`: `PairTransport` (bellek içi taşıma; mesajlar gerçek ağ gibi kopyalanır), `SESSION.addPeer/removePeer` (host uzak oyuncuyu kabul eder, kimliği taşıma damgalar; istemci başkasının kimliğine bürünemez), her 4 tikte (15 Hz) özet yayını, `ClientView` (özetleri alır, 100 ms geriden doğrusal interpolasyonla gösterir).
 - Hareket kodu görüntü nesnesi olmayan (uzak) oyuncularla da çalışır.

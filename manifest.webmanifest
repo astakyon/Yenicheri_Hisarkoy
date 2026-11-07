@@ -1,0 +1,24 @@
+{
+  "id": "./",
+  "name": "Yeniçeri: Hisarköy Muhafızı",
+  "short_name": "Yeniçeri",
+  "description": "Osmanlı temalı 3B aksiyon RPG. Hisarköy'ü savun, tek başına ya da arkadaşlarınla.",
+  "lang": "tr",
+  "dir": "ltr",
+  "start_url": "./?src=app",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "landscape",
+  "background_color": "#2a0a0a",
+  "theme_color": "#7a1414",
+  "categories": ["games"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-mono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "monochrome" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
