@@ -1,5 +1,12 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.55 — Telefon: dikey menü, kamera düğmeleri, sürükleyerek kamera
+- Dikey telefon ana menüsü: başlık sığar, kahraman başlıkla düğmeler arasında, düğmeler alta.
+- Kamera döndürme düğmeleri mini haritanın hemen altında (can panelinin üstüne binmez).
+- Telefonda ilk dokunuşta tam ekran + yatay kilit istenir (manifest zaten yatay); kilit olmazsa dikeyde "Telefonu yatay çevir" uyarısı çıkar.
+- Bilinen: `tests/coop.py` yeniden bağlanma adımı ara sıra (≈5'te 1) düşüyor; v1.54'te de var, bağlantı yarım kalıyor — incelenecek.
+- Tek parmakla ekranı sürükleyince kamera döner (kısa dokunuş saldırı/nişan olarak kalır).
+
 ## v1.54 — Binalar caddeye bakar, kapalı talim alanı, ölçek
 - **Kışla:** bina kapıları artık orta caddeye açılır (batı sütunu doğuya, doğu sütunu batıya); görevliler kapıların önünde, caddede durur. Binalar arası dar boşluklar kalktı.
 - **Talim alanı:** dört kenarı kapalı çit; caddeye bakan kenarda 5 birimlik kapı, direkler ve kiriş.

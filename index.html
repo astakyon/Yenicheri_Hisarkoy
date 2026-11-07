@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.54">
+<meta name="game-version" content="v1.55">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.54</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.55</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -454,6 +454,28 @@ canvas{display:block;position:absolute;top:0;left:0;}
 .toggleLabel{font-size:12px;}
 .toggleSub{font-size:10px;}
 .panSub{font-size:10px;}
+
+/* ── v1.55: kamera düğmeleri mini haritanın hemen altında ── */
+#camBtns{top:calc(172px*var(--ui));right:calc(14px*var(--ui));width:calc(122px*var(--ui));flex-direction:row;justify-content:center;gap:calc(14px*var(--ui));}
+.camB{width:calc(36px*var(--ui));height:calc(36px*var(--ui));font-size:calc(19px*var(--ui));}
+
+/* ── v1.55: dikey telefon ana menüsü ── */
+@media (orientation:portrait) and (max-width:700px){
+  #mTitleWrap{top:4.5vh;left:6vw;right:6vw;}
+  #mEyebrow{margin-bottom:.8vh;}
+  #mSub{font-size:2.6vw;letter-spacing:.28em;}
+  #mTitle .t1{font-size:min(13vw,8.5vh);}
+  #mTitle .t2{font-size:min(4.3vw,2.6vh);letter-spacing:.16em;}
+  #heroCv{opacity:1;left:20vw;right:auto;top:19vh;bottom:auto;width:60vw;height:29vh;}
+  #mBtns{left:6vw;width:88vw;bottom:15vh;gap:1vh;}
+  #mBtns .mBtn{font-size:min(4vw,2.1vh);padding:1.5vh 5vw;}
+  #mBtns .mBtn:first-child{font-size:min(4.8vw,2.6vh);padding:2.1vh 5vw;}
+  #mIcos{right:6vw;bottom:5vh;}
+}
+
+/* v1.55: dikey telefonda "yatay çevir" uyarısı (dokunmayı engellemez) */
+#yatayUyari{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);z-index:99999;display:none;pointer-events:none;background:rgba(6,3,0,.88);color:#FFD24A;border:1.5px solid #E8C060;border-radius:30px;padding:8px 18px;font:700 13px 'Cinzel',serif;letter-spacing:.12em;white-space:nowrap;animation:yatayN 1.6s ease-in-out infinite;}
+@keyframes yatayN{0%,100%{opacity:1}50%{opacity:.45}}
 </style>
 </head>
 <body>
@@ -478,7 +500,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.54</div>
+      <div id="mVer">v1.55</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
@@ -879,7 +901,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.54';
+const VERSION='v1.55';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -1951,6 +1973,26 @@ function menuKahramanCiz(){
   HERO.c.position.set(0,1.9,7.2);HERO.c.lookAt(0,1.55,0);
   HERO.r.render(HERO.s,HERO.c);
 }
+
+// ── Telefonda yatay mod: ilk dokunuşta tam ekran + yatay kilit; olmazsa dikeyde "yatay çevir" uyarısı ──
+(function(){
+  const dokunmatik=window.matchMedia&&matchMedia('(pointer:coarse)').matches;if(!dokunmatik)return;
+  const uyari=document.createElement('div');uyari.id='yatayUyari';uyari.textContent='⟳  Telefonu yatay çevir';document.body.appendChild(uyari);
+  function kilitle(){
+    try{
+      const el=document.documentElement,fs=el.requestFullscreen||el.webkitRequestFullscreen;
+      const p=fs&&!document.fullscreenElement?fs.call(el):null;
+      const kil=function(){try{const o=screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape');if(o&&o.catch)o.catch(function(){});}catch(e){}};
+      if(p&&p.then)p.then(kil).catch(kil);else kil();
+    }catch(e){}
+  }
+  let denendi=false;
+  function ilk(){if(denendi)return;denendi=true;kilitle();}
+  document.addEventListener('touchend',ilk,{passive:true});document.addEventListener('click',ilk);
+  function guncelle(){uyari.style.display=window.innerHeight>window.innerWidth?'block':'none';}
+  window.addEventListener('resize',guncelle);window.addEventListener('orientationchange',guncelle);guncelle();
+  try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(function(){});}catch(e){}
+})();
 // ═══════════════════════════════════════════════════════
 // OYUN STATE
 // ═══════════════════════════════════════════════════════
@@ -4042,9 +4084,11 @@ function initThree(){
   // Kamera zoom — pinch (iki parmak)
   let camPinchStartDist=0,camPinchStartZoom=1,camTwistStart=0,camTwistYaw=0;
   const _tw=t=>Math.atan2(t[1].clientY-t[0].clientY,t[1].clientX-t[0].clientX);
+  let tek={x:0,id:-1,surukle:false};
   cv3.addEventListener('touchstart',e=>{
     const t=e.targetTouches;
-    if(t.length===2){
+    if(t.length===1){tek.x=t[0].clientX;tek.id=t[0].identifier;tek.surukle=false;}
+    if(t.length===2){tek.id=-1;
       camPinchStartDist=Math.hypot(t[1].clientX-t[0].clientX,t[1].clientY-t[0].clientY);
       camPinchStartZoom=camZoom;camTwistStart=_tw(t);camTwistYaw=camYaw;
     }
@@ -4052,6 +4096,11 @@ function initThree(){
   cv3.addEventListener('touchmove',e=>{
     if(!playing||paused)return;
     const t=e.targetTouches;
+    // Tek parmak sürükleme: kamerayı döndürür (kısa dokunuş saldırı/nişan olarak kalır)
+    if(t.length===1&&t[0].identifier===tek.id){
+      const dx=t[0].clientX-tek.x;
+      if(tek.surukle||Math.abs(dx)>10){tek.surukle=true;camYaw-=dx*.008;tek.x=t[0].clientX;e.preventDefault();}
+    }
     if(t.length===2){
       e.preventDefault();
       const d=Math.hypot(t[1].clientX-t[0].clientX,t[1].clientY-t[0].clientY);

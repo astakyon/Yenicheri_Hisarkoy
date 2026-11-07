@@ -31,9 +31,11 @@ function initThree(){
   // Kamera zoom — pinch (iki parmak)
   let camPinchStartDist=0,camPinchStartZoom=1,camTwistStart=0,camTwistYaw=0;
   const _tw=t=>Math.atan2(t[1].clientY-t[0].clientY,t[1].clientX-t[0].clientX);
+  let tek={x:0,id:-1,surukle:false};
   cv3.addEventListener('touchstart',e=>{
     const t=e.targetTouches;
-    if(t.length===2){
+    if(t.length===1){tek.x=t[0].clientX;tek.id=t[0].identifier;tek.surukle=false;}
+    if(t.length===2){tek.id=-1;
       camPinchStartDist=Math.hypot(t[1].clientX-t[0].clientX,t[1].clientY-t[0].clientY);
       camPinchStartZoom=camZoom;camTwistStart=_tw(t);camTwistYaw=camYaw;
     }
@@ -41,6 +43,11 @@ function initThree(){
   cv3.addEventListener('touchmove',e=>{
     if(!playing||paused)return;
     const t=e.targetTouches;
+    // Tek parmak sürükleme: kamerayı döndürür (kısa dokunuş saldırı/nişan olarak kalır)
+    if(t.length===1&&t[0].identifier===tek.id){
+      const dx=t[0].clientX-tek.x;
+      if(tek.surukle||Math.abs(dx)>10){tek.surukle=true;camYaw-=dx*.008;tek.x=t[0].clientX;e.preventDefault();}
+    }
     if(t.length===2){
       e.preventDefault();
       const d=Math.hypot(t[1].clientX-t[0].clientX,t[1].clientY-t[0].clientY);

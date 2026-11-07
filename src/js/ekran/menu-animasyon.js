@@ -93,3 +93,23 @@ function menuKahramanCiz(){
   HERO.c.position.set(0,1.9,7.2);HERO.c.lookAt(0,1.55,0);
   HERO.r.render(HERO.s,HERO.c);
 }
+
+// ── Telefonda yatay mod: ilk dokunuşta tam ekran + yatay kilit; olmazsa dikeyde "yatay çevir" uyarısı ──
+(function(){
+  const dokunmatik=window.matchMedia&&matchMedia('(pointer:coarse)').matches;if(!dokunmatik)return;
+  const uyari=document.createElement('div');uyari.id='yatayUyari';uyari.textContent='⟳  Telefonu yatay çevir';document.body.appendChild(uyari);
+  function kilitle(){
+    try{
+      const el=document.documentElement,fs=el.requestFullscreen||el.webkitRequestFullscreen;
+      const p=fs&&!document.fullscreenElement?fs.call(el):null;
+      const kil=function(){try{const o=screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape');if(o&&o.catch)o.catch(function(){});}catch(e){}};
+      if(p&&p.then)p.then(kil).catch(kil);else kil();
+    }catch(e){}
+  }
+  let denendi=false;
+  function ilk(){if(denendi)return;denendi=true;kilitle();}
+  document.addEventListener('touchend',ilk,{passive:true});document.addEventListener('click',ilk);
+  function guncelle(){uyari.style.display=window.innerHeight>window.innerWidth?'block':'none';}
+  window.addEventListener('resize',guncelle);window.addEventListener('orientationchange',guncelle);guncelle();
+  try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(function(){});}catch(e){}
+})();

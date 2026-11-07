@@ -439,3 +439,25 @@ canvas{display:block;position:absolute;top:0;left:0;}
 .toggleLabel{font-size:12px;}
 .toggleSub{font-size:10px;}
 .panSub{font-size:10px;}
+
+/* ── v1.55: kamera düğmeleri mini haritanın hemen altında ── */
+#camBtns{top:calc(172px*var(--ui));right:calc(14px*var(--ui));width:calc(122px*var(--ui));flex-direction:row;justify-content:center;gap:calc(14px*var(--ui));}
+.camB{width:calc(36px*var(--ui));height:calc(36px*var(--ui));font-size:calc(19px*var(--ui));}
+
+/* ── v1.55: dikey telefon ana menüsü ── */
+@media (orientation:portrait) and (max-width:700px){
+  #mTitleWrap{top:4.5vh;left:6vw;right:6vw;}
+  #mEyebrow{margin-bottom:.8vh;}
+  #mSub{font-size:2.6vw;letter-spacing:.28em;}
+  #mTitle .t1{font-size:min(13vw,8.5vh);}
+  #mTitle .t2{font-size:min(4.3vw,2.6vh);letter-spacing:.16em;}
+  #heroCv{opacity:1;left:20vw;right:auto;top:19vh;bottom:auto;width:60vw;height:29vh;}
+  #mBtns{left:6vw;width:88vw;bottom:15vh;gap:1vh;}
+  #mBtns .mBtn{font-size:min(4vw,2.1vh);padding:1.5vh 5vw;}
+  #mBtns .mBtn:first-child{font-size:min(4.8vw,2.6vh);padding:2.1vh 5vw;}
+  #mIcos{right:6vw;bottom:5vh;}
+}
+
+/* v1.55: dikey telefonda "yatay çevir" uyarısı (dokunmayı engellemez) */
+#yatayUyari{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);z-index:99999;display:none;pointer-events:none;background:rgba(6,3,0,.88);color:#FFD24A;border:1.5px solid #E8C060;border-radius:30px;padding:8px 18px;font:700 13px 'Cinzel',serif;letter-spacing:.12em;white-space:nowrap;animation:yatayN 1.6s ease-in-out infinite;}
+@keyframes yatayN{0%,100%{opacity:1}50%{opacity:.45}}

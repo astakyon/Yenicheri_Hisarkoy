@@ -314,6 +314,14 @@ def main():
         check(not r2['kotu'], 'etkileşim noktaları caddede ve ulaşılabilir (sorunlu: %s)' % (r2['kotu'] or 'yok'))
         check(not r2['npc'], 'her kapının önünde görevli var (eksik: %s)' % (r2['npc'] or 'yok'))
         check(r2['kapi'] and r2['kapali'], 'talim alanı kapalı, caddeye bakan kapıdan girilir')
+        r3 = pg.evaluate("""() => { const c = document.getElementById('c3d'), y0 = camYaw;
+          const mk = x => new Touch({identifier: 7, target: c, clientX: x, clientY: 300});
+          c.dispatchEvent(new TouchEvent('touchstart', {touches: [mk(200)], targetTouches: [mk(200)], changedTouches: [mk(200)], bubbles: true, cancelable: true}));
+          c.dispatchEvent(new TouchEvent('touchmove', {touches: [mk(260)], targetTouches: [mk(260)], changedTouches: [mk(260)], bubbles: true, cancelable: true}));
+          const mm = document.getElementById('mmBox').getBoundingClientRect(), cb = document.getElementById('camBtns').getBoundingClientRect();
+          return { dy: camYaw - y0, alt: cb.top >= mm.bottom - 2 && cb.top - mm.bottom < 20 }; }""")
+        check(abs(r3['dy']) > .1, 'tek parmak sürükleme kamerayı döndürüyor (%.2f rad)' % r3['dy'])
+        check(r3['alt'], 'kamera düğmeleri mini haritanın hemen altında')
         check(r['ince'] == 0, 'Kışla ortasında uzun ince dekoratif duvar yok')
         check(not errs, 'JavaScript hatası yok')
         ctx.close()
