@@ -19,10 +19,13 @@ function modelTanimla(id,tanim){
 function modelHpCubuk(id){
   const t=MODEL_KAYIT.harita[id];
   const b=(t&&t.bar)||{w:1.1,y:2.9,renk:0x22cc55};
-  const bg=new THREE.Mesh(new THREE.PlaneGeometry(b.w,.14),new THREE.MeshBasicMaterial({color:0x330000,side:THREE.DoubleSide,depthTest:false}));
-  bg.position.set(0,b.y,0);
-  const fl=new THREE.Mesh(new THREE.PlaneGeometry(b.w,.14),new THREE.MeshBasicMaterial({color:b.renk,side:THREE.DoubleSide,depthTest:false}));
-  fl.position.set(0,b.y,.01);
+  const w=b.w*1.45,h=.3;                                              // telefonda da okunsun diye büyük
+  const bg=new THREE.Mesh(new THREE.PlaneGeometry(w+.1,h+.1),new THREE.MeshBasicMaterial({color:0x120804,side:THREE.DoubleSide,depthTest:false}));
+  bg.position.set(0,b.y+.1,0);bg.renderOrder=20;
+  const ic=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:0x4a0e0e,side:THREE.DoubleSide,depthTest:false}));
+  ic.position.z=.004;ic.renderOrder=21;bg.add(ic);
+  const fl=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:b.renk,side:THREE.DoubleSide,depthTest:false}));
+  fl.position.z=.008;fl.renderOrder=22;bg.add(fl);                     // dolgu çerçevenin çocuğu: kamera dönse de hizalı kalır
   return {bg:bg,fl:fl};
 }
 
@@ -38,7 +41,7 @@ function modelYap(id,opsiyon){
   else{g=t.yap(opsiyon||{});g.userData.kaynak='kod';}
   if(t.boy0&&t.boy&&Math.abs(t.boy/t.boy0-1)>.001&&g.userData.kaynak==='kod')g.scale.multiplyScalar(t.boy/t.boy0);
   if(!g.userData.govde){let ilk=null;g.traverse(function(o){if(!ilk&&o.isMesh&&o.material&&o.material.color)ilk=o;});g.userData.govde=ilk;}
-  if(opsiyon&&opsiyon.cubuk&&t.bar){const c=modelHpCubuk(id);g.add(c.bg);g.add(c.fl);g.userData.hpBg=c.bg;g.userData.hpFl=c.fl;}
+  if(opsiyon&&opsiyon.cubuk&&t.bar){const c=modelHpCubuk(id);g.add(c.bg);g.userData.hpBg=c.bg;g.userData.hpFl=c.fl;}
   return g;
 }
 
@@ -152,8 +155,18 @@ function _insanGeo(o){
   if(o.sakal)G.push([box(.3,.22,.1),o.sakal,0,1.95,.2,.2]);
   const sp=o.sapka;
   if(sp==='bork'){
-    G.push([cyl(.2,.3,.55),o.sapkaC,0,2.55,0]);G.push([cyl(.31,.31,.1),0xD4A82A,0,2.34,0]);
-    G.push([box(.2,.55,.07),o.sapkaC,0,2.36,-.32,.25]);G.push([box(.12,.12,.04),0xD4A82A,0,2.5,.31]);G.push([cyl(.035,.035,.22,5),0xC0C0C0,.05,2.5,.33,.35]);   // kaşıklık
+    const keçe=o.sapkaC||0xEFE6CE,altin=0xD4A82A;
+    G.push([cyl(.31,.33,.2,14),0xD8C9A0,0,2.33,0]);                                  // alt kıvrım (keçe pabuç)
+    G.push([cyl(.335,.335,.06,14),altin,0,2.43,0]);                                  // altın şerit
+    G.push([cyl(.22,.3,.52,14),keçe,0,2.7,-.02,-.05]);                               // gövde: yukarı daralan, hafif geriye yatık
+    G.push([sph(.23,12,8),keçe,0,2.98,-.06,0,0,0,1,.5,1]);                           // yuvarlak tepe
+    G.push([cyl(.17,.2,.14,12),0xD8C9A0,0,2.95,-.05,-.05]);                          // tepe kıvrımı
+    G.push([cyl(.09,.2,.9,8),keçe,0,2.2,-.36,.14,0,0,1,1,.38]);                      // sırta sarkan uzun kuyruk (yeniçeri börkü)
+    G.push([cyl(.215,.215,.05,12),altin,0,1.78,-.4,.14,0,0,1,.4,.45]);               // kuyruk ucu şeridi
+    G.push([box(.22,.28,.06),altin,0,2.42,.33]);                                     // kaşıklık yuvası (altın plaka)
+    G.push([box(.14,.2,.04),0x8a6a14,0,2.42,.365]);                                  // plaka kabartması
+    G.push([cyl(.025,.025,.3,6),0xC8C8CC,.05,2.66,.34,.18,0,-.12]);                  // kaşık sapı
+    G.push([sph(.065,8,6),0xC8C8CC,.075,2.84,.33,0,0,0,1,1.4,.5]);                   // kaşık yuvarlağı
   }else if(sp==='kask'){
     G.push([_g('SphereGeometry',.32,10,6,0,Math.PI*2,0,Math.PI/2),o.sapkaC,0,2.26,0]);G.push([_g('ConeGeometry',.05,.28,6),0xC0C0C0,0,2.66,0]);
     G.push([box(.06,.22,.04),o.sapkaC,0,2.12,.3]);
@@ -165,7 +178,13 @@ function _insanGeo(o){
   }
   if(o.omuz){G.push([sph(.2,8,6),o.omuz,-.52,1.82,0,0,0,0,1,.7,1.1]);G.push([sph(.2,8,6),o.omuz,.52,1.82,0,0,0,0,1,.7,1.1]);}
   if(o.pelerin)G.push([box(.8,1.25,.05),o.pelerin,0,1.4,-.34,.1]);
-  if(o.tufekSirt){G.push([box(.07,.07,1.0),0x5a3a1a,.1,1.55,-.36,.5,0,0]);}
+  if(o.tufekSirt){
+    G.push([box(.09,.2,.62),0x5a3a1a,.16,1.2,-.38,.0,0,.62]);                       // dipçik (sağ kalça arkası)
+    G.push([cyl(.025,.025,1.25,6),0x6b6b72,-.12,1.85,-.4,0,0,.62]);                 // namlu (sol omuz üstüne uzanır)
+    G.push([box(.07,.07,.5),0x4a2c12,.0,1.62,-.38,0,0,.62]);                        // gövde
+    G.push([box(.07,.9,.03),0x3a2410,0,1.5,.39,0,0,.65]);                           // göğüsten geçen kayış
+    G.push([box(.08,.08,.04),0xD4A82A,.18,1.3,.41]);                                // kayış tokası
+  }
   if(o.taç)G.push([_g('ConeGeometry',.26,.3,6),0xFFD700,0,2.8,0]);
   const govde=_birles(G);
   const bc=[[cyl(.2,.15,.55,8),o.sal,0,-.28,0],[cyl(.12,.11,.34,8),o.sal2||o.sal,0,-.62,0],[cyl(.15,.15,.12,8),o.bot,0,-.72,0],[box(.27,.18,.42),o.bot,0,-.82,.06],[box(.25,.1,.16),0x1a0e04,0,-.86,.22],[box(.29,.04,.44),0x1a0e04,0,-.92,.06]];
@@ -188,9 +207,12 @@ function _insanYap(o,s){
   const ks=_pivot(ic,-.5,1.74,0),kg=_pivot(ic,.5,1.74,0);ks.add(_parca(gm.kolSol));kg.add(_parca(gm.kolSag));
   kg.rotation.x=-.35;
   if(o.adliBicak){   // oyuncunun silah rengi (kılıç/tüfek/…) seçime göre değişir: kendi malzemesi
-    const bl=new THREE.Mesh(_g('BoxGeometry',.09,1.15,.03),new THREE.MeshLambertMaterial({color:0xD0D0D0}));bl.name='wpn';bl.position.set(0,.05,.0);bl.rotation.z=0;kg.add(bl);
-    const tip=new THREE.Mesh(_g('BoxGeometry',.06,.2,.03),new THREE.MeshLambertMaterial({color:0xD0D0D0}));tip.position.set(.07,.55,0);tip.rotation.z=-.5;bl.add(tip);
-    tip.name='wpn2';
+    const celik=new THREE.MeshLambertMaterial({color:0xC9CED8});
+    const bl=new THREE.Mesh(_g('BoxGeometry',.075,.95,.025),celik);bl.name='wpn';bl.position.set(0,-.05,.06);bl.rotation.x=-.12;kg.add(bl);
+    const tip=new THREE.Mesh(_g('BoxGeometry',.06,.2,.025),celik);tip.position.set(.04,.55,0);tip.rotation.z=-.4;bl.add(tip);tip.name='wpn2';
+    const kor=new THREE.Mesh(_g('BoxGeometry',.1,.012,.012),new THREE.MeshLambertMaterial({color:0x8a9098}));kor.position.set(0,0,.016);bl.add(kor);
+    const kabze=new THREE.Mesh(_g('BoxGeometry',.07,.2,.07),new THREE.MeshLambertMaterial({color:0x4a2c12}));kabze.position.set(0,-.58,.04);kg.add(kabze);
+    const siper=new THREE.Mesh(_g('BoxGeometry',.24,.04,.07),new THREE.MeshLambertMaterial({color:0xD4A82A}));siper.position.set(0,-.46,.06);kg.add(siper);
   }
   ic.scale.setScalar(s);
   g.userData.govde=gv;g.userData.anim={tip:'insan',bs:bs,bg:bg,ks:ks,kg:kg,govde:ic,s:s};

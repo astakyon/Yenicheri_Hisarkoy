@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.52">
+<meta name="game-version" content="v1.53">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.52</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.53</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -371,6 +371,89 @@ canvas{display:block;position:absolute;top:0;left:0;}
 .camB.pr{background:rgba(90,60,10,.9);}
 .maImg{width:34px;height:34px;object-fit:contain;display:block;margin:0 auto;}
 .maBoy{font-size:9px;opacity:.6;text-align:center;}
+
+/* ═══════════════════════════════════════════════════════════
+   v1.53 — AAA ARAYÜZ (ölçek --ui: telefonda ≥1.12, bilgisayarda 1.5–1.8; JS uiOlcekle)
+   ═══════════════════════════════════════════════════════════ */
+:root{--ui:1.4;--uiP:1.2;--uiT:1.15;--altin:#E8C060;--altinK:#8B6914;--koyu:#0b0704;}
+
+/* ── ANA MENÜ ── */
+#frameDiv,#lanWrap,#mDeco{display:none;}
+#menuBg{filter:saturate(1.1) contrast(1.05);}
+#menuLayer::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse 120% 100% at 70% 55%,transparent 45%,rgba(0,0,0,.65) 100%),linear-gradient(90deg,rgba(4,2,0,.78) 0%,rgba(4,2,0,.35) 38%,transparent 62%);}
+#heroCv{position:absolute;left:auto;top:auto;right:2vw;bottom:0;width:min(46vw,760px);height:96%;pointer-events:none;z-index:1;}
+#mTitleWrap{top:7vh;left:6vw;right:auto;text-align:left;padding:0;z-index:3;}
+#mEyebrow{display:flex;align-items:center;gap:12px;margin-bottom:1.2vh;}
+#mEyebrow .ml{display:block;width:clamp(30px,5vw,70px);height:2px;background:linear-gradient(90deg,#FFD24A,transparent);}
+#mSub{color:#E8C060;font-size:clamp(10px,1.6vh,14px);letter-spacing:.38em;text-shadow:0 1px 4px #000;}
+#mTitle{display:flex;flex-direction:column;align-items:flex-start;gap:0;font-family:'Cinzel Decorative',serif;line-height:1;text-shadow:none;}
+#mTitle .t1{font-size:clamp(36px,calc(8.4vh + 2vw),112px);letter-spacing:.03em;background:linear-gradient(180deg,#FFF3C4 0%,#FFD24A 38%,#C8841C 72%,#7a4a0c 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 10px rgba(0,0,0,.85)) drop-shadow(0 0 26px rgba(255,170,30,.30));}
+#mTitle .t2{font-family:'Cinzel',serif;font-size:clamp(13px,calc(2.7vh + .5vw),34px);letter-spacing:.3em;color:#F5E3B8;margin-top:.7vh;text-shadow:0 2px 8px #000,0 0 18px rgba(255,170,30,.25);}
+#mVer{margin-top:1.2vh;font-size:clamp(9px,1.3vh,12px);color:rgba(232,192,96,.55);letter-spacing:.25em;}
+#mBtns{left:6vw;top:auto;bottom:11vh;transform:none;width:min(420px,46vw);gap:clamp(4px,.8vh,9px);z-index:3;}
+#mBtns .mBtn{background:linear-gradient(90deg,rgba(24,13,4,.9),rgba(24,13,4,.45) 72%,transparent);border:none;border-left:3px solid #6a4c14;border-radius:0;text-align:left;padding:clamp(8px,1.9vh,17px) 20px;font-size:clamp(12px,2.2vh,19px);letter-spacing:.2em;color:#E8D5A8;box-shadow:none;transition:padding-left .18s,background .18s,border-color .18s,color .18s;position:relative;overflow:hidden;}
+#mBtns .mBtn::after{content:'';position:absolute;left:0;bottom:0;height:1px;width:100%;background:linear-gradient(90deg,rgba(232,192,96,.5),transparent 80%);}
+#mBtns .mBtn:hover,#mBtns .mBtn:focus-visible,#mBtns .mBtn:active{border-left-color:#FFD24A;background:linear-gradient(90deg,rgba(170,112,20,.85),rgba(80,50,10,.5) 72%,transparent);padding-left:30px;color:#FFF3C8;box-shadow:none;}
+#mBtns .mBtn:first-child{border-left-color:#FFD24A;background:linear-gradient(90deg,rgba(170,112,20,.9),rgba(90,55,10,.5) 75%,transparent);font-size:clamp(14px,2.7vh,24px);color:#FFF3C8;padding-top:clamp(10px,2.4vh,22px);padding-bottom:clamp(10px,2.4vh,22px);}
+#mIcos{left:auto;right:4vw;bottom:5vh;gap:clamp(18px,3vw,40px);justify-content:flex-end;z-index:3;}
+.mIco span{font-size:clamp(22px,3.4vh,32px);}.mIco p{font-size:clamp(9px,1.4vh,12px);}
+@media (max-height:520px){#mTitleWrap{top:4vh;}#mBtns{bottom:7vh;}#heroCv{height:100%;}}
+@media (max-width:700px) and (orientation:portrait){#heroCv{opacity:.55;right:-10vw;width:90vw;}#mBtns{width:88vw;}}
+
+/* ── ÜST BAR ── */
+#topBar{height:calc(40px*var(--ui));background:linear-gradient(180deg,rgba(6,3,0,.92),rgba(6,3,0,.55) 65%,transparent);border-bottom:none;padding:0 calc(14px*var(--ui));}
+#topBarLeft{width:calc(60px*var(--ui));}
+#mapIndicator{font-size:calc(14px*var(--ui));letter-spacing:.22em;text-transform:uppercase;text-shadow:0 2px 8px #000;}
+#topBarRight{gap:calc(10px*var(--ui));}
+#mainGoldRow{font-size:calc(15px*var(--ui));background:rgba(0,0,0,.5);border:1.5px solid rgba(232,192,96,.55);border-radius:30px;padding:calc(3px*var(--ui)) calc(14px*var(--ui));}
+#pauseBtn2{width:calc(34px*var(--ui));height:calc(34px*var(--ui));border-radius:50%;font-size:calc(13px*var(--ui));background:rgba(0,0,0,.55);border:2px solid #E8C060;}
+#poolRow{top:calc(44px*var(--ui));font-size:calc(11px*var(--ui));padding:3px 14px;}
+
+/* ── KARAKTER PANELİ ── */
+#topLeftHud{top:calc(46px*var(--ui));left:calc(12px*var(--ui));max-width:none;gap:calc(8px*var(--ui));}
+#topHudRow1{gap:calc(10px*var(--ui));align-items:flex-start;}
+#port{width:calc(66px*var(--ui));height:calc(66px*var(--ui));border-radius:50%;border:3px solid #E8C060;box-shadow:0 0 0 2px #3a2208,0 5px 16px rgba(0,0,0,.75),inset 0 0 14px rgba(0,0,0,.7);background:radial-gradient(circle at 35% 28%,#7a3412,#1c0a02);font-size:calc(30px*var(--ui));z-index:2;}
+#topHudInfo{background:linear-gradient(90deg,rgba(8,4,0,.86),rgba(8,4,0,.5) 80%,rgba(8,4,0,.15));border:none;border-left:3px solid #E8C060;border-radius:0 10px 10px 0;padding:calc(6px*var(--ui)) calc(14px*var(--ui)) calc(8px*var(--ui)) calc(12px*var(--ui));min-width:calc(250px*var(--ui));margin-left:calc(-16px*var(--ui));padding-left:calc(22px*var(--ui));}
+#cname{font-size:calc(13px*var(--ui));letter-spacing:.14em;margin-bottom:calc(4px*var(--ui));text-shadow:0 1px 4px #000;}
+#cnameLevel{font-size:calc(12px*var(--ui));color:#7fc3ff;}
+#topHudBars{gap:calc(4px*var(--ui));}
+.br{position:relative;gap:0;}
+.bo{flex:1;height:calc(20px*var(--ui));border:1.5px solid #6a4a14;border-radius:4px;background:rgba(0,0,0,.7);box-shadow:inset 0 2px 5px rgba(0,0,0,.7);}
+#bEN .bo{height:calc(14px*var(--ui));}
+#bXP .bo{height:calc(11px*var(--ui));}
+.bf{position:relative;border-radius:2px;transition:width .15s;}
+.bf::after{content:'';position:absolute;left:0;right:0;top:0;height:42%;background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0));}
+#bHP .bf{background:linear-gradient(180deg,#ff6a5a,#c0281c 55%,#7a1010);}
+#bEN .bf{background:linear-gradient(180deg,#ffd35a,#e8920c 55%,#8a5400);}
+#bXP .bf{background:linear-gradient(180deg,#7fd0ff,#2a8ae0 55%,#14407a);}
+.bl{position:absolute;left:calc(9px*var(--ui));top:50%;transform:translateY(-50%);z-index:2;width:auto;font-size:calc(9.5px*var(--ui));font-weight:700;letter-spacing:.12em;color:#fff;text-shadow:0 1px 3px #000,0 0 4px #000;}
+#bXP .bl{display:none;}
+.bv{position:absolute;right:calc(9px*var(--ui));top:50%;transform:translateY(-50%);z-index:2;min-width:0;font-size:calc(12px*var(--ui));font-weight:700;color:#fff;text-shadow:0 1px 3px #000,0 0 4px #000;}
+#bEN .bv{font-size:calc(10px*var(--ui));}
+#bXP .bv{font-size:calc(8.5px*var(--ui));right:calc(6px*var(--ui));}
+#gorevB{font-size:calc(12.5px*var(--ui));letter-spacing:.04em;padding:calc(7px*var(--ui)) calc(14px*var(--ui));background:linear-gradient(90deg,rgba(8,4,0,.86),rgba(8,4,0,.45));border:none;border-left:3px solid #E8C060;border-radius:0 8px 8px 0;max-width:calc(380px*var(--ui));text-shadow:0 1px 3px #000;}
+#lootFd{top:calc(150px*var(--ui));left:calc(12px*var(--ui));font-size:calc(12px*var(--ui));gap:calc(4px*var(--ui));}
+
+/* ── MİNİ HARİTA ── */
+#mmBox{top:calc(46px*var(--ui));right:calc(14px*var(--ui));width:calc(122px*var(--ui));height:calc(122px*var(--ui));border-radius:50%;border:3px solid #E8C060;box-shadow:0 0 0 2px #3a2208,0 6px 18px rgba(0,0,0,.75),inset 0 0 18px rgba(0,0,0,.8);}
+#mmBox canvas{width:100%;height:100%;}
+#camBtns{top:calc(52px*var(--ui));right:calc(146px*var(--ui));gap:calc(8px*var(--ui));flex-direction:row;width:auto;}
+.camB{width:calc(40px*var(--ui));height:calc(40px*var(--ui));font-size:calc(21px*var(--ui));border:2px solid #E8C060;background:rgba(6,3,0,.8);}
+
+/* ── DUYURULAR ── */
+#wvAnn{top:calc(62px*var(--ui));font-size:calc(15px*var(--ui));letter-spacing:.14em;padding:calc(7px*var(--ui)) calc(22px*var(--ui));border:none;border-top:2px solid #E8C060;border-bottom:2px solid #E8C060;background:linear-gradient(90deg,transparent,rgba(8,4,0,.9) 20%,rgba(8,4,0,.9) 80%,transparent);}
+#intH{font-size:calc(15px*var(--ui));padding:calc(7px*var(--ui)) calc(20px*var(--ui));border:1.5px solid #E8C060;border-radius:6px;background:rgba(6,3,0,.9);bottom:calc(210px*var(--uiT));}
+#pwrL{font-size:calc(11px*var(--ui));}
+
+/* ── DOKUNMATİK / EYLEM DÜĞMELERİ ── */
+#actionCluster{transform:scale(var(--uiT));transform-origin:100% 100%;}
+.abBtn,#runBtn,#wepSel,.wfOpt{border-width:2.5px;}
+
+/* ── PANELLER (ayarlar, bölümler, bölge menüsü, duraklat…): okunur boyut ── */
+.panel{zoom:var(--uiP);border-color:#C8A030;box-shadow:0 12px 40px rgba(0,0,0,.7),inset 0 0 30px rgba(0,0,0,.5);}
+.toggleLabel{font-size:12px;}
+.toggleSub{font-size:10px;}
+.panSub{font-size:10px;}
 </style>
 </head>
 <body>
@@ -380,7 +463,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
   <!-- ── ANA MENÜ ── -->
   <div id="menuLayer">
     <div id="menuBg"></div>
-    <canvas id="starCv"></canvas><canvas id="silCv"></canvas>
+    <canvas id="starCv"></canvas><canvas id="silCv"></canvas><canvas id="heroCv"></canvas>
     <div id="lanWrap"><canvas id="lanCv" width="66" height="106"></canvas></div>
     <div id="frameDiv">
       <div style="position:absolute;inset:0;border:10px solid #4a2c16;box-shadow:inset 0 0 0 2px #9a6a22,inset 0 0 26px rgba(0,0,0,.75),0 0 0 1px #20110a;pointer-events:none;"></div>
@@ -393,9 +476,9 @@ canvas{display:block;position:absolute;top:0;left:0;}
       <div class="rivet" style="bottom:-1px;left:-1px;"></div><div class="rivet" style="bottom:-1px;right:-1px;"></div>
     </div>
     <div id="mTitleWrap">
-      <div id="mTitle"><svg class="mOrn" viewBox="0 0 48 44" aria-hidden="true"><defs><mask id="mCres"><rect width="48" height="44" fill="#fff"/><circle cx="31" cy="22" r="14.5" fill="#000"/></mask></defs><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg><span class="mTx"><span>YENİÇERİ:</span> <span>HİSARKÖY MUHAFIZI</span></span><svg class="mOrn r" viewBox="0 0 48 44" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg></div>
-      <div id="mDeco"><div class="ml"></div><div id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</div><div class="ml"></div></div>
-      <div id="mVer">v1.52</div>
+      <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
+      <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
+      <div id="mVer">v1.53</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
@@ -514,7 +597,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <!-- SAĞ: Mini-harita (üst bar altında, bağımsız küçük kutu) -->
     <div id="camBtns"><div class="camB" data-d="-1">⟲</div><div class="camB" data-d="1">⟳</div></div>
     <div id="mmBox" onclick="openBigMap()">
-      <canvas id="mmCv" width="84" height="84"></canvas>
+      <canvas id="mmCv" width="168" height="168"></canvas>
     </div>
 
     <div id="wvAnn"></div>
@@ -796,7 +879,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.52';
+const VERSION='v1.53';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -1831,6 +1914,43 @@ function drawMenu(){
   lanX.fillStyle='#6B3A08';lanX.beginPath();lanX.ellipse(33,90,11,3.5,0,0,Math.PI*2);lanX.fill();
 }
 
+
+
+// ── Arayüz ölçeği: ekran yüksekliğine göre (telefon ≥1.12, bilgisayar 1.5–1.8) ──
+function uiOlcekle(){
+  const h=window.innerHeight,w=window.innerWidth,r=document.documentElement.style;
+  // yatay: yüksekliğe göre (telefon ≥1.12, PC ≤1.8); dikey telefon: genişliğe göre, HUD sığsın
+  const u=w>=h?Math.max(1.12,Math.min(1.8,h/470)):Math.max(.8,Math.min(1.4,w/560));
+  r.setProperty('--ui',u.toFixed(3));
+  r.setProperty('--uiP',Math.max(1,Math.min(1.4,h/520)).toFixed(3));   // paneller (zoom)
+  r.setProperty('--uiT',Math.max(1,Math.min(1.35,u*.85)).toFixed(3));  // dokunmatik düğmeler
+}
+window.addEventListener('resize',uiOlcekle);uiOlcekle();
+
+// ── Menü kahramanı: model kütüphanesindeki yeniçeri, yavaşça dönen sahnede ──
+const HERO={r:null,s:null,c:null,g:null,t:0,w:0,h:0};
+function menuKahramanCiz(){
+  const cv=document.getElementById('heroCv');if(!cv||typeof THREE==='undefined'||typeof modelYap!=='function')return;
+  if(!HERO.r){
+    try{HERO.r=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});}catch(e){HERO.r=false;return;}
+    HERO.r.setClearColor(0,0);HERO.r.shadowMap.enabled=false;
+    HERO.s=new THREE.Scene();
+    HERO.s.add(new THREE.AmbientLight(0xffe2c0,.9));
+    const key=new THREE.DirectionalLight(0xffc880,2.2);key.position.set(-4,6,5);HERO.s.add(key);
+    const rim=new THREE.DirectionalLight(0x6a8cff,1.4);rim.position.set(5,3,-4);HERO.s.add(rim);
+    HERO.c=new THREE.PerspectiveCamera(28,1,.1,50);
+    HERO.g=modelYap('yeniceri');HERO.s.add(HERO.g);
+    const zem=new THREE.Mesh(new THREE.CircleGeometry(1.6,40),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.35}));zem.rotation.x=-Math.PI/2;zem.position.y=.01;HERO.s.add(zem);
+  }
+  if(HERO.r===false)return;
+  const w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;
+  if(w!==HERO.w||h!==HERO.h){HERO.w=w;HERO.h=h;HERO.r.setPixelRatio(Math.min(2,window.devicePixelRatio||1));HERO.r.setSize(w,h,false);HERO.c.aspect=w/h;HERO.c.updateProjectionMatrix();}
+  HERO.t+=.016;
+  HERO.g.rotation.y=-.5+Math.sin(HERO.t*.5)*.45;
+  modelAnim(HERO.g,0,0,0,0);
+  HERO.c.position.set(0,1.9,7.2);HERO.c.lookAt(0,1.55,0);
+  HERO.r.render(HERO.s,HERO.c);
+}
 // ═══════════════════════════════════════════════════════
 // OYUN STATE
 // ═══════════════════════════════════════════════════════
@@ -1873,10 +1993,13 @@ function modelTanimla(id,tanim){
 function modelHpCubuk(id){
   const t=MODEL_KAYIT.harita[id];
   const b=(t&&t.bar)||{w:1.1,y:2.9,renk:0x22cc55};
-  const bg=new THREE.Mesh(new THREE.PlaneGeometry(b.w,.14),new THREE.MeshBasicMaterial({color:0x330000,side:THREE.DoubleSide,depthTest:false}));
-  bg.position.set(0,b.y,0);
-  const fl=new THREE.Mesh(new THREE.PlaneGeometry(b.w,.14),new THREE.MeshBasicMaterial({color:b.renk,side:THREE.DoubleSide,depthTest:false}));
-  fl.position.set(0,b.y,.01);
+  const w=b.w*1.45,h=.3;                                              // telefonda da okunsun diye büyük
+  const bg=new THREE.Mesh(new THREE.PlaneGeometry(w+.1,h+.1),new THREE.MeshBasicMaterial({color:0x120804,side:THREE.DoubleSide,depthTest:false}));
+  bg.position.set(0,b.y+.1,0);bg.renderOrder=20;
+  const ic=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:0x4a0e0e,side:THREE.DoubleSide,depthTest:false}));
+  ic.position.z=.004;ic.renderOrder=21;bg.add(ic);
+  const fl=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:b.renk,side:THREE.DoubleSide,depthTest:false}));
+  fl.position.z=.008;fl.renderOrder=22;bg.add(fl);                     // dolgu çerçevenin çocuğu: kamera dönse de hizalı kalır
   return {bg:bg,fl:fl};
 }
 
@@ -1892,7 +2015,7 @@ function modelYap(id,opsiyon){
   else{g=t.yap(opsiyon||{});g.userData.kaynak='kod';}
   if(t.boy0&&t.boy&&Math.abs(t.boy/t.boy0-1)>.001&&g.userData.kaynak==='kod')g.scale.multiplyScalar(t.boy/t.boy0);
   if(!g.userData.govde){let ilk=null;g.traverse(function(o){if(!ilk&&o.isMesh&&o.material&&o.material.color)ilk=o;});g.userData.govde=ilk;}
-  if(opsiyon&&opsiyon.cubuk&&t.bar){const c=modelHpCubuk(id);g.add(c.bg);g.add(c.fl);g.userData.hpBg=c.bg;g.userData.hpFl=c.fl;}
+  if(opsiyon&&opsiyon.cubuk&&t.bar){const c=modelHpCubuk(id);g.add(c.bg);g.userData.hpBg=c.bg;g.userData.hpFl=c.fl;}
   return g;
 }
 
@@ -2006,8 +2129,18 @@ function _insanGeo(o){
   if(o.sakal)G.push([box(.3,.22,.1),o.sakal,0,1.95,.2,.2]);
   const sp=o.sapka;
   if(sp==='bork'){
-    G.push([cyl(.2,.3,.55),o.sapkaC,0,2.55,0]);G.push([cyl(.31,.31,.1),0xD4A82A,0,2.34,0]);
-    G.push([box(.2,.55,.07),o.sapkaC,0,2.36,-.32,.25]);G.push([box(.12,.12,.04),0xD4A82A,0,2.5,.31]);G.push([cyl(.035,.035,.22,5),0xC0C0C0,.05,2.5,.33,.35]);   // kaşıklık
+    const keçe=o.sapkaC||0xEFE6CE,altin=0xD4A82A;
+    G.push([cyl(.31,.33,.2,14),0xD8C9A0,0,2.33,0]);                                  // alt kıvrım (keçe pabuç)
+    G.push([cyl(.335,.335,.06,14),altin,0,2.43,0]);                                  // altın şerit
+    G.push([cyl(.22,.3,.52,14),keçe,0,2.7,-.02,-.05]);                               // gövde: yukarı daralan, hafif geriye yatık
+    G.push([sph(.23,12,8),keçe,0,2.98,-.06,0,0,0,1,.5,1]);                           // yuvarlak tepe
+    G.push([cyl(.17,.2,.14,12),0xD8C9A0,0,2.95,-.05,-.05]);                          // tepe kıvrımı
+    G.push([cyl(.09,.2,.9,8),keçe,0,2.2,-.36,.14,0,0,1,1,.38]);                      // sırta sarkan uzun kuyruk (yeniçeri börkü)
+    G.push([cyl(.215,.215,.05,12),altin,0,1.78,-.4,.14,0,0,1,.4,.45]);               // kuyruk ucu şeridi
+    G.push([box(.22,.28,.06),altin,0,2.42,.33]);                                     // kaşıklık yuvası (altın plaka)
+    G.push([box(.14,.2,.04),0x8a6a14,0,2.42,.365]);                                  // plaka kabartması
+    G.push([cyl(.025,.025,.3,6),0xC8C8CC,.05,2.66,.34,.18,0,-.12]);                  // kaşık sapı
+    G.push([sph(.065,8,6),0xC8C8CC,.075,2.84,.33,0,0,0,1,1.4,.5]);                   // kaşık yuvarlağı
   }else if(sp==='kask'){
     G.push([_g('SphereGeometry',.32,10,6,0,Math.PI*2,0,Math.PI/2),o.sapkaC,0,2.26,0]);G.push([_g('ConeGeometry',.05,.28,6),0xC0C0C0,0,2.66,0]);
     G.push([box(.06,.22,.04),o.sapkaC,0,2.12,.3]);
@@ -2019,7 +2152,13 @@ function _insanGeo(o){
   }
   if(o.omuz){G.push([sph(.2,8,6),o.omuz,-.52,1.82,0,0,0,0,1,.7,1.1]);G.push([sph(.2,8,6),o.omuz,.52,1.82,0,0,0,0,1,.7,1.1]);}
   if(o.pelerin)G.push([box(.8,1.25,.05),o.pelerin,0,1.4,-.34,.1]);
-  if(o.tufekSirt){G.push([box(.07,.07,1.0),0x5a3a1a,.1,1.55,-.36,.5,0,0]);}
+  if(o.tufekSirt){
+    G.push([box(.09,.2,.62),0x5a3a1a,.16,1.2,-.38,.0,0,.62]);                       // dipçik (sağ kalça arkası)
+    G.push([cyl(.025,.025,1.25,6),0x6b6b72,-.12,1.85,-.4,0,0,.62]);                 // namlu (sol omuz üstüne uzanır)
+    G.push([box(.07,.07,.5),0x4a2c12,.0,1.62,-.38,0,0,.62]);                        // gövde
+    G.push([box(.07,.9,.03),0x3a2410,0,1.5,.39,0,0,.65]);                           // göğüsten geçen kayış
+    G.push([box(.08,.08,.04),0xD4A82A,.18,1.3,.41]);                                // kayış tokası
+  }
   if(o.taç)G.push([_g('ConeGeometry',.26,.3,6),0xFFD700,0,2.8,0]);
   const govde=_birles(G);
   const bc=[[cyl(.2,.15,.55,8),o.sal,0,-.28,0],[cyl(.12,.11,.34,8),o.sal2||o.sal,0,-.62,0],[cyl(.15,.15,.12,8),o.bot,0,-.72,0],[box(.27,.18,.42),o.bot,0,-.82,.06],[box(.25,.1,.16),0x1a0e04,0,-.86,.22],[box(.29,.04,.44),0x1a0e04,0,-.92,.06]];
@@ -2042,9 +2181,12 @@ function _insanYap(o,s){
   const ks=_pivot(ic,-.5,1.74,0),kg=_pivot(ic,.5,1.74,0);ks.add(_parca(gm.kolSol));kg.add(_parca(gm.kolSag));
   kg.rotation.x=-.35;
   if(o.adliBicak){   // oyuncunun silah rengi (kılıç/tüfek/…) seçime göre değişir: kendi malzemesi
-    const bl=new THREE.Mesh(_g('BoxGeometry',.09,1.15,.03),new THREE.MeshLambertMaterial({color:0xD0D0D0}));bl.name='wpn';bl.position.set(0,.05,.0);bl.rotation.z=0;kg.add(bl);
-    const tip=new THREE.Mesh(_g('BoxGeometry',.06,.2,.03),new THREE.MeshLambertMaterial({color:0xD0D0D0}));tip.position.set(.07,.55,0);tip.rotation.z=-.5;bl.add(tip);
-    tip.name='wpn2';
+    const celik=new THREE.MeshLambertMaterial({color:0xC9CED8});
+    const bl=new THREE.Mesh(_g('BoxGeometry',.075,.95,.025),celik);bl.name='wpn';bl.position.set(0,-.05,.06);bl.rotation.x=-.12;kg.add(bl);
+    const tip=new THREE.Mesh(_g('BoxGeometry',.06,.2,.025),celik);tip.position.set(.04,.55,0);tip.rotation.z=-.4;bl.add(tip);tip.name='wpn2';
+    const kor=new THREE.Mesh(_g('BoxGeometry',.1,.012,.012),new THREE.MeshLambertMaterial({color:0x8a9098}));kor.position.set(0,0,.016);bl.add(kor);
+    const kabze=new THREE.Mesh(_g('BoxGeometry',.07,.2,.07),new THREE.MeshLambertMaterial({color:0x4a2c12}));kabze.position.set(0,-.58,.04);kg.add(kabze);
+    const siper=new THREE.Mesh(_g('BoxGeometry',.24,.04,.07),new THREE.MeshLambertMaterial({color:0xD4A82A}));siper.position.set(0,-.46,.06);kg.add(siper);
   }
   ic.scale.setScalar(s);
   g.userData.govde=gv;g.userData.anim={tip:'insan',bs:bs,bg:bg,ks:ks,kg:kg,govde:ic,s:s};
@@ -2367,6 +2509,21 @@ function _yapiLevha(o){
   return _ybitir();
 }
 
+// ── Sur kapısı: iki burç, lento, kanatlar (o.demir: demir kaplı kanat) ──
+function _yapiKapiSur(o){
+  const w=o.w||6,h=o.h||6,dm=!!o.demir,tas=0xC8A870,koyu=0x9a8050;
+  [-1,1].forEach(function(sg){
+    const x=sg*(w/2+2.2);_yk(3.6,h+3,3.2,tas,x,(h+3)/2,0);_yk(4,.4,3.6,koyu,x,h+3.2,0);
+    for(let i=0;i<3;i++)_yk(.9,.7,.7,tas,x-1.2+i*1.2,h+3.75,-1.3);
+    _yk(.5,1.2,.1,0x120c06,x,h*.7,1.65);
+  });
+  _yk(w+1,2.2,3,tas,0,h+1.9,0);_yk(w+1.4,.35,3.4,koyu,0,h+3.1,0);                  // lento
+  _yk(w,h,.5,dm?0x2a2a30:0x5a3a1a,0,h/2,.2);                                         // kapı kanatları
+  for(let i=0;i<4;i++)_yk(w,.18,.58,dm?0x6a6a74:0x2a1c10,0,.9+i*1.4,.2);              // bantlar
+  _yk(.12,h,.6,0x1a1a1a,0,h/2,.2);_ysil(.18,.18,.2,0xD4A82A,-.5,h*.45,.55,8);_ysil(.18,.18,.2,0xD4A82A,.5,h*.45,.55,8);
+  return _ybitir();
+}
+
 const _YD=[
   ['yapi_ev','Konut evi (cumbalı)',_yapiEv,{w:6,d:5},5.6],['yapi_kisla','Kışla / cebehane binası',_yapiKisla,{w:12,d:9},8.2],
   ['yapi_cami','Cami (kubbe ve minare)',_yapiCami,{w:9,d:9},15],['yapi_hamam','Sultan Hamamı',_yapiHamam,{w:16,d:16},9],
@@ -2374,7 +2531,7 @@ const _YD=[
   ['yapi_kule','Gözetleme kulesi',_yapiKule,{r:2.2,h:9},13],['yapi_sur','Sur parçası',_yapiSur,{w:10},6],['yapi_cit','Tahta çit',_yapiCit,{w:6},1.5],
   ['yapi_talim','Talim kuklası',_yapiMasa,{},3],
   ['cevre_agac','Meşe ağacı',_yapiAgac,{h:5},6],['cevre_cam','Çam ağacı',_yapiCam,{h:6.5},6.5],['cevre_kaya','Kaya',_yapiKaya,{s:1.2},1.7],
-  ['zemin_tas','Taş döşeme zemin',_yapiZemin,{n:12,adim:5,kare:4.6},.1],['zemin_sokak','Cadde',_yapiSokak,{w:7,L:90},.2],['cevre_levha','Levha',_yapiLevha,{w:4,h:.8},.9],['cevre_cadir','Çadır',_yapiCadir,{r:2.2},4.4],['cevre_magara','Mağara',_yapiMagara,{w:10,d:12,h:7},7],['cevre_destek','Maden desteği',_yapiDestek,{w:18,h:7},7],['cevre_nehir','Akarsu',_yapiNehir,{L:96,w:6},.5],['cevre_mesale','Meşale',_yapiMesale,{},3.2],['cevre_varil','Varil',_yapiVaril,{},1],['cevre_sandik','Sandık',_yapiSandik,{},.75]
+  ['yapi_kapi','Sur kapısı',_yapiKapiSur,{w:6,h:6},9.5],['zemin_tas','Taş döşeme zemin',_yapiZemin,{n:12,adim:5,kare:4.6},.1],['zemin_sokak','Cadde',_yapiSokak,{w:7,L:90},.2],['cevre_levha','Levha',_yapiLevha,{w:4,h:.8},.9],['cevre_cadir','Çadır',_yapiCadir,{r:2.2},4.4],['cevre_magara','Mağara',_yapiMagara,{w:10,d:12,h:7},7],['cevre_destek','Maden desteği',_yapiDestek,{w:18,h:7},7],['cevre_nehir','Akarsu',_yapiNehir,{L:96,w:6},.5],['cevre_mesale','Meşale',_yapiMesale,{},3.2],['cevre_varil','Varil',_yapiVaril,{},1],['cevre_sandik','Sandık',_yapiSandik,{},.75]
 ];
 _YD.forEach(function(d){
   modelTanimla(d[0],{ad:d[1],grup:d[0].indexOf('yapi_')===0?'Yapı':(d[0].indexOf('zemin_')===0?'Zemin':'Çevre'),boy:d[4],varsayilan:d[3],yap:function(op){return d[2](Object.assign({},d[3],op||{}));}});
@@ -2572,7 +2729,7 @@ function kutuphaneCiz(){
     // yürüme denemesi: hafif sıçrama ve sallanma; vuruş denemesi: gövde kırmızıya döner
     modelAnim(g,KUT.zaman*8,KUT.yuru?1:0,KUT.atak>0?1-KUT.atak/40:0,KUT.vurus>0?KUT.vurus/18:0);if(KUT.atak>0)KUT.atak--;   // kod modellerinde uzuvlar sallanır
     if(KUT.vurus>0){KUT.vurus--;modelVurus(g.userData.govde,true);if(KUT.vurus===0)modelVurus(g.userData.govde,false,KUT.govdeRenk);}
-    if(g.userData.hpBg){g.userData.hpBg.lookAt(KUT.kam.position);g.userData.hpFl.lookAt(KUT.kam.position);}
+    if(g.userData.hpBg){g.userData.hpBg.lookAt(KUT.kam.position);}
   }
   KUT.kam.position.set(Math.sin(KUT.aci)*KUT.mesafe,KUT.hedefY+KUT.mesafe*.28,Math.cos(KUT.aci)*KUT.mesafe);
   KUT.kam.lookAt(0,KUT.hedefY,0);
@@ -3066,9 +3223,9 @@ function clientCiz(v){
     const dd=Math.sqrt(dx*dx+dz*dz);g.userData.faz=(g.userData.faz||o.id)+dd*3.2;
     g.position.set(o.x,0,o.z);modelAnim(g,g.userData.faz,Math.min(1.6,dd/.06),0,0);
     if(g.userData.hpFl){
-      const f=Math.max(.001,o.hp/o.mh),w=((MODEL_KAYIT.harita[modelKimligi(o.k,o.b)]||{}).bar||{w:1}).w;
+      const f=Math.max(.001,o.hp/o.mh),w=g.userData.hpFl.geometry.parameters.width;
       g.userData.hpFl.scale.x=f;g.userData.hpFl.position.x=(f-1)*w/2;
-      g.userData.hpBg.lookAt(CAM.position);g.userData.hpFl.lookAt(CAM.position);
+      g.userData.hpBg.lookAt(CAM.position);
     }
   });
   hayaletEsitle(H.b,v.b,function(){const g=modelYap('mermi_tufek');g.userData.y=1.1;return g;},function(g,o){g.position.set(o.x,1.1,o.z);});
@@ -3864,7 +4021,7 @@ function initThree(){
   cv.width=W;cv.height=H;
   REN=new THREE.WebGLRenderer({antialias:true,canvas:cv});
   REN.setSize(W,H);REN.shadowMap.enabled=true;REN.shadowMap.type=THREE.PCFSoftShadowMap;
-  REN.toneMapping=THREE.ACESFilmicToneMapping;REN.toneMappingExposure=1.6;
+  REN.toneMapping=THREE.ACESFilmicToneMapping;REN.toneMappingExposure=1.15;
   CLK=new THREE.Clock();RC=new THREE.Raycaster();GP=new THREE.Plane(new THREE.Vector3(0,1,0),0);
   window.addEventListener('resize',()=>{const W2=window.innerWidth,H2=window.innerHeight;REN.setSize(W2,H2);CAM.aspect=W2/H2;CAM.updateProjectionMatrix();});
   const cv3=document.getElementById('c3d');
@@ -4686,19 +4843,23 @@ function bx(x,y,z,w,h,d,col,edgeCol,solid){
 // Sol yarı = Yeniçeri Kışlası, Orta = Cadde, Sağ yarı = Sivil alan
 // Kapı (dx,dz) = binadan biraz önde, etkileşim noktası
 const ZONES=[
-  // ── SOL YARI: KIŞLA ──
-  {id:'armory',   name:'⚔ Armory',         icon:'⚔', x:-19,z:-15, w:13,d:11, dx:-19,dz:-8,  desc:'Silah yükselt'},
-  {id:'camii',    name:'🕌 Orta Camii',     icon:'🕌', x:-5, z:-17, w:9, d:9,  dx:-5, dz:-11, desc:'Kaydet & buff'},
-  {id:'drill',    name:'⚡ Drill Ground',    icon:'⚡', x:-19,z:2,   w:17,d:15, dx:-19,dz:10,  desc:'Yetenek geliştir'},
-  {id:'cebehaneUst',name:'🛡 Cebehane',     icon:'🛡', x:-3, z:-2,  w:14,d:8,  dx:-3, dz:2,   desc:'Zırh & ekipman'},
-  {id:'cebehane', name:'🛡 Cebehane',       icon:'🛡', x:-3, z:8,   w:14,d:10, dx:-3, dz:13,  desc:'Zırh & ekipman'},
-  {id:'demirKapi',name:'🚪 Göreve Çık',     icon:'🚪', x:-13,z:24,  w:12,d:2,  dx:-13,dz:20,  desc:'Hisarköy Devriye'},
-  // ── SAĞ YARI: SİVİL ALAN ──
-  {id:'hamam',    name:'💧 Sultan Hamamı',  icon:'💧', x:13, z:-13, w:16,d:16, dx:13, dz:-3,  desc:'Can yenile & artır'},
-  {id:'kervansaray',name:'🏠 Kervansaray',  icon:'🏠', x:32, z:-15, w:25,d:14, dx:32, dz:-6,  desc:'Tüccar & harita'},
-  {id:'carsi',    name:'🛒 Çarşı Meydanı', icon:'🛒', x:13, z:8,   w:16,d:20, dx:13, dz:19,  desc:'Market'},
-  {id:'konut',    name:'🏘 Konut Bölgesi',  icon:'🏘', x:32, z:8,   w:25,d:10, dx:32, dz:14,  desc:null}, // dekoratif, kapısız
-  {id:'artisanKapi',name:'🚪 Artisan Kapı', icon:'🚪', x:23, z:24,  w:12,d:2,  dx:23, dz:20,  desc:'Yan çıkış'},
+  // Hisarköy yerleşimi (v1.53): 96×96 alan; ortada 11 birim genişliğinde cadde (x≈0), binalar arası en az 8 birim.
+  // x,z = bina merkezi; w,d = boyut; dx,dz = etkileşim noktası (kapının önü, güneyde).
+  // ── BATI SÜTUNU: KIŞLA ──
+  {id:'armory',   name:'⚔ Armory',         icon:'⚔', x:-28,z:-30, w:13,d:11, dx:-28,dz:-21,  desc:'Silah yükselt'},
+  {id:'cebehaneUst',name:'🛡 Cebehane',     icon:'🛡', x:-28,z:-10, w:14,d:8,  dx:-28,dz:-2,   desc:'Zırh & ekipman'},
+  {id:'cebehane', name:'🛡 Cebehane',       icon:'🛡', x:-28,z:6,   w:14,d:10, dx:-28,dz:14,   desc:'Zırh & ekipman'},
+  {id:'drill',    name:'⚡ Drill Ground',    icon:'⚡', x:-28,z:28,  w:17,d:15, dx:-17,dz:28,   desc:'Yetenek geliştir'},
+  // ── ORTA: CAMİ VE ÇARŞI ──
+  {id:'camii',    name:'🕌 Orta Camii',     icon:'🕌', x:0,  z:-32, w:9, d:9,  dx:0,  dz:-24,  desc:'Kaydet & buff'},
+  {id:'carsi',    name:'🛒 Çarşı Meydanı', icon:'🛒', x:0,  z:16,  w:20,d:26, dx:0,  dz:31,   desc:'Market'},
+  // ── DOĞU SÜTUNU: SİVİL ALAN ──
+  {id:'hamam',    name:'💧 Sultan Hamamı',  icon:'💧', x:28, z:-30, w:16,d:16, dx:28, dz:-18,  desc:'Can yenile & artır'},
+  {id:'kervansaray',name:'🏠 Kervansaray',  icon:'🏠', x:28, z:-8,  w:25,d:14, dx:28, dz:3,    desc:'Tüccar & harita'},
+  {id:'konut',    name:'🏘 Konut Bölgesi',  icon:'🏘', x:28, z:20,  w:25,d:10, dx:28, dz:27,   desc:null}, // dekoratif, kapısız
+  // ── KAPILAR (güney sur içinde) ──
+  {id:'demirKapi',name:'🚪 Göreve Çık',     icon:'🚪', x:-14,z:43,  w:12,d:3,  dx:-14,dz:39,   desc:'Hisarköy Devriye'},
+  {id:'artisanKapi',name:'🚪 Artisan Kapı', icon:'🚪', x:14, z:43,  w:12,d:3,  dx:14, dz:39,   desc:'Yan çıkış'},
 ];
 
 // Etkileşim için geçerli (kapısı olan) bölgeler
@@ -4724,8 +4885,8 @@ function buildKisla(){
   MAP_HALF=48; // Hisarköy genişlemiş harita yarı boyutu
 
   // Işıklar — gündüz, parlak
-  const sun=new THREE.DirectionalLight(0xFFF5E0,3.2);sun.position.set(10,30,8);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-55;sun.shadow.camera.right=55;sun.shadow.camera.top=55;sun.shadow.camera.bottom=-55;S3.add(sun);
-  S3.add(new THREE.AmbientLight(0xE8F4FF,1.5));S3.add(new THREE.HemisphereLight(0x87CEEB,0xC8B870,1.0));
+  const sun=new THREE.DirectionalLight(0xFFF5E0,2.0);sun.position.set(10,30,8);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-55;sun.shadow.camera.right=55;sun.shadow.camera.top=55;sun.shadow.camera.bottom=-55;S3.add(sun);
+  S3.add(new THREE.AmbientLight(0xE8F4FF,.75));S3.add(new THREE.HemisphereLight(0x87CEEB,0xC8B870,.6));
   const fill=new THREE.DirectionalLight(0xFFE8A0,.6);fill.position.set(-8,10,-5);S3.add(fill);
 
   // Zemin
@@ -4749,46 +4910,33 @@ function buildKisla(){
     for(let i=0;i<4;i++){const mg=new THREE.Mesh(new THREE.BoxGeometry(.8,1.2,.3),new THREE.MeshLambertMaterial({color:0x3a2800}));mg.position.set(-1.3+i*0.9,3.2,3.05);k.add(mg);}
   });
 
-  // ── ORTA CADDE (Street) — kışla ile sivil alanı ayıran yol ──
-  // Cadde alanı collider içermez (geçilebilir), sadece görsel
-  S3.add(modelYap('zemin_sokak',{w:7,L:90}));
+  // ── ORTA CADDE: kuzey-güney ana yol ──
+  S3.add(modelYap('zemin_sokak',{w:11,L:90}));
+  // Çarşı meydanının kaldırım taşı
+  const Z=function(id){return ZONES.find(zz=>zz.id===id);};
+  const meydan=modelYap('zemin_tas',{n:2,adim:5,kare:4.6,yuk:.05,y:.045,renk:0xB89858});meydan.position.set(0,0,16);S3.add(meydan);
 
-  // ═══════════ SOL YARI — YENİÇERİ KIŞLASI ═══════════
-  // Kışla alt-sur (sol yarıyı çevreler, cadde tarafı açık)
-  bx(-23.5,2.2,-23,1.5,4.4,46,0x9a8050,0x6B4A0C,false); // iç ayraç (görsel, geçilebilir değil ama ince)
+  // ═══════════ BATI SÜTUNU — YENİÇERİ KIŞLASI ═══════════
+  [['armory',0x8B6048],['cebehaneUst',0x4a3018],['cebehane',0x4a3018]].forEach(([id,col])=>{const q=Z(id);buildZoneBuilding(id,q.x,q.z,q.w,q.d,col,0x8B6914,'flat');});
+  { const q=Z('camii'); buildZoneBuilding('camii',q.x,q.z,q.w,q.d,0x303060,0x8B6914,'dome-minaret'); }
+  { const q=Z('drill'); buildDrillGroundZone(q.x,q.z,q.w,q.d); }
 
-  // Armory (sol üst köşe — blueprint'te "بصطني / Armory")
-  buildZoneBuilding('armory',-19,-15,13,11,0x8B6048,0x8B6914,'flat');
-  // Orta Camii (Armory sağında, blueprint'teki "Orta Camii" konumunda — sol yarının üst-orta kısmı)
-  buildZoneBuilding('camii',-5,-17,9,9,0x303060,0x8B6914,'dome-minaret');
-  // Drill Ground (sol alt — büyük açık talim alanı, blueprint'teki "Acemi Ocağı / Drill Ground")
-  buildDrillGroundZone(-19,2,17,15);
-  // Cebehane Üst (toplam alanı — blueprint'teki "توصل Cebehane")
-  buildZoneBuilding('cebehaneUst',-3,-2,14,8,0x4a3018,0x8B6914,'flat');
-  // Cebehane Alt (blueprint'teki "سرحقي Cebehane")
-  buildZoneBuilding('cebehane',-3,8,14,10,0x4a3018,0x8B6914,'flat');
+  // ═══════════ DOĞU SÜTUNU — SİVİL ALAN ═══════════
+  { const q=Z('hamam'); buildHamamBuilding(q.x,q.z,q.w,q.d); }
+  { const q=Z('kervansaray'); buildKervansarayBuilding(q.x,q.z,q.w,q.d); }
+  { const q=Z('carsi'); buildCarsiBuilding(q.x,q.z,q.w,q.d); }
+  { const q=Z('konut'); buildKonutBuilding(q.x,q.z,q.w,q.d); }
 
-  // Demir Kapı (güney — sol yarının çıkışı, blueprint'teki "Demir Kapı / الندين")
-  bx(-13,1.8,25,13,3.6,1,0x2a1400,0x8B0000,false);
-  const dkSign=modelYap('cevre_levha',{w:6,h:1,d:.2,renk:0x8B0000});dkSign.position.set(-13,4.4,24.9);S3.add(dkSign);
-  const dkLight=fenerLight(-13,4,23,0xFF6600,2,10);
-  torches.push({light:dkLight,phase:Math.random()*Math.PI*2});
+  // ═══════════ GÜNEY SUR KAPILARI ═══════════
+  [['demirKapi',true],['artisanKapi',false]].forEach(([id,demir])=>{
+    const q=Z(id);
+    const kp=yapiKoy('yapi_kapi',q.x,q.z,{w:6,h:6,demir:demir},[12,3]);
+    const lv=modelYap('cevre_levha',{w:6,h:1,d:.2,renk:demir?0x8B0000:0x5a3800});lv.position.set(q.x,7.6,q.z-1.6);S3.add(lv);
+    const dl=fenerLight(q.x,5,q.z-2,demir?0xFF6600:0xFFAA44,2,10);
+    torches.push({light:dl,phase:Math.random()*Math.PI*2});
+  });
 
-  // ═══════════ SAĞ YARI — SİVİL ALAN ═══════════
-  // Sultan Hamamı (sol üst, sivil alanın — blueprint'teki "مثارنة Sultan Hamamı")
-  buildHamamBuilding(13,-13,16,16);
-  // Kervansaray (sağ üst — blueprint'teki "امارهم نديمي Kervansaray")
-  buildKervansarayBuilding(32,-15,25,14);
-  // Çarşı Meydanı (sol alt — blueprint'teki "Çarşı Meydanı")
-  buildCarsiBuilding(13,8,16,20);
-  // Konut Bölgesi (sağ alt — dekoratif, kapısız)
-  buildKonutBuilding(32,8,25,10);
-
-  // Artisan Kapı (sağ yarının çıkışı — blueprint'teki "Artisan Kapı")
-  bx(23,1.8,25,13,3.6,1,0x2a1400,0x8B6914,false);
-  const akSign=modelYap('cevre_levha',{w:6,h:1,d:.2,renk:0x5a3800});akSign.position.set(23,4.4,24.9);S3.add(akSign);
-
-  // ── Etkileşim kapı işaretleri (tüm bölgeler için ortak ışık+levha) ──
+  // ── Etkileşim kapı işaretleri (tüm bölgeler için ortak ışık) ──
   ZONES.forEach(z=>{
     if(z.id==='demirKapi'||z.id==='artisanKapi')return;
     const zl=fenerLight(z.dx,3.5,z.dz,0xFFCC66,1.3,9);
@@ -4796,10 +4944,11 @@ function buildKisla(){
   });
 
   // ── NPC yeniçeriler ──
+  // Her bölgenin kapısının yanında bir görevli; kapılarda nöbetçi; çarşıda satıcılar
   const npcDefs=[
-    {x:-19,z:-7,col:0x1a3060},{x:-3,z:5,col:0x602010},{x:13,z:-3,col:0x106020},
-    {x:-5,z:-11,col:0x303060},{x:32,z:-6,col:0x4a2000},{x:13,z:19,col:0x2a4010},
-    {x:-13,z:18,col:0x1a3060},{x:32,z:14,col:0x602010}
+    {x:-25,z:-20,col:0x1a3060},{x:-25,z:-1,col:0x602010},{x:-25,z:15,col:0x303060},{x:-15,z:28,col:0x106020},
+    {x:3,z:-23,col:0x4a2000},{x:3,z:30,col:0x2a4010},{x:31,z:-17,col:0x1a3060},{x:31,z:4,col:0x602010},
+    {x:-17,z:40,col:0x602010},{x:-11,z:40,col:0x602010},{x:11,z:40,col:0x1a3060},{x:17,z:40,col:0x1a3060}
   ];
   npcDefs.forEach(n=>{
     const g=modelYap('npc_halk',{col:n.col});
@@ -4866,17 +5015,17 @@ function buildKervansarayBuilding(cx,cz,w,d){
 
 // ── Çarşı Meydanı — dükkan sırası ──
 function buildCarsiBuilding(cx,cz,w,d){
+  // Tezgâhlar caddeyi iki yandan çevreler (yüzleri caddeye bakar); cadde ortası 11 birim boş
   const z=ZONES.find(zz=>zz.id==='carsi');
-  const stallW=w/4-0.4, rows=3;
-  for(let r=0;r<rows;r++){
-    const rz=cz-d/2+2+r*(d/rows);
-    for(let c=0;c<4;c++){
-      const sx=cx-w/2+stallW/2+0.4+c*(w/4);
-      yapiKoy('yapi_dukkan',sx,rz,{w:stallW,d:1.8,renk:(r+c)%2?[0x2a5a9a,0xE8DCC0]:[0xB02020,0xE8DCC0]},[stallW,1.8]);
+  const n=5,adim=4.6,x0=cz-(n-1)*adim/2-1;
+  for(let sg=-1;sg<=1;sg+=2){
+    for(let i=0;i<n;i++){
+      const rz=cz-d/2+3.5+i*adim;
+      const g=yapiKoy('yapi_dukkan',cx+sg*8,rz,{w:3.4,d:1.8,renk:(i+(sg>0?1:0))%2?[0x2a5a9a,0xE8DCC0]:[0xB02020,0xE8DCC0]},[1.8,3.4]);
+      g.rotation.y=sg>0?-Math.PI/2:Math.PI/2;
     }
   }
-  const doorZ=cz+(d/2);
-  const sign=modelYap('cevre_levha',{w:4,h:.7,d:.15,renk:0x5a2800});sign.position.set(z.dx,4,doorZ+.15);S3.add(sign);
+  const levha=modelYap('cevre_levha',{w:5,h:1,d:.2,renk:0x5a2800});levha.position.set(z.dx,4.4,z.dz+1);S3.add(levha);
 }
 
 // ── Konut Bölgesi — dekoratif binalar (kapısız, sadece görsel + collider) ──
@@ -5231,7 +5380,7 @@ function doRanged(p,aim){p=p||pl;aim=aim||worldAim;if(p.hp<=0)return;p.aimLock=3
 // ═══════════════════════════════════════════════════════
 // MİNİHARİTA
 // ═══════════════════════════════════════════════════════
-function drawMM(){const mc=document.getElementById('mmCv'),mx=mc.getContext('2d');const SZ=84,WS=MAP_HALF||32,sc=SZ/(WS*2);function tw(v){return(v+WS)*sc;}mx.fillStyle='rgba(4,2,0,.92)';mx.fillRect(0,0,SZ,SZ);mx.save();mx.translate(SZ/2,SZ/2);mx.rotate(camYawS);mx.translate(-SZ/2,-SZ/2);if(currentMap==='kisla'){mx.fillStyle='rgba(180,160,80,.22)';ZONES.forEach(z=>mx.fillRect(tw(z.x-(z.w||8)/2),tw(z.z-(z.d||6)/2),(z.w||8)*sc,(z.d||6)*sc));}else{mx.fillStyle='rgba(180,160,80,.22)';[[0,0,12,12],[-19,-8,10,10],[18,-18,9,8],[12,20,14,9]].forEach(function(a){mx.fillRect(tw(a[0]-a[2]/2),tw(a[1]-a[3]/2),a[2]*sc,a[3]*sc);});}mx.fillStyle='rgba(255,50,50,.9)';enemies.forEach(function(en){mx.fillRect(tw(en.x)-1.5,tw(en.z)-1.5,3,3);});mx.fillStyle='rgba(255,215,0,.65)';loots.forEach(function(l){mx.fillRect(tw(l.x)-1,tw(l.z)-1,2,2);});mx.fillStyle='#FFD700';mx.fillRect(tw(pl.x)-2.5,tw(pl.z)-2.5,5,5);mx.restore();mx.strokeStyle='rgba(139,105,20,.5)';mx.lineWidth=1;mx.strokeRect(0,0,SZ,SZ);}
+function drawMM(){const mc=document.getElementById('mmCv'),mx=mc.getContext('2d');const SZ=168,WS=MAP_HALF||32,sc=SZ/(WS*2);function tw(v){return(v+WS)*sc;}mx.fillStyle='rgba(4,2,0,.92)';mx.fillRect(0,0,SZ,SZ);mx.save();mx.translate(SZ/2,SZ/2);mx.rotate(camYawS);mx.translate(-SZ/2,-SZ/2);if(currentMap==='kisla'){mx.fillStyle='rgba(180,160,80,.22)';ZONES.forEach(z=>mx.fillRect(tw(z.x-(z.w||8)/2),tw(z.z-(z.d||6)/2),(z.w||8)*sc,(z.d||6)*sc));}else{mx.fillStyle='rgba(180,160,80,.22)';[[0,0,12,12],[-19,-8,10,10],[18,-18,9,8],[12,20,14,9]].forEach(function(a){mx.fillRect(tw(a[0]-a[2]/2),tw(a[1]-a[3]/2),a[2]*sc,a[3]*sc);});}mx.fillStyle='rgba(255,50,50,.9)';enemies.forEach(function(en){mx.fillRect(tw(en.x)-3,tw(en.z)-3,6,6);});mx.fillStyle='rgba(255,215,0,.65)';loots.forEach(function(l){mx.fillRect(tw(l.x)-2,tw(l.z)-2,4,4);});mx.fillStyle='#FFD700';mx.fillRect(tw(pl.x)-5,tw(pl.z)-5,10,10);mx.restore();mx.strokeStyle='rgba(139,105,20,.5)';mx.lineWidth=1;mx.strokeRect(0,0,SZ,SZ);}
 
 // ═══════════════════════════════════════════════════════
 // WORLD AIM
@@ -5464,8 +5613,8 @@ function updateGorev(dt){
     const ex2=tp.x-en.x,ez2=tp.z-en.z,d2=Math.hypot(ex2,ez2);
     if(d2>.5){en.x+=ex2/d2*en.spd;en.z+=ez2/d2*en.spd;en.mesh.position.set(en.x,0,en.z);}
     en.mesh.rotation.y=Math.atan2(ex2,ez2);
-    en.hpFl.scale.x=en.hp/en.maxHp;en.hpFl.position.x=(en.hp/en.maxHp-1)*(en.isBoss?.8:.55);
-    en.hpBg.lookAt(CAM.position);en.hpFl.lookAt(CAM.position);
+    en.hpFl.scale.x=en.hp/en.maxHp;en.hpFl.position.x=(en.hp/en.maxHp-1)*en.hpFl.geometry.parameters.width/2;
+    en.hpBg.lookAt(CAM.position);
     if(d2<1.1&&tp.ifr===0){
       if(tp.ab&&tp.ab.active.f){
         // Demir Kalkan aktif — hasar engeli
@@ -5588,8 +5737,8 @@ function updateOrman(dt){
     en.x=Math.max(-44,Math.min(44,en.x));en.z=Math.max(-44,Math.min(44,en.z));
     en.mesh.position.set(en.x,0,en.z);
 
-    en.hpFl.scale.x=en.hp/en.maxHp;en.hpFl.position.x=(en.hp/en.maxHp-1)*(en.isBoss?.9:.5);
-    en.hpBg.lookAt(CAM.position);en.hpFl.lookAt(CAM.position);
+    en.hpFl.scale.x=en.hp/en.maxHp;en.hpFl.position.x=(en.hp/en.maxHp-1)*en.hpFl.geometry.parameters.width/2;
+    en.hpBg.lookAt(CAM.position);
 
     // Saldırı hasarı
     if(en.state==='attacking'&&dist<1.6&&tp.ifr===0){
@@ -5692,8 +5841,8 @@ function updateMaden(dt){
     en.x=Math.max(-37,Math.min(37,en.x));en.z=Math.max(-37,Math.min(37,en.z));
     en.mesh.position.set(en.x,0,en.z);
 
-    en.hpFl.scale.x=en.hp/en.maxHp;en.hpFl.position.x=(en.hp/en.maxHp-1)*(en.isBoss?.85:.5);
-    en.hpBg.lookAt(CAM.position);en.hpFl.lookAt(CAM.position);
+    en.hpFl.scale.x=en.hp/en.maxHp;en.hpFl.position.x=(en.hp/en.maxHp-1)*en.hpFl.geometry.parameters.width/2;
+    en.hpBg.lookAt(CAM.position);
 
     if(en.state==='attacking'&&dist<1.6&&tp.ifr===0){
       if(tp.ab&&tp.ab.active.f){addFX(tp.x,tp.z,0x3498db,4);}
@@ -6230,7 +6379,7 @@ const TIK=1/60,MAX_TIK_KARE=6;
 let tikBirikim=0;
 function loop(){
   requestAnimationFrame(loop);
-  if(document.getElementById('menuLayer').style.display!=='none')drawMenu();
+  if(document.getElementById('menuLayer').style.display!=='none'){drawMenu();menuKahramanCiz();}
   if(!S3||!REN)return;
   tikBirikim+=CLK?Math.min(CLK.getDelta(),.25):TIK;
   let n=0;

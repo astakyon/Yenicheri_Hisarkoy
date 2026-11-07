@@ -216,8 +216,8 @@ function updateGorev(dt){
     const ex2=tp.x-en.x,ez2=tp.z-en.z,d2=Math.hypot(ex2,ez2);
     if(d2>.5){en.x+=ex2/d2*en.spd;en.z+=ez2/d2*en.spd;en.mesh.position.set(en.x,0,en.z);}
     en.mesh.rotation.y=Math.atan2(ex2,ez2);
-    en.hpFl.scale.x=en.hp/en.maxHp;en.hpFl.position.x=(en.hp/en.maxHp-1)*(en.isBoss?.8:.55);
-    en.hpBg.lookAt(CAM.position);en.hpFl.lookAt(CAM.position);
+    en.hpFl.scale.x=en.hp/en.maxHp;en.hpFl.position.x=(en.hp/en.maxHp-1)*en.hpFl.geometry.parameters.width/2;
+    en.hpBg.lookAt(CAM.position);
     if(d2<1.1&&tp.ifr===0){
       if(tp.ab&&tp.ab.active.f){
         // Demir Kalkan aktif — hasar engeli

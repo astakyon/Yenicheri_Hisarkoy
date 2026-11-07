@@ -4,7 +4,7 @@
   <!-- ── ANA MENÜ ── -->
   <div id="menuLayer">
     <div id="menuBg"></div>
-    <canvas id="starCv"></canvas><canvas id="silCv"></canvas>
+    <canvas id="starCv"></canvas><canvas id="silCv"></canvas><canvas id="heroCv"></canvas>
     <div id="lanWrap"><canvas id="lanCv" width="66" height="106"></canvas></div>
     <div id="frameDiv">
       <div style="position:absolute;inset:0;border:10px solid #4a2c16;box-shadow:inset 0 0 0 2px #9a6a22,inset 0 0 26px rgba(0,0,0,.75),0 0 0 1px #20110a;pointer-events:none;"></div>
@@ -17,8 +17,8 @@
       <div class="rivet" style="bottom:-1px;left:-1px;"></div><div class="rivet" style="bottom:-1px;right:-1px;"></div>
     </div>
     <div id="mTitleWrap">
-      <div id="mTitle"><svg class="mOrn" viewBox="0 0 48 44" aria-hidden="true"><defs><mask id="mCres"><rect width="48" height="44" fill="#fff"/><circle cx="31" cy="22" r="14.5" fill="#000"/></mask></defs><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg><span class="mTx"><span>YENİÇERİ:</span> <span>HİSARKÖY MUHAFIZI</span></span><svg class="mOrn r" viewBox="0 0 48 44" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg></div>
-      <div id="mDeco"><div class="ml"></div><div id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</div><div class="ml"></div></div>
+      <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
+      <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
       <div id="mVer">{{VERSION}}</div>
     </div>
     <div id="mBtns">
@@ -138,7 +138,7 @@
     <!-- SAĞ: Mini-harita (üst bar altında, bağımsız küçük kutu) -->
     <div id="camBtns"><div class="camB" data-d="-1">⟲</div><div class="camB" data-d="1">⟳</div></div>
     <div id="mmBox" onclick="openBigMap()">
-      <canvas id="mmCv" width="84" height="84"></canvas>
+      <canvas id="mmCv" width="168" height="168"></canvas>
     </div>
 
     <div id="wvAnn"></div>

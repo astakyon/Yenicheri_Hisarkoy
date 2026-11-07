@@ -136,9 +136,9 @@ function clientCiz(v){
     const dd=Math.sqrt(dx*dx+dz*dz);g.userData.faz=(g.userData.faz||o.id)+dd*3.2;
     g.position.set(o.x,0,o.z);modelAnim(g,g.userData.faz,Math.min(1.6,dd/.06),0,0);
     if(g.userData.hpFl){
-      const f=Math.max(.001,o.hp/o.mh),w=((MODEL_KAYIT.harita[modelKimligi(o.k,o.b)]||{}).bar||{w:1}).w;
+      const f=Math.max(.001,o.hp/o.mh),w=g.userData.hpFl.geometry.parameters.width;
       g.userData.hpFl.scale.x=f;g.userData.hpFl.position.x=(f-1)*w/2;
-      g.userData.hpBg.lookAt(CAM.position);g.userData.hpFl.lookAt(CAM.position);
+      g.userData.hpBg.lookAt(CAM.position);
     }
   });
   hayaletEsitle(H.b,v.b,function(){const g=modelYap('mermi_tufek');g.userData.y=1.1;return g;},function(g,o){g.position.set(o.x,1.1,o.z);});

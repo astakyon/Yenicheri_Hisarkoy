@@ -56,3 +56,40 @@ function drawMenu(){
   lanX.fillStyle='#6B3A08';lanX.beginPath();lanX.ellipse(33,90,11,3.5,0,0,Math.PI*2);lanX.fill();
 }
 
+
+
+// ── Arayüz ölçeği: ekran yüksekliğine göre (telefon ≥1.12, bilgisayar 1.5–1.8) ──
+function uiOlcekle(){
+  const h=window.innerHeight,w=window.innerWidth,r=document.documentElement.style;
+  // yatay: yüksekliğe göre (telefon ≥1.12, PC ≤1.8); dikey telefon: genişliğe göre, HUD sığsın
+  const u=w>=h?Math.max(1.12,Math.min(1.8,h/470)):Math.max(.8,Math.min(1.4,w/560));
+  r.setProperty('--ui',u.toFixed(3));
+  r.setProperty('--uiP',Math.max(1,Math.min(1.4,h/520)).toFixed(3));   // paneller (zoom)
+  r.setProperty('--uiT',Math.max(1,Math.min(1.35,u*.85)).toFixed(3));  // dokunmatik düğmeler
+}
+window.addEventListener('resize',uiOlcekle);uiOlcekle();
+
+// ── Menü kahramanı: model kütüphanesindeki yeniçeri, yavaşça dönen sahnede ──
+const HERO={r:null,s:null,c:null,g:null,t:0,w:0,h:0};
+function menuKahramanCiz(){
+  const cv=document.getElementById('heroCv');if(!cv||typeof THREE==='undefined'||typeof modelYap!=='function')return;
+  if(!HERO.r){
+    try{HERO.r=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});}catch(e){HERO.r=false;return;}
+    HERO.r.setClearColor(0,0);HERO.r.shadowMap.enabled=false;
+    HERO.s=new THREE.Scene();
+    HERO.s.add(new THREE.AmbientLight(0xffe2c0,.9));
+    const key=new THREE.DirectionalLight(0xffc880,2.2);key.position.set(-4,6,5);HERO.s.add(key);
+    const rim=new THREE.DirectionalLight(0x6a8cff,1.4);rim.position.set(5,3,-4);HERO.s.add(rim);
+    HERO.c=new THREE.PerspectiveCamera(28,1,.1,50);
+    HERO.g=modelYap('yeniceri');HERO.s.add(HERO.g);
+    const zem=new THREE.Mesh(new THREE.CircleGeometry(1.6,40),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.35}));zem.rotation.x=-Math.PI/2;zem.position.y=.01;HERO.s.add(zem);
+  }
+  if(HERO.r===false)return;
+  const w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;
+  if(w!==HERO.w||h!==HERO.h){HERO.w=w;HERO.h=h;HERO.r.setPixelRatio(Math.min(2,window.devicePixelRatio||1));HERO.r.setSize(w,h,false);HERO.c.aspect=w/h;HERO.c.updateProjectionMatrix();}
+  HERO.t+=.016;
+  HERO.g.rotation.y=-.5+Math.sin(HERO.t*.5)*.45;
+  modelAnim(HERO.g,0,0,0,0);
+  HERO.c.position.set(0,1.9,7.2);HERO.c.lookAt(0,1.55,0);
+  HERO.r.render(HERO.s,HERO.c);
+}

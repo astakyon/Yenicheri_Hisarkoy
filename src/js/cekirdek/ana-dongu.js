@@ -7,7 +7,7 @@ const TIK=1/60,MAX_TIK_KARE=6;
 let tikBirikim=0;
 function loop(){
   requestAnimationFrame(loop);
-  if(document.getElementById('menuLayer').style.display!=='none')drawMenu();
+  if(document.getElementById('menuLayer').style.display!=='none'){drawMenu();menuKahramanCiz();}
   if(!S3||!REN)return;
   tikBirikim+=CLK?Math.min(CLK.getDelta(),.25):TIK;
   let n=0;

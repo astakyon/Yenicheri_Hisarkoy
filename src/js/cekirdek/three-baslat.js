@@ -11,7 +11,7 @@ function initThree(){
   cv.width=W;cv.height=H;
   REN=new THREE.WebGLRenderer({antialias:true,canvas:cv});
   REN.setSize(W,H);REN.shadowMap.enabled=true;REN.shadowMap.type=THREE.PCFSoftShadowMap;
-  REN.toneMapping=THREE.ACESFilmicToneMapping;REN.toneMappingExposure=1.6;
+  REN.toneMapping=THREE.ACESFilmicToneMapping;REN.toneMappingExposure=1.15;
   CLK=new THREE.Clock();RC=new THREE.Raycaster();GP=new THREE.Plane(new THREE.Vector3(0,1,0),0);
   window.addEventListener('resize',()=>{const W2=window.innerWidth,H2=window.innerHeight;REN.setSize(W2,H2);CAM.aspect=W2/H2;CAM.updateProjectionMatrix();});
   const cv3=document.getElementById('c3d');

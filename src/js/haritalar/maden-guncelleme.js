@@ -47,8 +47,8 @@ function updateMaden(dt){
     en.x=Math.max(-37,Math.min(37,en.x));en.z=Math.max(-37,Math.min(37,en.z));
     en.mesh.position.set(en.x,0,en.z);
 
-    en.hpFl.scale.x=en.hp/en.maxHp;en.hpFl.position.x=(en.hp/en.maxHp-1)*(en.isBoss?.85:.5);
-    en.hpBg.lookAt(CAM.position);en.hpFl.lookAt(CAM.position);
+    en.hpFl.scale.x=en.hp/en.maxHp;en.hpFl.position.x=(en.hp/en.maxHp-1)*en.hpFl.geometry.parameters.width/2;
+    en.hpBg.lookAt(CAM.position);
 
     if(en.state==='attacking'&&dist<1.6&&tp.ifr===0){
       if(tp.ab&&tp.ab.active.f){addFX(tp.x,tp.z,0x3498db,4);}

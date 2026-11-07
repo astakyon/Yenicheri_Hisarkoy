@@ -1,5 +1,14 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.53 — AAA arayüz ve ana menü, ferah Kışla, börk/silah
+- **Ana menü:** sol hizalı büyük altın başlık, soldan vurgulu düğme listesi, sağda model kütüphanesinden dönen 3B yeniçeri (ayrı çizim alanı), alt sağda Ayarlar/Skor.
+- **HUD:** yuvarlak portre, kalın can/enerji/XP çubukları (değer çubuğun içinde), görev kartı, dairesel büyük mini harita, büyük duyuru ve ipucu yazıları. Ölçek `--ui/--uiP/--uiT` (yatay telefon ≥1.12, PC ≤1.8, dikey telefon genişliğe göre); paneller `zoom` ile büyür.
+- **Kışla yeniden düzenlendi:** 96×96 harita bölgelere yayıldı (ana cadde, çarşı, kışla, tekke, Demir/Artisan kapıları); eski dikey ayraç duvarı ve ortadaki "levha bloğu" kalktı, kapılar güney suruna gerçek `yapi_kapi` modeliyle oturdu; çarşı tezgâhları iki sıra, aralıklı. NPC'ler ve bölge girişleri yeni yerleşime göre.
+- **Karakter:** gerçekçi börk (keçe gövde, altın alın plakası, sırt kuyruğu, kaşıklık), sırtta kayışlı tüfek, çelik yatağan.
+- **Can çubukları** daha büyük, kamera dönüşünden bağımsız.
+- Işık/pozlama kısıldı (sahne beyaza yıkanmıyor). Altın referans yalnızca Kışla için yenilendi.
+- Test: arayüz ölçeği, çubuk/harita boyutu, ferah doğma noktası, ince duvar yok.
+
 ## v1.52 — Zemin/sur/levha modelleri, fener havuzu, harita analizi
 - **Modeller:** `zemin_tas` (dama taş döşeme, tek parça), `zemin_sokak`, `cevre_levha`; Kışla ve Görev surları `yapi_sur`, levhalar `cevre_levha`.
 - **Fener havuzu:** haritadaki feneri sanal ışık yapar, en yakın 5'i gerçek ışık. Kışla'da ışık 23 → 9, mesh 479 → 145, çizim çağrısı 110 → 62; Görev'de mesh 200 → 88.

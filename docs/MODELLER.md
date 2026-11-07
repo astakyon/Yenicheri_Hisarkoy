@@ -9,7 +9,7 @@ Oyundaki tüm 3B modeller tek bir kayıttan (`src/js/modeller/kayit.js`, `modelT
 | Düşman | `dusman`, `dusman_boss`, `eskiya`, `eskiya_boss` |
 | Hayvan | `geyik`, `kurt`, `domuz`, `ayi` |
 | Eşya | `mermi_tufek`, `mermi_ok`, `ganimet_akce`, `ganimet_deri`, `ganimet_metal` |
-| Yapı | `yapi_ev`, `yapi_kisla`, `yapi_cami`, `yapi_hamam`, `yapi_kervansaray`, `yapi_dukkan`, `yapi_kule`, `yapi_sur`, `yapi_cit`, `yapi_talim` |
+| Yapı | `yapi_ev`, `yapi_kisla`, `yapi_cami`, `yapi_hamam`, `yapi_kervansaray`, `yapi_dukkan`, `yapi_kule`, `yapi_sur`, `yapi_kapi`, `yapi_cit`, `yapi_talim` |
 | Çevre | `cevre_agac`, `cevre_cam`, `cevre_kaya`, `cevre_cadir`, `cevre_mesale`, `cevre_varil`, `cevre_sandik`, `cevre_magara`, `cevre_destek`, `cevre_nehir`, `cevre_levha` |
 | Zemin | `zemin_tas`, `zemin_sokak` |
 

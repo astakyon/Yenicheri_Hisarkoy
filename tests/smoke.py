@@ -282,6 +282,26 @@ def main():
         check(not errs, 'JavaScript hatası yok')
         ctx.close()
 
+        print('Kışla yerleşimi ve arayüz ölçeği (v1.53)')
+        ctx, pg, errs = yeni_sayfa(844, 390)
+        pg.evaluate("BEGIN('kisla')"); pg.wait_for_timeout(900)
+        r = pg.evaluate("""() => {
+          const ui = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ui'));
+          const hp = document.getElementById('bHP'), mm = document.getElementById('mmBox');
+          // spawn çevresinde açık alan: 8 yarıçapta çarpışmasız nokta oranı
+          let ac = 0, top = 0; for (let a = 0; a < 360; a += 15) for (let d = 3; d <= 9; d += 3) { top++; if (!checkCollision(pl.x + Math.cos(a*Math.PI/180)*d, pl.z + Math.sin(a*Math.PI/180)*d, .6)) ac++; }
+          // uzun ince dekoratif duvar kalmadı mı (bina/sur dışı kutu çarpıştırıcılar)
+          const ince = (colliders||[]).filter(c => c && c.w !== undefined && Math.min(c.w, c.d) <= 2 && Math.max(c.w, c.d) >= 30 && Math.abs(c.x) < 40 && Math.abs(c.z) < 40).length;
+          return { ui, hpH: hp ? hp.getBoundingClientRect().height : 0, mmW: mm.getBoundingClientRect().width, acik: ac / top, ince };
+        }""")
+        check(r['ui'] >= 1.1, 'arayüz ölçeği telefonda yeterli (%.2f)' % r['ui'])
+        check(r['hpH'] >= 18, 'can çubuğu okunur yükseklikte (%dpx)' % r['hpH'])
+        check(r['mmW'] >= 120, 'mini harita yeterince büyük (%dpx)' % r['mmW'])
+        check(r['acik'] >= .7, 'doğma noktası çevresi ferah (%.0f%% açık)' % (r['acik'] * 100))
+        check(r['ince'] == 0, 'Kışla ortasında uzun ince dekoratif duvar yok')
+        check(not errs, 'JavaScript hatası yok')
+        ctx.close()
+
         print('Oturum (SESSION + LoopbackTransport)')
         ctx, pg, errs = yeni_sayfa()
         pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)

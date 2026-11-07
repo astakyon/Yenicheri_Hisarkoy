@@ -6,19 +6,23 @@
 // Sol yarı = Yeniçeri Kışlası, Orta = Cadde, Sağ yarı = Sivil alan
 // Kapı (dx,dz) = binadan biraz önde, etkileşim noktası
 const ZONES=[
-  // ── SOL YARI: KIŞLA ──
-  {id:'armory',   name:'⚔ Armory',         icon:'⚔', x:-19,z:-15, w:13,d:11, dx:-19,dz:-8,  desc:'Silah yükselt'},
-  {id:'camii',    name:'🕌 Orta Camii',     icon:'🕌', x:-5, z:-17, w:9, d:9,  dx:-5, dz:-11, desc:'Kaydet & buff'},
-  {id:'drill',    name:'⚡ Drill Ground',    icon:'⚡', x:-19,z:2,   w:17,d:15, dx:-19,dz:10,  desc:'Yetenek geliştir'},
-  {id:'cebehaneUst',name:'🛡 Cebehane',     icon:'🛡', x:-3, z:-2,  w:14,d:8,  dx:-3, dz:2,   desc:'Zırh & ekipman'},
-  {id:'cebehane', name:'🛡 Cebehane',       icon:'🛡', x:-3, z:8,   w:14,d:10, dx:-3, dz:13,  desc:'Zırh & ekipman'},
-  {id:'demirKapi',name:'🚪 Göreve Çık',     icon:'🚪', x:-13,z:24,  w:12,d:2,  dx:-13,dz:20,  desc:'Hisarköy Devriye'},
-  // ── SAĞ YARI: SİVİL ALAN ──
-  {id:'hamam',    name:'💧 Sultan Hamamı',  icon:'💧', x:13, z:-13, w:16,d:16, dx:13, dz:-3,  desc:'Can yenile & artır'},
-  {id:'kervansaray',name:'🏠 Kervansaray',  icon:'🏠', x:32, z:-15, w:25,d:14, dx:32, dz:-6,  desc:'Tüccar & harita'},
-  {id:'carsi',    name:'🛒 Çarşı Meydanı', icon:'🛒', x:13, z:8,   w:16,d:20, dx:13, dz:19,  desc:'Market'},
-  {id:'konut',    name:'🏘 Konut Bölgesi',  icon:'🏘', x:32, z:8,   w:25,d:10, dx:32, dz:14,  desc:null}, // dekoratif, kapısız
-  {id:'artisanKapi',name:'🚪 Artisan Kapı', icon:'🚪', x:23, z:24,  w:12,d:2,  dx:23, dz:20,  desc:'Yan çıkış'},
+  // Hisarköy yerleşimi (v1.53): 96×96 alan; ortada 11 birim genişliğinde cadde (x≈0), binalar arası en az 8 birim.
+  // x,z = bina merkezi; w,d = boyut; dx,dz = etkileşim noktası (kapının önü, güneyde).
+  // ── BATI SÜTUNU: KIŞLA ──
+  {id:'armory',   name:'⚔ Armory',         icon:'⚔', x:-28,z:-30, w:13,d:11, dx:-28,dz:-21,  desc:'Silah yükselt'},
+  {id:'cebehaneUst',name:'🛡 Cebehane',     icon:'🛡', x:-28,z:-10, w:14,d:8,  dx:-28,dz:-2,   desc:'Zırh & ekipman'},
+  {id:'cebehane', name:'🛡 Cebehane',       icon:'🛡', x:-28,z:6,   w:14,d:10, dx:-28,dz:14,   desc:'Zırh & ekipman'},
+  {id:'drill',    name:'⚡ Drill Ground',    icon:'⚡', x:-28,z:28,  w:17,d:15, dx:-17,dz:28,   desc:'Yetenek geliştir'},
+  // ── ORTA: CAMİ VE ÇARŞI ──
+  {id:'camii',    name:'🕌 Orta Camii',     icon:'🕌', x:0,  z:-32, w:9, d:9,  dx:0,  dz:-24,  desc:'Kaydet & buff'},
+  {id:'carsi',    name:'🛒 Çarşı Meydanı', icon:'🛒', x:0,  z:16,  w:20,d:26, dx:0,  dz:31,   desc:'Market'},
+  // ── DOĞU SÜTUNU: SİVİL ALAN ──
+  {id:'hamam',    name:'💧 Sultan Hamamı',  icon:'💧', x:28, z:-30, w:16,d:16, dx:28, dz:-18,  desc:'Can yenile & artır'},
+  {id:'kervansaray',name:'🏠 Kervansaray',  icon:'🏠', x:28, z:-8,  w:25,d:14, dx:28, dz:3,    desc:'Tüccar & harita'},
+  {id:'konut',    name:'🏘 Konut Bölgesi',  icon:'🏘', x:28, z:20,  w:25,d:10, dx:28, dz:27,   desc:null}, // dekoratif, kapısız
+  // ── KAPILAR (güney sur içinde) ──
+  {id:'demirKapi',name:'🚪 Göreve Çık',     icon:'🚪', x:-14,z:43,  w:12,d:3,  dx:-14,dz:39,   desc:'Hisarköy Devriye'},
+  {id:'artisanKapi',name:'🚪 Artisan Kapı', icon:'🚪', x:14, z:43,  w:12,d:3,  dx:14, dz:39,   desc:'Yan çıkış'},
 ];
 
 // Etkileşim için geçerli (kapısı olan) bölgeler
@@ -44,8 +48,8 @@ function buildKisla(){
   MAP_HALF=48; // Hisarköy genişlemiş harita yarı boyutu
 
   // Işıklar — gündüz, parlak
-  const sun=new THREE.DirectionalLight(0xFFF5E0,3.2);sun.position.set(10,30,8);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-55;sun.shadow.camera.right=55;sun.shadow.camera.top=55;sun.shadow.camera.bottom=-55;S3.add(sun);
-  S3.add(new THREE.AmbientLight(0xE8F4FF,1.5));S3.add(new THREE.HemisphereLight(0x87CEEB,0xC8B870,1.0));
+  const sun=new THREE.DirectionalLight(0xFFF5E0,2.0);sun.position.set(10,30,8);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-55;sun.shadow.camera.right=55;sun.shadow.camera.top=55;sun.shadow.camera.bottom=-55;S3.add(sun);
+  S3.add(new THREE.AmbientLight(0xE8F4FF,.75));S3.add(new THREE.HemisphereLight(0x87CEEB,0xC8B870,.6));
   const fill=new THREE.DirectionalLight(0xFFE8A0,.6);fill.position.set(-8,10,-5);S3.add(fill);
 
   // Zemin
@@ -69,46 +73,33 @@ function buildKisla(){
     for(let i=0;i<4;i++){const mg=new THREE.Mesh(new THREE.BoxGeometry(.8,1.2,.3),new THREE.MeshLambertMaterial({color:0x3a2800}));mg.position.set(-1.3+i*0.9,3.2,3.05);k.add(mg);}
   });
 
-  // ── ORTA CADDE (Street) — kışla ile sivil alanı ayıran yol ──
-  // Cadde alanı collider içermez (geçilebilir), sadece görsel
-  S3.add(modelYap('zemin_sokak',{w:7,L:90}));
+  // ── ORTA CADDE: kuzey-güney ana yol ──
+  S3.add(modelYap('zemin_sokak',{w:11,L:90}));
+  // Çarşı meydanının kaldırım taşı
+  const Z=function(id){return ZONES.find(zz=>zz.id===id);};
+  const meydan=modelYap('zemin_tas',{n:2,adim:5,kare:4.6,yuk:.05,y:.045,renk:0xB89858});meydan.position.set(0,0,16);S3.add(meydan);
 
-  // ═══════════ SOL YARI — YENİÇERİ KIŞLASI ═══════════
-  // Kışla alt-sur (sol yarıyı çevreler, cadde tarafı açık)
-  bx(-23.5,2.2,-23,1.5,4.4,46,0x9a8050,0x6B4A0C,false); // iç ayraç (görsel, geçilebilir değil ama ince)
+  // ═══════════ BATI SÜTUNU — YENİÇERİ KIŞLASI ═══════════
+  [['armory',0x8B6048],['cebehaneUst',0x4a3018],['cebehane',0x4a3018]].forEach(([id,col])=>{const q=Z(id);buildZoneBuilding(id,q.x,q.z,q.w,q.d,col,0x8B6914,'flat');});
+  { const q=Z('camii'); buildZoneBuilding('camii',q.x,q.z,q.w,q.d,0x303060,0x8B6914,'dome-minaret'); }
+  { const q=Z('drill'); buildDrillGroundZone(q.x,q.z,q.w,q.d); }
 
-  // Armory (sol üst köşe — blueprint'te "بصطني / Armory")
-  buildZoneBuilding('armory',-19,-15,13,11,0x8B6048,0x8B6914,'flat');
-  // Orta Camii (Armory sağında, blueprint'teki "Orta Camii" konumunda — sol yarının üst-orta kısmı)
-  buildZoneBuilding('camii',-5,-17,9,9,0x303060,0x8B6914,'dome-minaret');
-  // Drill Ground (sol alt — büyük açık talim alanı, blueprint'teki "Acemi Ocağı / Drill Ground")
-  buildDrillGroundZone(-19,2,17,15);
-  // Cebehane Üst (toplam alanı — blueprint'teki "توصل Cebehane")
-  buildZoneBuilding('cebehaneUst',-3,-2,14,8,0x4a3018,0x8B6914,'flat');
-  // Cebehane Alt (blueprint'teki "سرحقي Cebehane")
-  buildZoneBuilding('cebehane',-3,8,14,10,0x4a3018,0x8B6914,'flat');
+  // ═══════════ DOĞU SÜTUNU — SİVİL ALAN ═══════════
+  { const q=Z('hamam'); buildHamamBuilding(q.x,q.z,q.w,q.d); }
+  { const q=Z('kervansaray'); buildKervansarayBuilding(q.x,q.z,q.w,q.d); }
+  { const q=Z('carsi'); buildCarsiBuilding(q.x,q.z,q.w,q.d); }
+  { const q=Z('konut'); buildKonutBuilding(q.x,q.z,q.w,q.d); }
 
-  // Demir Kapı (güney — sol yarının çıkışı, blueprint'teki "Demir Kapı / الندين")
-  bx(-13,1.8,25,13,3.6,1,0x2a1400,0x8B0000,false);
-  const dkSign=modelYap('cevre_levha',{w:6,h:1,d:.2,renk:0x8B0000});dkSign.position.set(-13,4.4,24.9);S3.add(dkSign);
-  const dkLight=fenerLight(-13,4,23,0xFF6600,2,10);
-  torches.push({light:dkLight,phase:Math.random()*Math.PI*2});
+  // ═══════════ GÜNEY SUR KAPILARI ═══════════
+  [['demirKapi',true],['artisanKapi',false]].forEach(([id,demir])=>{
+    const q=Z(id);
+    const kp=yapiKoy('yapi_kapi',q.x,q.z,{w:6,h:6,demir:demir},[12,3]);
+    const lv=modelYap('cevre_levha',{w:6,h:1,d:.2,renk:demir?0x8B0000:0x5a3800});lv.position.set(q.x,7.6,q.z-1.6);S3.add(lv);
+    const dl=fenerLight(q.x,5,q.z-2,demir?0xFF6600:0xFFAA44,2,10);
+    torches.push({light:dl,phase:Math.random()*Math.PI*2});
+  });
 
-  // ═══════════ SAĞ YARI — SİVİL ALAN ═══════════
-  // Sultan Hamamı (sol üst, sivil alanın — blueprint'teki "مثارنة Sultan Hamamı")
-  buildHamamBuilding(13,-13,16,16);
-  // Kervansaray (sağ üst — blueprint'teki "امارهم نديمي Kervansaray")
-  buildKervansarayBuilding(32,-15,25,14);
-  // Çarşı Meydanı (sol alt — blueprint'teki "Çarşı Meydanı")
-  buildCarsiBuilding(13,8,16,20);
-  // Konut Bölgesi (sağ alt — dekoratif, kapısız)
-  buildKonutBuilding(32,8,25,10);
-
-  // Artisan Kapı (sağ yarının çıkışı — blueprint'teki "Artisan Kapı")
-  bx(23,1.8,25,13,3.6,1,0x2a1400,0x8B6914,false);
-  const akSign=modelYap('cevre_levha',{w:6,h:1,d:.2,renk:0x5a3800});akSign.position.set(23,4.4,24.9);S3.add(akSign);
-
-  // ── Etkileşim kapı işaretleri (tüm bölgeler için ortak ışık+levha) ──
+  // ── Etkileşim kapı işaretleri (tüm bölgeler için ortak ışık) ──
   ZONES.forEach(z=>{
     if(z.id==='demirKapi'||z.id==='artisanKapi')return;
     const zl=fenerLight(z.dx,3.5,z.dz,0xFFCC66,1.3,9);
@@ -116,10 +107,11 @@ function buildKisla(){
   });
 
   // ── NPC yeniçeriler ──
+  // Her bölgenin kapısının yanında bir görevli; kapılarda nöbetçi; çarşıda satıcılar
   const npcDefs=[
-    {x:-19,z:-7,col:0x1a3060},{x:-3,z:5,col:0x602010},{x:13,z:-3,col:0x106020},
-    {x:-5,z:-11,col:0x303060},{x:32,z:-6,col:0x4a2000},{x:13,z:19,col:0x2a4010},
-    {x:-13,z:18,col:0x1a3060},{x:32,z:14,col:0x602010}
+    {x:-25,z:-20,col:0x1a3060},{x:-25,z:-1,col:0x602010},{x:-25,z:15,col:0x303060},{x:-15,z:28,col:0x106020},
+    {x:3,z:-23,col:0x4a2000},{x:3,z:30,col:0x2a4010},{x:31,z:-17,col:0x1a3060},{x:31,z:4,col:0x602010},
+    {x:-17,z:40,col:0x602010},{x:-11,z:40,col:0x602010},{x:11,z:40,col:0x1a3060},{x:17,z:40,col:0x1a3060}
   ];
   npcDefs.forEach(n=>{
     const g=modelYap('npc_halk',{col:n.col});
@@ -186,17 +178,17 @@ function buildKervansarayBuilding(cx,cz,w,d){
 
 // ── Çarşı Meydanı — dükkan sırası ──
 function buildCarsiBuilding(cx,cz,w,d){
+  // Tezgâhlar caddeyi iki yandan çevreler (yüzleri caddeye bakar); cadde ortası 11 birim boş
   const z=ZONES.find(zz=>zz.id==='carsi');
-  const stallW=w/4-0.4, rows=3;
-  for(let r=0;r<rows;r++){
-    const rz=cz-d/2+2+r*(d/rows);
-    for(let c=0;c<4;c++){
-      const sx=cx-w/2+stallW/2+0.4+c*(w/4);
-      yapiKoy('yapi_dukkan',sx,rz,{w:stallW,d:1.8,renk:(r+c)%2?[0x2a5a9a,0xE8DCC0]:[0xB02020,0xE8DCC0]},[stallW,1.8]);
+  const n=5,adim=4.6,x0=cz-(n-1)*adim/2-1;
+  for(let sg=-1;sg<=1;sg+=2){
+    for(let i=0;i<n;i++){
+      const rz=cz-d/2+3.5+i*adim;
+      const g=yapiKoy('yapi_dukkan',cx+sg*8,rz,{w:3.4,d:1.8,renk:(i+(sg>0?1:0))%2?[0x2a5a9a,0xE8DCC0]:[0xB02020,0xE8DCC0]},[1.8,3.4]);
+      g.rotation.y=sg>0?-Math.PI/2:Math.PI/2;
     }
   }
-  const doorZ=cz+(d/2);
-  const sign=modelYap('cevre_levha',{w:4,h:.7,d:.15,renk:0x5a2800});sign.position.set(z.dx,4,doorZ+.15);S3.add(sign);
+  const levha=modelYap('cevre_levha',{w:5,h:1,d:.2,renk:0x5a2800});levha.position.set(z.dx,4.4,z.dz+1);S3.add(levha);
 }
 
 // ── Konut Bölgesi — dekoratif binalar (kapısız, sadece görsel + collider) ──

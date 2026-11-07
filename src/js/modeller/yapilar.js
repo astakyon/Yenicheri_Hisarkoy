@@ -240,6 +240,21 @@ function _yapiLevha(o){
   return _ybitir();
 }
 
+// ── Sur kapısı: iki burç, lento, kanatlar (o.demir: demir kaplı kanat) ──
+function _yapiKapiSur(o){
+  const w=o.w||6,h=o.h||6,dm=!!o.demir,tas=0xC8A870,koyu=0x9a8050;
+  [-1,1].forEach(function(sg){
+    const x=sg*(w/2+2.2);_yk(3.6,h+3,3.2,tas,x,(h+3)/2,0);_yk(4,.4,3.6,koyu,x,h+3.2,0);
+    for(let i=0;i<3;i++)_yk(.9,.7,.7,tas,x-1.2+i*1.2,h+3.75,-1.3);
+    _yk(.5,1.2,.1,0x120c06,x,h*.7,1.65);
+  });
+  _yk(w+1,2.2,3,tas,0,h+1.9,0);_yk(w+1.4,.35,3.4,koyu,0,h+3.1,0);                  // lento
+  _yk(w,h,.5,dm?0x2a2a30:0x5a3a1a,0,h/2,.2);                                         // kapı kanatları
+  for(let i=0;i<4;i++)_yk(w,.18,.58,dm?0x6a6a74:0x2a1c10,0,.9+i*1.4,.2);              // bantlar
+  _yk(.12,h,.6,0x1a1a1a,0,h/2,.2);_ysil(.18,.18,.2,0xD4A82A,-.5,h*.45,.55,8);_ysil(.18,.18,.2,0xD4A82A,.5,h*.45,.55,8);
+  return _ybitir();
+}
+
 const _YD=[
   ['yapi_ev','Konut evi (cumbalı)',_yapiEv,{w:6,d:5},5.6],['yapi_kisla','Kışla / cebehane binası',_yapiKisla,{w:12,d:9},8.2],
   ['yapi_cami','Cami (kubbe ve minare)',_yapiCami,{w:9,d:9},15],['yapi_hamam','Sultan Hamamı',_yapiHamam,{w:16,d:16},9],
@@ -247,7 +262,7 @@ const _YD=[
   ['yapi_kule','Gözetleme kulesi',_yapiKule,{r:2.2,h:9},13],['yapi_sur','Sur parçası',_yapiSur,{w:10},6],['yapi_cit','Tahta çit',_yapiCit,{w:6},1.5],
   ['yapi_talim','Talim kuklası',_yapiMasa,{},3],
   ['cevre_agac','Meşe ağacı',_yapiAgac,{h:5},6],['cevre_cam','Çam ağacı',_yapiCam,{h:6.5},6.5],['cevre_kaya','Kaya',_yapiKaya,{s:1.2},1.7],
-  ['zemin_tas','Taş döşeme zemin',_yapiZemin,{n:12,adim:5,kare:4.6},.1],['zemin_sokak','Cadde',_yapiSokak,{w:7,L:90},.2],['cevre_levha','Levha',_yapiLevha,{w:4,h:.8},.9],['cevre_cadir','Çadır',_yapiCadir,{r:2.2},4.4],['cevre_magara','Mağara',_yapiMagara,{w:10,d:12,h:7},7],['cevre_destek','Maden desteği',_yapiDestek,{w:18,h:7},7],['cevre_nehir','Akarsu',_yapiNehir,{L:96,w:6},.5],['cevre_mesale','Meşale',_yapiMesale,{},3.2],['cevre_varil','Varil',_yapiVaril,{},1],['cevre_sandik','Sandık',_yapiSandik,{},.75]
+  ['yapi_kapi','Sur kapısı',_yapiKapiSur,{w:6,h:6},9.5],['zemin_tas','Taş döşeme zemin',_yapiZemin,{n:12,adim:5,kare:4.6},.1],['zemin_sokak','Cadde',_yapiSokak,{w:7,L:90},.2],['cevre_levha','Levha',_yapiLevha,{w:4,h:.8},.9],['cevre_cadir','Çadır',_yapiCadir,{r:2.2},4.4],['cevre_magara','Mağara',_yapiMagara,{w:10,d:12,h:7},7],['cevre_destek','Maden desteği',_yapiDestek,{w:18,h:7},7],['cevre_nehir','Akarsu',_yapiNehir,{L:96,w:6},.5],['cevre_mesale','Meşale',_yapiMesale,{},3.2],['cevre_varil','Varil',_yapiVaril,{},1],['cevre_sandik','Sandık',_yapiSandik,{},.75]
 ];
 _YD.forEach(function(d){
   modelTanimla(d[0],{ad:d[1],grup:d[0].indexOf('yapi_')===0?'Yapı':(d[0].indexOf('zemin_')===0?'Zemin':'Çevre'),boy:d[4],varsayilan:d[3],yap:function(op){return d[2](Object.assign({},d[3],op||{}));}});

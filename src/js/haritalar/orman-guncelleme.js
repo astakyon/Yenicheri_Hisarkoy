@@ -71,8 +71,8 @@ function updateOrman(dt){
     en.x=Math.max(-44,Math.min(44,en.x));en.z=Math.max(-44,Math.min(44,en.z));
     en.mesh.position.set(en.x,0,en.z);
 
-    en.hpFl.scale.x=en.hp/en.maxHp;en.hpFl.position.x=(en.hp/en.maxHp-1)*(en.isBoss?.9:.5);
-    en.hpBg.lookAt(CAM.position);en.hpFl.lookAt(CAM.position);
+    en.hpFl.scale.x=en.hp/en.maxHp;en.hpFl.position.x=(en.hp/en.maxHp-1)*en.hpFl.geometry.parameters.width/2;
+    en.hpBg.lookAt(CAM.position);
 
     // Saldırı hasarı
     if(en.state==='attacking'&&dist<1.6&&tp.ifr===0){
