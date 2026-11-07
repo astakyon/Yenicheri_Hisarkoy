@@ -350,3 +350,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 #downBar{margin-top:8px;height:8px;background:#2a0a0a;border-radius:4px;overflow:hidden;}
 #downFl{height:100%;width:0;background:linear-gradient(90deg,#2ecc71,#9affc0);}
 #netBox{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:70;padding:8px 16px;background:rgba(40,20,0,.88);border:2px solid #C8A030;border-radius:6px;color:#FFE9A8;font-family:'Cinzel',serif;font-size:13px;pointer-events:none;}
+
+#camBtns{position:absolute;top:128px;right:6px;display:flex;gap:6px;z-index:18;pointer-events:all;}
+.camB{width:38px;height:38px;border-radius:50%;background:rgba(4,2,0,.8);border:1.5px solid #8B6914;color:#e8c46a;font-size:20px;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none;cursor:pointer;}
+.camB.pr{background:rgba(90,60,10,.9);}

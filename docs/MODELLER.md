@@ -9,6 +9,8 @@ Oyundaki tüm 3B modeller tek bir kayıttan (`src/js/modeller/kayit.js`, `modelT
 | Düşman | `dusman`, `dusman_boss`, `eskiya`, `eskiya_boss` |
 | Hayvan | `geyik`, `kurt`, `domuz`, `ayi` |
 | Eşya | `mermi_tufek`, `mermi_ok`, `ganimet_akce`, `ganimet_deri`, `ganimet_metal` |
+| Yapı | `yapi_ev`, `yapi_kisla`, `yapi_cami`, `yapi_hamam`, `yapi_kervansaray`, `yapi_dukkan`, `yapi_kule`, `yapi_sur`, `yapi_cit`, `yapi_talim` |
+| Çevre | `cevre_agac`, `cevre_cam`, `cevre_kaya`, `cevre_cadir`, `cevre_mesale`, `cevre_varil`, `cevre_sandik` |
 
 ## Model yapısı (v1.47)
 Kod modelleri insan ve dört ayaklı iki kalıptan üretilir (`_insanYap`, `_hayvanYap`). Parçalar köşe renkli tek geometride **birleştirilir** (`_birles`): bir model ≈ 5 çizim çağrısı (gövde, iki bacak, iki kol) ve ≈ 1.000 üçgen; geometri tipe göre önbelleklenir, malzeme her kopyada ayrıdır (vuruş parlaması `emissive` ile). Yürüme ve saldırı savurması `modelAnim(model,faz,hareket,saldiri)` ile oynar; kütüphanede **Yürü** düğmesi bunu gösterir. Yeni insan/hayvan türü için `_OD` / `_HKURT` gibi tek bir tanım nesnesi yazmak yeter.

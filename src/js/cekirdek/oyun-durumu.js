@@ -13,6 +13,7 @@ let wave=1,waveTimer=180,waveActive=false;
 let gt=0,playing=false,paused=false;
 let worldAim={x:0,z:0};
 let joyActive=false,joyId=-1,joyOX=0,joyOY=0;
+let camYaw=0,camYawS=0; // kamera yönü (radyan): hedef ve ekranda görünen (yumuşatılmış)
 let camZoom=1; // 1=normal, <1 yakın, >1 uzak. Sınır: 0.5 - 2.2
 let isTestMode=false; // editörden "Test Et" ile açılan oturum mu?
 const JOY_DEAD=10,JOY_MAX=50;

@@ -69,7 +69,7 @@ function clientUpdate(dt){
   movePlayer(pl,cmd,dt);
   if(joyActive){worldAim.x=pl.x+Math.cos(pl.ang)*20;worldAim.z=pl.z+Math.sin(pl.ang)*20;}
   if(pl.atkCd>0)pl.atkCd--;
-  { const mv=Math.hypot(pl.x-(pl.lx===undefined?pl.x:pl.lx),pl.z-(pl.lz===undefined?pl.z:pl.lz))>.003;pl.lx=pl.x;pl.lz=pl.z;if(pl.hp>0)modelAnim(pl.mesh,gt*.45,mv?1:0,pl.atkCd>0?pl.atkCd/22:0); }
+  oyuncuGoruntuGuncelle(pl);
   // 2) host'tan gelenler
   const onceki=CLIENT.gorunum.last;
   CLIENT.gorunum.poll(CLIENT.zaman);
@@ -81,11 +81,7 @@ function clientUpdate(dt){
   const v=CLIENT.gorunum.view(CLIENT.zaman);
   if(v)clientCiz(v);
   // 4) kamera
-  const smooth=joyActive?.18:.09,camDist=15*camZoom,camHeight=14*camZoom;
-  CAM.position.x+=(pl.x-CAM.position.x)*smooth;
-  CAM.position.y+=(camHeight-CAM.position.y)*smooth;
-  CAM.position.z+=((pl.z+camDist)-CAM.position.z)*smooth;
-  CAM.lookAt(pl.x,0,pl.z);
+  kameraGuncelle();
 }
 
 // Host'un onayladığı konumdan başla, henüz onaylanmamış girdileri yeniden uygula
@@ -129,15 +125,16 @@ function hayaletEsitle(harita,liste,yarat,guncelle){
 function clientCiz(v){
   const H=CLIENT.hayalet;
   hayaletEsitle(H.p,v.p.filter(function(q){return q.id!==CLIENT.id;}),function(){return modelYap('yeniceri');},function(g,o){
-    const dx=o.x-g.position.x,dz=o.z-g.position.z;
-    if(dx*dx+dz*dz>1e-4)g.rotation.y=Math.atan2(dx,dz);
-    const mv=dx*dx+dz*dz>1e-4&&!o.d;
-    g.position.set(o.x,o.d?.35:0,o.z);g.rotation.x=o.d?-1.4:0;modelAnim(g,CLIENT.zaman*.0075,mv?1:0,0);
+    const dx=o.x-g.position.x,dz=o.z-g.position.z,dd=Math.sqrt(dx*dx+dz*dz),u=g.userData;
+    if(o.f!==undefined){let t=-o.f+Math.PI/2,d=t-g.rotation.y;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;g.rotation.y+=Math.abs(d)<.35?d:(d>0?.35:-.35);}
+    g.position.set(o.x,o.d?.35:0,o.z);g.rotation.x=o.d?-1.4:0;
+    u.faz=(u.faz||0)+dd*2.6;modelAnim(g,u.faz,o.d?0:Math.min(1.7,dd/Math.max(.001,pl.spd*TIK)),0,0);
   });
   hayaletEsitle(H.e,v.e,function(o){return modelYap(modelKimligi(o.k,o.b),{cubuk:true});},function(g,o){
     const dx=o.x-g.position.x,dz=o.z-g.position.z;
     if(dx*dx+dz*dz>1e-4)g.rotation.y=Math.atan2(dx,dz);
-    g.position.set(o.x,0,o.z);modelAnim(g,CLIENT.zaman*.0065+o.id,dx*dx+dz*dz>1e-4?1:0,0);
+    const dd=Math.sqrt(dx*dx+dz*dz);g.userData.faz=(g.userData.faz||o.id)+dd*3.2;
+    g.position.set(o.x,0,o.z);modelAnim(g,g.userData.faz,Math.min(1.6,dd/.06),0,0);
     if(g.userData.hpFl){
       const f=Math.max(.001,o.hp/o.mh),w=((MODEL_KAYIT.harita[modelKimligi(o.k,o.b)]||{}).bar||{w:1}).w;
       g.userData.hpFl.scale.x=f;g.userData.hpFl.position.x=(f-1)*w/2;

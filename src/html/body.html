@@ -136,6 +136,7 @@
     </div>
 
     <!-- SAĞ: Mini-harita (üst bar altında, bağımsız küçük kutu) -->
+    <div id="camBtns"><div class="camB" data-d="-1">⟲</div><div class="camB" data-d="1">⟳</div></div>
     <div id="mmBox" onclick="openBigMap()">
       <canvas id="mmCv" width="84" height="84"></canvas>
     </div>
@@ -312,6 +313,7 @@
         <div id="libBilgi"></div>
         <div class="libSatir">
           <button class="libD" id="libYuru" onclick="libYuruDegis()">🚶 Yürü</button>
+          <button class="libD" onclick="libAtakDene()">⚔ Saldır</button>
           <button class="libD" onclick="libVurusDene()">💥 Vuruş</button>
           <button class="libD" id="libTel" onclick="libTelDegis()">▦ Tel kafes</button>
           <button class="libD acik" id="libCubuk" onclick="libCubukDegis()">❤ Can çubuğu</button>

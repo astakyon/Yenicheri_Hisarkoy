@@ -1,5 +1,13 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.48 — Döner kamera, harekete bakan karakter, yürüme/saldırı animasyonu, yapı modelleri
+- **Döner kamera:** fare sağ/orta tuşu basılı sürükle, Z / C tuşları (X sıfırlar), ekrandaki ⟲ ⟳ düğmeleri, dokunmatikte iki parmak döndürme (sıkıştırma yakınlaştırması ile birlikte). W/A/S/D, joystick, fare nişanı ve mini harita kameraya göre döner; ağa dünya koordinatı gider, çok oyunculu uyumu bozulmaz.
+- **Yüz yönü ayrı, nişan ayrı:** karakter yürürken hareket yönüne bakar (`face`); saldırı/ateş anında nişan yönüne döner ve yarım sn kilitli kalır (`aimLock`), sonra yürüyüş yönüne döner. Yüz yönü özetle (`f`) diğer oyunculara da gider; hayalet oyuncular yumuşak döner.
+- **Animasyon:** adıma bağlı yürüme fazı (kayma yok), nefes, öne eğilme, gövde bükülmesi; saldırıda hazırlık-savurma-toparlanma; vuruş geri tepmesi. Kütüphanede ⚔ Saldır düğmesi.
+- **Yapı ve çevre modelleri (kütüphane):** ev, kışla, cami, hamam, kervansaray, dükkân, kule, sur, çit, talim kuklası, ağaç, çam, kaya, çadır, meşale, fıçı, sandık (toplam 31 model). Kışla haritasındaki binalar artık bu modellerle kurulur; çarpışma kutuları aynı.
+- Testler: kamera dönüşü matrisi, yüz yönü ve nişan kilidi eklendi; altın test değişmedi.
+- Açık: bina arkasında saydamlaşma (occlusion fade) yol haritasında.
+
 ## v1.47 — Kooperatif tamamlanıyor: canlandırma, yeniden bağlanma, yetenek/ganimet payı, gerçekçi modeller
 - **Ölme ve canlandırma:** odada düşen oyuncu yerde kalır; yoldaşı 2 sn yanında dururse %50 canla kalkar, 30 sn içinde kimse gelmezse kendiliğinden kalkar. Herkes düşünce oyun biter. Ekranda "YERE DÜŞTÜN" göstergesi. Tek kişilik oyun aynı.
 - **Yeniden bağlanma:** bağlantı kopunca host oyuncuyu 60 sn bekletir; istemci aynı odaya gizli anahtarla geri döner ve kaldığı yerden devam eder. Üstte "yeniden bağlanılıyor" şeridi.

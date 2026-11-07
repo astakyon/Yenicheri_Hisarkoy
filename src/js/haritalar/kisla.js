@@ -151,24 +151,13 @@ function buildKisla(){
 // ── Genel amaçlı bölge binası — duvarlar + çatı + kapı + levha, çarpışmalı ──
 function buildZoneBuilding(zoneId,cx,cz,w,d,wallCol,edgeCol,roofType){
   const z=ZONES.find(zz=>zz.id===zoneId);
-  // Ana gövde (solid — collider otomatik eklenir)
-  bx(cx,2.5,cz,w,5,d,wallCol,edgeCol,true);
-  // Çatı
+  // Görünüm model kütüphanesinden (modeller/yapilar.js); çarpışma kutuları eskisiyle aynı
   if(roofType==='dome-minaret'){
-    const dome=new THREE.Mesh(new THREE.SphereGeometry(Math.min(w,d)*0.42,18,10,0,Math.PI*2,0,Math.PI/2),new THREE.MeshLambertMaterial({color:0x303060}));
-    dome.position.set(cx,5,cz);S3.add(dome);
-    const mn=bx(cx-w/2-1.5,5.5,cz,1.2,11,1.2,0xD0C080,0x8B6914,true);
-    const mTop=new THREE.Mesh(new THREE.ConeGeometry(.8,2,8),new THREE.MeshLambertMaterial({color:0x4a8840}));mTop.position.y=6.5;mn.add(mTop);
+    yapiKoy('yapi_cami',cx,cz,{w:w,d:d,kapiX:z.dx-cx},[w,d]);
+    addCollider(cx-w/2-1.5,cz,1.2,1.2);          // minare
   } else {
-    const roof=new THREE.Mesh(new THREE.ConeGeometry(Math.max(w,d)*0.62,2.4,4),new THREE.MeshLambertMaterial({color:0x8B3010}));
-    roof.rotation.y=Math.PI/4;roof.position.set(cx,5.7,cz);roof.castShadow=true;S3.add(roof);
+    yapiKoy('yapi_kisla',cx,cz,{w:w,d:d,duvar:wallCol,kapiX:z.dx-cx},[w,d]);
   }
-  // Kapı — z.dz tarafına bakan açıklık görseli (gerçek collider yok, sadece görsel kapı çerçevesi)
-  const doorSide=z.dz>cz?1:(z.dz<cz?-1:1);
-  const doorZ=cz+doorSide*(d/2);
-  const door=new THREE.Mesh(new THREE.BoxGeometry(1.6,2.8,.25),new THREE.MeshLambertMaterial({color:0x3a1800}));door.position.set(z.dx,1.4,doorZ);S3.add(door);
-  // Levha
-  const sign=new THREE.Mesh(new THREE.BoxGeometry(3.6,.7,.15),new THREE.MeshLambertMaterial({color:0x5a2800}));sign.position.set(z.dx,4,doorZ+doorSide*0.15);S3.add(sign);
 }
 
 // ── Drill Ground (Acemi Ocağı) — açık talim alanı, dış çit collider ──
@@ -183,9 +172,7 @@ function buildDrillGroundZone(cx,cz,w,d){
   // İç talim kuklaları
   const baseX=cx-w/3, baseZ=cz-d/4;
   [[baseX,baseZ],[baseX+5,baseZ],[baseX+10,baseZ],[baseX,baseZ+6],[baseX+5,baseZ+6]].forEach(([x,zz])=>{
-    const pole=new THREE.Mesh(new THREE.CylinderGeometry(.08,.08,1.8,6),new THREE.MeshLambertMaterial({color:0x6B3A15}));pole.position.set(x,.9,zz);S3.add(pole);
-    const body=new THREE.Mesh(new THREE.BoxGeometry(.7,1.0,.3),new THREE.MeshLambertMaterial({color:0xD4A050}));body.position.set(x,1.9,zz);S3.add(body);
-    const head=new THREE.Mesh(new THREE.SphereGeometry(.35,8,8),new THREE.MeshLambertMaterial({color:0xD4A050}));head.position.set(x,2.6,zz);S3.add(head);
+    yapiKoy('yapi_talim',x,zz);
     addCircleCollider(x,zz,0.4); // kuklalar da çarpışmalı
   });
   // Levha
@@ -195,34 +182,15 @@ function buildDrillGroundZone(cx,cz,w,d){
 // ── Sultan Hamamı — kubbeli yapı ──
 function buildHamamBuilding(cx,cz,w,d){
   const z=ZONES.find(zz=>zz.id==='hamam');
-  bx(cx,2.5,cz,w,5,d,0x1a2228,0x8B6914,true);
-  // Büyük merkez kubbe
-  const dome=new THREE.Mesh(new THREE.SphereGeometry(Math.min(w,d)*0.32,20,10,0,Math.PI*2,0,Math.PI/2),new THREE.MeshLambertMaterial({color:0xC8B878}));
-  dome.position.set(cx,5,cz);S3.add(dome);
-  // Küçük yan kubbeler (Hamam karakteristik)
-  [[-3,-3],[3,-3],[-3,3],[3,3]].forEach(([ox,oz])=>{
-    const sd=new THREE.Mesh(new THREE.SphereGeometry(1.3,12,8,0,Math.PI*2,0,Math.PI/2),new THREE.MeshLambertMaterial({color:0xC8B878}));
-    sd.position.set(cx+ox,5.3,cz+oz);S3.add(sd);
-  });
-  const doorZ=cz+(d/2);
-  const door=new THREE.Mesh(new THREE.BoxGeometry(1.6,2.8,.25),new THREE.MeshLambertMaterial({color:0x3a1800}));door.position.set(z.dx,1.4,doorZ);S3.add(door);
-  const sign=new THREE.Mesh(new THREE.BoxGeometry(3.6,.7,.15),new THREE.MeshLambertMaterial({color:0x5a2800}));sign.position.set(z.dx,4,doorZ+.15);S3.add(sign);
+  yapiKoy('yapi_hamam',cx,cz,{w:w,d:d,kapiX:z.dx-cx},[w,d]);
 }
 
 // ── Kervansaray — iç avlulu büyük yapı ──
 function buildKervansarayBuilding(cx,cz,w,d){
-  const z=ZONES.find(zz=>zz.id==='kervansaray');
-  // Dış U-şekli (4 duvar, iç avlu boş)
-  bx(cx,2.5,cz-d/2+0.75,w,5,1.5,0x2a1a00,0x8B6914,true); // kuzey
-  bx(cx,2.5,cz+d/2-0.75,w,5,1.5,0x2a1a00,0x8B6914,true); // güney
-  bx(cx-w/2+0.75,2.5,cz,1.5,5,d,0x2a1a00,0x8B6914,true); // batı
-  bx(cx+w/2-0.75,2.5,cz,1.5,5,d,0x2a1a00,0x8B6914,true); // doğu
-  // Çatı (sadece görsel, üstten kapalı gösterim)
-  const roof=new THREE.Mesh(new THREE.BoxGeometry(w,.3,d),new THREE.MeshLambertMaterial({color:0x8B3010,transparent:true,opacity:.55}));
-  roof.position.set(cx,5.2,cz);S3.add(roof);
-  const doorZ=cz+(d/2);
-  const door=new THREE.Mesh(new THREE.BoxGeometry(1.8,2.8,.25),new THREE.MeshLambertMaterial({color:0x3a1800}));door.position.set(z.dx,1.4,doorZ);S3.add(door);
-  const sign=new THREE.Mesh(new THREE.BoxGeometry(4,.7,.15),new THREE.MeshLambertMaterial({color:0x5a2800}));sign.position.set(z.dx,4,doorZ+.15);S3.add(sign);
+  yapiKoy('yapi_kervansaray',cx,cz,{w:w,d:d});
+  // Dış U-şekli çarpışmaları (4 duvar, iç avlu boş)
+  addCollider(cx,cz-d/2+0.75,w,1.5);addCollider(cx,cz+d/2-0.75,w,1.5);
+  addCollider(cx-w/2+0.75,cz,1.5,d);addCollider(cx+w/2-0.75,cz,1.5,d);
 }
 
 // ── Çarşı Meydanı — dükkan sırası ──
@@ -233,7 +201,7 @@ function buildCarsiBuilding(cx,cz,w,d){
     const rz=cz-d/2+2+r*(d/rows);
     for(let c=0;c<4;c++){
       const sx=cx-w/2+stallW/2+0.4+c*(w/4);
-      bx(sx,1.4,rz,stallW,2.8,1.8,0x6B4A28,0x8B6914,true);
+      yapiKoy('yapi_dukkan',sx,rz,{w:stallW,d:1.8,renk:(r+c)%2?[0x2a5a9a,0xE8DCC0]:[0xB02020,0xE8DCC0]},[stallW,1.8]);
     }
   }
   const doorZ=cz+(d/2);
@@ -246,9 +214,7 @@ function buildKonutBuilding(cx,cz,w,d){
   for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
     const sx=cx-w/2+w/cols/2+c*(w/cols);
     const sz=cz-d/2+d/rows/2+r*(d/rows);
-    bx(sx,2,sz,w/cols-1.5,4,d/rows-1.5,0xC8A870,0x8B6914,true);
-    const roof=new THREE.Mesh(new THREE.ConeGeometry((w/cols-1.5)*0.65,1.8,4),new THREE.MeshLambertMaterial({color:0x8B3010}));
-    roof.rotation.y=Math.PI/4;roof.position.set(sx,4.9,sz);S3.add(roof);
+    yapiKoy('yapi_ev',sx,sz,{w:w/cols-1.5,d:d/rows-1.5,duvar:(r+c)%2?0xE2CFA6:0xD9C39A,cati:(r+c)%3?0x9a3a1a:0x8a4a22},[w/cols-1.5,d/rows-1.5]);
   }
 }
 

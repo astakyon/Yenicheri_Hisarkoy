@@ -2,7 +2,7 @@
 // MODEL KÜTÜPHANESİ — oyundaki bütün modelleri incele, test et, .glb indir / içe aktar
 // Ana menü → 🧰 MODEL KÜTÜPHANESİ. Önizleme kendi küçük WebGL sahnesinde çalışır, oyunu etkilemez.
 // ═══════════════════════════════════════════════════════
-const KUT={acik:false,ren:null,sahne:null,kam:null,secili:null,nesne:null,aci:0.6,mesafe:6,otoDon:true,yuru:false,tel:false,cubuk:true,karsilastir:false,raf:0,vurus:0,zaman:0,hedefY:1,yaziBekle:null};
+const KUT={atak:0,acik:false,ren:null,sahne:null,kam:null,secili:null,nesne:null,aci:0.6,mesafe:6,otoDon:true,yuru:false,tel:false,cubuk:true,karsilastir:false,raf:0,vurus:0,zaman:0,hedefY:1,yaziBekle:null};
 
 function kutuphaneKur(){
   if(KUT.ren)return true;
@@ -105,7 +105,7 @@ function kutuphaneCiz(){
   const g=KUT.nesne;
   if(g){
     // yürüme denemesi: hafif sıçrama ve sallanma; vuruş denemesi: gövde kırmızıya döner
-    modelAnim(g,KUT.zaman*8,KUT.yuru?1:0,KUT.vurus>0?KUT.vurus/18:0);   // kod modellerinde uzuvlar sallanır
+    modelAnim(g,KUT.zaman*8,KUT.yuru?1:0,KUT.atak>0?1-KUT.atak/40:0,KUT.vurus>0?KUT.vurus/18:0);if(KUT.atak>0)KUT.atak--;   // kod modellerinde uzuvlar sallanır
     if(KUT.vurus>0){KUT.vurus--;modelVurus(g.userData.govde,true);if(KUT.vurus===0)modelVurus(g.userData.govde,false,KUT.govdeRenk);}
     if(g.userData.hpBg){g.userData.hpBg.lookAt(KUT.kam.position);g.userData.hpFl.lookAt(KUT.kam.position);}
   }
@@ -116,6 +116,7 @@ function kutuphaneCiz(){
 
 // ── Düğmeler ──
 function libYuruDegis(){KUT.yuru=!KUT.yuru;document.getElementById('libYuru').classList.toggle('acik',KUT.yuru);}
+function libAtakDene(){KUT.atak=40;}
 function libVurusDene(){const g=KUT.nesne;if(!g||!g.userData.govde||!g.userData.govde.material)return;KUT.govdeRenk=g.userData.govde.material.color.getHex();KUT.vurus=18;}
 function libTelDegis(){KUT.tel=!KUT.tel;document.getElementById('libTel').classList.toggle('acik',KUT.tel);kutuphaneTelUygula();}
 function libCubukDegis(){KUT.cubuk=!KUT.cubuk;document.getElementById('libCubuk').classList.toggle('acik',KUT.cubuk);kutuphaneSec(KUT.secili);}

@@ -11,6 +11,7 @@ karakter/yetenekler.js
 ekran/menu-animasyon.js
 cekirdek/oyun-durumu.js
 modeller/kayit.js
+modeller/yapilar.js
 modeller/dosyalar.js
 modeller/kutuphane.js
 cekirdek/dunya-modeli.js

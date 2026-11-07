@@ -34,7 +34,7 @@ function modelYap(id,opsiyon){
   let g;
   const glb=MODEL_KAYIT.glb[id];
   if(glb)g=glbKopya(id,glb,t);
-  else{g=t.yap();g.userData.kaynak='kod';}
+  else{g=t.yap(opsiyon||{});g.userData.kaynak='kod';}
   if(!g.userData.govde){let ilk=null;g.traverse(function(o){if(!ilk&&o.isMesh&&o.material&&o.material.color)ilk=o;});g.userData.govde=ilk;}
   if(opsiyon&&opsiyon.cubuk&&t.bar){const c=modelHpCubuk(id);g.add(c.bg);g.add(c.fl);g.userData.hpBg=c.bg;g.userData.hpFl=c.fl;}
   return g;
@@ -92,17 +92,36 @@ function _vm(){return new THREE.MeshLambertMaterial({vertexColors:true});}
 function _parca(geo,x,y,z){const m=new THREE.Mesh(geo,_vm());m.position.set(x||0,y||0,z||0);m.castShadow=true;return m;}
 function _pivot(g,x,y,z){const p=new THREE.Group();p.position.set(x,y,z);g.add(p);return p;}
 
-// Yürüme / saldırı animasyonu: model.userData.anim. t: faz, hareket: 0..1, saldiri: 0..1 (kol savurma)
-function modelAnim(g,t,hareket,saldiri){
+// Animasyon (yalnızca görüntü). model.userData.anim kurulur; çağıran her tik çağırır.
+//  t: yürüyüş fazı (kat edilen mesafeyle artırılırsa ayak kaymaz)   h: hareket (0 dur, 1 yürü, ~1.7 koş)
+//  u: saldırı ilerlemesi (0 yok; 0→1 hazırlık, savurma, toparlanma)   v: vuruş tepkisi (0..1)
+function modelAnim(g,t,h,u,v){
   const a=g&&g.userData&&g.userData.anim;if(!a||!(a.bs||a.ca)||!(a.bs||a.ca).rotation)return;   // clone() userData'yı düz nesneye çevirir
-  const sw=Math.sin(t)*.75*hareket;
+  h=h||0;u=u||0;v=v||0;
+  const amp=h>0?Math.min(1.25,.55*h+.2):0,sw=Math.sin(t)*amp,hm=Math.min(1.2,h);
+  a.n=(a.n||0)+.045;const nefes=Math.sin(a.n),dur=1-Math.min(1,h),ic=a.govde;
   if(a.tip==='insan'){
-    a.bs.rotation.x=sw;a.bg.rotation.x=-sw;a.ks.rotation.x=-sw*.7;
-    a.kg.rotation.x=sw*.7-(saldiri>0?Math.sin(saldiri*Math.PI)*2.1:.35);
-    if(a.govde)a.govde.position.y=Math.abs(Math.sin(t))*.05*hareket;
+    a.bs.rotation.x=sw;a.bg.rotation.x=-sw;
+    a.ks.rotation.x=-sw*.85+nefes*.04*dur;
+    let kg=sw*.85-.35+nefes*.04*dur,burma=0;
+    if(u>0){      // hazırlık (kol geri) → hızlı savurma (ileri-yukarı) → toparlanma
+      if(u<.3){kg=-.35+(u/.3)*1.55;burma=-(u/.3)*.35;}
+      else if(u<.6){const k=(u-.3)/.3;kg=1.2-k*3.4;burma=-.35+k*.8;}
+      else{const k=(u-.6)/.4;kg=-2.2+k*1.85;burma=.45*(1-k);}
+    }
+    a.kg.rotation.x=kg;
+    if(ic){
+      ic.rotation.y=burma;ic.rotation.x=.07*hm-v*.3;ic.rotation.z=Math.sin(t)*.035*hm;
+      ic.position.y=Math.abs(Math.sin(t))*.075*hm;
+      ic.scale.y=a.s*(1+nefes*.012*dur);
+    }
   }else if(a.tip==='hayvan'){
-    a.ca.rotation.x=sw*.65;a.cb.rotation.x=-sw*.65;
-    if(a.govde)a.govde.position.y=Math.abs(Math.sin(t*2))*.04*hareket;
+    a.ca.rotation.x=sw*.8;a.cb.rotation.x=-sw*.8;
+    if(ic){
+      ic.rotation.x=Math.sin(t*2)*.025*hm-v*.3;ic.rotation.z=Math.sin(t)*.03*hm;
+      ic.position.y=Math.abs(Math.sin(t))*.05*hm;
+      ic.scale.y=a.s*(1+nefes*.014*dur);
+    }
   }
 }
 
@@ -164,7 +183,7 @@ function _insanYap(o,s){
     tip.name='wpn2';
   }
   ic.scale.setScalar(s);
-  g.userData.govde=gv;g.userData.anim={tip:'insan',bs:bs,bg:bg,ks:ks,kg:kg,govde:ic};
+  g.userData.govde=gv;g.userData.anim={tip:'insan',bs:bs,bg:bg,ks:ks,kg:kg,govde:ic,s:s};
   return g;
 }
 
@@ -210,7 +229,7 @@ function _hayvanYap(o,s){
   const gv=_parca(gm.govde);ic.add(gv);
   const ca=_pivot(ic,0,gm.L,0),cb=_pivot(ic,0,gm.L,0);ca.add(_parca(gm.ca));cb.add(_parca(gm.cb));
   ic.scale.setScalar(s);
-  g.userData.govde=gv;g.userData.anim={tip:'hayvan',ca:ca,cb:cb,govde:ic};
+  g.userData.govde=gv;g.userData.anim={tip:'hayvan',ca:ca,cb:cb,govde:ic,s:s};
   return g;
 }
 const _HGEYIK={id:'geyik',col:0x8B6030,alt:0xD8C39A,lh:.75,kal:.8,boynuz:true,kuyruk:0xF0EAD6,gen:.85};

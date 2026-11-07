@@ -182,6 +182,35 @@ def main():
         check(r['p2x'] > 0 and r['yerelAyni'], 'komutla ikinci oyuncu hareket etti, yerel oyuncu yerinde kaldı')
         ctx.close()
 
+        print('Kamera dönüşü ve yüz yönü')
+        ctx, pg, errs = yeni_sayfa()
+        pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)
+        r = pg.evaluate("""() => {
+          REN.render = () => {};
+          camYaw = 0; camYawS = 0;
+          const a = readLocalInput();
+          camYaw = Math.PI / 2; camYawS = camYaw;
+          keys['w'] = true; keys['arrowup'] = true;
+          const b = readLocalInput();
+          keys['w'] = false; keys['arrowup'] = false;
+          // kameraya göre ileri: kamera ofseti (sinθ,cosθ) -> ileri = -(sinθ,cosθ)
+          const th = camYawS;
+          const fwd = { x: -Math.sin(th), z: -Math.cos(th) };
+          const wx = 0 * Math.cos(th) + (-1) * Math.sin(th), wz = -0 * Math.sin(th) + (-1) * Math.cos(th);
+          camYaw = 0; camYawS = 0;
+          // yüz yönü: hareket yönüne bakar, saldırıdan sonra nişana kilitlenir
+          const p2 = Object.assign({}, pl, { mesh: pl.mesh.clone() }); p2.face = 0; p2.aimLock = 0;
+          p2.mdx = 0; p2.mdz = 1; p2.ang = 0; yuzGuncelle(p2);
+          const f1 = p2.face;
+          p2.aimLock = 30; p2.ang = -1.2; for (let i = 0; i < 20; i++) yuzGuncelle(p2);
+          return { a: !!a, fwd, wx: b.dx, wz: b.dz, f1, face2: p2.face };
+        }""")
+        check(abs(r['wx'] - r['fwd']['x']) < 1e-6 and abs(r['wz'] - r['fwd']['z']) < 1e-6, 'W tuşu kamera yönünde ileri gidiyor (dönüş matrisi)')
+        check(r['f1'] != 0, 'yürürken yüz yönü hareket yönüne dönmeye başladı')
+        check(abs(r['face2'] + 1.2) < 0.3, 'saldırı sonrası yüz yönü nişana kilitlendi')
+        check(not errs, 'kamera testinde JavaScript hatası yok')
+        ctx.close()
+
         print('Oturum (SESSION + LoopbackTransport)')
         ctx, pg, errs = yeni_sayfa()
         pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)

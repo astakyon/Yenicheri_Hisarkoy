@@ -82,6 +82,7 @@ PeerJS host-relay oda sistemi, Supabase hesap/kayıt, misafir modu, testler.
 - [ ] Özel (editör) haritalar odada
 - [ ] İkinci güvenilmez kanal / ikili paket (yalnızca ölçümde gerekirse); yakın düşman süzmesi
 - [ ] Sekme arka plana alınınca host durması uyarısı
+- [ ] Bina arkasında karakter saydamlaşması (occlusion fade); kamera çarpışması
 - [ ] Oyuncu başına zırh/silah görünümü (uzak oyuncunun silahı ekranda)
 - [ ] Büyük oyuncu-düşman sayısında (4 oyuncu, 40 düşman) gerçek telefonda kare süresi ölçümü
 

@@ -1,6 +1,36 @@
 // ═══════════════════════════════════════════════════════
 // ANA GÜNCELLEME
 // ═══════════════════════════════════════════════════════
+// Kamera: oyuncunun etrafında döner (camYaw). Klavye Z/C döndürür, X sıfırlar; fare sağ tuş sürükleme ve iki parmak burma da camYaw'ı değiştirir.
+// Bakış: hareket ederken hareket yönüne, saldırı kilidi sırasında (aimLock) nişan yönüne döner. Saldırı yönü her zaman p.ang (nişan).
+function yuzGuncelle(p){
+  if(p.face===undefined)p.face=p.ang||0;
+  let hedef=null;
+  if(p.aimLock>0){p.aimLock--;hedef=p.ang;}else if(p.mdx||p.mdz)hedef=Math.atan2(p.mdz,p.mdx);
+  if(hedef!==null){
+    let d=hedef-p.face;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;
+    p.face+=Math.abs(d)<.35?d:(d>0?.35:-.35);
+  }
+  if(p.mesh)p.mesh.rotation.y=-p.face+Math.PI/2;
+}
+// Bir oyuncunun görünümü: bakış + yürüyüş/koşu adımı (adım, kat edilen mesafeyle senkron) + saldırı savurması
+function oyuncuGoruntuGuncelle(p){
+  if(!p.mesh||p.hp<=0)return;
+  yuzGuncelle(p);
+  const dd=Math.hypot(p.x-(p.lx===undefined?p.x:p.lx),p.z-(p.lz===undefined?p.z:p.lz));p.lx=p.x;p.lz=p.z;
+  p.faz=(p.faz||0)+dd*2.6;
+  modelAnim(p.mesh,p.faz,dd>.0005?Math.min(1.7,dd/Math.max(.001,p.spd*TIK)):0,p.atkCd>0?1-p.atkCd/22:0,p.ifr>20?(p.ifr-20)/8:0);
+}
+function kameraGuncelle(){
+  if(keys['z'])camYaw-=.035;if(keys['c'])camYaw+=.035;if(keys['x'])camYaw=0;
+  const fark=camYaw-camYawS;camYawS+=fark*.25;
+  const smooth=Math.max(joyActive?.18:.09,Math.abs(fark)>.01?.3:0);
+  const camDist=15*camZoom,camHeight=14*camZoom;
+  CAM.position.x+=(pl.x+Math.sin(camYawS)*camDist-CAM.position.x)*smooth;
+  CAM.position.y+=(camHeight-CAM.position.y)*smooth;
+  CAM.position.z+=((pl.z+Math.cos(camYawS)*camDist)-CAM.position.z)*smooth;
+  CAM.lookAt(pl.x,0,pl.z);
+}
 function update(dt){
   if(!playing||paused||!pl.mesh)return;
   gt++;
@@ -11,19 +41,14 @@ function update(dt){
   else{updateKisla(dt);}
   updateAim();
   WORLD.players.forEach(function(p){if(p.atkCd>0)p.atkCd--;if(p.ifr>0)p.ifr--;});
-  // Model animasyonu (yalnızca görüntü; simülasyonu etkilemez): yürüme ve saldırı savurması
-  WORLD.players.forEach(function(p){if(!p.mesh||p.hp<=0)return;const mv=Math.hypot(p.x-(p.lx===undefined?p.x:p.lx),p.z-(p.lz===undefined?p.z:p.lz))>.003;p.lx=p.x;p.lz=p.z;modelAnim(p.mesh,gt*.45,mv?1:0,p.atkCd>0?p.atkCd/22:0);});
-  enemies.forEach(function(e){const mv=Math.hypot(e.x-(e.lx===undefined?e.x:e.lx),e.z-(e.lz===undefined?e.z:e.lz))>.004;e.lx=e.x;e.lz=e.z;modelAnim(e.mesh,gt*.4+e.id,mv?1:0,0);});
+  // Bakış yönü ve model animasyonu (yalnızca görüntü; simülasyonu etkilemez)
+  WORLD.players.forEach(function(p){oyuncuGoruntuGuncelle(p);});
+  enemies.forEach(function(e){const dd=Math.hypot(e.x-(e.lx===undefined?e.x:e.lx),e.z-(e.lz===undefined?e.z:e.lz));e.lx=e.x;e.lz=e.z;e.faz=(e.faz||e.id)+dd*3.2;modelAnim(e.mesh,e.faz,Math.min(1.6,dd/Math.max(.001,e.spd||.05)),0,e.hurtT>0?e.hurtT/9:0);});
   const wpnM=pl.mesh.getObjectByName('wpn');if(wpnM)wpnM.material.color.setHex([0xD0D0D0,0x505050,0x8B4513][selWeapon]);
   if(pwrOn){pwr=Math.min(100,pwr+2.4);document.getElementById('pwrFl').style.width=pwr+'%';document.getElementById('pwrW').style.display='block';}
   torches.forEach(function(t){t.phase+=.06;t.light.intensity=2.4+Math.sin(t.phase)*.5+Math.sin(t.phase*1.8)*.2;});
   // Kamera (zoom destekli — camZoom çarpanı yükseklik+mesafeyi orantılı değiştirir)
-  const smooth=joyActive?.18:.09;
-  const camDist=15*camZoom,camHeight=14*camZoom;
-  CAM.position.x+=(pl.x-CAM.position.x)*smooth;
-  CAM.position.y+=(camHeight-CAM.position.y)*smooth;
-  CAM.position.z+=((pl.z+camDist)-CAM.position.z)*smooth;
-  CAM.lookAt(pl.x,0,pl.z);
+  kameraGuncelle();
   // HUD
   SESSION.afterTick();
   if(SESSION.peers.size>0){canlandirmaTik();dususGoster(pl.hp<=0,pl.rev||0);}
@@ -39,6 +64,7 @@ function renderFrame(){REN.render(S3,CAM);}
 function readLocalInput(){
   let dx=0,dz=0;
   if(keys['w']||keys['arrowup'])dz=-1;if(keys['s']||keys['arrowdown'])dz=1;if(keys['a']||keys['arrowleft'])dx=-1;if(keys['d']||keys['arrowright'])dx=1;
+  if(camYawS!==0&&(dx||dz)){const c=Math.cos(camYawS),s=Math.sin(camYawS),wx=dx*c+dz*s,wz=-dx*s+dz*c;dx=wx;dz=wz;}   // W = kameranın baktığı yön (ağa dünya koordinatı gider)
   return {dx:dx,dz:dz,run:!!keys['shift'],aimX:worldAim.x,aimZ:worldAim.z};
 }
 
@@ -47,6 +73,7 @@ function movePlayer(p,cmd,dt){
   const run=cmd.run&&p.en>1,sp=(run?p.rspd:p.spd)*dt;
   let dx=cmd.dx,dz=cmd.dz;
   const mov=dx||dz;if(mov){const l=Math.hypot(dx,dz);dx/=l;dz/=l;}
+  p.mdx=mov?dx:0;p.mdz=mov?dz:0;
   // Önerilen yeni konum
   let nx=Math.max(-(MAP_HALF||28),Math.min((MAP_HALF||28),p.x+dx*sp));
   let nz=Math.max(-(MAP_HALF||28),Math.min((MAP_HALF||28),p.z+dz*sp));
@@ -57,7 +84,7 @@ function movePlayer(p,cmd,dt){
   if(p.mesh)p.mesh.position.set(p.x,0,p.z);
   if(run&&mov)p.en=Math.max(0,p.en-.42);else if(!mov)p.en=Math.min(p.maxEn,p.en+.48);else p.en=Math.min(p.maxEn,p.en+.20);
   const adx=cmd.aimX-p.x,adz=cmd.aimZ-p.z;
-  if(Math.abs(adx)+Math.abs(adz)>.4){p.ang=Math.atan2(adz,adx);if(p.mesh)p.mesh.rotation.y=-p.ang+Math.PI/2;}
+  if(Math.abs(adx)+Math.abs(adz)>.4){p.ang=Math.atan2(adz,adx);}
 }
 
 function updateMovement(dt){
