@@ -1,5 +1,10 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.59 — Maden: toplanabilir cevher, kamera görüşü
+- **Cevherler artık toplanır:** bakır, demir ve mor taşlar yerde ganimet olarak durur (yaklaşınca toplanır, mıknatısla çekilir); 23 nokta, her dalgada yenilenir. Önceden yalnızca süstü.
+- **Kamera:** kaya blokları 7 → 4.6 yükseklik; saydamlaşma daha belirgin (%20 → %12); ahşap destek kirişleri de oyuncunun önüne geçince saydamlaşır; Maden'de sis kameraya uzaklığa göre ayarlanır (uzaklaşınca oyuncu kararmaz).
+- Test: cevher sayısı ve toplama, kayada değil, sis.
+
 ## v1.58 — Demir Madeni baştan, kapat düğmeleri
 - **Demir Madeni yeniden tasarlandı:** eski haritada "kollar" dolu kaya bloklarıydı ve koridor iki yandan kapalıydı; düşmanlar ve boss kayanın içinde doğuyordu. Yeni harita oda listesinden (`MADEN_ODALAR`) üretilir, kalan her yer kaya: giriş koridoru → ana kavşak → batı (Bakır Damarı, Eski Ocak) ve doğu (Demir Ocağı, Yeni Kanal) kolları → kuzey geçidi → Gizli Oda; batı ve doğu odalardan Gizli Oda'ya ikinci bir halka yolu. Cevher, meşale, tuzak ve düşman doğma noktaları yeni odalara taşındı; büyük harita çizimi aynı listeyi kullanır.
 - **Kapat düğmeleri:** bölge menülerinde üstte sabit ✕ ve altta sabit Kapat (içerik uzasa da); büyük harita paneli `zoom` yüzünden ekrandan taşıyordu, düzeltildi. Bölge başlığındaki çift ikon kaldırıldı.

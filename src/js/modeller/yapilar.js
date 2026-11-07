@@ -273,6 +273,6 @@ _YD.forEach(function(d){
 function yapiKoy(id,x,z,op,carp,rot){
   const g=modelYap(id,op);g.position.set(x,0,z);if(rot)g.rotation.y=rot;S3.add(g);
   if(carp)addCollider(x,z,carp[0],carp[1]);
-  if(id.indexOf('yapi_')===0||id==='cevre_magara'){g.updateMatrixWorld(true);kapatanKaydet(g,4);}
+  if(id.indexOf('yapi_')===0||id==='cevre_magara'||id==='cevre_destek'){g.updateMatrixWorld(true);kapatanKaydet(g,4);}
   return g;
 }

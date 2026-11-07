@@ -51,29 +51,16 @@ function buildMaden(){
     let h=1;
     while(j+h<N){let ok=true;for(let k=0;k<w;k++)if(!hucre[j+h][i+k]||kullan[j+h][i+k]){ok=false;break;}if(!ok)break;h++;}
     for(let a2=0;a2<h;a2++)for(let k=0;k<w;k++)kullan[j+a2][i+k]=true;
-    bx(-38+i*2+w,3.5,-38+j*2+h,w*2,7,h*2,kayaRenk[(kri++)%3],0x14100c,true);
+    bx(-38+i*2+w,2.3,-38+j*2+h,w*2,4.6,h*2,kayaRenk[(kri++)%3],0x14100c,true);
   }}
 
   // ── Kiriş destekleri (görsel; koridor boyunca ve kollarda) ──
   for(let cz=26;cz>=6;cz-=8)yapiKoy('cevre_destek',0,cz,{w:13,h:6});
-  [-1,1].forEach(function(sg){[22,28].forEach(function(x){const g=yapiKoy('cevre_destek',sg*x,-6,{w:9,h:6});g.rotation.y=Math.PI/2;});});
+  [-1,1].forEach(function(sg){[22,28].forEach(function(x){yapiKoy('cevre_destek',sg*x,-6,{w:9,h:6},null,Math.PI/2);});});
   // Koridor tabanında kaya yığınları (süs; duvar dibinde)
   for(let kz=22;kz>=-2;kz-=6){[-1,1].forEach(function(sg){const kk=modelYap('cevre_kaya',{s:.5+((kz+30)%3)*.25});kk.position.set(sg*5,0,kz+sg*1.5);kk.rotation.y=kz*sg;S3.add(kk);});}
 
-  // ── Bakır Damarı (batı kol) ve Demir Ocağı (doğu kol): cevher parçaları ──
-  [[-18,-4],[-22,-8],[-26,-5],[-31,-3]].forEach(function(p){
-    const ore=new THREE.Mesh(new THREE.DodecahedronGeometry(.6,0),new THREE.MeshLambertMaterial({color:0xB87333,emissive:0x5a3010,emissiveIntensity:.3}));
-    ore.position.set(p[0],1,p[1]);S3.add(ore);
-  });
-  [[18,-4],[22,-8],[26,-5],[31,-3]].forEach(function(p){
-    const ore=new THREE.Mesh(new THREE.DodecahedronGeometry(.6,0),new THREE.MeshLambertMaterial({color:0x9aa0a8,emissive:0x303438,emissiveIntensity:.3}));
-    ore.position.set(p[0],1,p[1]);S3.add(ore);
-  });
-  // Gizli Oda (boss): nadir taş parıltıları
-  [[-10,-30],[0,-34],[10,-30],[-4,-27]].forEach(function(p){
-    const gem=new THREE.Mesh(new THREE.OctahedronGeometry(.5,0),new THREE.MeshLambertMaterial({color:0x9b59b6,emissive:0x6c3483,emissiveIntensity:.6}));
-    gem.position.set(p[0],1.2,p[1]);S3.add(gem);
-  });
+  // Cevher ve taşlar toplanabilir ganimettir (madenCevherYenile); her dalgada yenilenir.
 
   // ── Meşaleler (her odada en az bir tane) ──
   madenTorches=[];
@@ -97,3 +84,23 @@ function buildMaden(){
   });
 }
 
+
+
+// ── Toplanabilir cevherler: bakır (deri→Bakır), demir (metal→Demir), mor taş (akçe). Her dalgada yenilenir. ──
+const MADEN_CEVHER=[
+  [-18,-4,'deri'],[-22,-8,'deri'],[-26,-5,'deri'],[-31,-3,'deri'],[-31,-12,'deri'],[-31,-22,'deri'],[-22,-28,'deri'],[-10,-8,'deri'],[-3,16,'deri'],
+  [18,-4,'metal'],[22,-8,'metal'],[26,-5,'metal'],[31,-3,'metal'],[31,-12,'metal'],[31,-22,'metal'],[22,-28,'metal'],[10,-8,'metal'],[3,12,'metal'],
+  [-10,-30,'akce'],[0,-34,'akce'],[10,-30,'akce'],[-4,-27,'akce'],[0,-18,'akce']
+];
+function madenCevherYenile(){
+  if(!S3)return;
+  loots=loots.filter(function(l){if(l.cevher){S3.remove(l.mesh);return false;}return true;});
+  MADEN_CEVHER.forEach(function(c){
+    let geo,mat,col;
+    if(c.length&&c[2]==='deri'){col=0xB87333;geo=new THREE.DodecahedronGeometry(.62,0);mat=new THREE.MeshLambertMaterial({color:col,emissive:0x7a4410,emissiveIntensity:.55});}
+    else if(c[2]==='metal'){col=0xAAB4C0;geo=new THREE.DodecahedronGeometry(.62,0);mat=new THREE.MeshLambertMaterial({color:col,emissive:0x4a5260,emissiveIntensity:.55});}
+    else{col=0xC070FF;geo=new THREE.OctahedronGeometry(.55,0);mat=new THREE.MeshLambertMaterial({color:col,emissive:0x8a3cc8,emissiveIntensity:.9});}
+    const m=new THREE.Mesh(geo,mat);m.position.set(c[0],.35,c[1]);S3.add(m);
+    loots.push({id:newNetId(),mesh:m,type:c[2],col:col,x:c[0],z:c[1],vx:0,vz:0,collected:false,cevher:true});
+  });
+}

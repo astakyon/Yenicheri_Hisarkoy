@@ -30,6 +30,8 @@ function kameraGuncelle(){
   CAM.position.y+=(camHeight-CAM.position.y)*smooth;
   CAM.position.z+=((pl.z+Math.cos(camYawS)*camDist)-CAM.position.z)*smooth;
   CAM.lookAt(pl.x,0,pl.z);
+  // Maden'de sis kameradan ölçülür: uzaklaştıkça oyuncu kararmasın (yakın sınır oyuncunun hemen ötesinde)
+  if(currentMap==='maden'&&S3.fog){const d=Math.hypot(camDist,camHeight);S3.fog.near=d*.95+2;S3.fog.far=d*.95+40;}
   kapatanGuncelle();fenerAta();
 }
 function update(dt){
@@ -158,7 +160,7 @@ function kapatanGuncelle(){
   for(let i=0;i<kapatanlar.length;i++){
     const k=kapatanlar[i];
     const hit=_kRay.intersectBox(k.box,_kNokta);
-    const hedef=(hit&&CAM.position.distanceTo(_kNokta)<L-.5)?.2:1;
+    const hedef=(hit&&CAM.position.distanceTo(_kNokta)<L-.5)?.12:1;
     if(Math.abs(hedef-k.a)<.01)continue;
     k.a+=(hedef-k.a)*.2;
     const sey=k.a<.99;

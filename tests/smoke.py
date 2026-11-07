@@ -374,6 +374,17 @@ def main():
         check(not r['kapaliOda'], 'doğma noktasından tüm odalara ulaşılıyor (ulaşılamayan: %s)' % (r['kapaliOda'] or 'yok'))
         check(r['kayada'] == 0, 'düşman ve boss doğma noktaları kayanın içinde değil')
         check(r['tuzakKayada'] == 0, 'tuzaklar kayanın içinde değil')
+        r = pg.evaluate("""() => {
+          const once = loots.filter(l => l.cevher).length, m0 = metal;
+          pl.x = -22; pl.z = -8; return { once, m0 }; }""")
+        pg.wait_for_timeout(500)
+        r2 = pg.evaluate("() => ({ sonra: loots.filter(l => l.cevher).length, m1: metal, kayada: loots.filter(l => l.cevher && checkCollision(l.x, l.z, .3)).length, sis: S3.fog.far })")
+        check(r['once'] >= 15, 'Maden: yerde toplanabilir cevher ve taş var (%d)' % r['once'])
+        check(r2['m1'] > r['m0'] and r2['sonra'] < r['once'], 'Maden: cevhere yaklaşınca toplanıyor (metal %d → %d)' % (r['m0'], r2['m1']))
+        check(r2['kayada'] == 0, 'Maden: hiçbir cevher kayanın içinde değil')
+        pg.evaluate("camZoom = 2.2"); pg.wait_for_timeout(600)
+        sis = pg.evaluate("S3.fog.near")
+        check(sis > 40, 'Maden: kamera uzaklaşınca sis oyuncuyu karartmıyor (sis başlangıcı %d)' % sis)
         check(not errs, 'JavaScript hatası yok')
         ctx.close()
 
