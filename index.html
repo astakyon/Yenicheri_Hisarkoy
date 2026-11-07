@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.55">
+<meta name="game-version" content="v1.56">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.55</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.56</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -500,7 +500,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.55</div>
+      <div id="mVer">v1.56</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
@@ -901,7 +901,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.55';
+const VERSION='v1.56';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -926,7 +926,7 @@ let SAVE={
   daily:{date:'', quests:[], completed:[]},
   achievements:{},
   stats:{kills:0,bossKills:0,highWave:0,totalXp:0,totalGoldEarned:0,animalsHunted:0},
-  mapsUnlocked:{orman:false}
+  mapsUnlocked:{orman:true,maden:true}
 };
 function saveGame(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(SAVE));}catch(e){}}
 function loadGame(){
@@ -942,7 +942,7 @@ function loadGame(){
       SAVE.daily={...SAVE.daily,...(p.daily||{})};
       SAVE.achievements={...SAVE.achievements,...(p.achievements||{})};
       SAVE.stats={...SAVE.stats,...(p.stats||{})};
-      SAVE.mapsUnlocked={...SAVE.mapsUnlocked,...(p.mapsUnlocked||{})};
+      SAVE.mapsUnlocked={...SAVE.mapsUnlocked,...(p.mapsUnlocked||{}),orman:true,maden:true}; // v1.56: Orman ve Maden herkese açık
     }
   }catch(e){}
 }
@@ -3468,8 +3468,8 @@ function clientYenidenBaglan(){
 const WORLD_MAPS=[
   {id:'kisla',name:'Hisarköy Kışlası',icon:'🏰',desc:'Ana üs — geliştir, dinlen, hazırlan',unlocked:true,action:()=>{closeChapters();BEGIN('kisla');}},
   {id:'gorev', name:'Hisarköy Devriye',icon:'⚔',desc:'Haydutlara karşı savaş, akçe kazan',unlocked:true,action:()=>{closeChapters();BEGIN('gorev');}},
-  {id:'orman', name:'Av Ormanı',      icon:'🏹',desc:'Hayvan avla, deri ve et kazan',unlockKey:'orman',desc2:'Kervansaray\'dan satın al',action:()=>{closeChapters();BEGIN('orman');}},
-  {id:'maden', name:'Demir Madeni',   icon:'⛏', desc:'Metal ve nadir maden topla, tuzaklara dikkat et',unlockKey:'maden',desc2:'Kervansaray\'dan satın al',action:()=>{closeChapters();BEGIN('maden');}},
+  {id:'orman', name:'Av Ormanı',      icon:'🏹',desc:'Hayvan avla, deri ve et kazan',unlockKey:'orman',action:()=>{closeChapters();BEGIN('orman');}},
+  {id:'maden', name:'Demir Madeni',   icon:'⛏', desc:'Metal ve nadir maden topla, tuzaklara dikkat et',unlockKey:'maden',action:()=>{closeChapters();BEGIN('maden');}},
   {id:'tarim', name:'Tarım Ovası',    icon:'🌾',desc:'Köylüleri koru, tahıl kazan',unlocked:false,desc2:'Yakında açılacak'},
   {id:'sehir', name:'Yabancı Şehir',  icon:'🏙',desc:'Tehlikeli sokaklarda düzen sağla',unlocked:false,desc2:'Yakında açılacak'},
   {id:'saray', name:'Osmanlı Sarayı', icon:'👑',desc:'Son görev — Hain Veziri durdur',unlocked:false,desc2:'Yakında açılacak'},

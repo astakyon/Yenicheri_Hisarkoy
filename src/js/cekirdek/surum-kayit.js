@@ -26,7 +26,7 @@ let SAVE={
   daily:{date:'', quests:[], completed:[]},
   achievements:{},
   stats:{kills:0,bossKills:0,highWave:0,totalXp:0,totalGoldEarned:0,animalsHunted:0},
-  mapsUnlocked:{orman:false}
+  mapsUnlocked:{orman:true,maden:true}
 };
 function saveGame(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(SAVE));}catch(e){}}
 function loadGame(){
@@ -42,7 +42,7 @@ function loadGame(){
       SAVE.daily={...SAVE.daily,...(p.daily||{})};
       SAVE.achievements={...SAVE.achievements,...(p.achievements||{})};
       SAVE.stats={...SAVE.stats,...(p.stats||{})};
-      SAVE.mapsUnlocked={...SAVE.mapsUnlocked,...(p.mapsUnlocked||{})};
+      SAVE.mapsUnlocked={...SAVE.mapsUnlocked,...(p.mapsUnlocked||{}),orman:true,maden:true}; // v1.56: Orman ve Maden herkese açık
     }
   }catch(e){}
 }

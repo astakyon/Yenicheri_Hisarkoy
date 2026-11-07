@@ -1,5 +1,8 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.56 — Av Ormanı ve Demir Madeni baştan açık
+- Satın alma kilidi kalktı; eski kayıtlarda da açık yüklenir. Tarım Ovası, Yabancı Şehir ve Osmanlı Sarayı henüz yapılmadı ("yakında").
+
 ## v1.55 — Telefon: dikey menü, kamera düğmeleri, sürükleyerek kamera
 - Dikey telefon ana menüsü: başlık sığar, kahraman başlıkla düğmeler arasında, düğmeler alta.
 - Kamera döndürme düğmeleri mini haritanın hemen altında (can panelinin üstüne binmez).
