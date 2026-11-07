@@ -70,11 +70,8 @@ function buildMaden(){
   // ── Meşaleler (fener noktaları, koridor boyunca) ──
   madenTorches=[];
   [[0,28],[0,16],[0,0],[0,-16],[-22,-8],[-34,-8],[22,8],[34,8],[0,-30]].forEach(([x,z])=>{
-    const pole=new THREE.Mesh(new THREE.CylinderGeometry(.1,.1,1.6,6),new THREE.MeshLambertMaterial({color:0x2a1c10}));
-    pole.position.set(x,1.2,z);S3.add(pole);
-    const pt=new THREE.PointLight(0xFF7722,2.2,11);pt.position.set(x,2.4,z);S3.add(pt);
-    const fl=new THREE.Mesh(new THREE.SphereGeometry(.15,6,4),new THREE.MeshLambertMaterial({color:0xFF6611,emissive:0xFF4400,emissiveIntensity:2.2}));
-    fl.position.set(x,2.4,z);S3.add(fl);
+    yapiKoy('cevre_mesale',x,z);
+    const pt=new THREE.PointLight(0xFF7722,2.2,11);pt.position.set(x,3,z);S3.add(pt);
     madenTorches.push({light:pt,phase:Math.random()*Math.PI*2});
   });
 

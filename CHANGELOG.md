@@ -1,5 +1,10 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.49 — Editör ve haritalar yeni modellerle, karakter ayrıntıları
+- **Harita editörü:** bina, ağaç, çam, kaya, meşale, cami, hamam, kervansaray varlıkları model kütüphanesinden çizilir; yeni varlıklar: gözetleme kulesi, sur, çarşı tezgâhı, çit, çadır, talim kuklası, varil, sandık. Özel haritalar bu modellerle kurulur.
+- **Av Ormanı:** ağaçlar (meşe/çam karışık), kayalar ve avcı kulübesi; **Demir Madeni:** meşaleler model kütüphanesinden. Çarpışmalar ve rastgelelik sırası aynı (altın test değişmedi).
+- **Karakterler:** burun, kaş, kulak, etek şeridi, kuşak uçları, kemer tokası, düğmeler, kol manşeti, çizme burnu ve tabanı; yeniçeride fişeklik ve börk kaşıklığı.
+
 ## v1.48 — Döner kamera, harekete bakan karakter, yürüme/saldırı animasyonu, yapı modelleri
 - **Döner kamera:** fare sağ/orta tuşu basılı sürükle, Z / C tuşları (X sıfırlar), ekrandaki ⟲ ⟳ düğmeleri, dokunmatikte iki parmak döndürme (sıkıştırma yakınlaştırması ile birlikte). W/A/S/D, joystick, fare nişanı ve mini harita kameraya göre döner; ağa dünya koordinatı gider, çok oyunculu uyumu bozulmaz.
 - **Yüz yönü ayrı, nişan ayrı:** karakter yürürken hareket yönüne bakar (`face`); saldırı/ateş anında nişan yönüne döner ve yarım sn kilitli kalır (`aimLock`), sonra yürüyüş yönüne döner. Yüz yönü özetle (`f`) diğer oyunculara da gider; hayalet oyuncular yumuşak döner.

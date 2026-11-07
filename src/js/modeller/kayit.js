@@ -138,12 +138,20 @@ function _insanGeo(o){
   G.push([cyl(.10,.10,.14,6),o.ten||_TEN,0,1.93,0]);               // boyun
   G.push([sph(.27),o.ten||_TEN,0,2.14,0,0,0,0,1,1.05,1]);          // baş
   G.push([box(.06,.05,.04),0x1a1008,-.1,2.17,.24]);G.push([box(.06,.05,.04),0x1a1008,.1,2.17,.24]);   // gözler
+  G.push([box(.05,.08,.08),o.ten||_TEN,0,2.1,.27,.2]);                // burun
+  G.push([box(.1,.025,.03),o.kas||o.biyik||o.sakal||0x1a1008,-.1,2.24,.25]);G.push([box(.1,.025,.03),o.kas||o.biyik||o.sakal||0x1a1008,.1,2.24,.25]);   // kaşlar
+  G.push([sph(.06,6,5),o.ten||_TEN,-.27,2.13,0,0,0,0,.6,1,.8]);G.push([sph(.06,6,5),o.ten||_TEN,.27,2.13,0,0,0,0,.6,1,.8]);   // kulaklar
+  G.push([cyl(.575,.575,.06,12),o.yaka||o.sash,0,.47,0]);               // etek şeridi
+  G.push([box(.1,.42,.05),o.sash,.3,.9,.44,0,0,.15]);G.push([box(.1,.36,.05),o.sash,.22,.92,.45,0,0,-.2]);   // kuşak uçları
+  G.push([box(.12,.12,.05),0xD4A82A,0,1.1,.46]);                        // kemer tokası
+  [1.62,1.48,1.34].forEach(function(yy){G.push([sph(.028,5,4),o.yaka||0xD4A82A,0,yy,.385]);});   // düğmeler
+  if(o.fisek){G.push([box(.09,.95,.05),0x5a3a1a,0,1.45,.4,0,0,.62]);for(let i=0;i<4;i++)G.push([box(.07,.09,.07),0xC8B070,-.2+i*.13,1.28+i*.17,.43,0,0,.62]);}   // fişeklik
   if(o.biyik)G.push([box(.3,.06,.08),o.biyik,0,2.05,.25]);
   if(o.sakal)G.push([box(.3,.22,.1),o.sakal,0,1.95,.2,.2]);
   const sp=o.sapka;
   if(sp==='bork'){
     G.push([cyl(.2,.3,.55),o.sapkaC,0,2.55,0]);G.push([cyl(.31,.31,.1),0xD4A82A,0,2.34,0]);
-    G.push([box(.2,.55,.07),o.sapkaC,0,2.36,-.32,.25]);G.push([box(.12,.12,.04),0xD4A82A,0,2.5,.31]);
+    G.push([box(.2,.55,.07),o.sapkaC,0,2.36,-.32,.25]);G.push([box(.12,.12,.04),0xD4A82A,0,2.5,.31]);G.push([cyl(.035,.035,.22,5),0xC0C0C0,.05,2.5,.33,.35]);   // kaşıklık
   }else if(sp==='kask'){
     G.push([_g('SphereGeometry',.32,10,6,0,Math.PI*2,0,Math.PI/2),o.sapkaC,0,2.26,0]);G.push([_g('ConeGeometry',.05,.28,6),0xC0C0C0,0,2.66,0]);
     G.push([box(.06,.22,.04),o.sapkaC,0,2.12,.3]);
@@ -158,9 +166,9 @@ function _insanGeo(o){
   if(o.tufekSirt){G.push([box(.07,.07,1.0),0x5a3a1a,.1,1.55,-.36,.5,0,0]);}
   if(o.taç)G.push([_g('ConeGeometry',.26,.3,6),0xFFD700,0,2.8,0]);
   const govde=_birles(G);
-  const bc=[[cyl(.2,.15,.55,8),o.sal,0,-.28,0],[cyl(.12,.11,.34,8),o.sal2||o.sal,0,-.62,0],[box(.27,.18,.42),o.bot,0,-.82,.06]];
+  const bc=[[cyl(.2,.15,.55,8),o.sal,0,-.28,0],[cyl(.12,.11,.34,8),o.sal2||o.sal,0,-.62,0],[cyl(.15,.15,.12,8),o.bot,0,-.72,0],[box(.27,.18,.42),o.bot,0,-.82,.06],[box(.25,.1,.16),0x1a0e04,0,-.86,.22],[box(.29,.04,.44),0x1a0e04,0,-.92,.06]];
   const bacak=_birles(bc);
-  const kolA=[[cyl(.1,.09,.5,8),o.gov,0,-.25,0],[sph(.09,6,5),_TEN,0,-.53,0]];
+  const kolA=[[cyl(.1,.09,.5,8),o.gov,0,-.25,0],[cyl(.105,.105,.07,8),o.yaka||o.sash,0,-.47,0],[sph(.09,6,5),_TEN,0,-.55,0]];
   const kolSol=kolA.slice();
   if(o.kalkan){kolSol.push([cyl(.34,.34,.06,12),o.kalkan,-.14,-.38,.12,0,0,Math.PI/2]);kolSol.push([sph(.09,6,5),0xD4A82A,-.19,-.38,.12]);}
   let kolSag=kolA.slice();
@@ -187,7 +195,7 @@ function _insanYap(o,s){
   return g;
 }
 
-const _OY={id:'yeniceri',etek:0x8B1818,gov:0x9B2020,sash:0x2a3f8a,yaka:0xD4A82A,sal:0x2a3f8a,sal2:0xE8E0D0,bot:0x2a1000,biyik:0x3a2000,sapka:'bork',sapkaC:0xE8DCC0,silah:'yatagan',tufekSirt:true,adliBicak:true};
+const _OY={id:'yeniceri',etek:0x8B1818,gov:0x9B2020,sash:0x2a3f8a,yaka:0xD4A82A,sal:0x2a3f8a,sal2:0xE8E0D0,bot:0x2a1000,biyik:0x3a2000,sapka:'bork',sapkaC:0xE8DCC0,silah:'yatagan',tufekSirt:true,adliBicak:true,fisek:true};
 function _yeniceriYap(){const g=_insanYap(_OY,1);return g;}
 modelTanimla('yeniceri',{ad:'Yeniçeri (oyuncu)',grup:'Karakter',boy:2.82,yap:_yeniceriYap});
 

@@ -33,20 +33,14 @@ function buildOrman(){
     const tx=Math.cos(a)*r,tz=Math.sin(a)*r;
     if(Math.hypot(tx,tz)<4)continue; // merkez boş kalsın (oyuncu spawn)
     const th=1.8+Math.random()*1.2;
-    const tr=new THREE.Mesh(new THREE.CylinderGeometry(.22,.3,th,7),new THREE.MeshLambertMaterial({color:0x4a3018}));
-    tr.position.set(tx,th/2,tz);tr.castShadow=true;S3.add(tr);
-    const lv=new THREE.Mesh(new THREE.SphereGeometry(1.6+Math.random()*.8,9,7),new THREE.MeshLambertMaterial({color:0x2d5a20}));
-    lv.position.set(tx,th+1.3,tz);lv.castShadow=true;S3.add(lv);
+    Math.random();   // (eski yaprak boyu çekilişi: altın test sırası değişmesin)
+    const agac=modelYap(i%3===0?'cevre_cam':'cevre_agac',{h:th+2.2});agac.position.set(tx,0,tz);agac.rotation.y=i*2.4;S3.add(agac);
     addCircleCollider(tx,tz,0.5);
     ormanTrees.push({x:tx,z:tz});
   }
 
   // ── Avcı Kulübesi (giriş, güneybatı) ──
-  bx(-32,2,32,9,4,7,0xC8A050);
-  const hutRoof=new THREE.Mesh(new THREE.ConeGeometry(7,3,4),new THREE.MeshLambertMaterial({color:0x6B3A15}));
-  hutRoof.rotation.y=Math.PI/4;hutRoof.position.set(-32,5,32);hutRoof.castShadow=true;S3.add(hutRoof);
-  const hutDoor=new THREE.Mesh(new THREE.BoxGeometry(1.6,2.6,.2),new THREE.MeshLambertMaterial({color:0x3a1800}));
-  hutDoor.position.set(-32,1.3,28.5);S3.add(hutDoor);
+  yapiKoy('yapi_ev',-32,32,{w:9,d:7});
 
   // ── Mağara (doğu — Boss alanı) ──
   bx(34,3,0,10,7,12,0x6B6258,null,true);
@@ -67,8 +61,8 @@ function buildOrman(){
 
   // Kayalar (dekoratif, bazı collider'lı)
   [[10,-10,1.6],[-8,15,1.3],[15,-25,1.8],[5,25,1.4],[-20,-15,1.5]].forEach(([x,z,s])=>{
-    const rock=new THREE.Mesh(new THREE.DodecahedronGeometry(s,0),new THREE.MeshLambertMaterial({color:0x787068}));
-    rock.position.set(x,s*.6,z);rock.rotation.set(Math.random(),Math.random(),Math.random());rock.castShadow=true;S3.add(rock);
+    Math.random();Math.random();Math.random();   // eski dönüş çekilişleri
+    const rock=modelYap('cevre_kaya',{s:s*.85});rock.position.set(x,0,z);rock.rotation.y=x+z;S3.add(rock);
     addCircleCollider(x,z,s*0.8);
   });
 

@@ -70,6 +70,54 @@ const ASSET_DEFS={
   zemin_cim:{cat:'zemin',name:'Çim',icon:'🟩',w:4,d:4,
     build3D:(x,z)=>{const g=new THREE.Mesh(new THREE.PlaneGeometry(4,4),new THREE.MeshLambertMaterial({color:0x5a8c3a}));g.rotation.x=-Math.PI/2;g.position.set(x,.005,z);g.receiveShadow=true;S3.add(g);return g;}},
 };
+
+// ── GERÇEKÇİ MODELLER: editör varlıkları model kütüphanesinden gelir ──
+// [asset, model, ızgara genişlik, derinlik, model seçenekleri, çarpışma (w,d) | 'r'=yuvarlak]
+(function(){
+  const T=[
+    ['bina_kucuk','yapi_ev',4,4,{w:4,d:4},[4,4]],
+    ['bina_orta','yapi_ev',8,7,{w:8,d:7},[8,7]],
+    ['bina_buyuk','yapi_kisla',12,10,{w:12,d:10},[12,10]],
+    ['kulube','yapi_ev',9,7,{w:9,d:7},[9,7]],
+    ['yapi_armory','yapi_kisla',13,11,{w:13,d:11},[13,11]],
+    ['yapi_cebehane','yapi_kisla',14,9,{w:14,d:9},[14,9]],
+    ['yapi_camii','yapi_cami',9,9,{w:9,d:9},[9,9]],
+    ['yapi_hamam','yapi_hamam',16,16,{w:16,d:16},[16,16]],
+    ['yapi_kervansaray','yapi_kervansaray',25,14,{w:25,d:14},[25,14]],
+    ['agac','cevre_agac',1,1,{h:4.2},['r',.5]],
+    ['cam_agac','cevre_cam',1,1,{h:5.2},['r',.45]],
+    ['kaya','cevre_kaya',2,2,{s:1.2},['r',1.2]],
+    ['mesale','cevre_mesale',1,1,{},null]
+  ];
+  T.forEach(function(t){
+    const d=ASSET_DEFS[t[0]];if(!d||!t[1])return;
+    d.w=t[2];d.d=t[3];
+    d.build3D=function(x,z,rot,opt){
+      const g=modelYap(t[1],t[4]);g.position.set(x,0,z);S3.add(g);
+      const c=t[5];if(c){if(c[0]==='r')addCircleCollider(x,z,c[1]);else addCollider(x,z,c[0],c[1]);}
+      if(t[1]==='cevre_mesale'){const pt=new THREE.PointLight(0xFF9933,3,10);pt.position.set(x,3,z);S3.add(pt);torches.push({light:pt,phase:Math.random()*Math.PI*2});}
+      return g;
+    };
+  });
+  // Yeni varlıklar
+  const Y={
+    kule:{cat:'bina',name:'Gözetleme Kulesi',icon:'🗼',w:5,d:5,m:'yapi_kule',op:{},c:['r',2.2]},
+    sur:{cat:'bina',name:'Sur Parçası',icon:'🧱',w:10,d:2,m:'yapi_sur',op:{w:10},c:[10,1.6]},
+    dukkan:{cat:'bina',name:'Çarşı Tezgâhı',icon:'🏪',w:4,d:2,m:'yapi_dukkan',op:{},c:[3.4,1.8]},
+    cit:{cat:'doga',name:'Tahta Çit',icon:'🚧',w:6,d:1,m:'yapi_cit',op:{w:6},c:[6,.3]},
+    cadir:{cat:'bina',name:'Çadır',icon:'⛺',w:5,d:5,m:'cevre_cadir',op:{r:2.2},c:['r',2]},
+    talim:{cat:'npc',name:'Talim Kuklası',icon:'🎯',w:1,d:1,m:'yapi_talim',op:{},c:['r',.5]},
+    varil:{cat:'doga',name:'Varil',icon:'🛢',w:1,d:1,m:'cevre_varil',op:{},c:['r',.5]},
+    sandik:{cat:'doga',name:'Sandık',icon:'📦',w:1,d:1,m:'cevre_sandik',op:{},c:[1,.7]}
+  };
+  Object.keys(Y).forEach(function(k){
+    const e=Y[k];
+    ASSET_DEFS[k]={cat:e.cat,name:e.name,icon:e.icon,w:e.w,d:e.d,build3D:function(x,z){
+      const g=modelYap(e.m,e.op);g.position.set(x,0,z);S3.add(g);
+      if(e.c[0]==='r')addCircleCollider(x,z,e.c[1]);else addCollider(x,z,e.c[0],e.c[1]);
+      return g;}};
+  });
+})();
 const ASSET_CATEGORIES=[
   {id:'bina',name:'Binalar',icon:'🏠'},
   {id:'doga',name:'Doğa',icon:'🌳'},
