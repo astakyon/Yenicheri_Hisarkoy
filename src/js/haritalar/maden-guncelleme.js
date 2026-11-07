@@ -14,6 +14,7 @@ function updateMaden(dt){
 
   // Patlama tuzağı kontrolü
   checkMadenTraps();
+  madenEtkilesim();
 
   // Loot manyeti
   const magDist=getMagnetDist();

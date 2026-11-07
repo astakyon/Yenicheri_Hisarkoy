@@ -1,5 +1,10 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.60 — Maden: kazma ile kazılabilir damarlar, çıkış
+- **Kazılabilir damarlar:** 22 nokta; Kaya (akçe), Bakır, Demir, Gümüş ve Altın damarı. Yakın saldırı kazma gibi vurur (kaya 3, bakır 4, demir 5, gümüş 5, altın 7 vuruş); kazılınca ganimet düşer (bakır/demir 3'er, gümüş 3, altın 6 akçe). Yaklaşınca ipucu yazısı ad ve kalan dayanıklılığı gösterir. Her dalgada yenilenir. Eski süs kaya yığınları artık kazılabilir kaya.
+- **Çıkış:** giriş koridorunun ucunda yeşil çıkış halkası ve "ÇIKIŞ — KIŞLA" yazısı; yaklaşınca [E] / "Çık" düğmesi. Sağ çıkınca havuzdaki akçe kışlaya aktarılır (duraklat menüsündeki "Kışlaya Dön" havuzu kaybettirir).
+- Test: damar türleri, ulaşılabilirlik, kazma, çıkış.
+
 ## v1.59 — Maden: toplanabilir cevher, kamera görüşü
 - **Cevherler artık toplanır:** bakır, demir ve mor taşlar yerde ganimet olarak durur (yaklaşınca toplanır, mıknatısla çekilir); 23 nokta, her dalgada yenilenir. Önceden yalnızca süstü.
 - **Kamera:** kaya blokları 7 → 4.6 yükseklik; saydamlaşma daha belirgin (%20 → %12); ahşap destek kirişleri de oyuncunun önüne geçince saydamlaşır; Maden'de sis kameraya uzaklığa göre ayarlanır (uzaklaşınca oyuncu kararmaz).

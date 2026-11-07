@@ -385,6 +385,19 @@ def main():
         pg.evaluate("camZoom = 2.2"); pg.wait_for_timeout(600)
         sis = pg.evaluate("S3.fog.near")
         check(sis > 40, 'Maden: kamera uzaklaşınca sis oyuncuyu karartmıyor (sis başlangıcı %d)' % sis)
+        r4 = pg.evaluate("""() => { enemies.length = 0;
+          const say = madenDamarlar.length, turler = [...new Set(madenDamarlar.map(n => n.tur))].sort().join(',');
+          const kapali = madenDamarlar.filter(n => { for (let a = 0; a < 6.3; a += .8) if (!checkCollision(n.x + Math.cos(a) * 1.9, n.z + Math.sin(a) * 1.9, .5)) return false; return true; }).length;
+          const n = madenDamarlar.find(d => d.tur === 'altin'); pl.x = n.x; pl.z = n.z + 2.2; pl.ang = -Math.PI / 2; pl.face = pl.ang; pl.hp = 100;
+          const l0 = loots.length, h0 = n.hp; let i = 0; for (; i < 12 && n.hp > 0; i++) { pl.atkCd = 0; doMelee(pl); }
+          return { say, turler, kapali, h0, hp: n.hp, ganimet: loots.length - l0, kalan: madenDamarlar.length }; }""")
+        check(r4['say'] >= 20 and r4['turler'] == 'altin,bakir,demir,gumus,kaya', 'Maden: kazılabilir damar var (%d; %s)' % (r4['say'], r4['turler']))
+        check(r4['kapali'] == 0, 'Maden: her damara yaklaşılabiliyor')
+        check(r4['hp'] <= 0 and r4['ganimet'] >= 3 and r4['kalan'] == r4['say'] - 1, 'Maden: kazma vuruşuyla altın damarı kazıldı, ganimet düştü (%d vuruş hakkı, %d ganimet)' % (r4['h0'], r4['ganimet']))
+        pg.evaluate("() => { pl.x = 0; pl.z = 34; }"); pg.wait_for_timeout(300)
+        yakin = pg.evaluate("pl.nearZone && pl.nearZone.id")
+        pg.keyboard.press('e'); pg.wait_for_timeout(1000)
+        check(yakin == 'madenCikis' and pg.evaluate('currentMap') == 'kisla', 'Maden: çıkışta E ile Kışla\'ya dönülüyor')
         check(not errs, 'JavaScript hatası yok')
         ctx.close()
 

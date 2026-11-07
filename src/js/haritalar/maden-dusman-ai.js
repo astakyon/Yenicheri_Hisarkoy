@@ -14,7 +14,7 @@ function spawnEskiya(isBoss){
 
 function spawnMadenWave(n){
   waveActive=true;
-  madenCevherYenile();   // cevherler ve taşlar her dalgada yenilenir
+  madenCevherYenile();madenDamarYenile();   // cevherler ve taşlar her dalgada yenilenir
   const isBoss=n%5===0;
   const cnt=isBoss?1:3+Math.floor(n*1.4);
   showWave(isBoss?'⚠ OCAKBAŞI EŞKIYA UYANDI!':'⛏ Dalga '+n+' — '+cnt+' Eşkıya');
