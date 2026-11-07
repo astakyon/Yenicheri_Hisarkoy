@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.63">
+<meta name="game-version" content="v1.64">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.63</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.64</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -495,6 +495,17 @@ canvas{display:block;position:absolute;top:0;left:0;}
 @media (max-height:380px) and (orientation:landscape){
   #camBtns{top:calc(50px*var(--ui));right:calc(112px*var(--ui));width:auto;}
 }
+
+/* v1.64: karakter paneli ekrana sığar; başlık ve Tamam düğmesi hep görünür */
+#gorunumPanel{zoom:1;width:min(400px,94vw);max-height:calc(100vh - 16px);max-height:calc(100dvh - 16px);display:flex;flex-direction:column;padding:12px 16px;}
+#gorunumIc{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding-right:4px;}
+#gorunumPanel .gHead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-shrink:0;margin-bottom:6px;}
+#gorunumPanel .gFoot{display:flex;gap:8px;flex-shrink:0;margin-top:8px;}
+#gorunumPanel .gFoot .panBtn{margin:0;padding:12px 0;font-size:14px;}
+@media (orientation:portrait){
+  #gorunumBox{align-items:flex-end!important;justify-content:center!important;padding:0 0 8px!important;}
+  #gorunumPanel{max-height:56vh;max-height:56dvh;}
+}
 </style>
 </head>
 <body>
@@ -519,7 +530,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.63</div>
+      <div id="mVer">v1.64</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
@@ -539,14 +550,11 @@ canvas{display:block;position:absolute;top:0;left:0;}
 
   <!-- ── AYARLAR PANELİ ── -->
   <!-- ── KARAKTER ÖZELLEŞTİRME ── -->
-  <div id="gorunumBox" style="display:none;position:absolute;inset:0;z-index:22;background:rgba(0,0,0,.35);align-items:center;justify-content:flex-start;padding-left:3vw;">
-    <div class="panel" id="gorunumPanel" style="width:min(400px,94vw);max-height:92vh;overflow-y:auto;">
-      <div class="panTitle">🎨 KARAKTERİM</div>
-      <div class="panSub">RENK, BIYIK VE BÖRK</div>
+  <div id="gorunumBox" style="display:none;position:absolute;inset:0;z-index:22;background:rgba(0,0,0,.2);align-items:center;justify-content:flex-start;padding-left:3vw;touch-action:none;">
+    <div class="panel" id="gorunumPanel">
+      <div class="gHead"><div><div class="panTitle">🎨 KARAKTERİM</div><div class="panSub" style="margin-bottom:0">SÜRÜKLE: DÖNDÜR · RENK, BIYIK, BÖRK</div></div><button class="zmX" onclick="gorunumKapat()" aria-label="Kapat">✕</button></div>
       <div id="gorunumIc"></div>
-      <div class="divider"></div>
-      <button class="panBtn" onclick="gorunumSifirla()">↺ Varsayılana dön</button>
-      <button class="panBtn grn" onclick="gorunumKapat()">✔ Tamam</button>
+      <div class="gFoot"><button class="panBtn" style="flex:1" onclick="gorunumSifirla()">↺ Sıfırla</button><button class="panBtn grn" style="flex:1" onclick="gorunumKapat()">✔ Tamam</button></div>
     </div>
   </div>
 
@@ -933,7 +941,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.63';
+const VERSION='v1.64';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -2000,7 +2008,7 @@ function menuKahramanCiz(){
   const w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;
   if(w!==HERO.w||h!==HERO.h){HERO.w=w;HERO.h=h;HERO.r.setPixelRatio(Math.min(2,window.devicePixelRatio||1));HERO.r.setSize(w,h,false);HERO.c.aspect=w/h;HERO.c.updateProjectionMatrix();}
   HERO.t+=.016;
-  HERO.g.rotation.y=-.5+Math.sin(HERO.t*.5)*.45;
+  HERO.g.rotation.y=(HERO.manuel!=null)?HERO.manuel:-.5+Math.sin(HERO.t*.5)*.45;
   modelAnim(HERO.g,0,0,0,0);
   HERO.c.position.set(0,1.9,7.2);HERO.c.lookAt(0,1.55,0);
   HERO.r.render(HERO.s,HERO.c);
@@ -2059,8 +2067,15 @@ function gorunumCiz(){
   });
   ic.innerHTML=h;
 }
-function gorunumAc(){document.getElementById('gorunumBox').style.display='flex';gorunumCiz();}
-function gorunumKapat(){document.getElementById('gorunumBox').style.display='none';}
+function gorunumAc(){document.getElementById('gorunumBox').style.display='flex';HERO.manuel=HERO.g?HERO.g.rotation.y:-.5;gorunumCiz();}
+function gorunumKapat(){document.getElementById('gorunumBox').style.display='none';HERO.manuel=null;}
+// Panelin dışında (boş alanda) sürükleyerek karakteri istediğin yöne döndür
+(function(){
+  const kutu=document.getElementById('gorunumBox');if(!kutu)return;let x0=null;
+  kutu.addEventListener('pointerdown',function(e){if(e.target.closest('#gorunumPanel'))return;x0=e.clientX;try{kutu.setPointerCapture(e.pointerId);}catch(_){}});
+  kutu.addEventListener('pointermove',function(e){if(x0===null)return;HERO.manuel=(HERO.manuel||0)+(e.clientX-x0)*.012;x0=e.clientX;});
+  const bit=function(){x0=null;};kutu.addEventListener('pointerup',bit);kutu.addEventListener('pointercancel',bit);
+})();
 function gorunumYenile(){
   if(typeof HERO!=='undefined'&&HERO.s&&HERO.g){HERO.s.remove(HERO.g);HERO.g=modelYap('yeniceri');HERO.s.add(HERO.g);}
 }

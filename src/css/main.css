@@ -480,3 +480,14 @@ canvas{display:block;position:absolute;top:0;left:0;}
 @media (max-height:380px) and (orientation:landscape){
   #camBtns{top:calc(50px*var(--ui));right:calc(112px*var(--ui));width:auto;}
 }
+
+/* v1.64: karakter paneli ekrana sığar; başlık ve Tamam düğmesi hep görünür */
+#gorunumPanel{zoom:1;width:min(400px,94vw);max-height:calc(100vh - 16px);max-height:calc(100dvh - 16px);display:flex;flex-direction:column;padding:12px 16px;}
+#gorunumIc{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding-right:4px;}
+#gorunumPanel .gHead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-shrink:0;margin-bottom:6px;}
+#gorunumPanel .gFoot{display:flex;gap:8px;flex-shrink:0;margin-top:8px;}
+#gorunumPanel .gFoot .panBtn{margin:0;padding:12px 0;font-size:14px;}
+@media (orientation:portrait){
+  #gorunumBox{align-items:flex-end!important;justify-content:center!important;padding:0 0 8px!important;}
+  #gorunumPanel{max-height:56vh;max-height:56dvh;}
+}

@@ -436,6 +436,24 @@ def main():
         check(not errs, 'JavaScript hatası yok')
         ctx.close()
 
+        print('Karakter paneli ekrana sığar, sürükleyince karakter döner (v1.64)')
+        for (w, h) in ((1366, 768), (844, 390), (412, 800)):
+            ctx, pg, errs = yeni_sayfa(w, h)
+            pg.wait_for_timeout(600); pg.evaluate("gorunumAc()"); pg.wait_for_timeout(500)
+            ok = pg.evaluate("""() => { const out = []; ['#gorunumPanel .gFoot .grn', '#gorunumPanel .zmX'].forEach(sel => { const b = document.querySelector(sel); const r = b.getBoundingClientRect();
+              const e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); if (r.left < 0 || r.top < 0 || r.right > innerWidth || r.bottom > innerHeight || !(b === e || b.contains(e))) out.push(sel); });
+              const pr = document.getElementById('gorunumPanel').getBoundingClientRect(); if (pr.bottom > innerHeight + 1 || pr.top < -1) out.push('panel'); return out; }""")
+            check(not ok, '%dx%d: panel ve Tamam/Kapat düğmeleri ekranda, tıklanabilir (sorunlu: %s)' % (w, h, ok or 'yok'))
+            a0 = pg.evaluate("HERO.manuel")
+            bx, by = (w / 2, h * .2) if h > w else (w - 60, h / 2)
+            pg.mouse.move(bx, by); pg.mouse.down(); pg.mouse.move(bx - 100, by, steps=6); pg.mouse.up()
+            a1 = pg.evaluate("HERO.manuel")
+            check(abs(a1 - a0) > .5, '%dx%d: boş alanda sürükleyince karakter dönüyor (%.2f → %.2f)' % (w, h, a0, a1))
+            pg.click('#gorunumPanel .gFoot .grn'); pg.wait_for_timeout(200)
+            check(pg.evaluate("document.getElementById('gorunumBox').style.display") == 'none' and pg.evaluate("HERO.manuel") is None, '%dx%d: Tamam paneli kapatıyor' % (w, h))
+            check(not errs, 'JavaScript hatası yok')
+            ctx.close()
+
         print('Kapat düğmeleri ekranda ve tıklanabilir (v1.58)')
         for (w, h) in ((1366, 768), (844, 390), (412, 800)):
             ctx, pg, errs = yeni_sayfa(w, h)

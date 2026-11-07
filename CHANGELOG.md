@@ -1,5 +1,9 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.64 — Karakter paneli düzeltmesi
+- Karakter paneli ekrana sığar (telefonda taşıyordu): sabit başlık + ✕, kaydırılan seçenekler, hep görünen Sıfırla / Tamam.
+- Panelin dışındaki boş alanda sürükleyerek karakteri sağa sola istediğin kadar döndürebilirsin.
+
 ## v1.63 — Çiftlik haritası (ek, biç, sat)
 - **Çiftlik** (🌱): düşmansız tarım haritası, 12 parsel. Tohum rafında ekin seç (Arpa 3 akçe/30 sn, Buğday 5/60 sn, Pamuk 9/100 sn, Üzüm 14/150 sn), parsele ek, olgunlaşınca [E] ile biç, pazar tezgâhında sat (satış 8 / 16 / 30 / 48 akçe). Doğrudan ana akçeye yazılır.
 - Parseller gerçek zamanla büyür ve kayıtlıdır: oyundan çıksan da büyümeye devam eder.

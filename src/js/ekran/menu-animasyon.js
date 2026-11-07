@@ -88,7 +88,7 @@ function menuKahramanCiz(){
   const w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;
   if(w!==HERO.w||h!==HERO.h){HERO.w=w;HERO.h=h;HERO.r.setPixelRatio(Math.min(2,window.devicePixelRatio||1));HERO.r.setSize(w,h,false);HERO.c.aspect=w/h;HERO.c.updateProjectionMatrix();}
   HERO.t+=.016;
-  HERO.g.rotation.y=-.5+Math.sin(HERO.t*.5)*.45;
+  HERO.g.rotation.y=(HERO.manuel!=null)?HERO.manuel:-.5+Math.sin(HERO.t*.5)*.45;
   modelAnim(HERO.g,0,0,0,0);
   HERO.c.position.set(0,1.9,7.2);HERO.c.lookAt(0,1.55,0);
   HERO.r.render(HERO.s,HERO.c);

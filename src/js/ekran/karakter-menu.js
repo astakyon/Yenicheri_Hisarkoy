@@ -32,8 +32,15 @@ function gorunumCiz(){
   });
   ic.innerHTML=h;
 }
-function gorunumAc(){document.getElementById('gorunumBox').style.display='flex';gorunumCiz();}
-function gorunumKapat(){document.getElementById('gorunumBox').style.display='none';}
+function gorunumAc(){document.getElementById('gorunumBox').style.display='flex';HERO.manuel=HERO.g?HERO.g.rotation.y:-.5;gorunumCiz();}
+function gorunumKapat(){document.getElementById('gorunumBox').style.display='none';HERO.manuel=null;}
+// Panelin dışında (boş alanda) sürükleyerek karakteri istediğin yöne döndür
+(function(){
+  const kutu=document.getElementById('gorunumBox');if(!kutu)return;let x0=null;
+  kutu.addEventListener('pointerdown',function(e){if(e.target.closest('#gorunumPanel'))return;x0=e.clientX;try{kutu.setPointerCapture(e.pointerId);}catch(_){}});
+  kutu.addEventListener('pointermove',function(e){if(x0===null)return;HERO.manuel=(HERO.manuel||0)+(e.clientX-x0)*.012;x0=e.clientX;});
+  const bit=function(){x0=null;};kutu.addEventListener('pointerup',bit);kutu.addEventListener('pointercancel',bit);
+})();
 function gorunumYenile(){
   if(typeof HERO!=='undefined'&&HERO.s&&HERO.g){HERO.s.remove(HERO.g);HERO.g=modelYap('yeniceri');HERO.s.add(HERO.g);}
 }
