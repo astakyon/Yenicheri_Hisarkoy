@@ -24,6 +24,16 @@ def peer_source():
     return None
 
 
+def ornek_dizini():
+    """three r128 'examples/js' (GLTFLoader, GLTFExporter). THREE_EXAMPLES ya da THREE_JS yanındaki node_modules/three/examples/js."""
+    for p in (os.environ.get('THREE_EXAMPLES'),
+              os.path.join(os.path.dirname(os.path.dirname(os.environ.get('THREE_JS', ''))), 'examples', 'js') if os.environ.get('THREE_JS') else None,
+              os.path.join(ROOT, 'node_modules', 'three', 'examples', 'js')):
+        if p and os.path.isdir(p):
+            return p
+    return None
+
+
 def three_source():
     for p in (os.environ.get('THREE_JS'),
               os.path.join(ROOT, 'node_modules', 'three', 'build', 'three.min.js'),
@@ -51,8 +61,16 @@ def yonlendirici():
     three = three_source()
     peer = peer_source()
 
+    ornek = ornek_dizini()
+
     def route(r):
         u = r.request.url
+        if ornek and 'three@0.128.0/examples/js/' in u:
+            yol = os.path.join(ornek, u.split('examples/js/')[1].split('?')[0])
+            if os.path.isfile(yol):
+                with open(yol, encoding='utf-8') as f:
+                    r.fulfill(status=200, content_type='application/javascript', body=f.read())
+                return
         if three and 'three.min.js' in u:
             r.fulfill(status=200, content_type='application/javascript', body=three)
         elif peer and 'peerjs' in u and u.endswith('.js'):

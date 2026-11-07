@@ -32,8 +32,8 @@ function updateMaden(dt){
 
   // ── Eşkıya AI — her zaman saldırgan, karanlıkta oyuncuyu arar ──
   enemies.forEach(function(en){
-    if(en.hurtT>0){en.hurtT--;en.mesh.children[0].material.color.setHex(0xff3333);}
-    else{en.mesh.children[0].material.color.setHex(en.isBoss?0x5a1010:0x4a3828);}
+    if(en.hurtT>0){en.hurtT--;modelVurus(en.govde,true);}
+    else{modelVurus(en.govde,false,en.isBoss?0x5a1010:0x4a3828);}
     const tp=nearestPlayer(en.x,en.z);const dx=tp.x-en.x,dz=tp.z-en.z,dist=Math.hypot(dx,dz);
     const detectRange=en.isBoss?30:10; // dar tünellerde sınırlı görüş
 

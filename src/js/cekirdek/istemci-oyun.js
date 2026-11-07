@@ -10,20 +10,6 @@ function CLIENT_eylem(kind,data){
   CLIENT.tr.send(Object.assign({t:'act',k:kind},data||{}));
 }
 
-// Düşman/mermi/ganimet için sade görüntü nesneleri (istemcide gerçek modeller yerine)
-const HAYALET_RENK={d:0x6b2a2a,kurt:0x555555,ayi:0x4a3020,tilki:0xc0702a,geyik:0x9a7040,tavsan:0xcfcfcf,domuz:0x6a4a3a,eskiya:0x3a3a4a};
-function hayaletDusman(k,boss){
-  const g=new THREE.Group();
-  const col=HAYALET_RENK[k]||0x7a3a3a,s=boss?1.7:1;
-  const body=new THREE.Mesh(new THREE.BoxGeometry(.8*s,1.3*s,.6*s),new THREE.MeshLambertMaterial({color:col}));body.position.y=.9*s;g.add(body);
-  const head=new THREE.Mesh(new THREE.BoxGeometry(.5*s,.45*s,.45*s),new THREE.MeshLambertMaterial({color:0xC8956C}));head.position.y=1.8*s;g.add(head);
-  const bg=new THREE.Mesh(new THREE.PlaneGeometry(1.1*s,.14),new THREE.MeshBasicMaterial({color:0x000000,side:THREE.DoubleSide}));bg.position.y=2.5*s;g.add(bg);
-  const fl=new THREE.Mesh(new THREE.PlaneGeometry(1.1*s,.14),new THREE.MeshBasicMaterial({color:0xcc2222,side:THREE.DoubleSide}));fl.position.set(0,2.5*s,.01);g.add(fl);
-  g.userData={bg:bg,fl:fl,w:1.1*s};
-  return g;
-}
-function hayaletKure(renk,r){return new THREE.Mesh(new THREE.SphereGeometry(r,6,5),new THREE.MeshBasicMaterial({color:renk}));}
-
 // Odaya katılınca: host'un haritasını kur, kendi karakterini koy
 function joinAsClient(transport,hos){
   const harita=hos.map;
@@ -117,20 +103,23 @@ function hayaletEsitle(harita,liste,yarat,guncelle){
 }
 function clientCiz(v){
   const H=CLIENT.hayalet;
-  hayaletEsitle(H.p,v.p.filter(function(q){return q.id!==CLIENT.id;}),function(){const g=createPlayerMesh();return g;},function(g,o){
+  hayaletEsitle(H.p,v.p.filter(function(q){return q.id!==CLIENT.id;}),function(){return modelYap('yeniceri');},function(g,o){
     const dx=o.x-g.position.x,dz=o.z-g.position.z;
     if(dx*dx+dz*dz>1e-4)g.rotation.y=Math.atan2(dx,dz);
     g.position.set(o.x,0,o.z);
   });
-  hayaletEsitle(H.e,v.e,function(o){return hayaletDusman(o.k,o.b);},function(g,o){
+  hayaletEsitle(H.e,v.e,function(o){return modelYap(modelKimligi(o.k,o.b),{cubuk:true});},function(g,o){
     const dx=o.x-g.position.x,dz=o.z-g.position.z;
     if(dx*dx+dz*dz>1e-4)g.rotation.y=Math.atan2(dx,dz);
     g.position.set(o.x,0,o.z);
-    const f=Math.max(.001,o.hp/o.mh);g.userData.fl.scale.x=f;g.userData.fl.position.x=(f-1)*g.userData.w/2;
-    g.userData.bg.lookAt(CAM.position);g.userData.fl.lookAt(CAM.position);
+    if(g.userData.hpFl){
+      const f=Math.max(.001,o.hp/o.mh),w=((MODEL_KAYIT.harita[modelKimligi(o.k,o.b)]||{}).bar||{w:1}).w;
+      g.userData.hpFl.scale.x=f;g.userData.hpFl.position.x=(f-1)*w/2;
+      g.userData.hpBg.lookAt(CAM.position);g.userData.hpFl.lookAt(CAM.position);
+    }
   });
-  hayaletEsitle(H.b,v.b,function(){const g=hayaletKure(0xFFFDE7,.1);g.userData.y=1.1;return g;},function(g,o){g.position.set(o.x,1.1,o.z);});
-  hayaletEsitle(H.l,v.l,function(o){const g=hayaletKure(o.k==='akce'?0xFFD700:o.k==='deri'?0x8B4513:0xAAAAAA,.2);g.userData.y=.3;return g;},function(g,o){g.position.set(o.x,.3,o.z);});
+  hayaletEsitle(H.b,v.b,function(){const g=modelYap('mermi_tufek');g.userData.y=1.1;return g;},function(g,o){g.position.set(o.x,1.1,o.z);});
+  hayaletEsitle(H.l,v.l,function(o){const g=modelYap('ganimet_'+o.k);g.userData.y=.3;return g;},function(g,o){g.position.set(o.x,.3,o.z);});
 }
 
 function clientBaglantiKoptu(){

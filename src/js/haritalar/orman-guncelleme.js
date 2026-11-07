@@ -32,10 +32,10 @@ function updateOrman(dt){
 
   // ── Hayvan AI ──
   enemies.forEach(function(en){
-    if(en.hurtT>0){en.hurtT--;en.mesh.children[0].material.color.setHex(0xff3333);}
+    if(en.hurtT>0){en.hurtT--;modelVurus(en.govde,true);}
     else {
       const def=ANIMAL_DEFS[en.animalType]||{col:0x3a2810};
-      en.mesh.children[0].material.color.setHex(en.isBoss?0x3a2810:def.col);
+      modelVurus(en.govde,false,en.isBoss?0x3a2810:def.col);
     }
     const tp=nearestPlayer(en.x,en.z);const dx=tp.x-en.x,dz=tp.z-en.z,dist=Math.hypot(dx,dz);
 
@@ -78,7 +78,7 @@ function updateOrman(dt){
     en.mesh.position.set(en.x,0,en.z);
 
     en.hpFl.scale.x=en.hp/en.maxHp;en.hpFl.position.x=(en.hp/en.maxHp-1)*(en.isBoss?.9:.5);
-    en.mesh.children[6].lookAt(CAM.position);en.mesh.children[7].lookAt(CAM.position);
+    en.hpBg.lookAt(CAM.position);en.hpFl.lookAt(CAM.position);
 
     // Saldırı hasarı
     if(en.state==='attacking'&&dist<1.6&&tp.ifr===0){

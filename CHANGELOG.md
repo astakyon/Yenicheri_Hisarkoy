@@ -1,5 +1,11 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.46 — Model kütüphanesi (oynanış aynı)
+- **🧰 MODEL KÜTÜPHANESİ** (ana menü): 14 modelin (oyuncu, düşmanlar, hayvanlar, mermi, ganimet) önizlemesi, tel kafes, can çubuğu, vuruş denemesi, gerçek boy karşılaştırma, üçgen sayısı, **.glb indir / içe aktar** (cihazda kalıcı), `assets/models.json`.
+- Tüm modeller tek kayıttan (`modeller/kayit.js`) gelir; tek kişilik oyun ve çok oyunculu istemci artık aynı gerçek modelleri çizer (istemcideki sade kutular kalktı).
+- Yeni testler: her model çiziliyor, `.glb` dışa/içe aktarma, boyut, kalıcılık, sıfırlama. Altın ve çok oyunculu testler değişmedi.
+- Yol haritasına bilinen eksikler eklendi. Belgeler: `docs/MODELLER.md`, `docs/MODEL-EKLEME.md`.
+
 ## v1.45 — Çok oyunculu: oda kur, odaya katıl (F2)
 - **👥 ÇOK OYUNCULU** (ana menü): **Oda Kur** 5 harfli kod verir ve Kışla'da oyunu başlatır; **Odaya Katıl** koda bağlanır. En çok 4 oyuncu. Bağlantı PeerJS (WebRTC) ile doğrudan cihazlar arasında.
 - Host dünyayı hesaplar; katılan oyuncu kendi karakterini anında hareket ettirir (**yerel tahmin**) ve host'un onayıyla düzeltilir. Diğer oyuncular, düşmanlar, mermiler ve ganimet 15 Hz özetten, 100 ms geriden yumuşatılarak çizilir.

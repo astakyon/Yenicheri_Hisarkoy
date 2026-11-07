@@ -10,6 +10,9 @@ karakter/xp-sinif.js
 karakter/yetenekler.js
 ekran/menu-animasyon.js
 cekirdek/oyun-durumu.js
+modeller/kayit.js
+modeller/dosyalar.js
+modeller/kutuphane.js
 cekirdek/dunya-modeli.js
 cekirdek/oturum.js
 cekirdek/istemci.js

@@ -64,3 +64,24 @@ PeerJS host-relay oda sistemi, Supabase hesap/kayıt, misafir modu, testler.
 - v1.43 (F2 başlangıcı): `PairTransport`, `SESSION.addPeer`, 15 Hz özet, `ClientView` (100 ms interpolasyon). Sıradaki: istemci çizimi (id'ye göre mesh), yerel tahmin, lobi/oda kodu, PeerJS taşıması.
 - v1.44: PWA + TWA hazırlığı (karar: öncelik Android, TWA; Capacitor seçilmedi). F3 denemeleri iki telefonda PWA olarak, mobil veriyle yapılacak. Supabase F3'te gerekmez (PeerJS eşleştirmesi yeter); hesap/kayıt F5.
 - v1.45 (F2 tamam, F3 hazırlığı): oda kur/katıl, PeerJS taşıması, istemci modu (tahmin + yumuşatma), `LagTransport`, uçtan uca test (`tests/coop.py`). Sıradaki: F3 gerçek cihaz denemesi (TURN, yeniden bağlanma, ikinci güvenilmez kanal), F4 (yetenekler, oyuncu başına ganimet, yeniden doğma, gerçek düşman modelleri).
+
+## Bilinen eksikler ve iş listesi (v1.46 itibarıyla)
+**Çok oyunculu (F3–F4)**
+- [ ] Gerçek iki telefonla mobil veride deneme (kullanıcı yapacak); operatör/CGNAT davranışı ölçümü
+- [ ] Cloudflare TURN + Worker (`window.YC_ICE`), bağlantı tipi (`relay`/`srflx`) kaydı
+- [ ] Yeniden bağlanma (kopan istemci aynı koda dönebilsin)
+- [ ] İstemcide yetenekler (Q/F/R) — şimdi host'un kayıtlı verisini kullanıyor
+- [ ] Oyuncu başına akçe/XP/ganimet (şimdi host `SAVE`)
+- [ ] Ölünce yeniden doğma / canlandırma
+- [ ] İstemcide mini harita boş; saldırı efektleri yalnız host'ta
+- [ ] Özel (editör) haritalar odada; 4 oyunculu ve ~40 düşmanlı özet boyutu/kare süresi ölçümü
+- [ ] İkinci güvenilmez kanal ve ikili paket; özet boyutu küçültme
+- [ ] Sekme arka plana alınınca host durması bildirimi
+**Modeller**
+- [x] Model kütüphanesi (v1.46), `.glb` içe/dışa aktarma, `models.json`
+- [ ] Gerçek (Blender) `.glb` modeller; animasyon düğümleri (yürüme, kılıç) ve `models.json` alanları
+- [ ] Renk/görünüm özelleştirme (oyuncu kostümü), model LOD
+**Yayın**
+- [ ] Anahtar deposu (keystore) sırları, `assetlinks.json`, Play Store hesabı ve mağaza kaydı, paket adı kararı
+- [ ] iOS için "Ana ekrana ekle" yönergesi
+- [ ] F5 Supabase hesap/kayıt, F6 Durable Object yedek röle

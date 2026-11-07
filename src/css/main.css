@@ -313,3 +313,35 @@ canvas{display:block;position:absolute;top:0;left:0;}
 #coopGiris{background:#0a0400;border:1.5px solid #8B6914;border-radius:3px;color:#FFE9A8;text-align:center;font-size:18px;letter-spacing:5px;padding:7px;font-family:'Cinzel',serif;text-transform:uppercase;}
 #coopDurum{color:#D4B896;font-size:10px;line-height:1.5;min-height:30px;}
 .coopB{width:100%;}
+
+/* ── MODEL KÜTÜPHANESİ ── */
+#libBox{position:fixed;inset:0;z-index:47;display:none;flex-direction:column;background:linear-gradient(180deg,#1c0e00,#0a0400);color:#D4B896;font-family:'Cinzel',serif;}
+#libUst{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1.5px solid #8B6914;}
+#libBaslik{color:#FFD700;font-size:13px;font-family:'Cinzel Decorative',serif;}
+#libGovde{flex:1;min-height:0;display:flex;}
+#libListe{width:200px;overflow-y:auto;padding:8px;border-right:1px solid #5a3808;display:flex;flex-direction:column;gap:4px;}
+.libGrup{color:#8B6914;font-size:9px;letter-spacing:2px;margin-top:6px;}
+.libOge{background:#1a0c00;border:1px solid #5a3808;border-radius:3px;color:#D4B896;font:10px 'Cinzel',serif;padding:6px 8px;text-align:left;cursor:pointer;}
+.libOge.sec{border-color:#FFD700;color:#FFE9A8;background:#3a2200;}
+#libOrta{flex:1;min-width:0;position:relative;}
+#libCanvas{width:100%;height:100%;display:block;touch-action:none;}
+#libMesaj{position:absolute;left:8px;right:8px;bottom:6px;font-size:10px;color:#9fe39f;text-align:center;pointer-events:none;}
+#libYan{width:250px;overflow-y:auto;padding:10px;border-left:1px solid #5a3808;display:flex;flex-direction:column;gap:8px;}
+#libBilgi{font-size:10px;line-height:1.6;}
+#libBilgi b{color:#FFD700;font-size:12px;}
+#libBilgi code{color:#FFE9A8;}
+.libSatir{display:flex;flex-wrap:wrap;gap:5px;}
+.libBaslikK{color:#8B6914;font-size:9px;letter-spacing:2px;}
+.libD{background:linear-gradient(180deg,#5a3a00,#2a1800);border:1.5px solid #8B6914;border-radius:3px;color:#F5DEB3;padding:5px 9px;font:10px 'Cinzel',serif;cursor:pointer;}
+.libD.acik{border-color:#FFD700;color:#FFD700;}
+#libBoy{width:70px;background:#0a0400;border:1.5px solid #8B6914;border-radius:3px;color:#FFE9A8;padding:4px;font:11px 'Cinzel',serif;}
+@media (max-width:640px){
+  #libGovde{flex-direction:column;}
+  #libListe{width:auto;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;border-right:0;border-bottom:1px solid #5a3808;}
+  .libOge{white-space:nowrap;}.libGrup{display:none;}
+  #libOrta{flex:none;height:38vh;}
+  #libYan{width:auto;border-left:0;flex:1;}
+}
+@media (max-height:480px) and (min-width:641px){#libListe{width:150px;}#libYan{width:215px;}}
+/* Kısa yatay ekran (telefon): ana menü düğmeleri iki sütun */
+@media (max-height:480px){#mBtns{top:92px;display:grid;grid-template-columns:1fr 1fr;width:min(560px,92vw);gap:8px 14px;}.mBtn{padding:8px 0;font-size:12px;}}

@@ -138,13 +138,13 @@ function updateGorev(dt){
   bullets=bullets.filter(function(b){return b.life>0;});
   // Düşmanlar
   enemies.forEach(function(en){
-    if(en.hurtT>0){en.hurtT--;en.mesh.children[0].material.color.setHex(0xff3333);}else en.mesh.children[0].material.color.setHex(en.isBoss?0x7B0000:0x4a2000);
+    if(en.hurtT>0){en.hurtT--;modelVurus(en.govde,true);}else modelVurus(en.govde,false,en.isBoss?0x7B0000:0x4a2000);
     const tp=nearestPlayer(en.x,en.z);
     const ex2=tp.x-en.x,ez2=tp.z-en.z,d2=Math.hypot(ex2,ez2);
     if(d2>.5){en.x+=ex2/d2*en.spd;en.z+=ez2/d2*en.spd;en.mesh.position.set(en.x,0,en.z);}
     en.mesh.rotation.y=Math.atan2(ex2,ez2);
     en.hpFl.scale.x=en.hp/en.maxHp;en.hpFl.position.x=(en.hp/en.maxHp-1)*(en.isBoss?.8:.55);
-    en.mesh.children[2].lookAt(CAM.position);en.mesh.children[3].lookAt(CAM.position);
+    en.hpBg.lookAt(CAM.position);en.hpFl.lookAt(CAM.position);
     if(d2<1.1&&tp.ifr===0){
       if(tp.ab&&tp.ab.active.f){
         // Demir Kalkan aktif — hasar engeli

@@ -1,0 +1,10 @@
+{
+  "_bilgi": "3B model listesi. Bir model için .glb eklediğinde buraya yaz; dosya yoksa oyun kodla çizilen modeli kullanır. Ayrıntı: docs/MODELLER.md",
+  "models": {
+    "_ornek_kurt": {
+      "file": "assets/models/kurt.glb",
+      "boy": 1.6,
+      "rotY": 0
+    }
+  }
+}

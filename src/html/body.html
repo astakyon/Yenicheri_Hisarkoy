@@ -25,6 +25,7 @@
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
       <button class="mBtn" onclick="openChapters()">🗺 BÖLÜMLER</button>
       <button class="mBtn" onclick="coopAc()">👥 ÇOK OYUNCULU</button>
+      <button class="mBtn" onclick="kutuphaneAc()">🧰 MODEL KÜTÜPHANESİ</button>
       <button class="mBtn" onclick="openMapEditor()">🛠 HARİTA EDİTÖRÜ</button>
       <button class="mBtn" onclick="showDlg('📜 Nasıl Oynanır','WASD / Joystick → Hareket\nShift / 🏃 → Koşma\nFare / ⚔ → Saldır\n1/2/3 → Silah seç\nE / Kapı → Bölgeye Gir\nKışlada Demir Kapı → Göreve Çık\nEsc → Duraklat','Anlaşıldı!',hideDlg)">📜 NASIL OYNANIR</button>
       <button class="mBtn" id="btnInstall" style="display:none" onclick="installApp()">⬇ UYGULAMAYI YÜKLE</button>
@@ -302,6 +303,34 @@
   </div>
 
   <!-- ── DİALOG ── -->
+  <div id="libBox">
+    <div id="libUst"><span id="libBaslik">🧰 MODEL KÜTÜPHANESİ</span><button class="libD" onclick="kutuphaneKapat()">✕ KAPAT</button></div>
+    <div id="libGovde">
+      <div id="libListe"></div>
+      <div id="libOrta"><canvas id="libCanvas"></canvas><div id="libMesaj"></div></div>
+      <div id="libYan">
+        <div id="libBilgi"></div>
+        <div class="libSatir">
+          <button class="libD" id="libYuru" onclick="libYuruDegis()">🚶 Yürü</button>
+          <button class="libD" onclick="libVurusDene()">💥 Vuruş</button>
+          <button class="libD" id="libTel" onclick="libTelDegis()">▦ Tel kafes</button>
+          <button class="libD acik" id="libCubuk" onclick="libCubukDegis()">❤ Can çubuğu</button>
+          <button class="libD" id="libKars" onclick="libKarsilastirDegis()">⇔ Oyuncuyla</button>
+          <button class="libD" onclick="libDonmeDegis()">⟳ Dön</button>
+        </div>
+        <div class="libBaslikK">Boy (metre)</div>
+        <div class="libSatir"><input id="libBoy" type="number" step="0.05" min="0.05" max="30"><button class="libD" onclick="libBoyUygula()">Uygula</button><button class="libD" onclick="libDon90()">↻ 90°</button></div>
+        <div class="libBaslikK">.glb dosyası</div>
+        <div class="libSatir">
+          <button class="libD" onclick="libGlbIndir()">⬇ İndir</button>
+          <button class="libD" onclick="document.getElementById('libDosya').click()">⬆ İçe aktar</button>
+          <button class="libD" onclick="libJsonKopyala()">models.json satırı</button>
+          <button class="libD" id="libSifirla" style="display:none" onclick="libSifirla()">⟲ Kod modeline dön</button>
+          <input id="libDosya" type="file" accept=".glb" style="display:none" onchange="libGlbIceAktar(this.files[0]);this.value=''">
+        </div>
+      </div>
+    </div>
+  </div>
   <div id="coopBox">
     <div id="coopPanel">
       <div id="coopT">👥 ÇOK OYUNCULU</div>

@@ -3,26 +3,13 @@
 // ═══════════════════════════════════════════════════════
 function spawnEskiya(isBoss){
   const hp=isBoss?260:30+wave*4;
-  const size=isBoss?1.3:1;
-  const col=isBoss?0x5a1010:0x4a3828;
-  const g=new THREE.Group();
-  const body=new THREE.Mesh(new THREE.BoxGeometry(.9*size,1.4*size,.5*size),new THREE.MeshLambertMaterial({color:col}));
-  body.position.y=1*size;body.castShadow=true;g.add(body);
-  const head=new THREE.Mesh(new THREE.BoxGeometry(.6*size,.55*size,.55*size),new THREE.MeshLambertMaterial({color:0x8a6048}));
-  head.position.y=2*size;g.add(head);
-  const helmet=new THREE.Mesh(new THREE.SphereGeometry(.32*size,8,6,0,Math.PI*2,0,Math.PI/2),new THREE.MeshLambertMaterial({color:0x2a2018}));
-  helmet.position.y=.25*size;head.add(helmet);
-  if(isBoss){const crown=new THREE.Mesh(new THREE.ConeGeometry(.45,.5,6),new THREE.MeshLambertMaterial({color:0xFFD700}));crown.position.y=.7*size;head.add(crown);}
-  const hpBg=new THREE.Mesh(new THREE.PlaneGeometry(isBoss?1.7:1.0,.13),new THREE.MeshBasicMaterial({color:0x330000,side:THREE.DoubleSide,depthTest:false}));
-  hpBg.position.set(0,2.6*size,0);g.add(hpBg);
-  const hpFl=new THREE.Mesh(new THREE.PlaneGeometry(isBoss?1.7:1.0,.13),new THREE.MeshBasicMaterial({color:isBoss?0xFFD700:0x22cc55,side:THREE.DoubleSide,depthTest:false}));
-  hpFl.position.set(0,2.6*size,.01);g.add(hpFl);
+  const g=modelYap(isBoss?'eskiya_boss':'eskiya',{cubuk:true});const hpBg=g.userData.hpBg,hpFl=g.userData.hpFl;
 
   const spots=isBoss?[[0,-30]]:[[0,18],[0,-4],[-22,-10],[-34,-8],[22,6],[34,8],[-9,4]];
   const sp=spots[Math.floor(Math.random()*spots.length)];
   const ex=sp[0]+(Math.random()-.5)*4,ez=sp[1]+(Math.random()-.5)*4;
   g.position.set(ex,0,ez);S3.add(g);
-  enemies.push({id:newNetId(),mesh:g,hpFl,hpBg,hp,maxHp:hp,x:ex,z:ez,spd:isBoss?.045:.05+wave*.004,isBoss,hurtT:0,animalType:'eskiya',aggressive:true,atkDmg:isBoss?10:3,state:'idle',wanderAng:Math.random()*Math.PI*2,wanderT:0,xpReward:isBoss?320:18,goldReward:[10,18]});
+  enemies.push({id:newNetId(),mesh:g,hpFl,hpBg,govde:g.userData.govde,mid:isBoss?'eskiya_boss':'eskiya',hp,maxHp:hp,x:ex,z:ez,spd:isBoss?.045:.05+wave*.004,isBoss,hurtT:0,animalType:'eskiya',aggressive:true,atkDmg:isBoss?10:3,state:'idle',wanderAng:Math.random()*Math.PI*2,wanderT:0,xpReward:isBoss?320:18,goldReward:[10,18]});
 }
 
 function spawnMadenWave(n){

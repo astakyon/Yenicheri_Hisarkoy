@@ -16,4 +16,5 @@ function loop(){
   if(playing&&!paused&&pl.mesh)renderFrame();
 }
 loop();
-convertExistingMapsToEditor(); // Kışla & Av Ormanı'nı editör formatına bir kerelik dönüştür
+convertExistingMapsToEditor();
+modelDosyalariniYukle(); // Kışla & Av Ormanı'nı editör formatına bir kerelik dönüştür

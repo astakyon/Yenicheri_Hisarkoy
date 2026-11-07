@@ -339,6 +339,63 @@ def main():
         check('Yeniçeri' in baslik, 'ağ yokken sayfa önbellekten açıldı: %s' % baslik)
         ctx.close()
 
+        print('Model kütüphanesi')
+        ctx, pg, errs = yeni_sayfa()
+        r = pg.evaluate("""() => {
+          kutuphaneAc();
+          const sonuc = { sayi: MODEL_KAYIT.liste.length, hatalar: [], bos: [] };
+          MODEL_KAYIT.liste.forEach(t => {
+            try {
+              kutuphaneSec(t.id);
+              const g = modelYap(t.id, { cubuk: true }), ist = modelIstatistik(g);
+              const kutu = new THREE.Box3().setFromObject(g), h = kutu.max.y - kutu.min.y;
+              if (ist.ucgen < 4) sonuc.bos.push(t.id);
+              if (t.bar && !(g.userData.hpBg && g.userData.hpFl)) sonuc.hatalar.push(t.id + ': can çubuğu yok');
+              if (!g.userData.govde) sonuc.hatalar.push(t.id + ': govde yok');
+              if (t.boy && !t.bar && false) {}
+            } catch (e) { sonuc.hatalar.push(t.id + ': ' + e.message); }
+          });
+          sonuc.liste = document.querySelectorAll('.libOge').length;
+          sonuc.bilgi = document.getElementById('libBilgi').textContent.length > 20;
+          kutuphaneKapat();
+          return sonuc;
+        }""")
+        check(r['sayi'] >= 14 and r['liste'] == r['sayi'], 'kütüphanede %d model listeleniyor' % r['sayi'])
+        check(not r['hatalar'] and not r['bos'], 'her model çiziliyor, üçgeni var, gövde ve can çubuğu tanımlı %s' % (r['hatalar'] + r['bos']))
+        check(r['bilgi'], 'model bilgi paneli dolu')
+        uniq = sorted(set(errs))
+        check(not uniq, 'JavaScript hatası yok' + ('' if not uniq else ': ' + uniq[0]))
+        ctx.close()
+
+        print('Model kütüphanesi: .glb indir, içe aktar, kalıcılık')
+        ctx, pg, errs = yeni_sayfa()
+        veri = pg.evaluate("""async () => {
+          await gltfDisaAktarHazir();
+          const g = modelYap('kurt');
+          return await new Promise(r => new THREE.GLTFExporter().parse(g, s => r(Array.from(new Uint8Array(s))), { binary: true }));
+        }""")
+        check(len(veri) > 500 and veri[:4] == [0x67, 0x6c, 0x54, 0x46], 'kurt modeli geçerli .glb olarak dışa aktarıldı (%d bayt)' % len(veri))
+        pg.evaluate("kutuphaneAc(); kutuphaneSec('kurt')")
+        pg.set_input_files('#libDosya', files=[{'name': 'kurt.glb', 'mimeType': 'model/gltf-binary', 'buffer': bytes(veri)}])
+        pg.wait_for_function("MODEL_KAYIT.glb.kurt", timeout=8000)
+        r = pg.evaluate("""() => { const g = modelYap('kurt', { cubuk: true }); return { kaynak: g.userData.kaynak, hp: !!g.userData.hpFl, govde: !!g.userData.govde,
+            yuk: (() => { const k = new THREE.Box3().setFromObject(g.children[0]); return k.max.y - k.min.y; })(), boy: MODEL_KAYIT.harita.kurt.boy, alt: new THREE.Box3().setFromObject(g.children[0]).min.y }; }""")
+        check(r['kaynak'] == 'glb' and r['hp'] and r['govde'], '.glb içe aktarılınca model glb kaynağından geliyor, can çubuğu ve gövde korunuyor')
+        check(abs(r['yuk'] - r['boy']) < .05 and abs(r['alt']) < .05, 'model gerçek boyuna ölçeklendi (%.2f / %.2f m) ve ayakları zeminde' % (r['yuk'], r['boy']))
+        r = pg.evaluate("""() => { REN && 0; kutuphaneKapat(); BEGIN('orman'); REN.render = () => {}; enemies.forEach(e => S3.remove(e.mesh)); enemies = [];
+            spawnAnimal('kurt', false); const e = enemies[0]; e.hurtT = 3; for (let i = 0; i < 6; i++) update(1 / 60);
+            return { mid: e.mid, kaynak: e.mesh.userData.kaynak, hata: false }; }""")
+        check(r['mid'] == 'kurt' and r['kaynak'] == 'glb', 'oyunda doğan kurt .glb modelini kullandı, vuruş parlaması hata vermedi')
+        pg.reload(wait_until='load'); pg.wait_for_timeout(1500)
+        r = pg.evaluate("() => ({ k: MODEL_KAYIT.kaynak.kurt || null })")
+        check(r['k'] == 'cihaz', 'sayfa yenilenince cihazdaki model IndexedDB\'den geri geldi')
+        pg.evaluate("kutuphaneAc(); kutuphaneSec('kurt'); libSifirla()"); pg.wait_for_timeout(500)
+        r = pg.evaluate("() => ({ k: MODEL_KAYIT.kaynak.kurt || null, g: modelYap('kurt').userData.kaynak })")
+        check(r['k'] is None and r['g'] == 'kod', 'sıfırlayınca kod modeline dönüldü')
+        uniq = sorted(set(errs))
+        check(not uniq, 'JavaScript hatası yok' + ('' if not uniq else ': ' + uniq[0]))
+        ctx.close()
+
         print('Kimlikler (düşman, mermi, ganimet)')
         ctx, pg, errs = yeni_sayfa()
         pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)
