@@ -397,10 +397,12 @@ def main():
         pg.evaluate('selW(1)'); pg.wait_for_timeout(200)
         a = g(); check(a['tufek'] and not a['sTufek'], 'Tüfek seçilince ele geliyor, sırt boşalıyor')
         pg.evaluate("selW(0)")
-        r = pg.evaluate("""() => { const say = k => { const q = modelYap('yeniceri').userData.silah; return Object.keys(q).filter(a => /Yat|Han/.test(a)).sort().join(','); };
-          const ikisi = say(); gorunumDegis('kemer', 'hancer'); const han = say(); gorunumDegis('kemer', 'yatagan'); const yat = say(); gorunumDegis('kemer', 'yok'); const yok = say(); gorunumSifirla();
-          return { ikisi, han, yat, yok, modeller: ['silah_yatagan','silah_hancer','silah_tufek','silah_yay'].every(i => !!MODEL_KAYIT.harita[i]) }; }""")
-        check(r['ikisi'] == 'elYat,kinHan,kinYat' and r['han'] == 'elHan,kinHan' and r['yat'] == 'elYat,kinYat' and r['yok'] == '', 'Yatağan ve hançer bağımsız takılıp çıkarılıyor (%s | %s | %s | %s)' % (r['ikisi'], r['han'], r['yat'], r['yok']))
+        r = pg.evaluate("""() => { const say = () => { const q = modelYap('yeniceri').userData.silah; return Object.keys(q).filter(a => /Yat|Han|sirtTufek/.test(a)).sort().join(','); };
+          const tam = say(); gorunumDegis('hancer', false); const yatSiz = say(); gorunumDegis('yatagan', false); const ikisiz = say(); gorunumDegis('tufek', false); const tufeksiz = say();
+          const govde = n => modelYap('yeniceri').userData.govde.geometry.attributes.position.count; const kayisli = (gorunumSifirla(), govde()); gorunumDegis('kayis', false); const kayissiz = govde(); gorunumSifirla();
+          return { tam, yatSiz, ikisiz, tufeksiz, kayisAzaldi: kayissiz < kayisli, modeller: ['silah_yatagan','silah_hancer','silah_tufek','silah_yay'].every(i => !!MODEL_KAYIT.harita[i]) }; }""")
+        check(r['tam'] == 'elYat,kinHan,kinYat,sirtTufek' and r['yatSiz'] == 'elYat,kinYat,sirtTufek' and r['ikisiz'] == 'sirtTufek' and r['tufeksiz'] == '', 'Yatağan, hançer ve tüfek ayrı ayrı takılıp çıkarılıyor (%s | %s | %s | %s)' % (r['tam'], r['yatSiz'], r['ikisiz'], r['tufeksiz']))
+        check(r['kayisAzaldi'], 'Kayışlar çıkarılınca gövde modelinden kalkıyor')
         check(r['modeller'], 'Silahlar model kütüphanesinde ayrı modeller (silah_yatagan, silah_hancer, silah_tufek, silah_yay)')
         r = pg.evaluate("""() => { const eski = modelYap('yeniceri').userData.govde.geometry; gorunumDegis('gov', 0x1F5FA8); gorunumDegis('biyikTip', 'sivri'); gorunumDegis('borkTip', 'fes');
           const yeni = modelYap('yeniceri').userData.govde.geometry, kayit = SAVE.gorunum && SAVE.gorunum.gov; gorunumSifirla(); return { fark: eski !== yeni, kayit, sifir: modelYap('yeniceri').userData.govde.geometry === eski }; }""")

@@ -220,7 +220,7 @@ function _insanYap(o,s){
   const ks=_pivot(ic,-.5,1.74,0),kg=_pivot(ic,.5,1.74,0);ks.add(_parca(gm.kolSol));kg.add(_parca(gm.kolSag));
   kg.rotation.x=-.35;
   if(o.adliBicak){   // oyuncunun silahları BAĞIMSIZ modellerdir (silah_*): kemerdeki yatağan/hançer, sırttaki tüfek/yay; savaşta ya da seçilince ele gelir
-    const altin=o.tokaC||0xD4A82A,kem=o.kemer||'ikisi',yat=kem==='ikisi'||kem==='yatagan',han=kem==='ikisi'||kem==='hancer';
+    const altin=o.tokaC||0xD4A82A,yat=!!o.yat,han=!!o.han;
     const q={};
     if(yat){   // yatağan: bele sağ-önden asılı, kını eteğin üstünde, ucu aşağıda dışa kıvrık
       q.elYat=modelYap('silah_yatagan',{altin:altin});q.elYat.position.set(0,-.55,.05);q.elYat.rotation.x=-.12;kg.add(q.elYat);q.elYat.name='wpn';
@@ -230,9 +230,9 @@ function _insanYap(o,s){
       q.kinHan=modelYap('silah_hancer',{altin:altin,kinda:true});q.kinHan.position.set(-.2,1.24,.47);q.kinHan.rotation.set(0,.1,Math.PI+.85);q.kinHan.scale.setScalar(.85);ic.add(q.kinHan);
       if(!yat){q.elHan=modelYap('silah_hancer',{altin:altin});q.elHan.position.set(0,-.55,.05);q.elHan.rotation.x=-.12;kg.add(q.elHan);}
     }
-    q.elTufek=modelYap('silah_tufek');q.elTufek.position.set(0,-.55,.5);q.elTufek.rotation.x=Math.PI/2;kg.add(q.elTufek);
+    if(o.tufekVar){q.elTufek=modelYap('silah_tufek');q.elTufek.position.set(0,-.55,.5);q.elTufek.rotation.x=Math.PI/2;kg.add(q.elTufek);
+    q.sirtTufek=modelYap('silah_tufek');q.sirtTufek.position.set(.08,1.62,-.5);q.sirtTufek.rotation.z=-.55;ic.add(q.sirtTufek);}   // sırtta çapraz: namlu sağ omuz üstünde, dipçik sol kalçada
     q.elYay=modelYap('silah_yay');q.elYay.position.set(0,-.55,.3);kg.add(q.elYay);
-    q.sirtTufek=modelYap('silah_tufek');q.sirtTufek.position.set(.08,1.62,-.5);q.sirtTufek.rotation.z=-.55;ic.add(q.sirtTufek);   // sırtta çapraz: namlu sağ omuz üstünde, dipçik sol kalçada
     q.sirtYay=modelYap('silah_yay',{sirt:true});ic.add(q.sirtYay);
     g.userData.silah=q;
     modelSilahGoster(g,0,false);
@@ -243,14 +243,19 @@ function _insanYap(o,s){
 }
 
 // Oyuncunun görünümü (SAVE.gorunum) — renkler ve bıyık/börk tipleri; karakter menüsünden değişir
-const GORUNUM_VARSAYILAN={gov:0x9B2020,sash:0x2a3f8a,yaka:0xD4A82A,dugme:0xD4A82A,toka:0xD4A82A,bork:0xE8DCC0,kasik:0xC8C8CC,sal:0x2a3f8a,biyik:0x3a2000,biyikTip:'klasik',borkTip:'klasik',kemer:'ikisi'};
-function gorunumOku(){let s=null;try{s=SAVE.gorunum;}catch(e){}return Object.assign({},GORUNUM_VARSAYILAN,s||{});}
+const GORUNUM_VARSAYILAN={gov:0x9B2020,sash:0x2a3f8a,yaka:0xD4A82A,dugme:0xD4A82A,toka:0xD4A82A,bork:0xE8DCC0,kasik:0xC8C8CC,sal:0x2a3f8a,biyik:0x3a2000,biyikTip:'klasik',borkTip:'klasik',yatagan:true,hancer:true,kayis:true,tufek:true};
+function gorunumOku(){
+  let s=null;try{s=SAVE.gorunum;}catch(e){}
+  const g=Object.assign({},GORUNUM_VARSAYILAN,s||{});
+  if(g.kemer){if(g.kemer==='hancer'||g.kemer==='yok')g.yatagan=false;if(g.kemer==='yatagan'||g.kemer==='yok')g.hancer=false;delete g.kemer;}   // eski kayıt
+  return g;
+}
 function _koyult(c,k){return(Math.round(((c>>16)&255)*k)<<16)|(Math.round(((c>>8)&255)*k)<<8)|Math.round((c&255)*k);}
 function _oyuncuOpt(){
   const g=gorunumOku(),t=g.borkTip;
-  return{id:'yeniceri_'+[g.gov,g.sash,g.yaka,g.dugme,g.toka,g.bork,g.kasik,g.sal,g.biyik,g.biyikTip,g.borkTip,g.kemer].join('_'),
+  return{id:'yeniceri_'+[g.gov,g.sash,g.yaka,g.dugme,g.toka,g.bork,g.kasik,g.sal,g.biyik,g.biyikTip,g.borkTip,g.yatagan?1:0,g.hancer?1:0,g.kayis?1:0,g.tufek?1:0].join('_'),
     etek:_koyult(g.gov,.9),gov:g.gov,sash:g.sash,yaka:g.yaka,dugmeC:g.dugme,tokaC:g.toka,kasikC:g.kasik,sal:g.sal,sal2:0xE8E0D0,bot:0x2a1000,
-    biyik:g.biyikTip==='yok'?0:g.biyik,biyikTip:g.biyikTip,sapka:t==='sarik'?'sarik':t==='fes'?'fes':'bork',sapkaC:g.bork,sapkaC2:g.yaka,borkTip:t,kemer:g.kemer,bandolye:true,adliBicak:true};
+    biyik:g.biyikTip==='yok'?0:g.biyik,biyikTip:g.biyikTip,sapka:t==='sarik'?'sarik':t==='fes'?'fes':'bork',sapkaC:g.bork,sapkaC2:g.yaka,borkTip:t,yat:!!g.yatagan,han:!!g.hancer,tufekVar:!!g.tufek,bandolye:!!g.kayis,adliBicak:true};
 }
 // Silah gösterimi: kılıç kınında; tüfek/yay seçiliyken sırtta; savaşta (cekili) seçili silah elde
 function modelSilahGoster(g,w,cekili){
@@ -260,8 +265,9 @@ function modelSilahGoster(g,w,cekili){
   if(q.elHan)q.elHan.visible=cekili&&w===0;
   if(q.kinYat)q.kinYat.visible=!(cekili&&w===0);
   if(q.kinHan)q.kinHan.visible=!(cekili&&w===0&&!q.elYat);
-  q.elTufek.visible=cekili&&w===1;q.elYay.visible=cekili&&w===2;
-  q.sirtTufek.visible=!(cekili&&w===1);q.sirtYay.visible=!(cekili&&w===2)&&w===2;
+  if(q.elTufek){q.elTufek.visible=cekili&&w===1;q.sirtTufek.visible=!(cekili&&w===1);}
+  q.elYay.visible=cekili&&w===2;
+  q.sirtYay.visible=!(cekili&&w===2)&&w===2;
 }
 function _yeniceriYap(){const g=_insanYap(_oyuncuOpt(),1);return g;}
 modelTanimla('yeniceri',{ad:'Yeniçeri (oyuncu)',grup:'Karakter',boy:2.82,yap:_yeniceriYap});

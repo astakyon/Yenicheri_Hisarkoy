@@ -1,5 +1,9 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.67
+- Karakterim: yatağan, hançer, kayışlar (bandolye) ve tüfek ayrı ayrı takılıp çıkarılabiliyor (Ekipman düğmeleri); seçim kaydediliyor, eski kayıtlar korunuyor.
+- Silah konumları ayarlandı (sırtta çapraz tüfek, belde eğimli yatağan, kuşakta hançer); ekipman çıkarılınca çekme/kınına koyma mantığı buna uyuyor.
+
 ## v1.66 — Silahların yeri (örnek görsele göre)
 - **Tüfek** artık her zaman sırtta çapraz taşınır (namlu sağ omuz üstünde, dipçik sol kalçada); seçince ele gelir.
 - **Çapraz deri kayışlar** (önde ve arkada), fişekler, kese ve barut kabı eklendi.

@@ -14,13 +14,15 @@ const GORUNUM_SATIRLAR=[
 ];
 const GORUNUM_TIPLER=[
   {k:'biyikTip',ad:'Bıyık',sec:[['yok','Yok'],['klasik','Klasik'],['kalin','Kalın'],['sivri','Sivri uçlu'],['uzun','Uzun sarkık'],['sakal','Sakallı']]},
-  {k:'kemer',ad:'Kemer silahı (yatağan belde, hançer kuşakta)',sec:[['ikisi','Yatağan + Hançer'],['yatagan','Yatağan'],['hancer','Hançer'],['yok','Yok']]},
   {k:'borkTip',ad:'Başlık',sec:[['klasik','Börk'],['kisa','Kısa börk'],['sarik','Sarık'],['fes','Fes']]}
 ];
+const GORUNUM_ESYA=[['yatagan','Yatağan'],['hancer','Hançer'],['kayis','Kayışlar'],['tufek','Tüfek']];
 function _hex6(n){return '#'+('000000'+n.toString(16)).slice(-6);}
 function gorunumCiz(){
   const g=gorunumOku(),ic=document.getElementById('gorunumIc');if(!ic)return;
-  let h='';
+  let h='<div class="toggleLabel" style="margin:4px 0">Ekipman (tak / çıkar)</div><div style="display:flex;flex-wrap:wrap;gap:5px">';
+  GORUNUM_ESYA.forEach(function(e){const a=g[e[0]]!==false;h+='<button class="panBtn'+(a?' grn':'')+'" style="width:auto;margin:0;padding:6px 12px" onclick="gorunumDegis(\''+e[0]+'\','+(!a)+')">'+(a?'✔ ':'✖ ')+e[1]+'</button>';});
+  h+='</div>';
   GORUNUM_TIPLER.forEach(function(t){
     h+='<div class="toggleLabel" style="margin:8px 0 4px">'+t.ad+'</div><div style="display:flex;flex-wrap:wrap;gap:5px">';
     t.sec.forEach(function(o){h+='<button class="panBtn'+(g[t.k]===o[0]?' grn':'')+'" style="width:auto;margin:0;padding:6px 10px" onclick="gorunumDegis(\''+t.k+'\',\''+o[0]+'\')">'+o[1]+'</button>';});

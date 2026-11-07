@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.66">
+<meta name="game-version" content="v1.67">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.66</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.67</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -530,7 +530,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.66</div>
+      <div id="mVer">v1.67</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
@@ -941,7 +941,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.66';
+const VERSION='v1.67';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -2049,13 +2049,15 @@ const GORUNUM_SATIRLAR=[
 ];
 const GORUNUM_TIPLER=[
   {k:'biyikTip',ad:'Bıyık',sec:[['yok','Yok'],['klasik','Klasik'],['kalin','Kalın'],['sivri','Sivri uçlu'],['uzun','Uzun sarkık'],['sakal','Sakallı']]},
-  {k:'kemer',ad:'Kemer silahı (yatağan belde, hançer kuşakta)',sec:[['ikisi','Yatağan + Hançer'],['yatagan','Yatağan'],['hancer','Hançer'],['yok','Yok']]},
   {k:'borkTip',ad:'Başlık',sec:[['klasik','Börk'],['kisa','Kısa börk'],['sarik','Sarık'],['fes','Fes']]}
 ];
+const GORUNUM_ESYA=[['yatagan','Yatağan'],['hancer','Hançer'],['kayis','Kayışlar'],['tufek','Tüfek']];
 function _hex6(n){return '#'+('000000'+n.toString(16)).slice(-6);}
 function gorunumCiz(){
   const g=gorunumOku(),ic=document.getElementById('gorunumIc');if(!ic)return;
-  let h='';
+  let h='<div class="toggleLabel" style="margin:4px 0">Ekipman (tak / çıkar)</div><div style="display:flex;flex-wrap:wrap;gap:5px">';
+  GORUNUM_ESYA.forEach(function(e){const a=g[e[0]]!==false;h+='<button class="panBtn'+(a?' grn':'')+'" style="width:auto;margin:0;padding:6px 12px" onclick="gorunumDegis(\''+e[0]+'\','+(!a)+')">'+(a?'✔ ':'✖ ')+e[1]+'</button>';});
+  h+='</div>';
   GORUNUM_TIPLER.forEach(function(t){
     h+='<div class="toggleLabel" style="margin:8px 0 4px">'+t.ad+'</div><div style="display:flex;flex-wrap:wrap;gap:5px">';
     t.sec.forEach(function(o){h+='<button class="panBtn'+(g[t.k]===o[0]?' grn':'')+'" style="width:auto;margin:0;padding:6px 10px" onclick="gorunumDegis(\''+t.k+'\',\''+o[0]+'\')">'+o[1]+'</button>';});
@@ -2327,7 +2329,7 @@ function _insanYap(o,s){
   const ks=_pivot(ic,-.5,1.74,0),kg=_pivot(ic,.5,1.74,0);ks.add(_parca(gm.kolSol));kg.add(_parca(gm.kolSag));
   kg.rotation.x=-.35;
   if(o.adliBicak){   // oyuncunun silahları BAĞIMSIZ modellerdir (silah_*): kemerdeki yatağan/hançer, sırttaki tüfek/yay; savaşta ya da seçilince ele gelir
-    const altin=o.tokaC||0xD4A82A,kem=o.kemer||'ikisi',yat=kem==='ikisi'||kem==='yatagan',han=kem==='ikisi'||kem==='hancer';
+    const altin=o.tokaC||0xD4A82A,yat=!!o.yat,han=!!o.han;
     const q={};
     if(yat){   // yatağan: bele sağ-önden asılı, kını eteğin üstünde, ucu aşağıda dışa kıvrık
       q.elYat=modelYap('silah_yatagan',{altin:altin});q.elYat.position.set(0,-.55,.05);q.elYat.rotation.x=-.12;kg.add(q.elYat);q.elYat.name='wpn';
@@ -2337,9 +2339,9 @@ function _insanYap(o,s){
       q.kinHan=modelYap('silah_hancer',{altin:altin,kinda:true});q.kinHan.position.set(-.2,1.24,.47);q.kinHan.rotation.set(0,.1,Math.PI+.85);q.kinHan.scale.setScalar(.85);ic.add(q.kinHan);
       if(!yat){q.elHan=modelYap('silah_hancer',{altin:altin});q.elHan.position.set(0,-.55,.05);q.elHan.rotation.x=-.12;kg.add(q.elHan);}
     }
-    q.elTufek=modelYap('silah_tufek');q.elTufek.position.set(0,-.55,.5);q.elTufek.rotation.x=Math.PI/2;kg.add(q.elTufek);
+    if(o.tufekVar){q.elTufek=modelYap('silah_tufek');q.elTufek.position.set(0,-.55,.5);q.elTufek.rotation.x=Math.PI/2;kg.add(q.elTufek);
+    q.sirtTufek=modelYap('silah_tufek');q.sirtTufek.position.set(.08,1.62,-.5);q.sirtTufek.rotation.z=-.55;ic.add(q.sirtTufek);}   // sırtta çapraz: namlu sağ omuz üstünde, dipçik sol kalçada
     q.elYay=modelYap('silah_yay');q.elYay.position.set(0,-.55,.3);kg.add(q.elYay);
-    q.sirtTufek=modelYap('silah_tufek');q.sirtTufek.position.set(.08,1.62,-.5);q.sirtTufek.rotation.z=-.55;ic.add(q.sirtTufek);   // sırtta çapraz: namlu sağ omuz üstünde, dipçik sol kalçada
     q.sirtYay=modelYap('silah_yay',{sirt:true});ic.add(q.sirtYay);
     g.userData.silah=q;
     modelSilahGoster(g,0,false);
@@ -2350,14 +2352,19 @@ function _insanYap(o,s){
 }
 
 // Oyuncunun görünümü (SAVE.gorunum) — renkler ve bıyık/börk tipleri; karakter menüsünden değişir
-const GORUNUM_VARSAYILAN={gov:0x9B2020,sash:0x2a3f8a,yaka:0xD4A82A,dugme:0xD4A82A,toka:0xD4A82A,bork:0xE8DCC0,kasik:0xC8C8CC,sal:0x2a3f8a,biyik:0x3a2000,biyikTip:'klasik',borkTip:'klasik',kemer:'ikisi'};
-function gorunumOku(){let s=null;try{s=SAVE.gorunum;}catch(e){}return Object.assign({},GORUNUM_VARSAYILAN,s||{});}
+const GORUNUM_VARSAYILAN={gov:0x9B2020,sash:0x2a3f8a,yaka:0xD4A82A,dugme:0xD4A82A,toka:0xD4A82A,bork:0xE8DCC0,kasik:0xC8C8CC,sal:0x2a3f8a,biyik:0x3a2000,biyikTip:'klasik',borkTip:'klasik',yatagan:true,hancer:true,kayis:true,tufek:true};
+function gorunumOku(){
+  let s=null;try{s=SAVE.gorunum;}catch(e){}
+  const g=Object.assign({},GORUNUM_VARSAYILAN,s||{});
+  if(g.kemer){if(g.kemer==='hancer'||g.kemer==='yok')g.yatagan=false;if(g.kemer==='yatagan'||g.kemer==='yok')g.hancer=false;delete g.kemer;}   // eski kayıt
+  return g;
+}
 function _koyult(c,k){return(Math.round(((c>>16)&255)*k)<<16)|(Math.round(((c>>8)&255)*k)<<8)|Math.round((c&255)*k);}
 function _oyuncuOpt(){
   const g=gorunumOku(),t=g.borkTip;
-  return{id:'yeniceri_'+[g.gov,g.sash,g.yaka,g.dugme,g.toka,g.bork,g.kasik,g.sal,g.biyik,g.biyikTip,g.borkTip,g.kemer].join('_'),
+  return{id:'yeniceri_'+[g.gov,g.sash,g.yaka,g.dugme,g.toka,g.bork,g.kasik,g.sal,g.biyik,g.biyikTip,g.borkTip,g.yatagan?1:0,g.hancer?1:0,g.kayis?1:0,g.tufek?1:0].join('_'),
     etek:_koyult(g.gov,.9),gov:g.gov,sash:g.sash,yaka:g.yaka,dugmeC:g.dugme,tokaC:g.toka,kasikC:g.kasik,sal:g.sal,sal2:0xE8E0D0,bot:0x2a1000,
-    biyik:g.biyikTip==='yok'?0:g.biyik,biyikTip:g.biyikTip,sapka:t==='sarik'?'sarik':t==='fes'?'fes':'bork',sapkaC:g.bork,sapkaC2:g.yaka,borkTip:t,kemer:g.kemer,bandolye:true,adliBicak:true};
+    biyik:g.biyikTip==='yok'?0:g.biyik,biyikTip:g.biyikTip,sapka:t==='sarik'?'sarik':t==='fes'?'fes':'bork',sapkaC:g.bork,sapkaC2:g.yaka,borkTip:t,yat:!!g.yatagan,han:!!g.hancer,tufekVar:!!g.tufek,bandolye:!!g.kayis,adliBicak:true};
 }
 // Silah gösterimi: kılıç kınında; tüfek/yay seçiliyken sırtta; savaşta (cekili) seçili silah elde
 function modelSilahGoster(g,w,cekili){
@@ -2367,8 +2374,9 @@ function modelSilahGoster(g,w,cekili){
   if(q.elHan)q.elHan.visible=cekili&&w===0;
   if(q.kinYat)q.kinYat.visible=!(cekili&&w===0);
   if(q.kinHan)q.kinHan.visible=!(cekili&&w===0&&!q.elYat);
-  q.elTufek.visible=cekili&&w===1;q.elYay.visible=cekili&&w===2;
-  q.sirtTufek.visible=!(cekili&&w===1);q.sirtYay.visible=!(cekili&&w===2)&&w===2;
+  if(q.elTufek){q.elTufek.visible=cekili&&w===1;q.sirtTufek.visible=!(cekili&&w===1);}
+  q.elYay.visible=cekili&&w===2;
+  q.sirtYay.visible=!(cekili&&w===2)&&w===2;
 }
 function _yeniceriYap(){const g=_insanYap(_oyuncuOpt(),1);return g;}
 modelTanimla('yeniceri',{ad:'Yeniçeri (oyuncu)',grup:'Karakter',boy:2.82,yap:_yeniceriYap});
