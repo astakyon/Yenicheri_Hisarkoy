@@ -269,6 +269,19 @@ def main():
         check(not errs, 'JavaScript hatası yok')
         ctx.close()
 
+        print('Harita performans bütçesi')
+        ctx, pg, errs = yeni_sayfa()
+        pg.evaluate("SAVE.mapsUnlocked={orman:true,maden:true}"); 
+        for m, azamiCizim, azamiMesh in (('kisla', 90, 260), ('gorev', 90, 200), ('orman', 100, 200), ('maden', 110, 200)):
+            pg.evaluate("BEGIN('%s')" % m); pg.wait_for_timeout(700)
+            r = pg.evaluate("""() => { REN.info.reset(); REN.render(S3, CAM); let mesh = 0, gercekIsik = 0; S3.traverse(o => { if (o.isMesh) mesh++; if (o.isPointLight) gercekIsik++; });
+              return { cizim: REN.info.render.calls, mesh, gercekIsik, sanal: FENER.liste.length }; }""")
+            check(r['cizim'] <= azamiCizim, '%s: çizim çağrısı %d (sınır %d)' % (m, r['cizim'], azamiCizim))
+            check(r['mesh'] <= azamiMesh, '%s: mesh sayısı %d (sınır %d)' % (m, r['mesh'], azamiMesh))
+            check(r['gercekIsik'] <= 8, '%s: gerçek nokta ışığı %d (fener havuzu, sınır 8)' % (m, r['gercekIsik']))
+        check(not errs, 'JavaScript hatası yok')
+        ctx.close()
+
         print('Oturum (SESSION + LoopbackTransport)')
         ctx, pg, errs = yeni_sayfa()
         pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(800)

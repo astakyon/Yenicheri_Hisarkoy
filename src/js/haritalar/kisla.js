@@ -50,7 +50,7 @@ function buildKisla(){
 
   // Zemin
   const gnd=new THREE.Mesh(new THREE.PlaneGeometry(120,120),new THREE.MeshLambertMaterial({color:0xD4B870}));gnd.rotation.x=-Math.PI/2;gnd.receiveShadow=true;S3.add(gnd);
-  for(let i=-12;i<=12;i++)for(let j=-12;j<=12;j++)if((i+j)%2===0){const st=new THREE.Mesh(new THREE.BoxGeometry(4.6,.05,4.6),new THREE.MeshLambertMaterial({color:0xC8A850}));st.position.set(i*5,.01,j*5);st.receiveShadow=true;S3.add(st);}
+  S3.add(modelYap('zemin_tas',{n:12,adim:5,kare:4.6,yuk:.05,y:.01,renk:0xC8A850}));
   const grass=new THREE.Mesh(new THREE.PlaneGeometry(240,240),new THREE.MeshLambertMaterial({color:0x6aaa40}));grass.rotation.x=-Math.PI/2;grass.position.y=-.05;S3.add(grass);
 
   // Tunç Nehri (kuzeyde, blueprint'teki gibi)
@@ -59,10 +59,10 @@ function buildKisla(){
   for(let i=-50;i<=50;i+=10){const sp=new THREE.Mesh(new THREE.PlaneGeometry(6,1.5),new THREE.MeshBasicMaterial({color:0x80C0FF,transparent:true,opacity:.3}));sp.rotation.x=-Math.PI/2;sp.position.set(i,.06,-54+Math.sin(i)*2);S3.add(sp);}
 
   // ── DIŞ SUR (tüm Hisarköy'ü çevreler) ──
-  bx(0,2.5,-46,98,5,2.5,0xC8A870,0x8B6914);   // kuzey sur
-  bx(0,2.5,46,98,5,2.5,0xC8A870,0x8B6914);    // güney sur
-  bx(-47,2.5,0,2.5,5,98,0xC8A870,0x8B6914);   // batı sur
-  bx(47,2.5,0,2.5,5,98,0xC8A870,0x8B6914);    // doğu sur
+  {const sw=yapiKoy('yapi_sur',0,-46,{w:98,h:5,d:2.5},[98,2.5]);}   // kuzey sur
+  {const sw=yapiKoy('yapi_sur',0,46,{w:98,h:5,d:2.5},[98,2.5]);}    // güney sur
+  {const sw=yapiKoy('yapi_sur',-47,0,{w:98,h:5,d:2.5},[2.5,98]);sw.rotation.y=Math.PI/2;}   // batı sur
+  {const sw=yapiKoy('yapi_sur',47,0,{w:98,h:5,d:2.5},[2.5,98]);sw.rotation.y=Math.PI/2;}    // doğu sur
   // Köşe kuleleri (Kule 1-4)
   [[-46,-46],[46,-46],[-46,46],[46,46]].forEach(([cx,cz])=>{
     const k=bx(cx,3.5,cz,6,7,6,0xB09060,0x8B6914);
@@ -71,10 +71,7 @@ function buildKisla(){
 
   // ── ORTA CADDE (Street) — kışla ile sivil alanı ayıran yol ──
   // Cadde alanı collider içermez (geçilebilir), sadece görsel
-  const streetMat=new THREE.MeshLambertMaterial({color:0xC0A870});
-  const street=new THREE.Mesh(new THREE.PlaneGeometry(7,90),streetMat);street.rotation.x=-Math.PI/2;street.position.set(0,.03,0);S3.add(street);
-  // Cadde taş döşeme deseni
-  for(let j=-42;j<=42;j+=4){const cs=new THREE.Mesh(new THREE.BoxGeometry(6,.04,3.4),new THREE.MeshLambertMaterial({color:0xB89858}));cs.position.set(0,.04,j);S3.add(cs);}
+  S3.add(modelYap('zemin_sokak',{w:7,L:90}));
 
   // ═══════════ SOL YARI — YENİÇERİ KIŞLASI ═══════════
   // Kışla alt-sur (sol yarıyı çevreler, cadde tarafı açık)
@@ -93,8 +90,8 @@ function buildKisla(){
 
   // Demir Kapı (güney — sol yarının çıkışı, blueprint'teki "Demir Kapı / الندين")
   bx(-13,1.8,25,13,3.6,1,0x2a1400,0x8B0000,false);
-  const dkSign=new THREE.Mesh(new THREE.BoxGeometry(6,1,.2),new THREE.MeshLambertMaterial({color:0x8B0000}));dkSign.position.set(-13,4.4,24.9);S3.add(dkSign);
-  const dkLight=new THREE.PointLight(0xFF6600,2,10);dkLight.position.set(-13,4,23);S3.add(dkLight);
+  const dkSign=modelYap('cevre_levha',{w:6,h:1,d:.2,renk:0x8B0000});dkSign.position.set(-13,4.4,24.9);S3.add(dkSign);
+  const dkLight=fenerLight(-13,4,23,0xFF6600,2,10);
   torches.push({light:dkLight,phase:Math.random()*Math.PI*2});
 
   // ═══════════ SAĞ YARI — SİVİL ALAN ═══════════
@@ -109,12 +106,12 @@ function buildKisla(){
 
   // Artisan Kapı (sağ yarının çıkışı — blueprint'teki "Artisan Kapı")
   bx(23,1.8,25,13,3.6,1,0x2a1400,0x8B6914,false);
-  const akSign=new THREE.Mesh(new THREE.BoxGeometry(6,1,.2),new THREE.MeshLambertMaterial({color:0x5a3800}));akSign.position.set(23,4.4,24.9);S3.add(akSign);
+  const akSign=modelYap('cevre_levha',{w:6,h:1,d:.2,renk:0x5a3800});akSign.position.set(23,4.4,24.9);S3.add(akSign);
 
   // ── Etkileşim kapı işaretleri (tüm bölgeler için ortak ışık+levha) ──
   ZONES.forEach(z=>{
     if(z.id==='demirKapi'||z.id==='artisanKapi')return;
-    const zl=new THREE.PointLight(0xFFCC66,1.3,9);zl.position.set(z.dx,3.5,z.dz);S3.add(zl);
+    const zl=fenerLight(z.dx,3.5,z.dz,0xFFCC66,1.3,9);
     torches.push({light:zl,phase:Math.random()*Math.PI*2});
   });
 
@@ -137,7 +134,7 @@ function buildKisla(){
   // ── Fenerler (cadde boyunca + meydanlarda) ──
   [[0,-40],[0,-20],[0,0],[0,20],[0,40],[-23,-30],[-23,28],[23,-30],[23,28]].forEach(([x,z])=>{
     yapiKoy('cevre_mesale',x,z);
-    const pt=new THREE.PointLight(0xFF9933,2.2,11);pt.position.set(x,3.2,z);S3.add(pt);
+    const pt=fenerLight(x,3.2,z,0xFF9933,2.2,11);
     torches.push({light:pt,phase:Math.random()*Math.PI*2});
   });
 }
@@ -170,7 +167,7 @@ function buildDrillGroundZone(cx,cz,w,d){
     addCircleCollider(x,zz,0.4); // kuklalar da çarpışmalı
   });
   // Levha
-  const sign=new THREE.Mesh(new THREE.BoxGeometry(3.6,.7,.15),new THREE.MeshLambertMaterial({color:0x5a2800}));sign.position.set(z.dx,3.2,z.dz);S3.add(sign);
+  const sign=modelYap('cevre_levha',{w:3.6,h:.7,d:.15,renk:0x5a2800});sign.position.set(z.dx,3.2,z.dz);S3.add(sign);
 }
 
 // ── Sultan Hamamı — kubbeli yapı ──
@@ -199,7 +196,7 @@ function buildCarsiBuilding(cx,cz,w,d){
     }
   }
   const doorZ=cz+(d/2);
-  const sign=new THREE.Mesh(new THREE.BoxGeometry(4,.7,.15),new THREE.MeshLambertMaterial({color:0x5a2800}));sign.position.set(z.dx,4,doorZ+.15);S3.add(sign);
+  const sign=modelYap('cevre_levha',{w:4,h:.7,d:.15,renk:0x5a2800});sign.position.set(z.dx,4,doorZ+.15);S3.add(sign);
 }
 
 // ── Konut Bölgesi — dekoratif binalar (kapısız, sadece görsel + collider) ──

@@ -1,5 +1,11 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.52 — Zemin/sur/levha modelleri, fener havuzu, harita analizi
+- **Modeller:** `zemin_tas` (dama taş döşeme, tek parça), `zemin_sokak`, `cevre_levha`; Kışla ve Görev surları `yapi_sur`, levhalar `cevre_levha`.
+- **Fener havuzu:** haritadaki feneri sanal ışık yapar, en yakın 5'i gerçek ışık. Kışla'da ışık 23 → 9, mesh 479 → 145, çizim çağrısı 110 → 62; Görev'de mesh 200 → 88.
+- **Test:** harita başına çizim/mesh/ışık bütçesi.
+- **docs/HARITALAR.md:** harita analizi ve bulgular.
+
 ## v1.51 — Oyun içi modeller = model kütüphanesi (tek kaynak)
 - Oyundaki her varlık artık `modelYap()` ile kütüphaneden gelir: oyuncu, düşman, boss, hayvan, ganimet, mermi, **NPC'ler** (yeni `npc_halk`), Kışla ağaçları ve fenerleri, **Görev (Devriye) haritasının** kuleleri, evleri, camisi, hamamı, kervansarayı, variller, ağaçları ve meşaleleri, editördeki NPC.
 - Kütüphanede ayarlanan **boy** (Uygula) kalıcı olur ve oyunda da uygulanır; `.glb` ile değiştirilen model oyunda da onu kullanır.

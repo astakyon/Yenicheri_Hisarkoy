@@ -72,7 +72,7 @@ function buildMaden(){
   madenTorches=[];
   [[0,28],[0,16],[0,0],[0,-16],[-22,-8],[-34,-8],[22,8],[34,8],[0,-30]].forEach(([x,z])=>{
     yapiKoy('cevre_mesale',x,z);
-    const pt=new THREE.PointLight(0xFF7722,2.2,11);pt.position.set(x,3,z);S3.add(pt);
+    const pt=fenerLight(x,3,z,0xFF7722,2.2,11);
     madenTorches.push({light:pt,phase:Math.random()*Math.PI*2});
   });
 

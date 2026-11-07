@@ -30,7 +30,7 @@ function kameraGuncelle(){
   CAM.position.y+=(camHeight-CAM.position.y)*smooth;
   CAM.position.z+=((pl.z+Math.cos(camYawS)*camDist)-CAM.position.z)*smooth;
   CAM.lookAt(pl.x,0,pl.z);
-  kapatanGuncelle();
+  kapatanGuncelle();fenerAta();
 }
 function update(dt){
   if(!playing||paused||!pl.mesh)return;
@@ -118,7 +118,28 @@ function checkCollision(px,pz,pr){
   }
   return false;
 }
-function clearColliders(){colliders=[];kapatanlar=[];}
+function clearColliders(){colliders=[];kapatanlar=[];FENER.liste=[];}
+// ── Fener havuzu: sahnede en çok FENER_N gerçek PointLight olur (telefonda her ışık her pikseli yavaşlatır).
+//    Haritadaki bütün fenerler "sanal" ışıktır; oyuncuya en yakın FENER_N tanesi gerçek ışığa aktarılır.
+const FENER_N=5;
+const FENER={liste:[],havuz:[]};
+function fenerLight(x,y,z,renk,siddet,mesafe){
+  const f={x:x,y:y,z:z,color:renk,intensity:siddet,distance:mesafe};FENER.liste.push(f);return f;
+}
+function fenerAta(){
+  if(!S3)return;
+  if(FENER.havuz.length!==FENER_N||FENER.havuz[0].parent!==S3){
+    FENER.havuz.forEach(function(l){if(l.parent)l.parent.remove(l);});FENER.havuz=[];
+    for(let i=0;i<FENER_N;i++){const l=new THREE.PointLight(0xFF9933,0,10);S3.add(l);FENER.havuz.push(l);}
+  }
+  const L=FENER.liste;
+  const sirali=L.length>FENER_N?L.slice().sort(function(a,b){return (a.x-pl.x)*(a.x-pl.x)+(a.z-pl.z)*(a.z-pl.z)-((b.x-pl.x)*(b.x-pl.x)+(b.z-pl.z)*(b.z-pl.z));}):L;
+  for(let i=0;i<FENER_N;i++){
+    const l=FENER.havuz[i],f=sirali[i];
+    if(!f){l.intensity=0;continue;}
+    l.position.set(f.x,f.y,f.z);l.color.setHex(f.color);l.intensity=f.intensity;l.distance=f.distance;
+  }
+}
 // ── Bina arkasında saydamlaşma: kamera ile oyuncu arasına giren yüksek yapılar solar ──
 let kapatanlar=[];
 const _kRay=new THREE.Ray(),_kHedef=new THREE.Vector3(),_kYon=new THREE.Vector3(),_kNokta=new THREE.Vector3();

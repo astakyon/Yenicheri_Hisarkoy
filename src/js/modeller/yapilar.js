@@ -215,6 +215,31 @@ function _yapiNehir(o){
   return g;
 }
 
+// ── Zemin ve levha ──
+// Dama taş döşeme: yüzlerce kare tek parçada (tek çizim)
+function _yapiZemin(o){
+  const n=o.n||12,ad=o.adim||5,k=o.kare||4.6,yk=o.yuk||.05,c=o.renk||0xC8A850;
+  for(let i=-n;i<=n;i++)for(let j=-n;j<=n;j++)if((i+j)%2===0)_yk(k,yk,k,c,i*ad,o.y||.01,j*ad);
+  return _ybitir();
+}
+// Cadde: düz yüzey + taş döşeme şeritleri
+function _yapiSokak(o){
+  const w=o.w||7,L=o.L||90;
+  _yk(w,.02,L,o.renk||0xC0A870,0,.03,0);
+  for(let j=-L/2+3;j<=L/2-3;j+=4)_yk(w-1,.04,3.4,0xB89858,0,.04,j);
+  [-1,1].forEach(function(sg){_yk(.35,.14,L,0x8a8478,sg*(w/2+.17),.07,0);});    // bordür
+  return _ybitir();
+}
+// Levha: çerçeveli tahta, kenarlıkta metal köşebentler (orijin merkezde)
+function _yapiLevha(o){
+  const w=o.w||4,h=o.h||.8,d=o.d||.2,c=o.renk||0x5a2800;
+  _yk(w,h,d,c,0,0,0);_yk(w+.2,.1,d+.06,0x2a1808,0,h/2,0);_yk(w+.2,.1,d+.06,0x2a1808,0,-h/2,0);
+  _yk(.1,h+.1,d+.06,0x2a1808,-w/2,0,0);_yk(.1,h+.1,d+.06,0x2a1808,w/2,0,0);
+  _yk(w*.7,h*.28,d+.04,0xD4A82A,0,0,0);        // yazı bandı
+  [-1,1].forEach(function(sg){_yk(.12,.12,.12,0x8a8a8a,sg*(w/2-.15),h/2-.1,d/2+.04);});
+  return _ybitir();
+}
+
 const _YD=[
   ['yapi_ev','Konut evi (cumbalı)',_yapiEv,{w:6,d:5},5.6],['yapi_kisla','Kışla / cebehane binası',_yapiKisla,{w:12,d:9},8.2],
   ['yapi_cami','Cami (kubbe ve minare)',_yapiCami,{w:9,d:9},15],['yapi_hamam','Sultan Hamamı',_yapiHamam,{w:16,d:16},9],
@@ -222,10 +247,10 @@ const _YD=[
   ['yapi_kule','Gözetleme kulesi',_yapiKule,{r:2.2,h:9},13],['yapi_sur','Sur parçası',_yapiSur,{w:10},6],['yapi_cit','Tahta çit',_yapiCit,{w:6},1.5],
   ['yapi_talim','Talim kuklası',_yapiMasa,{},3],
   ['cevre_agac','Meşe ağacı',_yapiAgac,{h:5},6],['cevre_cam','Çam ağacı',_yapiCam,{h:6.5},6.5],['cevre_kaya','Kaya',_yapiKaya,{s:1.2},1.7],
-  ['cevre_cadir','Çadır',_yapiCadir,{r:2.2},4.4],['cevre_magara','Mağara',_yapiMagara,{w:10,d:12,h:7},7],['cevre_destek','Maden desteği',_yapiDestek,{w:18,h:7},7],['cevre_nehir','Akarsu',_yapiNehir,{L:96,w:6},.5],['cevre_mesale','Meşale',_yapiMesale,{},3.2],['cevre_varil','Varil',_yapiVaril,{},1],['cevre_sandik','Sandık',_yapiSandik,{},.75]
+  ['zemin_tas','Taş döşeme zemin',_yapiZemin,{n:12,adim:5,kare:4.6},.1],['zemin_sokak','Cadde',_yapiSokak,{w:7,L:90},.2],['cevre_levha','Levha',_yapiLevha,{w:4,h:.8},.9],['cevre_cadir','Çadır',_yapiCadir,{r:2.2},4.4],['cevre_magara','Mağara',_yapiMagara,{w:10,d:12,h:7},7],['cevre_destek','Maden desteği',_yapiDestek,{w:18,h:7},7],['cevre_nehir','Akarsu',_yapiNehir,{L:96,w:6},.5],['cevre_mesale','Meşale',_yapiMesale,{},3.2],['cevre_varil','Varil',_yapiVaril,{},1],['cevre_sandik','Sandık',_yapiSandik,{},.75]
 ];
 _YD.forEach(function(d){
-  modelTanimla(d[0],{ad:d[1],grup:d[0].indexOf('yapi_')===0?'Yapı':'Çevre',boy:d[4],varsayilan:d[3],yap:function(op){return d[2](Object.assign({},d[3],op||{}));}});
+  modelTanimla(d[0],{ad:d[1],grup:d[0].indexOf('yapi_')===0?'Yapı':(d[0].indexOf('zemin_')===0?'Zemin':'Çevre'),boy:d[4],varsayilan:d[3],yap:function(op){return d[2](Object.assign({},d[3],op||{}));}});
 });
 
 // Haritada kullanım: yapıyı sahneye koyar ve (verildiyse) çarpışma kutusu ekler

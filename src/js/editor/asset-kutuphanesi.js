@@ -95,7 +95,7 @@ const ASSET_DEFS={
     d.build3D=function(x,z,rot,opt){
       const g=modelYap(t[1],t[4]);g.position.set(x,0,z);S3.add(g);
       const c=t[5];if(c){if(c[0]==='r')addCircleCollider(x,z,c[1]);else addCollider(x,z,c[0],c[1]);}
-      if(t[1]==='cevre_mesale'){const pt=new THREE.PointLight(0xFF9933,3,10);pt.position.set(x,3,z);S3.add(pt);torches.push({light:pt,phase:Math.random()*Math.PI*2});}
+      if(t[1]==='cevre_mesale'){const pt=fenerLight(x,3,z,0xFF9933,3,10);torches.push({light:pt,phase:Math.random()*Math.PI*2});}
       return g;
     };
   });
