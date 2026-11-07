@@ -13,6 +13,8 @@ cekirdek/oyun-durumu.js
 cekirdek/dunya-modeli.js
 cekirdek/oturum.js
 cekirdek/istemci.js
+cekirdek/istemci-oyun.js
+cekirdek/baglanti.js
 ekran/bolumler.js
 ekran/buyuk-harita.js
 ekran/buyuk-harita-cizim.js

@@ -4,7 +4,8 @@ const V = new URL(self.location.href).searchParams.get('v') || 'dev';
 const CACHE = 'yenicheri-' + V;
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png',
   'icons/icon-maskable-512.png', 'icons/icon-96.png', 'icons/icon-180.png',
-  'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'];
+  'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
+  'https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(CORE.map(u => c.add(u).catch(() => {})))).then(() => self.skipWaiting()));
 });
@@ -14,7 +15,7 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const u = e.request.url;
   // Çok oyunculu bağlantı (PeerJS, Supabase) ve POST istekleri önbelleğe girmez
-  if (e.request.method !== 'GET' || /peerjs|supabase|cloudflare\.com\/(turn|api)/.test(u)) return;
+  if (e.request.method !== 'GET' || /0\.peerjs\.com|supabase|cloudflare\.com\/(turn|api)/.test(u)) return;
   // Sayfa: önce ağ (güncel sürüm), ağ yoksa önbellek. Diğer dosyalar: önce önbellek.
   if (e.request.mode === 'navigate') {
     e.respondWith(fetch(e.request).then(r => { const c = r.clone(); caches.open(CACHE).then(x => x.put(e.request, c)); return r; })

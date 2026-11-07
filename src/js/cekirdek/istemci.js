@@ -22,13 +22,44 @@ SESSION.addPeer=function(id,transport){
     weapon:0,armor:'none',ab:{cd:{q:0,f:0,r:0},active:{q:false,f:false,r:false},timer:{q:0,f:0,r:0}}};
   WORLD.players.set(id,p);this.peers.set(id,transport);return p;
 };
-SESSION.removePeer=function(id){WORLD.players.delete(id);this.peers.delete(id);this.inputs.delete(id);};
+SESSION.removePeer=function(id){WORLD.players.delete(id);this.peers.delete(id);this.inputs.delete(id);this.cmdQ.delete(id);this.acks.delete(id);};
+SESSION.cmdQ=new Map();          // oyuncu id -> bekleyen girdi komutları (sıralı)
+SESSION.acks=new Map();          // oyuncu id -> işlenen son girdi numarası (istemci tahmini bununla düzeltilir)
+SESSION.actions=[];              // saldırı gibi tek seferlik eylemler
+SESSION.nextPeer=1;
 SESSION.pollPeers=function(){
   this.peers.forEach(function(tr,id){
-    tr.poll().forEach(function(m){if(m.t==='input')SESSION.inputs.set(id,m.cmd);});   // id'yi taşıma belirler, mesaj değil
+    tr.poll().forEach(function(m){
+      // id'yi taşıma belirler, mesaj değil
+      if(m.t==='input'){let q=SESSION.cmdQ.get(id);if(!q){q=[];SESSION.cmdQ.set(id,q);}if(q.length<30)q.push({seq:m.seq,cmd:m.cmd});}
+      else if(m.t==='act')SESSION.actions.push({id:id,m:m});
+    });
   });
 };
+// Bir tikte her uzak oyuncunun bir (birikmişse iki) komutunu uygular; sonra eylemleri işler
+SESSION.stepPeers=function(dt){
+  this.cmdQ.forEach(function(q,id){
+    const p=WORLD.players.get(id);if(!p){return;}
+    let n=q.length>4?2:1;
+    while(n-->0&&q.length){const c=q.shift();if(p.hp>0)movePlayer(p,c.cmd,dt);if(c.seq!==undefined)SESSION.acks.set(id,c.seq);}
+  });
+  const acts=this.actions;this.actions=[];
+  acts.forEach(function(a){
+    const p=WORLD.players.get(a.id);if(!p||p.hp<=0)return;
+    if(a.m.k==='melee')doMelee(p);
+    else if(a.m.k==='ranged'){p.weapon=a.m.w|0;doRanged(p,{x:+a.m.ax||p.x,z:+a.m.az||p.z});}
+  });
+};
+SESSION.acceptPeer=function(transport){
+  if(this.peers.size>=3){transport.send({t:'dolu'});return null;}
+  const id='c'+(this.nextPeer++);
+  const p=this.addPeer(id,transport);
+  const sp=localPlayer();
+  transport.send({t:'hos',id:id,map:currentMap,spd:sp.spd,rspd:sp.rspd,x:p.x,z:p.z});
+  return id;
+};
 SESSION.afterTick=function(){
+  this.peers.forEach(function(tr,id){if(tr.kapali){SESSION.removePeer(id);lootPop('👥 Oyuncu ayrıldı: '+id);}});
   if(this.peers.size===0||gt%SNAP_ARALIK!==0)return;
   const msg={t:'snap',s:snapshot()};
   this.peers.forEach(function(tr){tr.send(msg);});

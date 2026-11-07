@@ -11,7 +11,7 @@ function loop(){
   if(!S3||!REN)return;
   tikBirikim+=CLK?Math.min(CLK.getDelta(),.25):TIK;
   let n=0;
-  while(tikBirikim>=TIK&&n<MAX_TIK_KARE){update(TIK);tikBirikim-=TIK;n++;}
+  while(tikBirikim>=TIK&&n<MAX_TIK_KARE){if(CLIENT.aktif)clientUpdate(TIK);else update(TIK);tikBirikim-=TIK;n++;}
   if(n>=MAX_TIK_KARE)tikBirikim=0;           // çok geride kalındı (örn. sekme arka plandaydı): yakalamaya çalışma
   if(playing&&!paused&&pl.mesh)renderFrame();
 }

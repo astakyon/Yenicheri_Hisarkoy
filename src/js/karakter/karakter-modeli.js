@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════
 // KARAKTER
 // ═══════════════════════════════════════════════════════
-function buildPlayer(){
+function createPlayerMesh(){
   const g=new THREE.Group();
   const body=new THREE.Mesh(new THREE.BoxGeometry(.9,1.5,.55),new THREE.MeshLambertMaterial({color:0x9B2020}));body.position.y=1.15;body.castShadow=true;g.add(body);
   const skirt=new THREE.Mesh(new THREE.CylinderGeometry(.5,.62,.8,8),new THREE.MeshLambertMaterial({color:0x8B1818}));skirt.position.y=.55;g.add(skirt);
@@ -11,6 +11,10 @@ function buildPlayer(){
   const bork=new THREE.Mesh(new THREE.CylinderGeometry(.2,.33,.75,8),new THREE.MeshLambertMaterial({color:0xD4B050}));bork.position.set(0,2.65,0);g.add(bork);
   const borkT=new THREE.Mesh(new THREE.CylinderGeometry(.06,.2,.5,6),new THREE.MeshLambertMaterial({color:0xFFD700}));borkT.position.y=.62;bork.add(borkT);
   const wpn=new THREE.Mesh(new THREE.BoxGeometry(.07,1.1,.05),new THREE.MeshLambertMaterial({color:0xD0D0D0}));wpn.name='wpn';wpn.position.set(.58,1.4,0);wpn.rotation.z=-.28;g.add(wpn);
-  g.castShadow=true;S3.add(g);pl.mesh=g;g.position.set(pl.x,0,pl.z);
+  g.castShadow=true;
+  return g;
+}
+function buildPlayer(){
+  const g=createPlayerMesh();S3.add(g);pl.mesh=g;g.position.set(pl.x,0,pl.z);
 }
 

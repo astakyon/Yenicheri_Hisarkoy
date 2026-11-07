@@ -9,7 +9,7 @@ src/
   css/main.css        bütün stiller
   html/body.html      menüler, paneller, HUD, dokunmatik düğmeler
   js/SIRA.txt         JS modüllerinin birleştirme sırası
-  js/<konu>/*.js      oyun kodu (39 modül)
+  js/<konu>/*.js      oyun kodu (41 modül)
 tools/build.py        src/ -> index.html   (--check: güncel mi?)
 tests/                test_kaynak.py (tarayıcısız), smoke.py (gerçek tarayıcı), altin.py (davranış referansı), run.sh (hepsi)
 docs/                 bu belge ve yol haritası

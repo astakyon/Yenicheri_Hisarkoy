@@ -13,3 +13,9 @@ if [ "${SMOKE:-1}" != "0" ]; then
   echo "== altın test (davranış referansı) =="
   python3 tests/altin.py
 fi
+if [ "${COOP:-1}" != "0" ] && [ "${SMOKE:-1}" != "0" ]; then
+  echo
+  echo "== çok oyunculu uçtan uca test (iki sayfa, yerel PeerServer) =="
+  python3 tests/coop.py
+fi
+

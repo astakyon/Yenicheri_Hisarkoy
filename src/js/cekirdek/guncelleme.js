@@ -10,7 +10,7 @@ function update(dt){
   else if(currentMap&&currentMap.startsWith('custom_')){updateCustomMap(dt);}
   else{updateKisla(dt);}
   updateAim();
-  if(pl.atkCd>0)pl.atkCd--;if(pl.ifr>0)pl.ifr--;
+  WORLD.players.forEach(function(p){if(p.atkCd>0)p.atkCd--;if(p.ifr>0)p.ifr--;});
   const wpnM=pl.mesh.getObjectByName('wpn');if(wpnM)wpnM.material.color.setHex([0xD0D0D0,0x505050,0x8B4513][selWeapon]);
   if(pwrOn){pwr=Math.min(100,pwr+2.4);document.getElementById('pwrFl').style.width=pwr+'%';document.getElementById('pwrW').style.display='block';}
   torches.forEach(function(t){t.phase+=.06;t.light.intensity=2.4+Math.sin(t.phase)*.5+Math.sin(t.phase*1.8)*.2;});

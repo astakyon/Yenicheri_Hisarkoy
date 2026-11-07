@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.44">
+<meta name="game-version" content="v1.45">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.44</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.45</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -317,6 +317,17 @@ canvas{display:block;position:absolute;top:0;left:0;}
 /* Stat satırı */
 .statRow{display:flex;justify-content:space-between;color:#D4B896;font-size:9px;margin:3px 0;}
 .statVal{color:#FFD700;}
+
+/* ── ÇOK OYUNCULU LOBİ ── */
+#coopBox{position:fixed;inset:0;z-index:48;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.65);}
+#coopPanel{background:linear-gradient(180deg,#1c0e00,#0e0600);border:2px solid #8B6914;border-radius:5px;padding:16px 20px;width:min(300px,86vw);display:flex;flex-direction:column;gap:9px;text-align:center;}
+#coopT{color:#FFD700;font-size:13px;font-family:'Cinzel Decorative',serif;}
+#coopKodSatiri{display:none;color:#D4B896;font-size:9px;letter-spacing:2px;}
+#coopKod{color:#FFE9A8;font-size:26px;letter-spacing:6px;font-family:'Cinzel',serif;margin-top:2px;user-select:all;}
+.coopAyrac{color:#8B6914;font-size:9px;}
+#coopGiris{background:#0a0400;border:1.5px solid #8B6914;border-radius:3px;color:#FFE9A8;text-align:center;font-size:18px;letter-spacing:5px;padding:7px;font-family:'Cinzel',serif;text-transform:uppercase;}
+#coopDurum{color:#D4B896;font-size:10px;line-height:1.5;min-height:30px;}
+.coopB{width:100%;}
 </style>
 </head>
 <body>
@@ -341,11 +352,12 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mTitle"><svg class="mOrn" viewBox="0 0 48 44" aria-hidden="true"><defs><mask id="mCres"><rect width="48" height="44" fill="#fff"/><circle cx="31" cy="22" r="14.5" fill="#000"/></mask></defs><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg><span class="mTx"><span>YENİÇERİ:</span> <span>HİSARKÖY MUHAFIZI</span></span><svg class="mOrn r" viewBox="0 0 48 44" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="#FFD700" mask="url(#mCres)"/><polygon points="38,15 39.9,19.9 45,20.1 41,23.4 42.4,28.5 38,25.6 33.6,28.5 35,23.4 31,20.1 36.1,19.9" fill="#FFD700"/></svg></div>
       <div id="mDeco"><div class="ml"></div><div id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</div><div class="ml"></div></div>
-      <div id="mVer">v1.44</div>
+      <div id="mVer">v1.45</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
       <button class="mBtn" onclick="openChapters()">🗺 BÖLÜMLER</button>
+      <button class="mBtn" onclick="coopAc()">👥 ÇOK OYUNCULU</button>
       <button class="mBtn" onclick="openMapEditor()">🛠 HARİTA EDİTÖRÜ</button>
       <button class="mBtn" onclick="showDlg('📜 Nasıl Oynanır','WASD / Joystick → Hareket\nShift / 🏃 → Koşma\nFare / ⚔ → Saldır\n1/2/3 → Silah seç\nE / Kapı → Bölgeye Gir\nKışlada Demir Kapı → Göreve Çık\nEsc → Duraklat','Anlaşıldı!',hideDlg)">📜 NASIL OYNANIR</button>
       <button class="mBtn" id="btnInstall" style="display:none" onclick="installApp()">⬇ UYGULAMAYI YÜKLE</button>
@@ -623,6 +635,18 @@ canvas{display:block;position:absolute;top:0;left:0;}
   </div>
 
   <!-- ── DİALOG ── -->
+  <div id="coopBox">
+    <div id="coopPanel">
+      <div id="coopT">👥 ÇOK OYUNCULU</div>
+      <button class="mBtn coopB" onclick="odaKur()">🏰 ODA KUR</button>
+      <div id="coopKodSatiri">ODA KODU<div id="coopKod">-----</div></div>
+      <div class="coopAyrac">— ya da —</div>
+      <input id="coopGiris" maxlength="5" placeholder="ODA KODU" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      <button class="mBtn coopB" onclick="odayaKatil(document.getElementById('coopGiris').value)">🚪 ODAYA KATIL</button>
+      <div id="coopDurum"></div>
+      <button class="mBtn coopB" onclick="coopKapat()">KAPAT</button>
+    </div>
+  </div>
   <div id="dlgLayer">
     <div id="dlgBox">
       <div id="dlgT"></div><div id="dlgP"></div><button id="dlgB"></button>
@@ -691,11 +715,12 @@ canvas{display:block;position:absolute;top:0;left:0;}
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.44';
+const VERSION='v1.45';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -1793,9 +1818,11 @@ const SESSION={
     this.transport.poll().forEach(function(m){if(m.t==='input')SESSION.inputs.set(m.id,m.cmd);});
     if(this.pollPeers)this.pollPeers();
     WORLD.players.forEach(function(p,id){
+      if(SESSION.peers&&SESSION.peers.has(id))return;      // uzak oyuncular komut kuyruğundan (stepPeers)
       const c=SESSION.inputs.get(id);
       if(c)movePlayer(p,c,dt);
     });
+    if(this.stepPeers)this.stepPeers(dt);
   }
 };
 
@@ -1806,7 +1833,7 @@ function snapshot(){
   const r=function(v){return Math.round(v*100)/100;};
   const ps=[];
   WORLD.players.forEach(function(p,id){
-    ps.push({id:id,x:r(p.x),z:r(p.z),a:r(p.ang),hp:Math.ceil(p.hp),mh:p.maxHp,en:Math.ceil(p.en),w:p.weapon,ar:armorOf(p),sh:p.ab&&p.ab.active.f?1:0});
+    ps.push({id:id,x:r(p.x),z:r(p.z),a:r(p.ang),hp:Math.ceil(p.hp),mh:p.maxHp,en:Math.ceil(p.en),w:p.weapon,ar:armorOf(p),sh:p.ab&&p.ab.active.f?1:0,q:(SESSION.acks&&SESSION.acks.get(id))||0});
   });
   return {
     t:gt,map:currentMap,wave:wave,kills:kills,
@@ -1840,13 +1867,44 @@ SESSION.addPeer=function(id,transport){
     weapon:0,armor:'none',ab:{cd:{q:0,f:0,r:0},active:{q:false,f:false,r:false},timer:{q:0,f:0,r:0}}};
   WORLD.players.set(id,p);this.peers.set(id,transport);return p;
 };
-SESSION.removePeer=function(id){WORLD.players.delete(id);this.peers.delete(id);this.inputs.delete(id);};
+SESSION.removePeer=function(id){WORLD.players.delete(id);this.peers.delete(id);this.inputs.delete(id);this.cmdQ.delete(id);this.acks.delete(id);};
+SESSION.cmdQ=new Map();          // oyuncu id -> bekleyen girdi komutları (sıralı)
+SESSION.acks=new Map();          // oyuncu id -> işlenen son girdi numarası (istemci tahmini bununla düzeltilir)
+SESSION.actions=[];              // saldırı gibi tek seferlik eylemler
+SESSION.nextPeer=1;
 SESSION.pollPeers=function(){
   this.peers.forEach(function(tr,id){
-    tr.poll().forEach(function(m){if(m.t==='input')SESSION.inputs.set(id,m.cmd);});   // id'yi taşıma belirler, mesaj değil
+    tr.poll().forEach(function(m){
+      // id'yi taşıma belirler, mesaj değil
+      if(m.t==='input'){let q=SESSION.cmdQ.get(id);if(!q){q=[];SESSION.cmdQ.set(id,q);}if(q.length<30)q.push({seq:m.seq,cmd:m.cmd});}
+      else if(m.t==='act')SESSION.actions.push({id:id,m:m});
+    });
   });
 };
+// Bir tikte her uzak oyuncunun bir (birikmişse iki) komutunu uygular; sonra eylemleri işler
+SESSION.stepPeers=function(dt){
+  this.cmdQ.forEach(function(q,id){
+    const p=WORLD.players.get(id);if(!p){return;}
+    let n=q.length>4?2:1;
+    while(n-->0&&q.length){const c=q.shift();if(p.hp>0)movePlayer(p,c.cmd,dt);if(c.seq!==undefined)SESSION.acks.set(id,c.seq);}
+  });
+  const acts=this.actions;this.actions=[];
+  acts.forEach(function(a){
+    const p=WORLD.players.get(a.id);if(!p||p.hp<=0)return;
+    if(a.m.k==='melee')doMelee(p);
+    else if(a.m.k==='ranged'){p.weapon=a.m.w|0;doRanged(p,{x:+a.m.ax||p.x,z:+a.m.az||p.z});}
+  });
+};
+SESSION.acceptPeer=function(transport){
+  if(this.peers.size>=3){transport.send({t:'dolu'});return null;}
+  const id='c'+(this.nextPeer++);
+  const p=this.addPeer(id,transport);
+  const sp=localPlayer();
+  transport.send({t:'hos',id:id,map:currentMap,spd:sp.spd,rspd:sp.rspd,x:p.x,z:p.z});
+  return id;
+};
 SESSION.afterTick=function(){
+  this.peers.forEach(function(tr,id){if(tr.kapali){SESSION.removePeer(id);lootPop('👥 Oyuncu ayrıldı: '+id);}});
   if(this.peers.size===0||gt%SNAP_ARALIK!==0)return;
   const msg={t:'snap',s:snapshot()};
   this.peers.forEach(function(tr){tr.send(msg);});
@@ -1875,6 +1933,275 @@ class ClientView{
     return {t:c.s.t,wave:c.s.wave,kills:c.s.kills,map:c.s.map,p:mix(a.s.p,c.s.p),e:mix(a.s.e,c.s.e),b:c.s.b,l:c.s.l};
   }
 }
+// ═══════════════════════════════════════════════════════
+// İSTEMCİ OYUNU (çok oyunculuda odaya katılan taraf)
+// İstemci dünyayı kendisi simüle etmez: haritayı kurar, girdisini host'a yollar, kendi karakterini tahmin eder
+// ve host'un yolladığı özetten (snapshot) öbür oyuncuları, düşmanları, mermileri ve ganimeti çizer.
+// ═══════════════════════════════════════════════════════
+const CLIENT={aktif:false,id:null,tr:null,seq:0,bekleyen:[],gorunum:null,zaman:0,hayalet:{p:new Map(),e:new Map(),b:new Map(),l:new Map()},sonOzet:null,kopuk:false};
+
+function CLIENT_eylem(kind,data){
+  if(!CLIENT.tr)return;
+  CLIENT.tr.send(Object.assign({t:'act',k:kind},data||{}));
+}
+
+// Düşman/mermi/ganimet için sade görüntü nesneleri (istemcide gerçek modeller yerine)
+const HAYALET_RENK={d:0x6b2a2a,kurt:0x555555,ayi:0x4a3020,tilki:0xc0702a,geyik:0x9a7040,tavsan:0xcfcfcf,domuz:0x6a4a3a,eskiya:0x3a3a4a};
+function hayaletDusman(k,boss){
+  const g=new THREE.Group();
+  const col=HAYALET_RENK[k]||0x7a3a3a,s=boss?1.7:1;
+  const body=new THREE.Mesh(new THREE.BoxGeometry(.8*s,1.3*s,.6*s),new THREE.MeshLambertMaterial({color:col}));body.position.y=.9*s;g.add(body);
+  const head=new THREE.Mesh(new THREE.BoxGeometry(.5*s,.45*s,.45*s),new THREE.MeshLambertMaterial({color:0xC8956C}));head.position.y=1.8*s;g.add(head);
+  const bg=new THREE.Mesh(new THREE.PlaneGeometry(1.1*s,.14),new THREE.MeshBasicMaterial({color:0x000000,side:THREE.DoubleSide}));bg.position.y=2.5*s;g.add(bg);
+  const fl=new THREE.Mesh(new THREE.PlaneGeometry(1.1*s,.14),new THREE.MeshBasicMaterial({color:0xcc2222,side:THREE.DoubleSide}));fl.position.set(0,2.5*s,.01);g.add(fl);
+  g.userData={bg:bg,fl:fl,w:1.1*s};
+  return g;
+}
+function hayaletKure(renk,r){return new THREE.Mesh(new THREE.SphereGeometry(r,6,5),new THREE.MeshBasicMaterial({color:renk}));}
+
+// Odaya katılınca: host'un haritasını kur, kendi karakterini koy
+function joinAsClient(transport,hos){
+  const harita=hos.map;
+  if(['kisla','gorev','orman','maden'].indexOf(harita)<0){showDlg('Katılınamadı','Bu oda "'+harita+'" haritasında; şimdilik yalnızca Kışla, Devriye, Av Ormanı ve Demir Madeni odalarına katılabilirsin.','Tamam',hideDlg);return false;}
+  CLIENT.aktif=true;CLIENT.kopuk=false;CLIENT.tr=transport;CLIENT.id=hos.id;CLIENT.seq=0;CLIENT.bekleyen=[];CLIENT.sonOzet=null;
+  CLIENT.gorunum=new ClientView(transport);CLIENT.zaman=0;
+  ['p','e','b','l'].forEach(function(k){CLIENT.hayalet[k].clear();});
+  document.getElementById('menuLayer').style.display='none';
+  document.getElementById('gameLayer').style.display='block';
+  document.getElementById('hudLayer').style.display='block';
+  document.getElementById('topBar').style.display='flex';document.getElementById('mmBox').style.display='block';document.getElementById('topLeftHud').style.display='flex';
+  initThree();
+  currentMap=harita;clearAll();
+  if(harita==='kisla')buildKisla();else if(harita==='gorev')buildGorev();else if(harita==='orman')buildOrman();else buildMaden();
+  pl.x=hos.x;pl.z=hos.z;pl.maxHp=getBaseMaxHp();pl.hp=pl.maxHp;pl.maxEn=getBaseMaxEn();pl.en=pl.maxEn;
+  pl.spd=hos.spd;pl.rspd=hos.rspd;                         // tahmin host ile aynı hızla yürümeli
+  buildPlayer();
+  playing=true;paused=false;
+  document.getElementById('mapIndicator').textContent='👥 ODA — '+harita.toUpperCase();
+  setTimeout(function(){initTouch();applyAllSettings();},100);
+  updateGoldHud();updateXPHud();updateCharHud();
+  return true;
+}
+
+function leaveClient(){
+  CLIENT.aktif=false;
+  if(CLIENT.tr&&CLIENT.tr.close)try{CLIENT.tr.close();}catch(e){}
+  CLIENT.tr=null;CLIENT.gorunum=null;
+}
+
+function clientUpdate(dt){
+  if(!playing||paused||!pl.mesh)return;
+  CLIENT.zaman+=dt*1000;
+  gt++;
+  updateAim();
+  // 1) girdi: yerel tahmin + host'a gönder
+  const cmd=readLocalInput();
+  CLIENT.seq++;
+  CLIENT.tr.send({t:'input',seq:CLIENT.seq,cmd:cmd});
+  CLIENT.bekleyen.push({seq:CLIENT.seq,cmd:cmd});
+  if(CLIENT.bekleyen.length>120)CLIENT.bekleyen.shift();
+  movePlayer(pl,cmd,dt);
+  if(joyActive){worldAim.x=pl.x+Math.cos(pl.ang)*20;worldAim.z=pl.z+Math.sin(pl.ang)*20;}
+  if(pl.atkCd>0)pl.atkCd--;
+  // 2) host'tan gelenler
+  const onceki=CLIENT.gorunum.last;
+  CLIENT.gorunum.poll(CLIENT.zaman);
+  const yeni=CLIENT.gorunum.last;
+  if(yeni&&yeni!==onceki)clientUzlastir(yeni);
+  if((CLIENT.tr.kapali||CLIENT.tr.kapaliMi)&&!CLIENT.kopuk){CLIENT.kopuk=true;clientBaglantiKoptu();return;}
+  // 3) görüntü
+  const v=CLIENT.gorunum.view(CLIENT.zaman);
+  if(v)clientCiz(v);
+  // 4) kamera
+  const smooth=joyActive?.18:.09,camDist=15*camZoom,camHeight=14*camZoom;
+  CAM.position.x+=(pl.x-CAM.position.x)*smooth;
+  CAM.position.y+=(camHeight-CAM.position.y)*smooth;
+  CAM.position.z+=((pl.z+camDist)-CAM.position.z)*smooth;
+  CAM.lookAt(pl.x,0,pl.z);
+}
+
+// Host'un onayladığı konumdan başla, henüz onaylanmamış girdileri yeniden uygula
+function clientUzlastir(o){
+  const ben=o.p.find(function(q){return q.id===CLIENT.id;});
+  if(!ben)return;
+  CLIENT.bekleyen=CLIENT.bekleyen.filter(function(c){return c.seq>ben.q;});
+  const px=pl.x,pz=pl.z,pe=pl.en;
+  pl.x=ben.x;pl.z=ben.z;pl.en=ben.en;
+  CLIENT.bekleyen.forEach(function(c){movePlayer(pl,c.cmd,TIK);});
+  // küçük farkta tahmini koru (titreme olmasın), büyük farkta host'a uy
+  if(Math.hypot(pl.x-px,pl.z-pz)<.05){pl.x=px;pl.z=pz;}
+  pl.mesh.position.set(pl.x,0,pl.z);
+  pl.hp=ben.hp;pl.maxHp=ben.mh;pl.en=Math.abs(pl.en-pe)<2?pe:pl.en;
+  CLIENT.sonOzet=o;
+  const hpf=document.getElementById('hpf'),enf=document.getElementById('enf');
+  if(hpf)hpf.style.width=(pl.hp/pl.maxHp*100)+'%';if(enf)enf.style.width=(pl.en/pl.maxEn*100)+'%';
+  const hpn=document.getElementById('hpn'),enn=document.getElementById('enn');
+  if(hpn)hpn.textContent=Math.ceil(pl.hp);if(enn)enn.textContent=Math.ceil(pl.en);
+  const kv=document.getElementById('killV');if(kv)kv.textContent=o.kills;
+}
+
+function hayaletEsitle(harita,liste,yarat,guncelle){
+  const goruldu=new Set();
+  liste.forEach(function(o){
+    goruldu.add(o.id);
+    let g=harita.get(o.id);
+    if(!g){g=yarat(o);S3.add(g);harita.set(o.id,g);g.position.set(o.x,g.userData.y||0,o.z);}
+    guncelle(g,o);
+  });
+  harita.forEach(function(g,id){if(!goruldu.has(id)){S3.remove(g);harita.delete(id);}});
+}
+function clientCiz(v){
+  const H=CLIENT.hayalet;
+  hayaletEsitle(H.p,v.p.filter(function(q){return q.id!==CLIENT.id;}),function(){const g=createPlayerMesh();return g;},function(g,o){
+    const dx=o.x-g.position.x,dz=o.z-g.position.z;
+    if(dx*dx+dz*dz>1e-4)g.rotation.y=Math.atan2(dx,dz);
+    g.position.set(o.x,0,o.z);
+  });
+  hayaletEsitle(H.e,v.e,function(o){return hayaletDusman(o.k,o.b);},function(g,o){
+    const dx=o.x-g.position.x,dz=o.z-g.position.z;
+    if(dx*dx+dz*dz>1e-4)g.rotation.y=Math.atan2(dx,dz);
+    g.position.set(o.x,0,o.z);
+    const f=Math.max(.001,o.hp/o.mh);g.userData.fl.scale.x=f;g.userData.fl.position.x=(f-1)*g.userData.w/2;
+    g.userData.bg.lookAt(CAM.position);g.userData.fl.lookAt(CAM.position);
+  });
+  hayaletEsitle(H.b,v.b,function(){const g=hayaletKure(0xFFFDE7,.1);g.userData.y=1.1;return g;},function(g,o){g.position.set(o.x,1.1,o.z);});
+  hayaletEsitle(H.l,v.l,function(o){const g=hayaletKure(o.k==='akce'?0xFFD700:o.k==='deri'?0x8B4513:0xAAAAAA,.2);g.userData.y=.3;return g;},function(g,o){g.position.set(o.x,.3,o.z);});
+}
+
+function clientBaglantiKoptu(){
+  leaveClient();
+  playing=false;
+  showDlg('🔌 Bağlantı koptu','Odayla bağlantı kesildi. Ana menüye dönüyorsun.','Ana Menü',function(){hideDlg();toMenu();});
+}
+// ═══════════════════════════════════════════════════════
+// BAĞLANTI VE LOBİ — PeerJS taşıması, oda kur / odaya katıl
+// Host tarayıcısı oda kodunu alır (yenicheri-KOD), katılan tarayıcı bu koda bağlanır. Oyun trafiği doğrudan
+// cihazlar arasında (WebRTC) akar; eşleştirme için PeerJS bulutu, zor ağlar için TURN (window.YC_ICE) kullanılır.
+// Test için kendi sinyal sunucusu: adres sonuna ?peer=127.0.0.1:9000
+// ═══════════════════════════════════════════════════════
+const ODA={host:false,kod:null,peer:null,durum:'yok',baglantiTipi:null};
+const KOD_HARFLERI='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';   // 0/O, 1/I karışmasın
+
+function yeniOdaKodu(){let k='';for(let i=0;i<5;i++)k+=KOD_HARFLERI[Math.floor(Math.random()*KOD_HARFLERI.length)];return k;}
+function peerSecenekleri(){
+  const m=/[?&]peer=([^:&]+):(\d+)/.exec(location.search);
+  const o={debug:0,config:{iceServers:window.YC_ICE||[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]}};
+  if(m){o.host=m[1];o.port=+m[2];o.path='/';o.secure=false;}
+  return o;
+}
+
+class PeerTransport{
+  constructor(conn){
+    this.conn=conn;this.kuyruk=[];this.kapali=false;
+    const self=this;
+    conn.on('data',function(d){self.kuyruk.push(d);});
+    conn.on('close',function(){self.kapali=true;});
+    conn.on('error',function(){self.kapali=true;});
+  }
+  send(msg){if(this.conn.open)this.conn.send(msg);}
+  poll(){const m=this.kuyruk;this.kuyruk=[];return m;}
+  close(){try{this.conn.close();}catch(e){}this.kapali=true;}
+}
+
+// Gecikme ve kayıp benzetimi: gerçek taşımayı sarar. Yalnızca test ve ayar içindir (F3'te gerçek cihazla doğrulanır).
+class LagTransport{
+  constructor(ic,gecikmeMs,kayip){this.ic=ic;this.g=gecikmeMs||0;this.kayip=kayip||0;this.gelen=[];this.giden=[];this.kapali=false;this.kuyruk=[];}
+  send(m){if(Math.random()<this.kayip)return;this.giden.push({at:performance.now()+this.g,m:m});}
+  poll(){
+    const t=performance.now();
+    while(this.giden.length&&this.giden[0].at<=t)this.ic.send(this.giden.shift().m);
+    this.ic.poll().forEach(function(m){if(Math.random()<this.kayip&&m.t==='snap')return;this.gelen.push({at:t+this.g,m:m});},this);
+    const out=[];
+    while(this.gelen.length&&this.gelen[0].at<=t)out.push(this.gelen.shift().m);
+    return out;
+  }
+  get kapaliMi(){return this.ic.kapali;}
+  close(){this.ic.close();}
+}
+
+function coopDurum(t,renk){const e=document.getElementById('coopDurum');if(e){e.textContent=t;e.style.color=renk||'#D4B896';}}
+
+// ── HOST: oda kur ──
+function odaKur(deneme){
+  if(typeof Peer==='undefined'||typeof RTCPeerConnection==='undefined'){coopDurum('Çok oyunculu bu sayfada çalışmıyor. GitHub Pages adresinde ya da yüklenmiş uygulamada dene.','#ff8a7a');return;}
+  if(ODA.peer){coopDurum('Oda zaten açık: '+ODA.kod,'#FFD700');return;}
+  deneme=deneme||0;
+  const kod=yeniOdaKodu();
+  coopDurum('Oda kuruluyor…');
+  const peer=new Peer('yenicheri-'+kod,peerSecenekleri());
+  ODA.peer=peer;
+  peer.on('open',function(){
+    ODA.host=true;ODA.kod=kod;ODA.durum='acik';
+    document.getElementById('coopKod').textContent=kod;
+    document.getElementById('coopKodSatiri').style.display='block';
+    coopDurum('Oda açık. Arkadaşların bu kodu "Odaya Katıl"a yazsın.','#9fe39f');
+    if(!playing)BEGIN('kisla');
+    lootPop('👥 Oda kodu: '+kod);
+  });
+  peer.on('connection',function(conn){
+    conn.on('open',function(){
+      const tr=new PeerTransport(conn);
+      const id=SESSION.acceptPeer(tr);
+      if(id){lootPop('👥 Oyuncu katıldı: '+id);ODA.durum='dolu';}
+      else setTimeout(function(){tr.close();},500);
+    });
+  });
+  peer.on('error',function(e){
+    if(e&&e.type==='unavailable-id'&&deneme<5){try{peer.destroy();}catch(x){}ODA.peer=null;odaKur(deneme+1);return;}
+    const t=e&&e.type;
+    coopDurum(t==='network'||t==='server-error'||t==='socket-error'?'Eşleştirme sunucusuna ulaşılamadı. İnternet bağlantını kontrol et (bu sayfada kısıtlı olabilir).':'Oda kurulamadı: '+(t||e),'#ff8a7a');ODA.peer=null;
+  });
+  peer.on('disconnected',function(){ODA.durum='sinyalsiz';try{peer.reconnect();}catch(x){}});
+}
+
+function odaKapat(){
+  if(ODA.peer){try{ODA.peer.destroy();}catch(e){}}
+  SESSION.peers.forEach(function(tr,id){try{tr.close();}catch(e){}SESSION.removePeer(id);});
+  ODA.peer=null;ODA.host=false;ODA.kod=null;ODA.durum='yok';
+}
+
+// ── İSTEMCİ: odaya katıl ──
+function odayaKatil(kod){
+  kod=String(kod||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(kod.length!==5){coopDurum('Oda kodu 5 karakter olmalı.','#ff8a7a');return;}
+  if(typeof Peer==='undefined'||typeof RTCPeerConnection==='undefined'){coopDurum('Çok oyunculu bu sayfada çalışmıyor. GitHub Pages adresinde ya da yüklenmiş uygulamada dene.','#ff8a7a');return;}
+  coopDurum('Bağlanılıyor…');
+  const peer=new Peer(peerSecenekleri());
+  ODA.peer=peer;
+  let bitti=false;
+  const hata=function(t){if(bitti)return;bitti=true;coopDurum(t,'#ff8a7a');try{peer.destroy();}catch(e){}ODA.peer=null;};
+  const zaman=setTimeout(function(){hata('Zaman aşımı: oda bulunamadı ya da bağlantı kurulamadı.');},15000);
+  peer.on('error',function(e){clearTimeout(zaman);hata(e&&e.type==='peer-unavailable'?'Böyle bir oda yok: '+kod:'Bağlantı hatası: '+(e&&e.type||e));});
+  peer.on('open',function(){
+    const conn=peer.connect('yenicheri-'+kod,{reliable:true,serialization:'json'});
+    conn.on('open',function(){
+      const tr=new PeerTransport(conn);
+      const bekle=setInterval(function(){
+        const ms=tr.poll();
+        for(let i=0;i<ms.length;i++){
+          if(ms[i].t==='dolu'){clearInterval(bekle);clearTimeout(zaman);hata('Oda dolu (en çok 4 oyuncu).');return;}
+          if(ms[i].t==='hos'){
+            clearInterval(bekle);clearTimeout(zaman);bitti=true;
+            // hoş geldin'den sonra gelen mesajları kaybetme
+            for(let j=i+1;j<ms.length;j++)tr.kuyruk.push(ms[j]);
+            document.getElementById('coopBox').style.display='none';
+            ODA.host=false;ODA.kod=kod;ODA.durum='bagli';
+            joinAsClient(tr,ms[i]);
+            return;
+          }
+        }
+        if(tr.kapali){clearInterval(bekle);clearTimeout(zaman);hata('Oda bağlantıyı kapattı.');}
+      },50);
+    });
+  });
+}
+
+function coopAc(){
+  document.getElementById('coopBox').style.display='flex';
+  document.getElementById('coopKodSatiri').style.display=ODA.kod&&ODA.host?'block':'none';
+  coopDurum(ODA.host?'Oda açık.':'Bir oda kur ya da bir koda katıl.');
+}
+function coopKapat(){document.getElementById('coopBox').style.display='none';}
 // ═══════════════════════════════════════════════════════
 // BÖLÜMLER (Chapters) — ana menüden açılır, bölge kilidi/seçimi
 // ═══════════════════════════════════════════════════════
@@ -2437,6 +2764,8 @@ function toMenu(){
   isTestMode=false;
   document.getElementById('menuLayer').style.display='block';
   losePool();playing=false;paused=false;clearAll();
+  if(CLIENT.aktif)leaveClient();
+  if(ODA.peer)odaKapat();
 }
 
 function toKisla(){
@@ -3781,7 +4110,7 @@ function checkMadenTraps(){
 // ═══════════════════════════════════════════════════════
 // KARAKTER
 // ═══════════════════════════════════════════════════════
-function buildPlayer(){
+function createPlayerMesh(){
   const g=new THREE.Group();
   const body=new THREE.Mesh(new THREE.BoxGeometry(.9,1.5,.55),new THREE.MeshLambertMaterial({color:0x9B2020}));body.position.y=1.15;body.castShadow=true;g.add(body);
   const skirt=new THREE.Mesh(new THREE.CylinderGeometry(.5,.62,.8,8),new THREE.MeshLambertMaterial({color:0x8B1818}));skirt.position.y=.55;g.add(skirt);
@@ -3791,7 +4120,11 @@ function buildPlayer(){
   const bork=new THREE.Mesh(new THREE.CylinderGeometry(.2,.33,.75,8),new THREE.MeshLambertMaterial({color:0xD4B050}));bork.position.set(0,2.65,0);g.add(bork);
   const borkT=new THREE.Mesh(new THREE.CylinderGeometry(.06,.2,.5,6),new THREE.MeshLambertMaterial({color:0xFFD700}));borkT.position.y=.62;bork.add(borkT);
   const wpn=new THREE.Mesh(new THREE.BoxGeometry(.07,1.1,.05),new THREE.MeshLambertMaterial({color:0xD0D0D0}));wpn.name='wpn';wpn.position.set(.58,1.4,0);wpn.rotation.z=-.28;g.add(wpn);
-  g.castShadow=true;S3.add(g);pl.mesh=g;g.position.set(pl.x,0,pl.z);
+  g.castShadow=true;
+  return g;
+}
+function buildPlayer(){
+  const g=createPlayerMesh();S3.add(g);pl.mesh=g;g.position.set(pl.x,0,pl.z);
 }
 
 // ═══════════════════════════════════════════════════════
@@ -3820,8 +4153,8 @@ function addFX(x,z,fxCol,n){n=n||7;for(let i=0;i<n;i++){const m=new THREE.Mesh(n
 // ═══════════════════════════════════════════════════════
 // SAVAŞ
 // ═══════════════════════════════════════════════════════
-function doMelee(p){p=p||pl;if(p.atkCd>0)return;p.atkCd=22;const ax=p.x+Math.cos(p.ang)*2.6,az=p.z+Math.sin(p.ang)*2.6;addFX(ax,az,0xFFD700,7);const dmg=getWeaponDmg('yatagan',p);enemies.forEach(function(en){if(Math.hypot(en.x-ax,en.z-az)<2.9){en.hp-=dmg;en.hurtT=9;addFX(en.x,en.z,0xcc2222,4);}});barrelsArr.forEach(function(b){if(b.hp>0&&Math.hypot(b.x-ax,b.z-az)<2.2){b.hp--;addFX(b.x,b.z,0x8B4513,4);if(b.hp<=0){S3.remove(b.mesh);dropLoot(b.x,b.z,3);lootPop('Varil patladı! 💥');if(b.collider){const ci=colliders.indexOf(b.collider);if(ci>-1)colliders.splice(ci,1);}}}});barrelsArr=barrelsArr.filter(function(b){return b.hp>0;});}
-function doRanged(p,aim){p=p||pl;aim=aim||worldAim;const wp=p.weapon,pw=(p===pl)?pwr:0;if(p.en<8)return;const wids=['yatagan','tufek','ok'];const dmg=getWeaponDmg(wids[wp],p)+Math.floor(pw/100*28);const rCol=wp===1?0xFFFDE7:0x8B4513;const m=new THREE.Mesh(new THREE.SphereGeometry(wp===1?.1:.09,5,4),new THREE.MeshBasicMaterial({color:rCol}));m.position.set(p.x,1.1,p.z);S3.add(m);const dx=aim.x-p.x,dz=aim.z-p.z,l=Math.hypot(dx,dz)||1,sp=wp===1?.44:.28;bullets.push({id:newNetId(),mesh:m,vx:dx/l*sp,vz:dz/l*sp,dmg:dmg,life:85});p.en=Math.max(0,p.en-8);addFX(p.x,p.z,rCol,3);}
+function doMelee(p){p=p||pl;if(CLIENT.aktif&&p===pl){CLIENT_eylem('melee');return;}if(p.atkCd>0)return;p.atkCd=22;const ax=p.x+Math.cos(p.ang)*2.6,az=p.z+Math.sin(p.ang)*2.6;addFX(ax,az,0xFFD700,7);const dmg=getWeaponDmg('yatagan',p);enemies.forEach(function(en){if(Math.hypot(en.x-ax,en.z-az)<2.9){en.hp-=dmg;en.hurtT=9;addFX(en.x,en.z,0xcc2222,4);}});barrelsArr.forEach(function(b){if(b.hp>0&&Math.hypot(b.x-ax,b.z-az)<2.2){b.hp--;addFX(b.x,b.z,0x8B4513,4);if(b.hp<=0){S3.remove(b.mesh);dropLoot(b.x,b.z,3);lootPop('Varil patladı! 💥');if(b.collider){const ci=colliders.indexOf(b.collider);if(ci>-1)colliders.splice(ci,1);}}}});barrelsArr=barrelsArr.filter(function(b){return b.hp>0;});}
+function doRanged(p,aim){p=p||pl;aim=aim||worldAim;if(CLIENT.aktif&&p===pl){CLIENT_eylem('ranged',{w:pl.weapon,ax:worldAim.x,az:worldAim.z});return;}const wp=p.weapon,pw=(p===pl)?pwr:0;if(p.en<8)return;const wids=['yatagan','tufek','ok'];const dmg=getWeaponDmg(wids[wp],p)+Math.floor(pw/100*28);const rCol=wp===1?0xFFFDE7:0x8B4513;const m=new THREE.Mesh(new THREE.SphereGeometry(wp===1?.1:.09,5,4),new THREE.MeshBasicMaterial({color:rCol}));m.position.set(p.x,1.1,p.z);S3.add(m);const dx=aim.x-p.x,dz=aim.z-p.z,l=Math.hypot(dx,dz)||1,sp=wp===1?.44:.28;bullets.push({id:newNetId(),mesh:m,vx:dx/l*sp,vz:dz/l*sp,dmg:dmg,life:85});p.en=Math.max(0,p.en-8);addFX(p.x,p.z,rCol,3);}
 
 // ═══════════════════════════════════════════════════════
 // MİNİHARİTA
@@ -3853,7 +4186,7 @@ function update(dt){
   else if(currentMap&&currentMap.startsWith('custom_')){updateCustomMap(dt);}
   else{updateKisla(dt);}
   updateAim();
-  if(pl.atkCd>0)pl.atkCd--;if(pl.ifr>0)pl.ifr--;
+  WORLD.players.forEach(function(p){if(p.atkCd>0)p.atkCd--;if(p.ifr>0)p.ifr--;});
   const wpnM=pl.mesh.getObjectByName('wpn');if(wpnM)wpnM.material.color.setHex([0xD0D0D0,0x505050,0x8B4513][selWeapon]);
   if(pwrOn){pwr=Math.min(100,pwr+2.4);document.getElementById('pwrFl').style.width=pwr+'%';document.getElementById('pwrW').style.display='block';}
   torches.forEach(function(t){t.phase+=.06;t.light.intensity=2.4+Math.sin(t.phase)*.5+Math.sin(t.phase*1.8)*.2;});
@@ -4757,7 +5090,7 @@ function loop(){
   if(!S3||!REN)return;
   tikBirikim+=CLK?Math.min(CLK.getDelta(),.25):TIK;
   let n=0;
-  while(tikBirikim>=TIK&&n<MAX_TIK_KARE){update(TIK);tikBirikim-=TIK;n++;}
+  while(tikBirikim>=TIK&&n<MAX_TIK_KARE){if(CLIENT.aktif)clientUpdate(TIK);else update(TIK);tikBirikim-=TIK;n++;}
   if(n>=MAX_TIK_KARE)tikBirikim=0;           // çok geride kalındı (örn. sekme arka plandaydı): yakalamaya çalışma
   if(playing&&!paused&&pl.mesh)renderFrame();
 }

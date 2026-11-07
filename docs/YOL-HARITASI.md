@@ -19,7 +19,7 @@ PeerJS host-relay oda sistemi, Supabase hesap/kayıt, misafir modu, testler.
 |---|---|---|---|
 | **F0 Modülerleştirme** | `src/` yapısı, `build.py`, testler (kaynak + tarayıcı) | 1–2 hafta | **TAMAM (v1.34)** |
 | **F1 Simülasyon/render ayrımı** | `World`/`Entity`/`Player` modeli, `netId`, sabit tik, `player` uyumluluk katmanı, `Session` + `LoopbackTransport`, tek kişilik "altın test" | 3–4 hafta | **sürüyor** (altın test ✔, oyuncu kaydı ✔, düşman kimlikleri ✔, mermi/ganimet id ✔, sabit 60 Hz tik ✔, tuzak zamanlayıcısı tik tabanlı ✔) |
-| **F2 İlk co-op (minimum kilometre taşı)** | tek harita, 2 oyuncu, PeerJS iki kanal, lobi/oda kodu, girdi→host, JSON snapshot 15 Hz, interpolasyon + yerel tahmin | 3–4 hafta | |
+| **F2 İlk co-op (minimum kilometre taşı)** | tek harita, 2 oyuncu, PeerJS iki kanal, lobi/oda kodu, girdi→host, JSON snapshot 15 Hz, interpolasyon + yerel tahmin | 3–4 hafta | **TAMAM (v1.45)** |
 | **F3 Saha doğrulaması** | Cloudflare TURN + Worker, yeniden bağlanma, `LagSimTransport`, Playwright iki sayfa testi, **iki gerçek cihazla mobil veride test** | 1–2 hafta | |
 | **F4 Tam co-op** | 4 oyuncu, tüm haritalar, boss telegraph olayları, oyuncu başına ganimet, canlandırma, ikili kodlama | 4–6 hafta | |
 | **F5 Hesap/kayıt** | Supabase `profiles`/`saves` + RLS, misafir modu, birleştirme diyaloğu | 1–2 hafta | |
@@ -63,3 +63,4 @@ PeerJS host-relay oda sistemi, Supabase hesap/kayıt, misafir modu, testler.
 - v1.42: `snapshot()` (düz veri; 2 oyuncu+4 düşman ≈ 500 bayt JSON). Altın test tarihi sabitledi (günlük görevler tarihe bağlı). Kalan F1: `applySnapshot` + istemci görüntü katmanı (F2 ile birlikte), düşman/mermi mesh ayrımı.
 - v1.43 (F2 başlangıcı): `PairTransport`, `SESSION.addPeer`, 15 Hz özet, `ClientView` (100 ms interpolasyon). Sıradaki: istemci çizimi (id'ye göre mesh), yerel tahmin, lobi/oda kodu, PeerJS taşıması.
 - v1.44: PWA + TWA hazırlığı (karar: öncelik Android, TWA; Capacitor seçilmedi). F3 denemeleri iki telefonda PWA olarak, mobil veriyle yapılacak. Supabase F3'te gerekmez (PeerJS eşleştirmesi yeter); hesap/kayıt F5.
+- v1.45 (F2 tamam, F3 hazırlığı): oda kur/katıl, PeerJS taşıması, istemci modu (tahmin + yumuşatma), `LagTransport`, uçtan uca test (`tests/coop.py`). Sıradaki: F3 gerçek cihaz denemesi (TURN, yeniden bağlanma, ikinci güvenilmez kanal), F4 (yetenekler, oyuncu başına ganimet, yeniden doğma, gerçek düşman modelleri).

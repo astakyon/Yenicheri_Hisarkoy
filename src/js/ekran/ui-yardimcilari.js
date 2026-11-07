@@ -43,6 +43,8 @@ function toMenu(){
   isTestMode=false;
   document.getElementById('menuLayer').style.display='block';
   losePool();playing=false;paused=false;clearAll();
+  if(CLIENT.aktif)leaveClient();
+  if(ODA.peer)odaKapat();
 }
 
 function toKisla(){

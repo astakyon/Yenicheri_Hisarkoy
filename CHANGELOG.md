@@ -1,5 +1,14 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.45 — Çok oyunculu: oda kur, odaya katıl (F2)
+- **👥 ÇOK OYUNCULU** (ana menü): **Oda Kur** 5 harfli kod verir ve Kışla'da oyunu başlatır; **Odaya Katıl** koda bağlanır. En çok 4 oyuncu. Bağlantı PeerJS (WebRTC) ile doğrudan cihazlar arasında.
+- Host dünyayı hesaplar; katılan oyuncu kendi karakterini anında hareket ettirir (**yerel tahmin**) ve host'un onayıyla düzeltilir. Diğer oyuncular, düşmanlar, mermiler ve ganimet 15 Hz özetten, 100 ms geriden yumuşatılarak çizilir.
+- Uzak oyuncunun kılıç ve ateşi host'ta işlenir; düşmanlar en yakın oyuncuyu hedefler. Herkesin bekleme ve dokunulmazlık sayaçları artık işliyor (önceden yalnızca yerel oyuncunun).
+- Bağlantı kopunca ya da host odayı kapatınca istemciye "Bağlantı koptu" iletisi.
+- `LagTransport`: gecikme ve kayıp benzetimi (test için).
+- **Testler:** `tests/coop.py` iki ayrı sayfayı gerçek WebRTC ile bağlar (yerel sinyal sunucusuyla). 150 ms gecikmede tahmin ile host durunca 0,000 birim fark. Tek kişilik altın test değişmedi.
+- Bilinen eksikler `docs/COOP.md` içinde (istemcide sade düşman modelleri, yetenekler yok, yeniden doğma yok).
+
 ## v1.44 — Telefona uygulama gibi yükleme (PWA) ve TWA hazırlığı (oynanış aynı)
 - **PWA:** `manifest.webmanifest`, `sw.js` (çevrimdışı önbellek, sürüm değişince yenilenir), özgün simge seti (`tools/ikonlar.py` ile üretilir: normal, maskable, tek renk). Android Chrome'da ana menüde **⬇ UYGULAMAYI YÜKLE** düğmesi çıkar; yüklenince tam ekran ve yatay açılır.
 - **TWA (Google Play) hazırlığı:** `twa-manifest.json` (paket adı `tr.yenicheri.hisarkoy`), GitHub Actions iş akışı **Android paketi** (imzalı `.aab` ve denemelik `.apk`), `privacy.html`, `docs/ANDROID.md` (adımlar, Digital Asset Links).

@@ -18,9 +18,11 @@ const SESSION={
     this.transport.poll().forEach(function(m){if(m.t==='input')SESSION.inputs.set(m.id,m.cmd);});
     if(this.pollPeers)this.pollPeers();
     WORLD.players.forEach(function(p,id){
+      if(SESSION.peers&&SESSION.peers.has(id))return;      // uzak oyuncular komut kuyruğundan (stepPeers)
       const c=SESSION.inputs.get(id);
       if(c)movePlayer(p,c,dt);
     });
+    if(this.stepPeers)this.stepPeers(dt);
   }
 };
 
@@ -31,7 +33,7 @@ function snapshot(){
   const r=function(v){return Math.round(v*100)/100;};
   const ps=[];
   WORLD.players.forEach(function(p,id){
-    ps.push({id:id,x:r(p.x),z:r(p.z),a:r(p.ang),hp:Math.ceil(p.hp),mh:p.maxHp,en:Math.ceil(p.en),w:p.weapon,ar:armorOf(p),sh:p.ab&&p.ab.active.f?1:0});
+    ps.push({id:id,x:r(p.x),z:r(p.z),a:r(p.ang),hp:Math.ceil(p.hp),mh:p.maxHp,en:Math.ceil(p.en),w:p.weapon,ar:armorOf(p),sh:p.ab&&p.ab.active.f?1:0,q:(SESSION.acks&&SESSION.acks.get(id))||0});
   });
   return {
     t:gt,map:currentMap,wave:wave,kills:kills,

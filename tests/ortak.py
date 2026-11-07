@@ -2,6 +2,7 @@
 
 Ortam değişkenleri (hepsi isteğe bağlı):
   CHROME_PATH  tarayıcı yürütülebilir dosyası (yoksa Playwright'ın kendi Chromium'u)
+  PEER_JS      yerel peerjs.min.js (çok oyunculu testler için; ya da `npm i peerjs@1.5.4`)
   THREE_JS     yerel three.min.js (r128). Verilmezse CDN'e ulaşılması gerekir; ağ kapalıysa
                `npm i three@0.128.0` ile node_modules/three/build/three.min.js kullanılır.
 """
@@ -11,6 +12,16 @@ import os
 import threading
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def peer_source():
+    for p in (os.environ.get('PEER_JS'),
+              os.path.join(ROOT, 'node_modules', 'peerjs', 'dist', 'peerjs.min.js'),
+              os.path.join(ROOT, 'vendor', 'peerjs.min.js')):
+        if p and os.path.isfile(p):
+            with open(p, encoding='utf-8') as f:
+                return f.read()
+    return None
 
 
 def three_source():
@@ -38,11 +49,14 @@ def sunucu():
 def yonlendirici():
     """three.js'i yerel kopyadan verir, Google Fonts isteklerini boş yanıtlar."""
     three = three_source()
+    peer = peer_source()
 
     def route(r):
         u = r.request.url
         if three and 'three.min.js' in u:
             r.fulfill(status=200, content_type='application/javascript', body=three)
+        elif peer and 'peerjs' in u and u.endswith('.js'):
+            r.fulfill(status=200, content_type='application/javascript', body=peer)
         elif 'fonts.g' in u:
             r.fulfill(status=200, content_type='text/css', body='')
         else:
