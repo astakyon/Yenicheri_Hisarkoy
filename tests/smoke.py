@@ -385,7 +385,7 @@ def main():
         g = lambda: pg.evaluate("() => { const q = pl.mesh.userData.silah, v = k => q[k].visible; return { kin: v('kinYat'), kilic: v('elYat'), tufek: v('elTufek'), yay: v('elYay'), sTufek: v('sirtTufek'), sYay: v('sirtYay') }; }")
         pg.evaluate("pl.cekiT = 0; selW(0); pl.cekiT = 0"); pg.wait_for_timeout(200)
         a = g()
-        check(a['kin'] and not a['kilic'] and not a['tufek'] and not a['yay'] and not a['sTufek'] and not a['sYay'], 'Sakin durumda kılıç kınında, elde silah ve sırtta tahta yok')
+        check(a['kin'] and not a['kilic'] and not a['tufek'] and not a['yay'] and a['sTufek'] and not a['sYay'], 'Sakin durumda yatağan kınında, tüfek sırtta çapraz, elde silah yok')
         pg.evaluate("pl.atkCd = 0; doMelee(pl)"); pg.wait_for_timeout(200)
         a = g(); check(a['kilic'] and not a['kin'], 'Saldırınca kılıç ele geliyor, kın boşalıyor')
         pg.evaluate("selW(2); pl.atkCd = 0; pl.cekiT = 0"); pg.wait_for_timeout(200)
@@ -394,6 +394,8 @@ def main():
         a = g(); check(a['yay'] and not a['sYay'], 'Silah seçince yay ele geliyor')
         pg.evaluate("selW(1); pl.atkCd = 0; pl.cekiT = 0"); pg.wait_for_timeout(200)
         a = g(); check(a['sTufek'] and not a['tufek'], 'Tüfek seçili, savaş yok: tüfek sırtta')
+        pg.evaluate('selW(1)'); pg.wait_for_timeout(200)
+        a = g(); check(a['tufek'] and not a['sTufek'], 'Tüfek seçilince ele geliyor, sırt boşalıyor')
         pg.evaluate("selW(0)")
         r = pg.evaluate("""() => { const say = k => { const q = modelYap('yeniceri').userData.silah; return Object.keys(q).filter(a => /Yat|Han/.test(a)).sort().join(','); };
           const ikisi = say(); gorunumDegis('kemer', 'hancer'); const han = say(); gorunumDegis('kemer', 'yatagan'); const yat = say(); gorunumDegis('kemer', 'yok'); const yok = say(); gorunumSifirla();

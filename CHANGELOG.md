@@ -1,5 +1,10 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.66 — Silahların yeri (örnek görsele göre)
+- **Tüfek** artık her zaman sırtta çapraz taşınır (namlu sağ omuz üstünde, dipçik sol kalçada); seçince ele gelir.
+- **Çapraz deri kayışlar** (önde ve arkada), fişekler, kese ve barut kabı eklendi.
+- **Yatağan:** kulaklı geniş kabze, belirgin eğimli bıçak; kını beline önden asılı, ucu aşağıda. **Hançer:** hencer biçimi (kıvrık), kuşakta çapraz.
+
 ## v1.65 — Yeniçeri silahları: yatağan, hançer
 - Silahlar karakterden bağımsız modeller oldu (`silah_yatagan`, `silah_hancer`, `silah_tufek`, `silah_yay`): model kütüphanesinde ayrı görünür, karaktere takılıp çıkarılır.
 - **Yatağan** (öne eğimli tek ağızlı, kulaklı kabzalı): kını belin sol arkasında, koldan ayrı; **hançer** kuşağa sokulu. Karakterim menüsünde "Kemer silahı": Yatağan + Hançer / Yatağan / Hançer / Yok. Yakın dövüşte ele yatağan gelir (yoksa hançer). Görünüm dışında hasar değişmez.

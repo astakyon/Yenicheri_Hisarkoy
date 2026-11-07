@@ -183,6 +183,19 @@ function _insanGeo(o){
   }else if(sp==='kasket'){
     G.push([cyl(.3,.32,.2),o.sapkaC,0,2.36,0]);G.push([box(.42,.04,.24),o.sapkaC,0,2.28,.28]);G.push([sph(.07,6,5),0xFFD27A,0,2.4,.33]);
   }
+  if(o.bandolye){   // çapraz deri kayışlar (önde ve arkada), fişekler, barut kabı, kese
+    const deri=0x7a4020,rr=function(y){return .36+(1.82-y)/.78*.06;};
+    [1,-1].forEach(function(sg){
+      for(let i=0;i<=9;i++){
+        const t=i/9,y=1.85-.85*t,x=sg>0?(.28-.68*t):(-.28+.68*t);
+        const r=rr(y)+.012,z=sg*(Math.sqrt(Math.max(.01,r*r-x*x))+.012),fi=Math.atan2(x,z),tilt=sg>0?-.67:.67;
+        G.push([box(.1,.2,.035),deri,x,y,z,0,fi,tilt]);
+        if(sg>0&&(i===3||i===5||i===7))G.push([cyl(.03,.03,.17,6),0xC8B070,x+Math.sin(fi)*.03,y,z+Math.cos(fi)*.03,0,fi,tilt]);
+      }
+    });
+    G.push([box(.12,.16,.09),0x6a3a1a,-.42,.98,.3,0,.5,0]);G.push([sph(.025,5,4),o.tokaC||0xD4A82A,-.4,1.0,.355]);   // kese
+    G.push([_g('ConeGeometry',.07,.38,6),0xB8B0A0,.46,.9,-.12,0,0,.5]);G.push([sph(.045,6,5),o.tokaC||0xD4A82A,.38,1.08,-.14]);   // barut kabı
+  }
   if(o.omuz){G.push([sph(.2,8,6),o.omuz,-.52,1.82,0,0,0,0,1,.7,1.1]);G.push([sph(.2,8,6),o.omuz,.52,1.82,0,0,0,0,1,.7,1.1]);}
   if(o.pelerin)G.push([box(.8,1.25,.05),o.pelerin,0,1.4,-.34,.1]);
   if(o.taç)G.push([_g('ConeGeometry',.26,.3,6),0xFFD700,0,2.8,0]);
@@ -209,17 +222,17 @@ function _insanYap(o,s){
   if(o.adliBicak){   // oyuncunun silahları BAĞIMSIZ modellerdir (silah_*): kemerdeki yatağan/hançer, sırttaki tüfek/yay; savaşta ya da seçilince ele gelir
     const altin=o.tokaC||0xD4A82A,kem=o.kemer||'ikisi',yat=kem==='ikisi'||kem==='yatagan',han=kem==='ikisi'||kem==='hancer';
     const q={};
-    if(yat){
+    if(yat){   // yatağan: bele sağ-önden asılı, kını eteğin üstünde, ucu aşağıda dışa kıvrık
       q.elYat=modelYap('silah_yatagan',{altin:altin});q.elYat.position.set(0,-.55,.05);q.elYat.rotation.x=-.12;kg.add(q.elYat);q.elYat.name='wpn';
-      q.kinYat=modelYap('silah_yatagan',{altin:altin,kinda:true});q.kinYat.position.set(-.47,1.12,-.2);q.kinYat.rotation.set(.25,0,Math.PI-.1);q.kinYat.scale.setScalar(.8);ic.add(q.kinYat);
+      q.kinYat=modelYap('silah_yatagan',{altin:altin,kinda:true});q.kinYat.position.set(.3,1.16,.4);q.kinYat.rotation.set(-.12,0,Math.PI+.16);q.kinYat.scale.setScalar(.95);ic.add(q.kinYat);
     }
-    if(han){
-      q.kinHan=modelYap('silah_hancer',{altin:altin,kinda:true});q.kinHan.position.set(-.1,1.19,.46);q.kinHan.rotation.set(0,.5,Math.PI-1.3);q.kinHan.scale.setScalar(.62);ic.add(q.kinHan);
+    if(han){   // hançer: kuşağa, kabzası sol-önde, kıvrık kını sağa aşağı
+      q.kinHan=modelYap('silah_hancer',{altin:altin,kinda:true});q.kinHan.position.set(-.2,1.24,.47);q.kinHan.rotation.set(0,.1,Math.PI+.85);q.kinHan.scale.setScalar(.85);ic.add(q.kinHan);
       if(!yat){q.elHan=modelYap('silah_hancer',{altin:altin});q.elHan.position.set(0,-.55,.05);q.elHan.rotation.x=-.12;kg.add(q.elHan);}
     }
-    q.elTufek=modelYap('silah_tufek');q.elTufek.position.set(0,-.55,0);kg.add(q.elTufek);
+    q.elTufek=modelYap('silah_tufek');q.elTufek.position.set(0,-.55,.5);q.elTufek.rotation.x=Math.PI/2;kg.add(q.elTufek);
     q.elYay=modelYap('silah_yay');q.elYay.position.set(0,-.55,.3);kg.add(q.elYay);
-    q.sirtTufek=modelYap('silah_tufek',{sirt:true});ic.add(q.sirtTufek);
+    q.sirtTufek=modelYap('silah_tufek');q.sirtTufek.position.set(.08,1.62,-.5);q.sirtTufek.rotation.z=-.55;ic.add(q.sirtTufek);   // sırtta çapraz: namlu sağ omuz üstünde, dipçik sol kalçada
     q.sirtYay=modelYap('silah_yay',{sirt:true});ic.add(q.sirtYay);
     g.userData.silah=q;
     modelSilahGoster(g,0,false);
@@ -237,7 +250,7 @@ function _oyuncuOpt(){
   const g=gorunumOku(),t=g.borkTip;
   return{id:'yeniceri_'+[g.gov,g.sash,g.yaka,g.dugme,g.toka,g.bork,g.kasik,g.sal,g.biyik,g.biyikTip,g.borkTip,g.kemer].join('_'),
     etek:_koyult(g.gov,.9),gov:g.gov,sash:g.sash,yaka:g.yaka,dugmeC:g.dugme,tokaC:g.toka,kasikC:g.kasik,sal:g.sal,sal2:0xE8E0D0,bot:0x2a1000,
-    biyik:g.biyikTip==='yok'?0:g.biyik,biyikTip:g.biyikTip,sapka:t==='sarik'?'sarik':t==='fes'?'fes':'bork',sapkaC:g.bork,sapkaC2:g.yaka,borkTip:t,kemer:g.kemer,adliBicak:true};
+    biyik:g.biyikTip==='yok'?0:g.biyik,biyikTip:g.biyikTip,sapka:t==='sarik'?'sarik':t==='fes'?'fes':'bork',sapkaC:g.bork,sapkaC2:g.yaka,borkTip:t,kemer:g.kemer,bandolye:true,adliBicak:true};
 }
 // Silah gösterimi: kılıç kınında; tüfek/yay seçiliyken sırtta; savaşta (cekili) seçili silah elde
 function modelSilahGoster(g,w,cekili){
@@ -248,7 +261,7 @@ function modelSilahGoster(g,w,cekili){
   if(q.kinYat)q.kinYat.visible=!(cekili&&w===0);
   if(q.kinHan)q.kinHan.visible=!(cekili&&w===0&&!q.elYat);
   q.elTufek.visible=cekili&&w===1;q.elYay.visible=cekili&&w===2;
-  q.sirtTufek.visible=!(cekili&&w===1)&&w===1;q.sirtYay.visible=!(cekili&&w===2)&&w===2;
+  q.sirtTufek.visible=!(cekili&&w===1);q.sirtYay.visible=!(cekili&&w===2)&&w===2;
 }
 function _yeniceriYap(){const g=_insanYap(_oyuncuOpt(),1);return g;}
 modelTanimla('yeniceri',{ad:'Yeniçeri (oyuncu)',grup:'Karakter',boy:2.82,yap:_yeniceriYap});
@@ -331,44 +344,45 @@ function _silahMesh(anahtar,parcalar){
   if(!_GC[anahtar])_GC[anahtar]=_birles(parcalar());
   const g=new THREE.Group();g.add(_parca(_GC[anahtar]));return g;   // Group: modelYap'ın govde işaretçisi kendine dönmesin (clone/JSON döngüsü)
 }
+function _egri(P,bx2,n,boy,aci,gen,renk,z0){   // eğri bıçak/kın: parça parça, her parça biraz daha öne eğik
+  let y=.15,z=0;
+  for(let i=0;i<n;i++){const a=i*aci,cy=y+boy/2*Math.cos(a),cz=z+boy/2*Math.sin(a);P.push([bx2(gen(i),boy+.012,z0||.025),renk,0,cy,cz,a]);y+=boy*Math.cos(a);z+=boy*Math.sin(a);}
+  return[y,z];
+}
 function _yataganYap(op){
   const altin=op.altin||0xD4A82A,kin=!!op.kinda,bx2=function(w,h,d){return _g('BoxGeometry',w,h,d);};
-  return _silahMesh('silah_yatagan_'+altin+(kin?'k':''),function(){
+  return _silahMesh('silah_yatagan2_'+altin+(kin?'k':''),function(){
     const P=[],kemik=0xE8DFC4;
-    P.push([bx2(.07,.24,.07),kemik,0,0,0]);P.push([bx2(.2,.05,.07),kemik,0,-.15,0]);   // sap ve kabzabaşı
-    P.push([bx2(.06,.1,.06),kemik,-.1,-.2,0,0,0,.4]);P.push([bx2(.06,.1,.06),kemik,.1,-.2,0,0,0,-.4]);   // kulaklar
-    P.push([bx2(.1,.04,.09),altin,0,.13,0]);                                            // halka
-    let y=.15,z=0;
-    for(let i=0;i<6;i++){
-      const a=i*.075,len=.16,cy=y+len/2*Math.cos(a),cz=z+len/2*Math.sin(a);
-      if(kin)P.push([bx2(.095,len+.01,.055),0x2a1a0a,0,cy,cz,a]);
-      else P.push([bx2(.05+i*.012,len+.01,.025),0xC9CED8,0,cy,cz,a]);
-      y+=len*Math.cos(a);z+=len*Math.sin(a);
-    }
-    if(kin){P.push([bx2(.11,.07,.07),altin,0,y,z]);P.push([bx2(.11,.035,.07),altin,0,.2,0]);}
+    P.push([bx2(.08,.26,.08),kemik,0,0,0]);                                          // kemik sap
+    P.push([bx2(.26,.06,.08),kemik,0,-.16,0]);                                       // geniş kabzabaşı
+    P.push([bx2(.07,.12,.07),kemik,-.14,-.22,0,0,0,.45]);P.push([bx2(.07,.12,.07),kemik,.14,-.22,0,0,0,-.45]);   // kulaklar
+    P.push([bx2(.13,.045,.1),altin,0,.14,0]);P.push([bx2(.04,.05,.16),0xC8C8D0,0,.16,0]);   // siper
+    const uc=kin?_egri(P,bx2,6,.16,.1,function(){return .1;},0x2a1a0a,.06):_egri(P,bx2,6,.16,.1,function(i){return .05+i*.014;},0xC9CED8,.025);
+    if(kin){P.push([bx2(.12,.08,.075),altin,0,uc[0],uc[1],.5]);P.push([bx2(.12,.04,.075),altin,0,.2,0]);}
     return P;
   });
 }
 function _hancerYap(op){
   const altin=op.altin||0xD4A82A,kin=!!op.kinda,bx2=function(w,h,d){return _g('BoxGeometry',w,h,d);};
-  return _silahMesh('silah_hancer_'+altin+(kin?'k':''),function(){
-    const P=[],kemik=0xE8DFC4;
-    P.push([bx2(.06,.17,.06),kemik,0,0,0]);P.push([bx2(.09,.04,.07),kemik,0,-.11,0]);P.push([bx2(.14,.03,.06),altin,0,.1,0]);
-    if(kin){P.push([bx2(.075,.4,.05),0x2a1a0a,0,.31,0]);P.push([bx2(.08,.05,.055),altin,0,.52,0]);P.push([bx2(.08,.03,.055),altin,0,.14,0]);}
-    else{P.push([bx2(.055,.2,.02),0xC9CED8,0,.22,0]);P.push([bx2(.045,.16,.02),0xC9CED8,0,.4,0]);P.push([bx2(.03,.1,.02),0xC9CED8,0,.53,0]);}
+  return _silahMesh('silah_hancer2_'+altin+(kin?'k':''),function(){
+    const P=[],kemik=0xD8D8E0;
+    P.push([bx2(.06,.2,.06),kemik,0,0,0]);P.push([bx2(.11,.06,.07),kemik,0,-.12,0]);   // hencer sapı: gümüş
+    P.push([bx2(.15,.035,.06),altin,0,.12,0]);
+    const uc=kin?_egri(P,bx2,4,.16,.16,function(){return .08;},0x7a7a84,.05):_egri(P,bx2,4,.16,.16,function(i){return .06-i*.012;},0xC9CED8,.022);
+    if(kin)P.push([bx2(.09,.07,.06),altin,0,uc[0],uc[1],.7]);
     return P;
   });
 }
-function _tufekYap(op){
+function _tufekYap(op){   // çakmaklı tüfek: boy +y'de uzanır (sırtta çapraz, elde yatay takılır)
   const bx2=function(w,h,d){return _g('BoxGeometry',w,h,d);},cy=function(a,b,h){return _g('CylinderGeometry',a,b,h,6);};
-  return _silahMesh('silah_tufek'+(op.sirt?'_s':''),function(){
-    if(op.sirt)return[[bx2(.09,.2,.62),0x5a3a1a,.16,1.2,-.38,0,0,.62],[cy(.025,.025,1.25),0x6b6b72,-.12,1.85,-.4,0,0,.62],[bx2(.07,.07,.5),0x4a2c12,0,1.62,-.38,0,0,.62],[bx2(.06,.9,.03),0x3a2410,0,1.5,.39,0,0,.65]];
-    return[[bx2(.07,.07,1.0),0x5a3a1a,0,0,.4],[bx2(.05,.05,.5),0x888888,0,0,.9]];
+  return _silahMesh('silah_tufek2',function(){
+    return[[cy(.026,.03,1.15),0x6b6b72,0,.45,0],[bx2(.11,.55,.075),0x5a3a1a,0,-.45,0],[bx2(.12,.16,.085),0xD4A82A,0,-.78,0],
+      [bx2(.1,.14,.09),0xB0B0B8,0,-.05,.0],[bx2(.045,.08,.07),0x888890,0,.0,.06],[cy(.034,.034,.07),0xD4A82A,0,.3,0],[cy(.034,.034,.07),0xD4A82A,0,.7,0],[cy(.012,.012,.9),0xC8B070,.04,.4,0]];
   });
 }
 function _yayYap(op){
   return _silahMesh('silah_yay'+(op.sirt?'_s':''),function(){
-    const ry=op.sirt?Math.PI/2:-Math.PI/2,y0=op.sirt?1.5:0,z0=op.sirt?-.42:0;
+    const ry=op.sirt?Math.PI/2:-Math.PI/2,y0=op.sirt?1.5:0,z0=op.sirt?-.62:0;
     return[[_g('TorusGeometry',.5,.025,6,16,Math.PI),0x6a4a2a,0,y0,z0,0,ry,-Math.PI/2,1,.55,1],[_g('BoxGeometry',.012,1.0,.012),0xE8E0D0,0,y0,z0]];
   });
 }
