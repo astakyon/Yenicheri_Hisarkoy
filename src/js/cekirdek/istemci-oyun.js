@@ -23,7 +23,7 @@ function joinAsClient(transport,hos){
   document.getElementById('topBar').style.display='flex';document.getElementById('mmBox').style.display='block';document.getElementById('topLeftHud').style.display='flex';
   clientHaritaKur(harita,hos.x,hos.z,hos.spd,hos.rspd);
   CLIENT.xpVerilen=0;CLIENT.odulBitti=false;poolGold=0;akce=0;deri=0;metal=0;
-  transport.send({t:'hi',ab:{q:getAbilityLvl('q'),f:getAbilityLvl('f'),r:getAbilityLvl('r')},armor:SAVE.armor,mh:getBaseMaxHp()});
+  transport.send({t:'hi',g:gorunumOku(),ab:{q:getAbilityLvl('q'),f:getAbilityLvl('f'),r:getAbilityLvl('r')},armor:SAVE.armor,mh:getBaseMaxHp()});
   playing=true;paused=false;
   document.getElementById('mapIndicator').textContent='👥 ODA — '+harita.toUpperCase();
   setTimeout(function(){initTouch();applyAllSettings();},100);
@@ -124,7 +124,12 @@ function hayaletEsitle(harita,liste,yarat,guncelle){
 }
 function clientCiz(v){
   const H=CLIENT.hayalet;
-  hayaletEsitle(H.p,v.p.filter(function(q){return q.id!==CLIENT.id;}),function(){return modelYap('yeniceri');},function(g,o){
+  const GV=CLIENT.gorunum;
+  if(GV&&GV.lookYeni){   // görünümü değişen oyuncunun modelini yeniden kur
+    GV.lookYeni=false;
+    H.p.forEach(function(g,id){const k=JSON.stringify(GV.looks&&GV.looks[id]||null);if(g.userData.lk!==k){S3.remove(g);H.p.delete(id);}});
+  }
+  hayaletEsitle(H.p,v.p.filter(function(q){return q.id!==CLIENT.id;}),function(o){const l=GV&&GV.looks&&GV.looks[o.id]||null,g=modelYap('yeniceri',{g:l});g.userData.lk=JSON.stringify(l);return g;},function(g,o){
     const dx=o.x-g.position.x,dz=o.z-g.position.z,dd=Math.sqrt(dx*dx+dz*dz),u=g.userData;
     if(o.f!==undefined){let t=-o.f+Math.PI/2,d=t-g.rotation.y;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;g.rotation.y+=Math.abs(d)<.35?d:(d>0?.35:-.35);}
     g.position.set(o.x,o.d?.35:0,o.z);g.rotation.x=o.d?-1.4:0;

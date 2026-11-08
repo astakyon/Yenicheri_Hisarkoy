@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.70">
+<meta name="game-version" content="v1.71">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.70</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.71</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -530,7 +530,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.70</div>
+      <div id="mVer">v1.71</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
@@ -941,7 +941,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.70';
+const VERSION='v1.71';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -2360,8 +2360,20 @@ function gorunumOku(){
   return g;
 }
 function _koyult(c,k){return(Math.round(((c>>16)&255)*k)<<16)|(Math.round(((c>>8)&255)*k)<<8)|Math.round((c&255)*k);}
-function _oyuncuOpt(){
-  const g=gorunumOku(),t=g.borkTip;
+// Ağdan gelen görünümü güvenli hale getirir (yalnızca bilinen anahtarlar, sayı/izinli metin/bool)
+function gorunumTemizle(o){
+  const v=Object.assign({},GORUNUM_VARSAYILAN);if(!o||typeof o!=='object')return v;
+  Object.keys(GORUNUM_VARSAYILAN).forEach(function(k){
+    const d=GORUNUM_VARSAYILAN[k],x=o[k];
+    if(typeof d==='number'){if(typeof x==='number'&&x>=0&&x<=0xFFFFFF)v[k]=x|0;}
+    else if(typeof d==='boolean'){if(typeof x==='boolean')v[k]=x;}
+    else if(k==='biyikTip'){if(['yok','klasik','kalin','sivri','uzun','sakal'].indexOf(x)>=0)v[k]=x;}
+    else if(k==='borkTip'){if(['klasik','kisa','sarik','fes'].indexOf(x)>=0)v[k]=x;}
+  });
+  return v;
+}
+function _oyuncuOpt(gv){
+  const g=gv?gorunumTemizle(gv):gorunumOku(),t=g.borkTip;
   return{id:'yeniceri_'+[g.gov,g.sash,g.yaka,g.dugme,g.toka,g.bork,g.kasik,g.sal,g.biyik,g.biyikTip,g.borkTip,g.yatagan?1:0,g.hancer?1:0,g.kayis?1:0,g.tufek?1:0].join('_'),
     etek:_koyult(g.gov,.9),gov:g.gov,sash:g.sash,yaka:g.yaka,dugmeC:g.dugme,tokaC:g.toka,kasikC:g.kasik,sal:g.sal,sal2:0xE8E0D0,bot:0x2a1000,
     biyik:g.biyikTip==='yok'?0:g.biyik,biyikTip:g.biyikTip,sapka:t==='sarik'?'sarik':t==='fes'?'fes':'bork',sapkaC:g.bork,sapkaC2:g.yaka,borkTip:t,yat:!!g.yatagan,han:!!g.hancer,tufekVar:!!g.tufek,bandolye:!!g.kayis,adliBicak:true};
@@ -2378,7 +2390,7 @@ function modelSilahGoster(g,w,cekili){
   q.elYay.visible=cekili&&w===2;
   q.sirtYay.visible=!(cekili&&w===2)&&w===2;
 }
-function _yeniceriYap(){const g=_insanYap(_oyuncuOpt(),1);return g;}
+function _yeniceriYap(op){const g=_insanYap(_oyuncuOpt(op&&op.g),1);return g;}
 modelTanimla('yeniceri',{ad:'Yeniçeri (oyuncu)',grup:'Karakter',boy:2.82,yap:_yeniceriYap});
 
 const _OD={id:'dusman',etek:0x3a1800,gov:0x4a2000,sash:0x7a1a1a,sal:0x3a3a3a,bot:0x1a1008,biyik:0x1a1008,sapka:'sarik',sapkaC:0x8a7a5a,sapkaC2:0x5a1a1a,silah:'kilic',kalkan:0x6a4a2a};
@@ -3251,6 +3263,17 @@ SESSION.hello=function(id,m){
   p.abLv=ab;
   if(['none','leather','chain','plate','ottoman'].indexOf(m.armor)>=0)p.armor=m.armor;
   const mh=Math.max(60,Math.min(500,+m.mh||100));p.maxHp=mh;p.hp=mh;
+  if(m.g){
+    p.gor=gorunumTemizle(m.g);
+    if(p.mesh&&typeof S3!=='undefined'&&S3){try{S3.remove(p.mesh);}catch(e){}p.mesh=modelYap('yeniceri',{g:p.gor});p.mesh.position.set(p.x,0,p.z);S3.add(p.mesh);}
+  }
+  SESSION.gorunumYay();
+};
+// Herkesin görünümünü tüm istemcilere yollar (katılma / yeniden bağlanma anında)
+SESSION.gorunumYay=function(){
+  const l={};
+  WORLD.players.forEach(function(p,id){l[id]=p.gor||(p===pl?gorunumOku():null);});
+  this.peers.forEach(function(tr){try{tr.send({t:'look',l:l});}catch(e){}});
 };
 // Bağlantı kopunca oyuncu hemen silinmez: 60 sn dokunulmaz ve hareketsiz bekler, aynı anahtarla dönerse devam eder
 // Host yeni bir haritaya geçti (veya sahne yenilendi): uzak oyuncular başlangıç noktasına yakın, tam canla, yeni sahnede
@@ -3260,7 +3283,7 @@ SESSION.haritaDegisti=function(){
     if(p===pl)return;
     k++;p.x=pl.x+1.5*k;p.z=pl.z;p.hp=p.maxHp;p.en=p.maxEn;p.ifr=120;p.downT=0;p.rev=0;
     if(p.mesh&&typeof S3!=='undefined'&&S3)try{S3.remove(p.mesh);}catch(e){}
-    p.mesh=modelYap('yeniceri');p.mesh.position.set(p.x,0,p.z);S3.add(p.mesh);
+    p.mesh=modelYap('yeniceri',{g:p.gor});p.mesh.position.set(p.x,0,p.z);S3.add(p.mesh);
     SESSION.cmdQ.delete(id);
   });
 };
@@ -3282,7 +3305,7 @@ SESSION.rejoin=function(yeniId,m){
   this.peers.set(m.id,tr);this.offline.delete(m.id);this.cmdQ.delete(m.id);
   p.ifr=120;
   tr.send({t:'rj',ok:true,id:m.id,x:p.x,z:p.z,hp:p.hp,mh:p.maxHp});
-  lootPop('📶 '+m.id+' yeniden bağlandı');
+  lootPop('📶 '+m.id+' yeniden bağlandı');SESSION.gorunumYay();
 };
 SESSION.acceptPeer=function(transport){
   if(WORLD.players.size>=4){transport.send({t:'dolu'});return null;}
@@ -3307,7 +3330,7 @@ class ClientView{
   sendInput(cmd){this.tr.send({t:'input',cmd:cmd});}
   poll(nowMs){
     const self=this;
-    this.tr.poll().forEach(function(m){if(m.t==='snap'){const o=ozetAc(m.s);self.buf.push({at:nowMs,s:o});self.last=o;}else if(m.t==='over')self.over=m;else if(m.t==='bye')self.bye=true;});
+    this.tr.poll().forEach(function(m){if(m.t==='snap'){const o=ozetAc(m.s);self.buf.push({at:nowMs,s:o});self.last=o;}else if(m.t==='look'){self.looks=m.l||{};self.lookYeni=true;}else if(m.t==='over')self.over=m;else if(m.t==='bye')self.bye=true;});
     while(this.buf.length>20)this.buf.shift();
   }
   // Çizim anı için dünya: iki özet arasında doğrusal geçiş
@@ -3349,7 +3372,7 @@ function joinAsClient(transport,hos){
   document.getElementById('topBar').style.display='flex';document.getElementById('mmBox').style.display='block';document.getElementById('topLeftHud').style.display='flex';
   clientHaritaKur(harita,hos.x,hos.z,hos.spd,hos.rspd);
   CLIENT.xpVerilen=0;CLIENT.odulBitti=false;poolGold=0;akce=0;deri=0;metal=0;
-  transport.send({t:'hi',ab:{q:getAbilityLvl('q'),f:getAbilityLvl('f'),r:getAbilityLvl('r')},armor:SAVE.armor,mh:getBaseMaxHp()});
+  transport.send({t:'hi',g:gorunumOku(),ab:{q:getAbilityLvl('q'),f:getAbilityLvl('f'),r:getAbilityLvl('r')},armor:SAVE.armor,mh:getBaseMaxHp()});
   playing=true;paused=false;
   document.getElementById('mapIndicator').textContent='👥 ODA — '+harita.toUpperCase();
   setTimeout(function(){initTouch();applyAllSettings();},100);
@@ -3450,7 +3473,12 @@ function hayaletEsitle(harita,liste,yarat,guncelle){
 }
 function clientCiz(v){
   const H=CLIENT.hayalet;
-  hayaletEsitle(H.p,v.p.filter(function(q){return q.id!==CLIENT.id;}),function(){return modelYap('yeniceri');},function(g,o){
+  const GV=CLIENT.gorunum;
+  if(GV&&GV.lookYeni){   // görünümü değişen oyuncunun modelini yeniden kur
+    GV.lookYeni=false;
+    H.p.forEach(function(g,id){const k=JSON.stringify(GV.looks&&GV.looks[id]||null);if(g.userData.lk!==k){S3.remove(g);H.p.delete(id);}});
+  }
+  hayaletEsitle(H.p,v.p.filter(function(q){return q.id!==CLIENT.id;}),function(o){const l=GV&&GV.looks&&GV.looks[o.id]||null,g=modelYap('yeniceri',{g:l});g.userData.lk=JSON.stringify(l);return g;},function(g,o){
     const dx=o.x-g.position.x,dz=o.z-g.position.z,dd=Math.sqrt(dx*dx+dz*dz),u=g.userData;
     if(o.f!==undefined){let t=-o.f+Math.PI/2,d=t-g.rotation.y;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;g.rotation.y+=Math.abs(d)<.35?d:(d>0?.35:-.35);}
     g.position.set(o.x,o.d?.35:0,o.z);g.rotation.x=o.d?-1.4:0;

@@ -251,8 +251,20 @@ function gorunumOku(){
   return g;
 }
 function _koyult(c,k){return(Math.round(((c>>16)&255)*k)<<16)|(Math.round(((c>>8)&255)*k)<<8)|Math.round((c&255)*k);}
-function _oyuncuOpt(){
-  const g=gorunumOku(),t=g.borkTip;
+// Ağdan gelen görünümü güvenli hale getirir (yalnızca bilinen anahtarlar, sayı/izinli metin/bool)
+function gorunumTemizle(o){
+  const v=Object.assign({},GORUNUM_VARSAYILAN);if(!o||typeof o!=='object')return v;
+  Object.keys(GORUNUM_VARSAYILAN).forEach(function(k){
+    const d=GORUNUM_VARSAYILAN[k],x=o[k];
+    if(typeof d==='number'){if(typeof x==='number'&&x>=0&&x<=0xFFFFFF)v[k]=x|0;}
+    else if(typeof d==='boolean'){if(typeof x==='boolean')v[k]=x;}
+    else if(k==='biyikTip'){if(['yok','klasik','kalin','sivri','uzun','sakal'].indexOf(x)>=0)v[k]=x;}
+    else if(k==='borkTip'){if(['klasik','kisa','sarik','fes'].indexOf(x)>=0)v[k]=x;}
+  });
+  return v;
+}
+function _oyuncuOpt(gv){
+  const g=gv?gorunumTemizle(gv):gorunumOku(),t=g.borkTip;
   return{id:'yeniceri_'+[g.gov,g.sash,g.yaka,g.dugme,g.toka,g.bork,g.kasik,g.sal,g.biyik,g.biyikTip,g.borkTip,g.yatagan?1:0,g.hancer?1:0,g.kayis?1:0,g.tufek?1:0].join('_'),
     etek:_koyult(g.gov,.9),gov:g.gov,sash:g.sash,yaka:g.yaka,dugmeC:g.dugme,tokaC:g.toka,kasikC:g.kasik,sal:g.sal,sal2:0xE8E0D0,bot:0x2a1000,
     biyik:g.biyikTip==='yok'?0:g.biyik,biyikTip:g.biyikTip,sapka:t==='sarik'?'sarik':t==='fes'?'fes':'bork',sapkaC:g.bork,sapkaC2:g.yaka,borkTip:t,yat:!!g.yatagan,han:!!g.hancer,tufekVar:!!g.tufek,bandolye:!!g.kayis,adliBicak:true};
@@ -269,7 +281,7 @@ function modelSilahGoster(g,w,cekili){
   q.elYay.visible=cekili&&w===2;
   q.sirtYay.visible=!(cekili&&w===2)&&w===2;
 }
-function _yeniceriYap(){const g=_insanYap(_oyuncuOpt(),1);return g;}
+function _yeniceriYap(op){const g=_insanYap(_oyuncuOpt(op&&op.g),1);return g;}
 modelTanimla('yeniceri',{ad:'Yeniçeri (oyuncu)',grup:'Karakter',boy:2.82,yap:_yeniceriYap});
 
 const _OD={id:'dusman',etek:0x3a1800,gov:0x4a2000,sash:0x7a1a1a,sal:0x3a3a3a,bot:0x1a1008,biyik:0x1a1008,sapka:'sarik',sapkaC:0x8a7a5a,sapkaC2:0x5a1a1a,silah:'kilic',kalkan:0x6a4a2a};

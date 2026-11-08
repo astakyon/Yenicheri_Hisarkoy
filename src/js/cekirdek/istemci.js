@@ -63,6 +63,17 @@ SESSION.hello=function(id,m){
   p.abLv=ab;
   if(['none','leather','chain','plate','ottoman'].indexOf(m.armor)>=0)p.armor=m.armor;
   const mh=Math.max(60,Math.min(500,+m.mh||100));p.maxHp=mh;p.hp=mh;
+  if(m.g){
+    p.gor=gorunumTemizle(m.g);
+    if(p.mesh&&typeof S3!=='undefined'&&S3){try{S3.remove(p.mesh);}catch(e){}p.mesh=modelYap('yeniceri',{g:p.gor});p.mesh.position.set(p.x,0,p.z);S3.add(p.mesh);}
+  }
+  SESSION.gorunumYay();
+};
+// Herkesin görünümünü tüm istemcilere yollar (katılma / yeniden bağlanma anında)
+SESSION.gorunumYay=function(){
+  const l={};
+  WORLD.players.forEach(function(p,id){l[id]=p.gor||(p===pl?gorunumOku():null);});
+  this.peers.forEach(function(tr){try{tr.send({t:'look',l:l});}catch(e){}});
 };
 // Bağlantı kopunca oyuncu hemen silinmez: 60 sn dokunulmaz ve hareketsiz bekler, aynı anahtarla dönerse devam eder
 // Host yeni bir haritaya geçti (veya sahne yenilendi): uzak oyuncular başlangıç noktasına yakın, tam canla, yeni sahnede
@@ -72,7 +83,7 @@ SESSION.haritaDegisti=function(){
     if(p===pl)return;
     k++;p.x=pl.x+1.5*k;p.z=pl.z;p.hp=p.maxHp;p.en=p.maxEn;p.ifr=120;p.downT=0;p.rev=0;
     if(p.mesh&&typeof S3!=='undefined'&&S3)try{S3.remove(p.mesh);}catch(e){}
-    p.mesh=modelYap('yeniceri');p.mesh.position.set(p.x,0,p.z);S3.add(p.mesh);
+    p.mesh=modelYap('yeniceri',{g:p.gor});p.mesh.position.set(p.x,0,p.z);S3.add(p.mesh);
     SESSION.cmdQ.delete(id);
   });
 };
@@ -94,7 +105,7 @@ SESSION.rejoin=function(yeniId,m){
   this.peers.set(m.id,tr);this.offline.delete(m.id);this.cmdQ.delete(m.id);
   p.ifr=120;
   tr.send({t:'rj',ok:true,id:m.id,x:p.x,z:p.z,hp:p.hp,mh:p.maxHp});
-  lootPop('📶 '+m.id+' yeniden bağlandı');
+  lootPop('📶 '+m.id+' yeniden bağlandı');SESSION.gorunumYay();
 };
 SESSION.acceptPeer=function(transport){
   if(WORLD.players.size>=4){transport.send({t:'dolu'});return null;}
@@ -119,7 +130,7 @@ class ClientView{
   sendInput(cmd){this.tr.send({t:'input',cmd:cmd});}
   poll(nowMs){
     const self=this;
-    this.tr.poll().forEach(function(m){if(m.t==='snap'){const o=ozetAc(m.s);self.buf.push({at:nowMs,s:o});self.last=o;}else if(m.t==='over')self.over=m;else if(m.t==='bye')self.bye=true;});
+    this.tr.poll().forEach(function(m){if(m.t==='snap'){const o=ozetAc(m.s);self.buf.push({at:nowMs,s:o});self.last=o;}else if(m.t==='look'){self.looks=m.l||{};self.lookYeni=true;}else if(m.t==='over')self.over=m;else if(m.t==='bye')self.bye=true;});
     while(this.buf.length>20)this.buf.shift();
   }
   // Çizim anı için dünya: iki özet arasında doğrusal geçiş

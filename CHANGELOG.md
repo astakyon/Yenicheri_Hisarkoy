@@ -1,5 +1,8 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.71
+- Çok oyunculu: oyuncuların seçtiği görünüm (renkler, bıyık, başlık, ekipman) odadaki herkese gösteriliyor.
+
 ## v1.70
 - Çiftlik: tohum/ekin seçimi envanterden — kutucuklarla (4 tohum + 4 ürün), dokununca ekilecek ekin seçilir. 🎒 Envanter düğmesi / [I] tuşu; Tohum Rafı'nda E de envanteri açar.
 

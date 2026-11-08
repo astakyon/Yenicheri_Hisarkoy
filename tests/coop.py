@@ -64,12 +64,14 @@ def main():
             print('Oda kur ve katıl')
             hctx, host = sayfa('host')
             ictx, ist = sayfa('istemci')
+            host.evaluate("SAVE.gorunum = { gov: 0x445566, biyikTip: 'sakal' }")
             host.evaluate("odaKur()")
             host.wait_for_function("ODA.durum === 'acik'", timeout=15000)
             kod = host.evaluate("ODA.kod")
             check(len(kod) == 5, 'host oda kodu aldı: %s' % kod)
             check(host.evaluate("playing && currentMap") == 'kisla', 'host oyunu başlattı (Kışla)')
             ist.evaluate("SAVE.abilities.f = { id: 'f', lvl: 1, unlocked: true }")
+            ist.evaluate("SAVE.gorunum = { gov: 0x112233, tufek: false, biyikTip: 'yok' }")
             ist.evaluate("odayaKatil('%s')" % kod)
             try:
                 ist.wait_for_function("CLIENT.aktif === true", timeout=15000)
@@ -82,6 +84,13 @@ def main():
                 return 1
             host.wait_for_function("SESSION.peers.size === 1", timeout=5000)
             check(ist.evaluate("CLIENT.id") == 'c1' and ist.evaluate("currentMap") == 'kisla', 'istemci kimliği c1, harita host ile aynı')
+
+            print('Görünüm eşitleme (v1.71)')
+            ist.wait_for_timeout(900)
+            r = host.evaluate("() => { const p = WORLD.players.get('c1'); return { gov: p.gor && p.gor.gov, tufek: !!(p.mesh.userData.silah && p.mesh.userData.silah.sirtTufek) }; }")
+            check(r['gov'] == 0x112233 and r['tufek'] is False, 'host, istemcinin görünümünü uyguladı (%s)' % r)
+            r = ist.evaluate("() => { const g = Array.from(CLIENT.hayalet.p.values())[0]; return g ? JSON.parse(g.userData.lk).gov : null; }")
+            check(r == 0x445566, 'istemci, host oyuncusunu host\'un seçtiği kıyafetle çiziyor (%s)' % r)
 
             print('Hareket ve tahmin')
             host.evaluate("""() => { const p = WORLD.players.get('c1'); window.__bx = p.x; window.__hz = p.z; }""")
