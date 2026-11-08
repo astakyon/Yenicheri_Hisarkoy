@@ -26,7 +26,10 @@ let ciftlikMeshler=[];   // parsel başına ekin meshi
 function ciftlikHazirla(){
   const c=SAVE.ciftlik||(SAVE.ciftlik={});
   if(!c.parsel||c.parsel.length!==CIFTLIK_PARSELLER.length)c.parsel=CIFTLIK_PARSELLER.map(function(){return{e:null,t:0};});
-  if(!c.sira)c.sira=1;
+  if(!c.sira){   // v1.72 öncesi kayıt: dolu parseli olan sıraları açık say
+    c.sira=1;
+    (c.parsel||[]).forEach(function(p,i){if(p&&p.e){const gerek=3-Math.floor(i/4);if(gerek>c.sira)c.sira=gerek;}});
+  }
   const bos=function(){const o={};CIFTLIK_SIRA.forEach(function(k){o[k]=0;});return o;};
   c.depo=Object.assign(bos(),c.depo||{});
   if(!c.tohum)c.tohum=Object.assign(bos(),{arpa:5});else c.tohum=Object.assign(bos(),c.tohum);

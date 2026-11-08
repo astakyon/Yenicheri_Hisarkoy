@@ -34,6 +34,7 @@ function doPause(){
 function doResume(){document.getElementById('pauseBox').style.display='none';paused=false;playing=true;}
 
 function toMenu(){
+  if(typeof ciftlikPanelKapat==='function'){ciftlikPanelKapat();ciftlikEnvBtn(false);}
   ['pauseBox','deathBox','milestoneBox','zoneMenuBox','hudLayer','gameLayer','touchLayer','worldMapBox','bigMapBox'].forEach(id=>{
     const el=document.getElementById(id);
     if(el)el.style.display='none';

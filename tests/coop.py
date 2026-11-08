@@ -36,6 +36,12 @@ def sinyal_sunucusu():
     return pr, port
 
 
+def katil_dene(sayfa, kod):
+    # Eşler arası bağlantı kurulumu ortama bağlı (PeerJS) ve yavaş olabilir; yeniden denemek ikinci kimlik açtığı için yalnızca bekleme süresi uzun
+    sayfa.evaluate("odayaKatil('%s')" % kod)
+    sayfa.wait_for_function("CLIENT.aktif === true", timeout=40000)
+
+
 def main():
     if not ortak.peer_source():
         print('atlandı: peerjs.min.js yok (PEER_JS ayarla)')
@@ -220,7 +226,7 @@ def main():
             h2ctx, host2 = sayfa('host'); i2ctx, ist2 = sayfa('istemci')
             host2.evaluate("odaKur()"); host2.wait_for_function("ODA.durum === 'acik'", timeout=15000)
             kod2 = host2.evaluate("ODA.kod")
-            ist2.evaluate("odayaKatil('%s')" % kod2); ist2.wait_for_function("CLIENT.aktif === true", timeout=15000)
+            katil_dene(ist2, kod2)
             host2.wait_for_function("SESSION.peers.size === 1", timeout=5000)
             host2.evaluate("() => { pl.hp = 0; oyuncuOldu(pl); }")
             host2.wait_for_timeout(300)

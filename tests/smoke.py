@@ -411,6 +411,15 @@ def main():
         check(not errs, 'JavaScript hatası yok')
         ctx.close()
 
+        print('Çiftlik: menüye dönüş ve eski kayıt (v1.75)')
+        ctx, pg, errs = yeni_sayfa(1280, 720)
+        pg.evaluate("SAVE.ciftlik = { parsel: Array.from({length: 12}, (_, i) => ({ e: i === 1 ? 'arpa' : null, t: Date.now() })) }; BEGIN('ciftlik')"); pg.wait_for_timeout(700)
+        check(pg.evaluate("SAVE.ciftlik.sira") == 3, 'Çiftlik: eski kayıtta dolu parselli sıralar açık sayılıyor')
+        pg.evaluate("ciftlikPanelAc('envanter')"); pg.wait_for_timeout(200)
+        pg.evaluate("toMenu()"); pg.wait_for_timeout(300)
+        check(pg.evaluate("document.getElementById('ciftlikEnvBtn').style.display") == 'none' and pg.evaluate("document.getElementById('ciftlikPanel').style.display") == 'none', 'Çiftlik: ana menüye dönünce envanter düğmesi ve paneli kapanıyor')
+        ctx.close()
+
         print('Yabancı Şehir ve Osmanlı Sarayı: dalga, hazine, boss, zafer (v1.73)')
         for hid in ('sehir', 'saray'):
             ctx, pg, errs = yeni_sayfa(1280, 720)

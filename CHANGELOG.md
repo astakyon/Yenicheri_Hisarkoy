@@ -1,5 +1,10 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.75
+- Hata: Çiftlik'ten ana menüye dönünce 🎒 Envanter düğmesi/paneli menünün üstünde kalıyordu — düzeltildi.
+- Eski (v1.72 öncesi) Çiftlik kaydında dolu parseli olan sıralar otomatik açık sayılıyor.
+- Tüm oyun taraması: 8 harita rastgele oynatma (fuzz) + statik kod denetimi (tanımsız değişken yok).
+
 ## v1.74
 - Şehir/Saray denge ayarı: bot ile oynanış denemesi sonrası düşman canı/hasarı ve doğma aralığı yumuşatıldı (yeni karakterle Şehir 4. dalgaya ~%55 canla ulaşıyor; Saray son görev olarak daha zor).
 

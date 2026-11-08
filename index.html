@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.74">
+<meta name="game-version" content="v1.75">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.74</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.75</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -530,7 +530,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.74</div>
+      <div id="mVer">v1.75</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
@@ -941,7 +941,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.74';
+const VERSION='v1.75';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -4274,6 +4274,7 @@ function doPause(){
 function doResume(){document.getElementById('pauseBox').style.display='none';paused=false;playing=true;}
 
 function toMenu(){
+  if(typeof ciftlikPanelKapat==='function'){ciftlikPanelKapat();ciftlikEnvBtn(false);}
   ['pauseBox','deathBox','milestoneBox','zoneMenuBox','hudLayer','gameLayer','touchLayer','worldMapBox','bigMapBox'].forEach(id=>{
     const el=document.getElementById(id);
     if(el)el.style.display='none';
@@ -5797,7 +5798,10 @@ let ciftlikMeshler=[];   // parsel başına ekin meshi
 function ciftlikHazirla(){
   const c=SAVE.ciftlik||(SAVE.ciftlik={});
   if(!c.parsel||c.parsel.length!==CIFTLIK_PARSELLER.length)c.parsel=CIFTLIK_PARSELLER.map(function(){return{e:null,t:0};});
-  if(!c.sira)c.sira=1;
+  if(!c.sira){   // v1.72 öncesi kayıt: dolu parseli olan sıraları açık say
+    c.sira=1;
+    (c.parsel||[]).forEach(function(p,i){if(p&&p.e){const gerek=3-Math.floor(i/4);if(gerek>c.sira)c.sira=gerek;}});
+  }
   const bos=function(){const o={};CIFTLIK_SIRA.forEach(function(k){o[k]=0;});return o;};
   c.depo=Object.assign(bos(),c.depo||{});
   if(!c.tohum)c.tohum=Object.assign(bos(),{arpa:5});else c.tohum=Object.assign(bos(),c.tohum);
