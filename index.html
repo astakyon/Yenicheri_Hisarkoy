@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.75">
+<meta name="game-version" content="v1.76">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.75</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.76</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -474,7 +474,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 }
 
 /* v1.55: dikey telefonda "yatay çevir" uyarısı (dokunmayı engellemez) */
-#yatayUyari{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);z-index:99999;display:none;pointer-events:none;background:rgba(6,3,0,.88);color:#FFD24A;border:1.5px solid #E8C060;border-radius:30px;padding:8px 18px;font:700 13px 'Cinzel',serif;letter-spacing:.12em;white-space:nowrap;animation:yatayN 1.6s ease-in-out infinite;}
+#yatayUyari{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 56px);transform:translateX(-50%);z-index:99999;display:none;pointer-events:none;background:rgba(6,3,0,.88);color:#FFD24A;border:1.5px solid #E8C060;border-radius:30px;padding:8px 18px;font:700 13px 'Cinzel',serif;letter-spacing:.12em;white-space:nowrap;animation:yatayN 1.6s ease-in-out infinite;}
 @keyframes yatayN{0%,100%{opacity:1}50%{opacity:.45}}
 
 /* ── v1.58: kapat düğmeleri her zaman ekranda ── */
@@ -506,6 +506,85 @@ canvas{display:block;position:absolute;top:0;left:0;}
   #gorunumBox{align-items:flex-end!important;justify-content:center!important;padding:0 0 8px!important;}
   #gorunumPanel{max-height:56vh;max-height:56dvh;}
 }
+
+/* ═══ v1.76 — ortak katman paneli (Ayarlar, Profil, Hikaye): ekrana sığar, başlık/sekme sabit, gövde kayar ═══ */
+.ovBox{position:absolute;inset:0;z-index:22;background:rgba(0,0,0,.84);align-items:center;justify-content:center;padding:max(6px,env(safe-area-inset-top)) max(6px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left));}
+.ovPanel.panel{zoom:1;width:min(640px,100%);max-height:100%;display:flex;flex-direction:column;padding:12px 14px;overflow:hidden;}
+.ovHead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0;margin-bottom:6px;}
+.ovHead .panTitle{margin:0;}
+.ovBody{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-right:2px;}
+.ovFoot{flex-shrink:0;display:flex;gap:8px;margin-top:8px;}
+.ovFoot .panBtn{margin-top:0;}
+.ayTabs{display:flex;gap:4px;flex-shrink:0;margin-bottom:6px;overflow-x:auto;scrollbar-width:none;}
+.ayTabs::-webkit-scrollbar{display:none;}
+.ayTab{flex:1 0 auto;min-height:44px;padding:6px 10px;background:rgba(0,0,0,.45);border:1.5px solid #5a4210;border-bottom-width:3px;border-radius:5px;color:#c9ac78;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;}
+.ayTab span{font-size:16px;line-height:1;}
+.ayTab.on{color:#FFD24A;border-color:#E8C060;background:linear-gradient(180deg,rgba(150,100,20,.55),rgba(40,22,4,.7));}
+.ayRange{width:min(150px,32vw);accent-color:#E8C060;height:28px;}
+.ayVal{display:inline-block;min-width:38px;text-align:right;color:#E8C060;font-size:11px;}
+.ayChips{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;}
+.ayChip{min-height:34px;padding:4px 10px;background:rgba(0,0,0,.5);border:1.5px solid #8B6914;border-radius:4px;color:#D4B896;font:700 11px 'Cinzel',serif;cursor:pointer;}
+.ayChip.on{background:rgba(180,120,20,.55);color:#FFE9A8;border-color:#E8C060;}
+.ayTxt{width:100%;box-sizing:border-box;background:rgba(0,0,0,.55);color:#E8D8B0;border:1.5px solid #5a4210;border-radius:4px;font:11px monospace;padding:6px;resize:vertical;}
+.ayBtnRow{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.ayBtnRow .panBtn{flex:1 1 90px;margin-top:0;}
+.ayAbout{text-align:center;padding:6px 4px;color:#d8c498;font-size:12px;line-height:1.5;}
+.ayLogo{font:700 28px 'Cinzel',serif;color:#E8C060;letter-spacing:4px;}.ayLogo2{font:700 12px 'Cinzel',serif;letter-spacing:5px;color:#F5DEB3;}.ayVer{color:#E8C060;opacity:.7;letter-spacing:3px;margin:4px 0 8px;}
+.toggleRow{gap:10px;}
+.toggleRow>div:last-child{flex-shrink:0;max-width:62%;}
+@media (max-height:480px){
+  .ovPanel.panel{padding:8px 10px;}
+  .ayTab{min-height:38px;padding:3px 8px;}
+  .ayTab span{display:none;}
+  .toggleRow{padding:6px 0;}
+}
+/* Profil */
+.pfHead{display:flex;gap:12px;align-items:center;padding:6px 0 10px;}
+.pfAvBig{width:64px;height:64px;flex-shrink:0;border-radius:50%;background:radial-gradient(circle,#5a3c10,#1c0e00);border:3px solid #E8C060;display:flex;align-items:center;justify-content:center;font-size:34px;box-shadow:0 0 14px rgba(255,190,60,.35);}
+.pfName{display:flex;gap:6px;align-items:center;}
+.pfName input{background:rgba(0,0,0,.5);border:1.5px solid #8B6914;border-radius:4px;color:#FFE9A8;font:700 16px 'Cinzel',serif;padding:4px 8px;width:min(190px,48vw);}
+.pfRank{color:#E8C060;font-size:12px;letter-spacing:2px;margin-top:3px;}
+.pfBar{height:8px;border-radius:4px;background:rgba(0,0,0,.6);border:1px solid #5a4210;overflow:hidden;margin-top:5px;}.pfBar i{display:block;height:100%;background:linear-gradient(90deg,#c88a10,#FFD24A);}
+.pfAvs{display:flex;gap:5px;flex-wrap:wrap;margin:4px 0 10px;}
+.pfAv{width:44px;height:44px;border-radius:8px;background:rgba(0,0,0,.45);border:1.5px solid #5a4210;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.pfAv.on{border-color:#FFD24A;background:rgba(170,112,20,.5);}
+.pfSec{color:#E8C060;font:700 11px 'Cinzel',serif;letter-spacing:3px;margin:10px 0 6px;border-bottom:1px solid rgba(232,192,96,.25);padding-bottom:3px;}
+.pfStats{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px;}
+.pfStat{background:rgba(0,0,0,.4);border:1px solid #4a3410;border-radius:5px;padding:6px 8px;}.pfStat b{display:block;color:#FFE9A8;font-size:16px;}.pfStat span{color:#b8a070;font-size:10px;letter-spacing:1px;}
+.pfBadges{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:6px;}
+.pfBadge{background:rgba(0,0,0,.4);border:1px solid #4a3410;border-radius:5px;padding:6px 4px;text-align:center;font-size:10px;color:#d8c498;}.pfBadge i{display:block;font-style:normal;font-size:22px;}
+.pfBadge.off{opacity:.35;filter:grayscale(1);}
+.pfTit{display:flex;gap:5px;flex-wrap:wrap;}
+/* Hikaye */
+.hkList{display:flex;flex-direction:column;gap:8px;}
+.hkKart{background:linear-gradient(90deg,rgba(40,24,6,.85),rgba(18,10,2,.85));border:1.5px solid #5a4210;border-left:4px solid #5a4210;border-radius:6px;padding:9px 12px;}
+.hkKart.aktif{border-color:#E8C060;border-left-color:#FFD24A;box-shadow:0 0 16px rgba(255,190,60,.25);}
+.hkKart.bitti{border-left-color:#4ade80;}
+.hkKart.kilit{opacity:.55;}
+.hkTop{display:flex;align-items:center;gap:10px;}
+.hkNo{font:700 11px 'Cinzel',serif;letter-spacing:2px;color:#E8C060;}
+.hkAd{font:700 15px 'Cinzel',serif;color:#FFE9A8;}
+.hkIc{font-size:26px;}
+.hkDdurum{margin-left:auto;font-size:11px;color:#b8a070;white-space:nowrap;}
+.hkMetin{color:#d8c498;font-size:12px;line-height:1.55;margin:7px 0;white-space:pre-line;}
+.hkHedef{margin:5px 0;font-size:12px;color:#e8d8b0;}.hkHedef .pfBar{margin-top:3px;}
+.hkBtn{min-height:44px;padding:8px 16px;border:1.5px solid #E8C060;border-radius:5px;background:linear-gradient(180deg,#7a5210,#3a2406);color:#FFE9A8;font:700 12px 'Cinzel',serif;letter-spacing:2px;cursor:pointer;}
+.hkBtn.grn{border-color:#4ade80;background:linear-gradient(180deg,#1d6b38,#0e3a1c);}
+.hkRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+.hkSoz{color:#b9a47a;font-style:italic;}
+.wmStory{display:inline-block;margin-top:4px;font-size:10px;color:#FFD24A;letter-spacing:1px;}
+/* v1.76 ana menü */
+#mProfil{position:absolute;top:10px;right:12px;display:flex;align-items:center;gap:8px;background:rgba(20,12,6,.7);border:1px solid #c9a24a;border-radius:24px;padding:4px 14px 4px 6px;cursor:pointer;z-index:5;color:#f3e2b3}
+#mProfil span{font-size:26px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:#3a2410;border-radius:50%}
+#mProfil b{display:block;font-size:13px}#mProfil small{font-size:10px;opacity:.75}
+.mBtn.mPri{font-size:1.15em;border-color:#ffd36b}.mBtn small{display:block;font-size:.6em;opacity:.7;font-weight:400}
+#mIcos{display:flex;gap:10px;flex-wrap:wrap}
+@media (max-height:480px){
+ #mBtns{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-width:60vw}
+ #mBtns .mBtn{padding:7px 8px;font-size:12px;margin:0}
+ #mProfil{top:4px;right:6px;padding:2px 10px 2px 4px}#mProfil span{width:26px;height:26px;font-size:18px}
+ #mIcos .mIco{padding:3px 6px}#mIcos .mIco span{font-size:16px}#mIcos .mIco p{font-size:8px}
+}
 </style>
 </head>
 <body>
@@ -530,21 +609,23 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.75</div>
+      <div id="mVer">v1.76</div>
     </div>
+    <div id="mProfil" onclick="profilAc()" role="button" aria-label="Profil"><span id="mpAv">🪖</span><div><b id="mpAd">Yeniçeri</b><small id="mpSv">Sv 1</small></div></div>
     <div id="mBtns">
-      <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
-      <button class="mBtn" onclick="openChapters()">🗺 BÖLÜMLER</button>
+      <button class="mBtn mPri" onclick="menuDevam()">▶ DEVAM ET<small id="mDevamAlt"></small></button>
+      <button class="mBtn" onclick="hikayeAc()">📖 HİKAYE</button>
+      <button class="mBtn" onclick="openChapters()">🗺 SERBEST HARİTALAR</button>
       <button class="mBtn" onclick="coopAc()">👥 ÇOK OYUNCULU</button>
       <button class="mBtn" onclick="gorunumAc()">🎨 KARAKTERİM</button>
-      <button class="mBtn" onclick="kutuphaneAc()">🧰 MODEL KÜTÜPHANESİ</button>
-      <button class="mBtn" onclick="openMapEditor()">🛠 HARİTA EDİTÖRÜ</button>
-      <button class="mBtn" onclick="showDlg('📜 Nasıl Oynanır','WASD / Joystick → Hareket\nShift / 🏃 → Koşma\nFare / ⚔ → Saldır\n1/2/3 → Silah seç\nE / Kapı → Bölgeye Gir\nKışlada Demir Kapı → Göreve Çık\nEsc → Duraklat','Anlaşıldı!',hideDlg)">📜 NASIL OYNANIR</button>
+      <button class="mBtn" onclick="atolyeAc()">🛠 ATÖLYE</button>
       <button class="mBtn" id="btnInstall" style="display:none" onclick="installApp()">⬇ UYGULAMAYI YÜKLE</button>
     </div>
     <div id="mIcos">
-      <div class="mIco" onclick="openSettings()"><span>⚙</span><p>AYARLAR</p></div>
-      <div class="mIco"><span>🏆</span><p>SKOR</p></div>
+      <div class="mIco" onclick="profilAc()" role="button"><span>👤</span><p>PROFİL</p></div>
+      <div class="mIco" onclick="profilAc()" role="button"><span>🏆</span><p>BAŞARIMLAR</p></div>
+      <div class="mIco" onclick="nasilAc()" role="button"><span>📜</span><p>NASIL OYNANIR</p></div>
+      <div class="mIco" onclick="openSettings()" role="button"><span>⚙</span><p>AYARLAR</p></div>
     </div>
   </div>
 
@@ -558,68 +639,10 @@ canvas{display:block;position:absolute;top:0;left:0;}
     </div>
   </div>
 
-  <div id="settingsBox" style="display:none;position:absolute;inset:0;z-index:22;background:rgba(0,0,0,.82);align-items:center;justify-content:center;">
-    <div class="panel" style="width:min(320px,92vw);">
-      <div class="panTitle">⚙ AYARLAR</div>
-      <div class="panSub">v1.03 — YENİÇERİ: HİSARKÖY MUHAFIZI</div>
-      <div class="divider"></div>
-
-      <!-- Dokunmatik kontroller -->
-      <div class="toggleRow">
-        <div>
-          <div class="toggleLabel">📱 Dokunmatik Kontroller</div>
-          <div class="toggleSub">Joystick ve butonları göster/gizle</div>
-        </div>
-        <label class="toggle">
-          <input type="checkbox" id="toggleTouch" onchange="applyTouchSetting(this.checked)">
-          <span class="toggleSlider"></span>
-        </label>
-      </div>
-
-      <!-- Joystick boyutu -->
-      <div class="toggleRow">
-        <div>
-          <div class="toggleLabel">🕹 Joystick Boyutu</div>
-          <div class="toggleSub" id="joySizeLabel">Normal</div>
-        </div>
-        <div style="display:flex;gap:6px;">
-          <button onclick="setJoySize('small')"  style="padding:4px 8px;background:rgba(0,0,0,.5);border:1.5px solid #8B6914;border-radius:3px;color:#D4B896;font-size:9px;cursor:pointer;font-family:Cinzel,serif;">Küçük</button>
-          <button onclick="setJoySize('normal')" style="padding:4px 8px;background:rgba(0,0,0,.5);border:1.5px solid #8B6914;border-radius:3px;color:#D4B896;font-size:9px;cursor:pointer;font-family:Cinzel,serif;">Normal</button>
-          <button onclick="setJoySize('large')"  style="padding:4px 8px;background:rgba(0,0,0,.5);border:1.5px solid #8B6914;border-radius:3px;color:#D4B896;font-size:9px;cursor:pointer;font-family:Cinzel,serif;">Büyük</button>
-        </div>
-      </div>
-
-      <!-- Yetenek butonları -->
-      <div class="toggleRow">
-        <div>
-          <div class="toggleLabel">⚡ Yetenek Butonları (Q/F/R)</div>
-          <div class="toggleSub">Savaş ekranında yetenek butonlarını göster</div>
-        </div>
-        <label class="toggle">
-          <input type="checkbox" id="toggleAbilityBtns" onchange="applyAbilityBtnSetting(this.checked)" checked>
-          <span class="toggleSlider"></span>
-        </label>
-      </div>
-
-      <!-- Silah seçim çubuğu -->
-      <div class="toggleRow">
-        <div>
-          <div class="toggleLabel">🗡 Silah Seçim Çubuğu</div>
-          <div class="toggleSub">Alt barı göster/gizle</div>
-        </div>
-        <label class="toggle">
-          <input type="checkbox" id="toggleWeaponBar" onchange="applyWeaponBarSetting(this.checked)" checked>
-          <span class="toggleSlider"></span>
-        </label>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- Kayıt sıfırla -->
-      <button class="panBtn red" onclick="confirmReset()">🗑 Kayıdı Sıfırla</button>
-      <button class="panBtn" onclick="closeSettings()">✕ Kapat</button>
-    </div>
-  </div>
+  <div id="settingsBox" class="ovBox" style="display:none;"><div class="panel ovPanel" id="settingsPanel"></div></div>
+  <div id="profilBox" class="ovBox" style="display:none;"><div class="panel ovPanel" id="profilPanel"></div></div>
+  <div id="hikayeBox" class="ovBox" style="display:none;"><div class="panel ovPanel" id="hikayePanel"></div></div>
+  <div id="atolyeBox" class="ovBox" style="display:none;"><div class="panel ovPanel" id="atolyePanel" style="width:min(380px,100%)"></div></div>
 
   <!-- ── HUD ── -->
   <div id="hudLayer">
@@ -941,7 +964,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.75';
+const VERSION='v1.76';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -1030,27 +1053,95 @@ try{
 // ═══════════════════════════════════════════════════════
 // AYARLAR SİSTEMİ
 // ═══════════════════════════════════════════════════════
+const SURUM='v1.76';
 const SETTINGS_KEY='yenicheri_settings';
 let SETTINGS={
   touchEnabled: true,
   joySize: 'normal',      // 'small'|'normal'|'large'
   abilityBtns: true,
   weaponBar: true,
+  joyOp: 100,             // joystick saydamlığı %
+  master: 80, muzik: 45, efekt: 80, sessiz: false,
+  kalite: 'yuksek',       // 'dusuk'|'orta'|'yuksek'
+  golge: true, olcek: 100, fps: false,
+  titresim: true
 };
 function loadSettings(){try{const d=localStorage.getItem(SETTINGS_KEY);if(d)SETTINGS={...SETTINGS,...JSON.parse(d)};}catch(e){}}
 function saveSettings(){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(SETTINGS));}catch(e){}}
 loadSettings();
 
-function openSettings(){
-  // Mevcut değerleri toggle'lara yansıt
-  document.getElementById('toggleTouch').checked      = SETTINGS.touchEnabled;
-  document.getElementById('toggleAbilityBtns').checked= SETTINGS.abilityBtns;
-  document.getElementById('toggleWeaponBar').checked  = SETTINGS.weaponBar;
-  document.getElementById('joySizeLabel').textContent = {small:'Küçük',normal:'Normal',large:'Büyük'}[SETTINGS.joySize];
-  document.getElementById('settingsBox').style.display='flex';
+let AYAR_SEKME='kontrol';
+function openSettings(){ayarCiz();document.getElementById('settingsBox').style.display='flex';}
+function closeSettings(){document.getElementById('settingsBox').style.display='none';}
+function ayarSekme(k){AYAR_SEKME=k;ayarCiz();}
+function _ayRow(ad,alt,ctl){return '<div class="toggleRow"><div><div class="toggleLabel">'+ad+'</div>'+(alt?'<div class="toggleSub">'+alt+'</div>':'')+'</div><div>'+ctl+'</div></div>';}
+function _ayTog(k,fn){return '<label class="toggle"><input type="checkbox" '+(SETTINGS[k]?'checked':'')+' onchange="ayarDegis(\''+k+'\',this.checked'+(fn?','+fn:'')+')"><span class="toggleSlider"></span></label>';}
+function _aySlider(k,min,max,st){return '<input class="ayRange" type="range" min="'+min+'" max="'+max+'" step="'+(st||1)+'" value="'+SETTINGS[k]+'" oninput="ayarDegis(\''+k+'\',+this.value);this.nextElementSibling.textContent=this.value+\'%\'"><span class="ayVal">'+SETTINGS[k]+'%</span>';}
+function _aySec(k,secenekler){return '<div class="ayChips">'+secenekler.map(function(o){return '<button class="ayChip'+(String(SETTINGS[k])===String(o[0])?' on':'')+'" onclick="ayarDegis(\''+k+'\','+JSON.stringify(o[0]).replace(/"/g,"\'")+',true)">'+o[1]+'</button>';}).join('')+'</div>';}
+function ayarDegis(k,v,yenile){
+  SETTINGS[k]=v;saveSettings();
+  if(k==='touchEnabled')applyTouchSetting(v);
+  else if(k==='abilityBtns')applyAbilityBtnSetting(v);
+  else if(k==='weaponBar')applyWeaponBarSetting(v);
+  else if(k==='joySize')setJoySize(v);
+  else if(k==='joyOp')applyJoyOp();
+  else if(['master','muzik','efekt','sessiz'].indexOf(k)>=0&&typeof SES!=='undefined'){SES.baslat();SES.hacim();}
+  else if(['kalite','golge','olcek'].indexOf(k)>=0)applyGrafik();
+  else if(k==='fps')applyFps();
+  else if(k==='titresim'&&v&&typeof SES!=='undefined')SES.titre(30);
+  if(yenile)ayarCiz();
 }
-function closeSettings(){
-  document.getElementById('settingsBox').style.display='none';
+function ayarCiz(){
+  const SEK=[['kontrol','🎮','Kontroller'],['ses','🔊','Ses'],['grafik','🖥','Grafik'],['hesap','👤','Hesap'],['hakkinda','ℹ','Hakkında']];
+  let h='<div class="ovHead"><div><div class="panTitle">⚙ AYARLAR</div></div><button class="zmX" onclick="closeSettings()" aria-label="Kapat">✕</button></div>';
+  h+='<div class="ayTabs">'+SEK.map(function(t){return '<button class="ayTab'+(AYAR_SEKME===t[0]?' on':'')+'" onclick="ayarSekme(\''+t[0]+'\')"><span>'+t[1]+'</span><b>'+t[2]+'</b></button>';}).join('')+'</div>';
+  h+='<div class="ovBody">';
+  if(AYAR_SEKME==='kontrol'){
+    h+=_ayRow('📱 Dokunmatik Kontroller','Joystick ve butonları göster/gizle',_ayTog('touchEnabled'));
+    h+=_ayRow('🕹 Joystick Boyutu','',_aySec('joySize',[['small','Küçük'],['normal','Normal'],['large','Büyük']]));
+    h+=_ayRow('🌫 Joystick Saydamlığı','Düşükse oyun alanını daha az kapatır',_aySlider('joyOp',30,100,5));
+    h+=_ayRow('⚡ Yetenek Butonları (Q/F/R)','Savaş ekranında göster',_ayTog('abilityBtns'));
+    h+=_ayRow('🗡 Silah Seçim Çubuğu','Alt barı göster/gizle',_ayTog('weaponBar'));
+    h+=_ayRow('📳 Titreşim','Vuruş ve ölümde (destekleyen telefonlarda)',_ayTog('titresim'));
+  }else if(AYAR_SEKME==='ses'){
+    h+=_ayRow('🔇 Sessiz Mod','Tüm sesleri kapat',_ayTog('sessiz'));
+    h+=_ayRow('🔊 Ana Ses','',_aySlider('master',0,100,5));
+    h+=_ayRow('🎵 Müzik','Sakin Hicaz ezgisi',_aySlider('muzik',0,100,5));
+    h+=_ayRow('⚔ Efektler','Vuruş, ganimet, menü',_aySlider('efekt',0,100,5));
+    h+='<div style="text-align:center;margin-top:10px"><button class="panBtn" style="width:auto;padding:8px 18px" onclick="SES.baslat();SES.tik();SES.vur();SES.topla();">▶ Sesi dene</button></div>';
+  }else if(AYAR_SEKME==='grafik'){
+    h+=_ayRow('✨ Kalite','Düşük = pil ve düşük cihazlar için',_aySec('kalite',[['dusuk','Düşük'],['orta','Orta'],['yuksek','Yüksek']]));
+    h+=_ayRow('🌑 Gölgeler','Kapatmak performansı artırır',_ayTog('golge'));
+    h+=_ayRow('📐 Çözünürlük Ölçeği','Düşürmek akıcılığı artırır',_aySec('olcek',[[60,'%60'],[80,'%80'],[100,'%100']]));
+    h+=_ayRow('📊 FPS Göstergesi','Sağ üstte kare hızı',_ayTog('fps'));
+  }else if(AYAR_SEKME==='hesap'){
+    h+='<div class="toggleSub" style="margin:2px 0 8px">Kayıt, bu tarayıcıda saklanır. Başka cihaza taşımak için dışa aktarıp yapıştırın.</div>';
+    h+='<textarea id="ayKayit" class="ayTxt" rows="4" placeholder="Dışa aktarılan kayıt burada görünür; içe aktarmak için buraya yapıştırın"></textarea>';
+    h+='<div class="ayBtnRow"><button class="panBtn" onclick="kayitDisa()">📤 Dışa Aktar</button><button class="panBtn" onclick="kayitKopyala()">📋 Kopyala</button><button class="panBtn grn" onclick="kayitIce()">📥 İçe Aktar</button></div>';
+    h+='<div class="divider"></div><button class="panBtn red" onclick="confirmReset()">🗑 Kayıdı Sıfırla</button>';
+  }else{
+    h+='<div class="ayAbout"><div class="ayLogo">YENİÇERİ</div><div class="ayLogo2">HİSARKÖY MUHAFIZI</div><div class="ayVer">'+(typeof SURUM!=='undefined'?SURUM:'')+'</div>';
+    h+='<p>3D Osmanlı aksiyon RPG — kışla, av, maden, tarım, şehir ve saray. Hikayeyi sürdür, çiftliğini büyüt, arkadaşlarınla oda kur.</p>';
+    h+='<p class="toggleSub">Telefonda en iyi deneyim için yatay modda, tam ekran (Ana Ekrana Ekle) oynayın.</p></div>';
+  }
+  h+='</div><div class="ovFoot"><button class="panBtn" onclick="closeSettings()">✕ Kapat</button></div>';
+  document.getElementById('settingsPanel').innerHTML=h;
+}
+function kayitPaketi(){return JSON.stringify({yeniceri:1,surum:(typeof SURUM!=='undefined'?SURUM:''),save:SAVE,ayar:SETTINGS});}
+function kayitDisa(){const t=document.getElementById('ayKayit');if(t){t.value=kayitPaketi();t.select();}}
+function kayitKopyala(){
+  kayitDisa();const t=document.getElementById('ayKayit');
+  try{if(navigator.clipboard)navigator.clipboard.writeText(t.value).then(function(){lootPop('📋 Kayıt kopyalandı');},function(){document.execCommand('copy');lootPop('📋 Kayıt seçildi, kopyalayın');});else{document.execCommand('copy');lootPop('📋 Kayıt kopyalandı');}}catch(e){lootPop('📋 Metin seçildi, elle kopyalayın');}
+}
+function kayitIce(){
+  const t=document.getElementById('ayKayit');let o=null;
+  try{o=JSON.parse(t.value);}catch(e){}
+  if(!o||o.yeniceri!==1||!o.save||typeof o.save!=='object'||typeof o.save.mainGold!=='number'){lootPop('⚠ Geçersiz kayıt metni');return;}
+  showDlg('📥 Kayıt İçe Aktar','Mevcut kayıt bu kayıtla DEĞİŞTİRİLECEK.\nDevam edilsin mi?','Evet, Yükle',function(){
+    try{localStorage.setItem(SAVE_KEY,JSON.stringify(o.save));if(o.ayar)localStorage.setItem(SETTINGS_KEY,JSON.stringify(o.ayar));}catch(e){lootPop('⚠ Kayıt yazılamadı');return;}
+    location.reload();
+  });
+  setTimeout(function(){const b=document.getElementById('dlgB');if(b&&!document.getElementById('dlgIptal')){const c=b.cloneNode();c.id='dlgIptal';c.textContent='İptal';c.onclick=hideDlg;c.style.marginLeft='8px';b.parentNode.insertBefore(c,b.nextSibling);}},50);
 }
 
 function applyTouchSetting(enabled){
@@ -1075,7 +1166,6 @@ function applyWeaponBarSetting(enabled){
 
 function setJoySize(size){
   SETTINGS.joySize=size;saveSettings();
-  document.getElementById('joySizeLabel').textContent={small:'Küçük',normal:'Normal',large:'Büyük'}[size];
   const base=document.getElementById('joyBase');
   const knob=document.getElementById('joyKnob');
   if(!base||!knob)return;
@@ -1100,12 +1190,28 @@ function confirmReset(){
 }
 
 // Ayarları oyun başladığında uygula
+function applyJoyOp(){['joyBase','joyKnob'].forEach(function(i){const e=document.getElementById(i);if(e)e.style.opacity=(SETTINGS.joyOp||100)/100;});}
+function applyGrafik(){
+  if(typeof REN==='undefined'||!REN)return;
+  const k=SETTINGS.kalite,golge=SETTINGS.golge&&k!=='dusuk';
+  const oran=Math.min(window.devicePixelRatio||1,k==='yuksek'?2:1.5)*(SETTINGS.olcek/100)*(k==='dusuk'?.8:1);
+  REN.setPixelRatio(Math.max(.5,oran));REN.setSize(window.innerWidth,window.innerHeight);
+  if(REN.shadowMap.enabled!==golge){REN.shadowMap.enabled=golge;if(typeof S3!=='undefined'&&S3)S3.traverse(function(o){if(o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(function(m){m.needsUpdate=true;});}});}
+}
+let _fpsN=0,_fpsT=0,_fpsOn=false;
+function applyFps(){
+  let b=document.getElementById('fpsBox');
+  if(!b){b=document.createElement('div');b.id='fpsBox';b.style.cssText='display:none;position:fixed;right:6px;bottom:6px;z-index:99998;background:rgba(0,0,0,.6);color:#9f9;font:700 11px monospace;padding:2px 6px;border-radius:4px;pointer-events:none;';document.body.appendChild(b);}
+  b.style.display=SETTINGS.fps?'block':'none';
+  if(SETTINGS.fps&&!_fpsOn){_fpsOn=true;_fpsT=performance.now();(function f(){_fpsN++;const n=performance.now();if(n-_fpsT>=1000){b.textContent=Math.round(_fpsN*1000/(n-_fpsT))+' FPS';_fpsN=0;_fpsT=n;}if(SETTINGS.fps)requestAnimationFrame(f);else _fpsOn=false;})();}
+}
 function applyAllSettings(){
   const tl=document.getElementById('touchLayer');
   if(tl)tl.style.display=SETTINGS.touchEnabled?'block':'none';
   const ab=document.getElementById('abilityBtns');
   if(ab)ab.style.display=SETTINGS.abilityBtns?'flex':'none';
-  setJoySize(SETTINGS.joySize||'normal');
+  setJoySize(SETTINGS.joySize||'normal');applyJoyOp();applyGrafik();applyFps();
+  if(typeof SES!=='undefined')SES.hacim();
 }
 
 function updateGoldHud(){
@@ -1123,6 +1229,63 @@ function updateGoldHud(){
   if(pPoolEl)pPoolEl.textContent=poolGold;
 }
 
+// ═══════════════════════════════════════════════════════
+// SES — WebAudio ile üretilen basit efektler ve Hicaz dizili sakin müzik (v1.76)
+// Dosya yok: her şey kodla üretilir. İlk dokunuş/tuş ile başlar (tarayıcı kuralı).
+// ═══════════════════════════════════════════════════════
+const SES={
+  ctx:null,ana:null,muzikG:null,efektG:null,muzikT:null,nota:0,
+  baslat:function(){
+    if(this.ctx){if(this.ctx.state==='suspended')this.ctx.resume();return;}
+    try{
+      const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+      this.ctx=new AC();
+      this.ana=this.ctx.createGain();this.muzikG=this.ctx.createGain();this.efektG=this.ctx.createGain();
+      this.muzikG.connect(this.ana);this.efektG.connect(this.ana);this.ana.connect(this.ctx.destination);
+      this.hacim();this.muzikBaslat();
+    }catch(e){this.ctx=null;}
+  },
+  hacim:function(){
+    if(!this.ctx)return;
+    const s=SETTINGS,sessiz=s.sessiz?0:1;
+    this.ana.gain.value=sessiz*(s.master/100);
+    this.muzikG.gain.value=.5*(s.muzik/100);
+    this.efektG.gain.value=(s.efekt/100);
+  },
+  ton:function(f,sure,tip,vol,hedefG,gec,f2){
+    if(!this.ctx||this.ctx.state!=='running')return;
+    const t=this.ctx.currentTime+(gec||0),o=this.ctx.createOscillator(),g=this.ctx.createGain();
+    o.type=tip||'sine';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+sure);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+sure);
+    o.connect(g);g.connect(hedefG||this.efektG);o.start(t);o.stop(t+sure+.05);
+  },
+  tik:function(){this.ton(660,.07,'triangle',.18);this.ton(990,.06,'triangle',.1,null,.03);},
+  vur:function(){this.ton(220,.12,'sawtooth',.16,null,0,90);this.ton(1400,.05,'square',.05);this.titre(12);},
+  topla:function(){this.ton(880,.09,'sine',.14);this.ton(1320,.14,'sine',.12,null,.07);},
+  zafer:function(){[523,659,784,1047].forEach((f,i)=>this.ton(f,.35,'triangle',.18,null,i*.13));},
+  titre:function(ms){if(SETTINGS.titresim&&navigator.vibrate){try{navigator.vibrate(ms);}catch(e){}}},
+  // Hicaz: D Eb F# G A Bb C# D — sakin, yavaş rastgele yürüyüş + alçak sürekli ses
+  muzikBaslat:function(){
+    if(!this.ctx||this.muzikT)return;
+    const dizi=[293.66,311.13,369.99,392,440,466.16,554.37,587.33];
+    const cal=()=>{
+      if(!this.ctx)return;
+      if(SETTINGS.muzik>0&&!SETTINGS.sessiz&&!document.hidden){
+        this.nota=Math.max(0,Math.min(dizi.length-1,this.nota+(Math.random()<.5?-1:1)*(1+(Math.random()<.3?1:0))));
+        this.ton(dizi[this.nota],2.4,'triangle',.22,this.muzikG);
+        if(Math.random()<.35)this.ton(dizi[(this.nota+2)%dizi.length]/2,3.2,'sine',.14,this.muzikG,.4);
+        if(!this._drone||this._drone<Date.now()){this.ton(73.42,9,'sine',.2,this.muzikG);this._drone=Date.now()+8000;}
+      }
+      this.muzikT=setTimeout(cal,1700+Math.random()*900);
+    };
+    cal();
+  }
+};
+['pointerdown','keydown','touchstart'].forEach(function(ev){window.addEventListener(ev,function(){SES.baslat();},{passive:true});});
+document.addEventListener('click',function(e){
+  const t=e.target&&e.target.closest&&e.target.closest('.mBtn,.panBtn,.zmX,.mIco,.wmCard,.ayTab,.hkBtn,.pfAv,.meSmallBtn,#wmClose,.mBtnS');
+  if(t)SES.tik();
+},true);
 // ═══════════════════════════════════════════════════════
 // FAZ 4 — GÖREV & BAŞARI SİSTEMİ
 // ═══════════════════════════════════════════════════════
@@ -3733,6 +3896,218 @@ function buildWorldMapGrid(){
 }
 
 // ═══════════════════════════════════════════════════════
+// ANA HİKAYE — "Hisarköy'ün Gölgesi" (v1.76)
+// 6 perde; her perde bir haritaya bağlı, ölçülebilir hedefleri var, sırayla açılır.
+// İlerleme SAVE.story2 içinde; sayaçlar yalnızca oyun sırasında canlı izlenir.
+// Hedef türleri: sayaç anahtarı k (kill_<harita>, av, satis, wave_tarim, zafer_<harita>), n hedef,
+// abs=true ise mutlak değer (en yüksek dalga gibi), değilse perde başından beri artış.
+// ═══════════════════════════════════════════════════════
+const HIKAYE=[
+  {no:1,ad:'Hisarköy\'e Atama',harita:'gorev',ikon:'⚔',
+   intro:'Yeniçeri Ağası seni kışlaya çağırır:\n"Genç asker, Hisarköy\'ün yolları haydut kaynıyor. Kara Mehmet\'in adamları kervanları soyuyor. Devriyeye çık, ne kadar adam bulduğunu göreyim."',
+   hedefler:[{k:'kill_gorev',n:10,ad:'Devriyede 10 haydut öldür'}],
+   outro:'"Eli ağır çıkıyorsun. Ama yakalanan bir haydutun üstünden çıkan şu iz, işin bundan büyük olduğunu gösteriyor: ormanda izcilerimiz kayboldu."',
+   odul:{gold:150,xp:120,fame:20}},
+  {no:2,ad:'Kayıp İzciler',harita:'orman',ikon:'🏹',
+   intro:'Orman bekçisi endişeli:\n"İzcimiz Davut üç gündür dönmedi. Av hayvanları da ürkek; birileri ormanı dolaşıyor. Avlan, izlerini sür, ne bulursan getir."',
+   hedefler:[{k:'av',n:5,ad:'Ormanda 5 hayvan avla (izleri bul)'}],
+   outro:'Avlarken bulduğun yırtık bir izci kuşağı ve demir madenine giden taze tekerlek izleri… "Madene git," diyor bekçi, "kervan demiri orada kayboluyor."',
+   odul:{gold:200,xp:180,fame:25}},
+  {no:3,ad:'Mühürlü Mektup',harita:'maden',ikon:'⛏',
+   intro:'Demirci Hasan fısıldar:\n"Madenin derin galerilerinde yabancı adamlar var. Nöbetçiler susturuldu. İçeri gir, onları temizle; elinde bir şey varsa bulunur."',
+   hedefler:[{k:'kill_maden',n:8,ad:'Madende 8 düşman öldür'}],
+   outro:'Düşen bir hainin cebinden mühürlü bir mektup çıkar: "Hisarköy\'ün erzağı kesilsin. — V." Mührün sahibi bir vezir olmalı. Önce köylüleri ve ikmali korumalısın.',
+   odul:{gold:300,xp:240,fame:30}},
+  {no:4,ad:'Ordunun Ekmeği',harita:'tarim',ikon:'🌾',harita2:'ciftlik',
+   intro:'Köy muhtarı yalvarır:\n"Baskınlar tarlaları yakıyor, ordu aç kalacak! Ovayı eşkıyadan koru; çiftlikte ekin yetiştirip pazara ver ki ikmal kesilmesin."',
+   hedefler:[{k:'wave_tarim',n:3,abs:true,ad:'Tarım Ovası\'nda 3. dalgaya ulaş'},{k:'satis',n:25,ad:'Çiftlikte 25 akçelik ürün sat'}],
+   outro:'Ambarlar dolu, askerin karnı tok. Köylüler eşkıyanın dilinden bir isim duymuş: liman şehrindeki bir reis, "Vezir\'in adamı" diye övünüyormuş.',
+   odul:{gold:400,xp:300,fame:40}},
+  {no:5,ad:'Liman Şehrinin Gölgesi',harita:'sehir',ikon:'🏙',
+   intro:'Gizli habercin yazar:\n"Yabancı şehirde çeteleri bir reis yönetiyor. Mektubun mührü onun elinde de var. Sokakları temizle, Çete Reisi\'ni yakala."',
+   hedefler:[{k:'zafer_sehir',n:1,ad:'Çete Reisi\'ni yen (Yabancı Şehir)'}],
+   outro:'Reis son nefesinde itiraf eder: "Vezir Cafer… Sarayda, padişahın yanında… sizi tek tek yok etmemi istedi." Artık hedef belli.',
+   odul:{gold:600,xp:420,fame:60}},
+  {no:6,ad:'Hain Vezir',harita:'saray',ikon:'👑',
+   intro:'Padişahın muhafız ağası seni sarayda karşılar:\n"Kanıtın var, cesaretin var. Vezir Cafer\'in muhafızları kapıları tuttu. Divan salonuna ulaş, hainin hesabını gör!"',
+   hedefler:[{k:'zafer_saray',n:1,ad:'Hain Vezir\'i devir (Osmanlı Sarayı)'}],
+   outro:'Padişah huzurunda hain zincire vurulur. "Hisarköy Muhafızı" unvanı sana verilir. Hikâye burada bitmez; ama Hisarköy artık güvende.',
+   odul:{gold:1000,xp:800,fame:120}}
+];
+function hikayeHazirla(){
+  if(!SAVE.story2||typeof SAVE.story2!=='object')SAVE.story2={act:1,c:{},c0:{},odul:false,bitti:[]};
+  const H=SAVE.story2;
+  if(!H.c)H.c={};if(!H.c0)H.c0={};if(!Array.isArray(H.bitti))H.bitti=[];
+  if(!H.act||H.act<1)H.act=1;
+  return H;
+}
+function hikayeIlerleme(perde,h){
+  const H=hikayeHazirla(),c=H.c[h.k]||0,c0=h.abs?0:(H.c0[h.k]||0);
+  return Math.max(0,Math.min(h.n,c-c0));
+}
+function hikayeTamam(perde){return perde.hedefler.every(function(h){return hikayeIlerleme(perde,h)>=h.n;});}
+function hikayeDurum(){const H=hikayeHazirla();return {act:H.act,tam:H.bitti.length,toplam:HIKAYE.length,bitti:H.bitti.length>=HIKAYE.length,odul:H.odul};}
+function hikayePerdeDurum(p){
+  const H=hikayeHazirla();
+  if(H.bitti.indexOf(p.no)>=0)return 'bitti';
+  if(p.no===H.act)return 'aktif';
+  return 'kilit';
+}
+// Sayaçlar: oyun ilerledikçe yarım saniyede bir istatistik farkından beslenir
+let _hk={kills:SAVE.stats.kills||0,av:SAVE.stats.animalsHunted||0,satis:SAVE.stats.satis||0,sehir:SAVE.stats.sehirZafer||0,saray:SAVE.stats.sarayZafer||0};
+function hikayeSay(k,d){const H=hikayeHazirla();H.c[k]=(H.c[k]||0)+d;}
+function hikayeTik(){
+  if(typeof playing==='undefined'||!playing)return;
+  const H=hikayeHazirla(),S=SAVE.stats;
+  let ch=false;
+  const dk=(S.kills||0)-_hk.kills;if(dk>0){hikayeSay('kill_'+currentMap,dk);ch=true;}_hk.kills=S.kills||0;
+  const da=(S.animalsHunted||0)-_hk.av;if(da>0){hikayeSay('av',da);ch=true;}_hk.av=S.animalsHunted||0;
+  const ds=(S.satis||0)-_hk.satis;if(ds>0){hikayeSay('satis',ds);ch=true;}_hk.satis=S.satis||0;
+  const dh=(S.sehirZafer||0)-_hk.sehir;if(dh>0){hikayeSay('zafer_sehir',dh);ch=true;}_hk.sehir=S.sehirZafer||0;
+  const dr=(S.sarayZafer||0)-_hk.saray;if(dr>0){hikayeSay('zafer_saray',dr);ch=true;}_hk.saray=S.sarayZafer||0;
+  if(currentMap==='tarim'&&typeof wave!=='undefined'&&wave>(H.c.wave_tarim||0)){H.c.wave_tarim=wave;ch=true;}
+  if(!ch)return;
+  const perde=HIKAYE[H.act-1];
+  if(perde&&!H.odul&&hikayeTamam(perde)){
+    H.odul=true;saveGame();
+    lootPop('📖 Perde '+perde.no+' tamamlandı! Ana menü → Hikaye\'den ödülünü al');
+    if(typeof SES!=='undefined')SES.zafer();
+  }else saveGame();
+}
+setInterval(hikayeTik,500);
+function hikayeOdulAl(){
+  const H=hikayeHazirla(),perde=HIKAYE[H.act-1];
+  if(!perde||!H.odul||!hikayeTamam(perde))return;
+  addMainGold(perde.odul.gold);
+  SAVE.fame=(SAVE.fame||0)+perde.odul.fame;
+  if(typeof addXP==='function'&&typeof playing!=='undefined'&&playing)addXP(perde.odul.xp);else SAVE.xp=(SAVE.xp||0)+perde.odul.xp;
+  H.bitti.push(perde.no);H.odul=false;H.act=Math.min(HIKAYE.length+1,perde.no+1);
+  H.c0=Object.assign({},H.c);   // sonraki perde sıfırdan sayılır
+  saveGame();
+  if(typeof SES!=='undefined')SES.zafer();
+  hikayeCiz();
+}
+function hikayeBaslat(no){
+  const p=HIKAYE[no-1],H=hikayeHazirla();
+  if(!p||hikayePerdeDurum(p)==='kilit')return;
+  hikayeKapat();
+  BEGIN(p.harita);
+  setTimeout(function(){if(typeof lootPop==='function')lootPop('📖 Perde '+p.no+' — '+p.hedefler.map(function(h){return h.ad;}).join(' · '));},1800);
+}
+let _hkAcik=null;
+function hikayeAc(){_hkAcik=hikayeHazirla().act;hikayeCiz();document.getElementById('hikayeBox').style.display='flex';}
+function hikayeKapat(){document.getElementById('hikayeBox').style.display='none';}
+function hikayeSec(no){_hkAcik=_hkAcik===no?null:no;hikayeCiz();}
+function hikayeCiz(){
+  const H=hikayeHazirla(),d=hikayeDurum();
+  let h='<div class="ovHead"><div><div class="panTitle">📖 HİSARKÖY\'ÜN GÖLGESİ</div><div class="panSub" style="margin:0">PERDE '+Math.min(H.act,HIKAYE.length)+' / '+HIKAYE.length+' · '+d.tam+' TAMAMLANDI</div></div><button class="zmX" onclick="hikayeKapat()" aria-label="Kapat">✕</button></div><div class="ovBody"><div class="hkList">';
+  HIKAYE.forEach(function(p){
+    const dur=hikayePerdeDurum(p),acik=_hkAcik===p.no&&dur!=='kilit';
+    h+='<div class="hkKart '+dur+'"><div class="hkTop" onclick="'+(dur==='kilit'?'':'hikayeSec('+p.no+')')+'" style="cursor:'+(dur==='kilit'?'default':'pointer')+'"><div class="hkIc">'+(dur==='kilit'?'🔒':p.ikon)+'</div><div><div class="hkNo">PERDE '+p.no+'</div><div class="hkAd">'+p.ad+'</div></div><div class="hkDdurum">'+(dur==='bitti'?'✔ Tamamlandı':dur==='aktif'?(H.odul?'🎁 Ödül hazır':'▶ Aktif'):'Önceki perdeyi tamamla')+'</div></div>';
+    if(acik){
+      h+='<div class="hkMetin">'+p.intro+'</div>';
+      p.hedefler.forEach(function(g){const v=dur==='bitti'?g.n:hikayeIlerleme(p,g),y=Math.round(v/g.n*100);h+='<div class="hkHedef">'+(v>=g.n?'✔ ':'◻ ')+g.ad+' <b>('+v+'/'+g.n+')</b><div class="pfBar"><i style="width:'+y+'%"></i></div></div>';});
+      h+='<div class="toggleSub">Ödül: 🪙 '+p.odul.gold+' · ✨ '+p.odul.xp+' XP · ⭐ '+p.odul.fame+' ün</div>';
+      if(dur==='bitti')h+='<div class="hkMetin hkSoz">'+p.outro+'</div>';
+      h+='<div class="hkRow">';
+      if(dur==='aktif'&&H.odul)h+='<button class="hkBtn grn" onclick="hikayeOdulAl()">🎁 ÖDÜLÜ AL</button>';
+      if(dur!=='kilit')h+='<button class="hkBtn" onclick="hikayeBaslat('+p.no+')">▶ '+(dur==='bitti'?'TEKRAR OYNA':'GÖREVE BAŞLA')+'</button>';
+      h+='</div>';
+    }
+    h+='</div>';
+  });
+  if(d.bitti)h+='<div class="hkKart bitti"><div class="hkAd">🏅 Hisarköy Muhafızı</div><div class="hkMetin">Ana hikâyeyi tamamladın. "Hisarköy Muhafızı" unvanı Profil\'de seçilebilir. Serbest haritalarda ilerlemeye ve çiftliğini büyütmeye devam et!</div></div>';
+  h+='</div></div><div class="ovFoot"><button class="panBtn" onclick="hikayeKapat()">✕ Kapat</button></div>';
+  document.getElementById('hikayePanel').innerHTML=h;
+}
+// ═══════════════════════════════════════════════════════
+// OYUNCU PROFİLİ (v1.76) — ad, avatar, rütbe, unvan, istatistik, başarım vitrini
+// Veri SAVE.profil içinde; oynama süresi saniye olarak sayılır.
+// ═══════════════════════════════════════════════════════
+const PROFIL_AVATARLAR=['🪖','⚔️','🏹','🛡️','🐺','🦅','🔥','🌙','⭐','👑'];
+function profilHazirla(){
+  if(!SAVE.profil||typeof SAVE.profil!=='object')SAVE.profil={};
+  const P=SAVE.profil;
+  if(!P.ad)P.ad='Yeniçeri';
+  if(PROFIL_AVATARLAR.indexOf(P.avatar)<0)P.avatar='🪖';
+  if(!P.unvan)P.unvan='rutbe';
+  if(!P.id)P.id='YC-'+Math.random().toString(36).slice(2,6).toUpperCase()+Math.floor(Math.random()*90+10);
+  if(!P.olusturma)P.olusturma=Date.now();
+  if(typeof P.sure!=='number')P.sure=0;
+  return P;
+}
+function profilAdTemizle(s){return String(s||'').replace(/[^0-9A-Za-zÇĞİÖŞÜçğıöşü _.\-]/g,'').trim().slice(0,14);}
+// Seçilebilir unvanlar: koşul sağlanınca açılır
+function profilUnvanlar(){
+  const hk=(typeof hikayeDurum==='function')?hikayeDurum():null;
+  return [
+    {id:'rutbe',ad:getFameTitle(),acik:true},
+    {id:'muhafiz',ad:'Hisarköy Muhafızı',acik:!!(hk&&hk.bitti)},
+    {id:'efsane',ad:'Efsane',acik:!!(SAVE.achievements&&SAVE.achievements.kills_500)},
+    {id:'avci',ad:'Orman Avcısı',acik:(SAVE.stats.animalsHunted||0)>=25},
+    {id:'ciftbasi',ad:'Çiftbaşı',acik:(SAVE.stats.satis||0)>=500}
+  ];
+}
+function profilUnvanAd(){
+  const P=profilHazirla(),u=profilUnvanlar().find(function(x){return x.id===P.unvan&&x.acik;});
+  return u?u.ad:getFameTitle();
+}
+function profilSure(s){const sa=Math.floor(s/3600),dk=Math.floor(s%3600/60);return sa>0?sa+' sa '+dk+' dk':dk+' dk';}
+let _profilAcik=false;
+function profilAc(){_profilAcik=true;profilCiz();document.getElementById('profilBox').style.display='flex';}
+function profilKapat(){_profilAcik=false;document.getElementById('profilBox').style.display='none';if(typeof menuProfilGuncelle==='function')menuProfilGuncelle();}
+function profilAdDegis(v){profilHazirla().ad=profilAdTemizle(v)||'Yeniçeri';saveGame();menuProfilGuncelle&&menuProfilGuncelle();}
+function profilAvatarSec(a){profilHazirla().avatar=a;saveGame();profilCiz();}
+function profilUnvanSec(id){const u=profilUnvanlar().find(function(x){return x.id===id;});if(u&&u.acik){profilHazirla().unvan=id;saveGame();profilCiz();}}
+function profilCiz(){
+  const P=profilHazirla(),st=SAVE.stats||{},hk=(typeof hikayeDurum==='function')?hikayeDurum():{tam:0,toplam:6};
+  const xp=Math.max(0,Math.min(100,Math.round((SAVE.xp||0)/Math.max(1,SAVE.xpNext||100)*100)));
+  const earned=ACHIEVEMENTS.filter(function(a){return SAVE.achievements[a.id];}).length;
+  let h='<div class="ovHead"><div class="panTitle">👤 PROFİL</div><button class="zmX" onclick="profilKapat()" aria-label="Kapat">✕</button></div><div class="ovBody">';
+  h+='<div class="pfHead"><div class="pfAvBig">'+P.avatar+'</div><div style="flex:1;min-width:0"><div class="pfName"><input id="pfAd" maxlength="14" value="'+P.ad.replace(/"/g,'')+'" onchange="profilAdDegis(this.value);this.value=SAVE.profil.ad" aria-label="Oyuncu adı"></div>';
+  h+='<div class="pfRank">'+profilUnvanAd().toUpperCase()+' · SV '+(SAVE.level||1)+'</div><div class="pfBar"><i style="width:'+xp+'%"></i></div><div class="toggleSub" style="margin-top:3px">Kimlik: '+P.id+' · 🪙 '+mainGold+' akçe</div></div></div>';
+  h+='<div class="pfSec">AVATAR</div><div class="pfAvs">'+PROFIL_AVATARLAR.map(function(a){return '<button class="pfAv'+(a===P.avatar?' on':'')+'" onclick="profilAvatarSec(\''+a+'\')">'+a+'</button>';}).join('')+'</div>';
+  h+='<div class="pfSec">UNVAN</div><div class="pfTit">'+profilUnvanlar().map(function(u){return '<button class="ayChip'+(P.unvan===u.id?' on':'')+'" '+(u.acik?'onclick="profilUnvanSec(\''+u.id+'\')"':'disabled style="opacity:.4"')+'>'+(u.acik?'':'🔒 ')+u.ad+'</button>';}).join('')+'</div>';
+  h+='<div class="pfSec">İSTATİSTİKLER</div><div class="pfStats">';
+  [['Oynama süresi',profilSure(P.sure)],['Öldürülen düşman',st.kills||0],['Patron zaferi',st.bossKills||0],['En yüksek dalga',st.highWave||0],['Avlanan hayvan',st.animalsHunted||0],['Pazarda satış (akçe)',st.satis||0],['Hazine sandığı',st.hazine||0],['Toplam kazanç (akçe)',st.totalGoldEarned||0],['Hikaye perdesi',hk.tam+' / '+hk.toplam],['Başarım',earned+' / '+ACHIEVEMENTS.length]].forEach(function(r){h+='<div class="pfStat"><b>'+r[1]+'</b><span>'+r[0].toUpperCase()+'</span></div>';});
+  h+='</div><div class="pfSec">BAŞARIMLAR</div><div class="pfBadges">'+ACHIEVEMENTS.map(function(a){const k=!!SAVE.achievements[a.id];return '<div class="pfBadge'+(k?'':' off')+'" title="'+a.desc+'"><i>'+a.icon+'</i>'+a.title+'</div>';}).join('')+'</div>';
+  h+='</div><div class="ovFoot"><button class="panBtn grn" onclick="profilKapat()">✔ Tamam</button></div>';
+  document.getElementById('profilPanel').innerHTML=h;
+}
+// Oynama süresi sayacı (oyun açık, duraklatılmamış ve sekme görünürken)
+setInterval(function(){
+  if(typeof playing!=='undefined'&&playing&&!paused&&!document.hidden){const P=profilHazirla();P.sure++;if(P.sure%30===0)saveGame();}
+},1000);
+profilHazirla();
+// ── Ana menü yardımcıları (v1.76) ──
+function menuDevam(){
+  try{
+    const h=(typeof HIKAYE!=='undefined'&&SAVE.story2&&!SAVE.story2.bitti);
+    if(h&&typeof hikayeAc==='function'){hikayeAc();return;}
+  }catch(e){}
+  BEGIN('kisla');
+}
+function menuProfilGuncelle(){
+  try{
+    const p=SAVE.profil||{};
+    const av=document.getElementById('mpAv'),ad=document.getElementById('mpAd'),sv=document.getElementById('mpSv'),dv=document.getElementById('mDevamAlt');
+    if(av)av.textContent=p.avatar||'🪖';
+    if(ad)ad.textContent=p.ad||'Yeniçeri';
+    if(sv)sv.textContent=(typeof getFameTitle==='function'?getFameTitle():'')||'';
+    if(dv){const s=SAVE.story2;dv.textContent=s&&!s.bitti?'Perde '+((s.act|0)+1):'Kışla';}
+  }catch(e){}
+}
+function nasilAc(){
+  showDlg('📜 Nasıl Oynanır',NASIL_METIN,'Anlaşıldı!',hideDlg);
+}
+const NASIL_METIN='WASD / Joystick → Hareket\nShift / 🏃 → Koşma\nFare / ⚔ → Saldır\n1/2/3 → Silah seç\nE / Kapı → Bölgeye Gir\nKışlada Demir Kapı → Göreve Çık\nEsc → Duraklat';
+function atolyeAc(){
+  const b=document.getElementById('atolyeBox'),p=document.getElementById('atolyePanel');
+  p.innerHTML='<div class="ovHead"><div class="panTitle">🛠 ATÖLYE</div><button class="zmX" onclick="atolyeKapat()">✕</button></div><div class="ovBody" style="display:flex;flex-direction:column;gap:8px"><button class="mBtn" onclick="atolyeKapat();kutuphaneAc()">📚 MODEL KÜTÜPHANESİ</button><button class="mBtn" onclick="atolyeKapat();openMapEditor()">🗺 HARİTA EDİTÖRÜ</button></div>';
+  b.style.display='flex';
+}
+function atolyeKapat(){document.getElementById('atolyeBox').style.display='none';}
+// ═══════════════════════════════════════════════════════
 // GERÇEK HARİTA (Big Blueprint Map) — oyun içinde, bulunduğun
 // bölgenin tam krokisini gösterir, sekmeyle diğerlerine bakılır
 // ═══════════════════════════════════════════════════════
@@ -4243,7 +4618,7 @@ startBmRefresh();
 // ═══════════════════════════════════════════════════════
 function showDlg(t,p,b,cb){document.getElementById('dlgT').textContent=t;document.getElementById('dlgP').textContent=p;document.getElementById('dlgB').textContent=b;document.getElementById('dlgB').onclick=cb||hideDlg;document.getElementById('dlgLayer').style.display='flex';}
 function hideDlg(){document.getElementById('dlgLayer').style.display='none';}
-function lootPop(t){const f=document.getElementById('lootFd'),d=document.createElement('div');d.className='lpop';d.textContent=t;f.appendChild(d);setTimeout(()=>d.remove(),2200);}
+function lootPop(t){if(typeof SES!=='undefined'&&/Akçe|^\+|💎|🎁/.test(String(t)))SES.topla();const f=document.getElementById('lootFd'),d=document.createElement('div');d.className='lpop';d.textContent=t;f.appendChild(d);setTimeout(()=>d.remove(),2200);}
 function showWave(t){const e=document.getElementById('wvAnn');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2700);}
 const WEAPON_ICONS=['🗡','🔫','🏹'];
 function selW(i){
@@ -6035,7 +6410,7 @@ function kazancDagit(xp){WORLD.players.forEach(function(p){if(p!==pl)p.xp=(p.xp|
 // ═══════════════════════════════════════════════════════
 // SAVAŞ
 // ═══════════════════════════════════════════════════════
-function doMelee(p){p=p||pl;if(p.hp<=0)return;p.aimLock=36;p.face=p.ang;if(CLIENT.aktif&&p===pl){if(p.atkCd>0)return;p.atkCd=22;CLIENT_eylem('melee');return;}if(p.atkCd>0)return;p.atkCd=22;const ax=p.x+Math.cos(p.ang)*2.6,az=p.z+Math.sin(p.ang)*2.6;addFX(ax,az,0xFFD700,7);const dmg=getWeaponDmg('yatagan',p);enemies.forEach(function(en){if(Math.hypot(en.x-ax,en.z-az)<2.9){en.hp-=dmg;en.hurtT=9;addFX(en.x,en.z,0xcc2222,4);}});barrelsArr.forEach(function(b){if(b.hp>0&&Math.hypot(b.x-ax,b.z-az)<2.2){b.hp--;addFX(b.x,b.z,0x8B4513,4);if(b.hp<=0){S3.remove(b.mesh);dropLoot(b.x,b.z,3);lootPop('Varil patladı! 💥');if(b.collider){const ci=colliders.indexOf(b.collider);if(ci>-1)colliders.splice(ci,1);}}}});barrelsArr=barrelsArr.filter(function(b){return b.hp>0;});if(currentMap==='maden')madenKaz(ax,az,p);}
+function doMelee(p){p=p||pl;if(p.hp<=0)return;p.aimLock=36;p.face=p.ang;if(CLIENT.aktif&&p===pl){if(p.atkCd>0)return;p.atkCd=22;CLIENT_eylem('melee');return;}if(p.atkCd>0)return;p.atkCd=22;if(p===pl&&typeof SES!=='undefined')SES.vur();const ax=p.x+Math.cos(p.ang)*2.6,az=p.z+Math.sin(p.ang)*2.6;addFX(ax,az,0xFFD700,7);const dmg=getWeaponDmg('yatagan',p);enemies.forEach(function(en){if(Math.hypot(en.x-ax,en.z-az)<2.9){en.hp-=dmg;en.hurtT=9;addFX(en.x,en.z,0xcc2222,4);}});barrelsArr.forEach(function(b){if(b.hp>0&&Math.hypot(b.x-ax,b.z-az)<2.2){b.hp--;addFX(b.x,b.z,0x8B4513,4);if(b.hp<=0){S3.remove(b.mesh);dropLoot(b.x,b.z,3);lootPop('Varil patladı! 💥');if(b.collider){const ci=colliders.indexOf(b.collider);if(ci>-1)colliders.splice(ci,1);}}}});barrelsArr=barrelsArr.filter(function(b){return b.hp>0;});if(currentMap==='maden')madenKaz(ax,az,p);}
 function doRanged(p,aim){p=p||pl;aim=aim||worldAim;if(p.hp<=0)return;p.aimLock=36;p.face=p.ang;if(CLIENT.aktif&&p===pl){CLIENT_eylem('ranged',{w:pl.weapon,ax:worldAim.x,az:worldAim.z});return;}const wp=p.weapon,pw=(p===pl)?pwr:0;if(p.en<8)return;const wids=['yatagan','tufek','ok'];const dmg=getWeaponDmg(wids[wp],p)+Math.floor(pw/100*28);const rCol=wp===1?0xFFFDE7:0x8B4513;const m=modelYap(wp===1?'mermi_tufek':'mermi_ok');m.position.set(p.x,1.1,p.z);S3.add(m);const dx=aim.x-p.x,dz=aim.z-p.z,l=Math.hypot(dx,dz)||1,sp=wp===1?.44:.28;bullets.push({id:newNetId(),mesh:m,vx:dx/l*sp,vz:dz/l*sp,dmg:dmg,life:85});p.en=Math.max(0,p.en-8);addFX(p.x,p.z,rCol,3);}
 
 // ═══════════════════════════════════════════════════════

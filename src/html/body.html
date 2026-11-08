@@ -21,19 +21,21 @@
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
       <div id="mVer">{{VERSION}}</div>
     </div>
+    <div id="mProfil" onclick="profilAc()" role="button" aria-label="Profil"><span id="mpAv">🪖</span><div><b id="mpAd">Yeniçeri</b><small id="mpSv">Sv 1</small></div></div>
     <div id="mBtns">
-      <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
-      <button class="mBtn" onclick="openChapters()">🗺 BÖLÜMLER</button>
+      <button class="mBtn mPri" onclick="menuDevam()">▶ DEVAM ET<small id="mDevamAlt"></small></button>
+      <button class="mBtn" onclick="hikayeAc()">📖 HİKAYE</button>
+      <button class="mBtn" onclick="openChapters()">🗺 SERBEST HARİTALAR</button>
       <button class="mBtn" onclick="coopAc()">👥 ÇOK OYUNCULU</button>
       <button class="mBtn" onclick="gorunumAc()">🎨 KARAKTERİM</button>
-      <button class="mBtn" onclick="kutuphaneAc()">🧰 MODEL KÜTÜPHANESİ</button>
-      <button class="mBtn" onclick="openMapEditor()">🛠 HARİTA EDİTÖRÜ</button>
-      <button class="mBtn" onclick="showDlg('📜 Nasıl Oynanır','WASD / Joystick → Hareket\nShift / 🏃 → Koşma\nFare / ⚔ → Saldır\n1/2/3 → Silah seç\nE / Kapı → Bölgeye Gir\nKışlada Demir Kapı → Göreve Çık\nEsc → Duraklat','Anlaşıldı!',hideDlg)">📜 NASIL OYNANIR</button>
+      <button class="mBtn" onclick="atolyeAc()">🛠 ATÖLYE</button>
       <button class="mBtn" id="btnInstall" style="display:none" onclick="installApp()">⬇ UYGULAMAYI YÜKLE</button>
     </div>
     <div id="mIcos">
-      <div class="mIco" onclick="openSettings()"><span>⚙</span><p>AYARLAR</p></div>
-      <div class="mIco"><span>🏆</span><p>SKOR</p></div>
+      <div class="mIco" onclick="profilAc()" role="button"><span>👤</span><p>PROFİL</p></div>
+      <div class="mIco" onclick="profilAc()" role="button"><span>🏆</span><p>BAŞARIMLAR</p></div>
+      <div class="mIco" onclick="nasilAc()" role="button"><span>📜</span><p>NASIL OYNANIR</p></div>
+      <div class="mIco" onclick="openSettings()" role="button"><span>⚙</span><p>AYARLAR</p></div>
     </div>
   </div>
 
@@ -47,68 +49,10 @@
     </div>
   </div>
 
-  <div id="settingsBox" style="display:none;position:absolute;inset:0;z-index:22;background:rgba(0,0,0,.82);align-items:center;justify-content:center;">
-    <div class="panel" style="width:min(320px,92vw);">
-      <div class="panTitle">⚙ AYARLAR</div>
-      <div class="panSub">v1.03 — YENİÇERİ: HİSARKÖY MUHAFIZI</div>
-      <div class="divider"></div>
-
-      <!-- Dokunmatik kontroller -->
-      <div class="toggleRow">
-        <div>
-          <div class="toggleLabel">📱 Dokunmatik Kontroller</div>
-          <div class="toggleSub">Joystick ve butonları göster/gizle</div>
-        </div>
-        <label class="toggle">
-          <input type="checkbox" id="toggleTouch" onchange="applyTouchSetting(this.checked)">
-          <span class="toggleSlider"></span>
-        </label>
-      </div>
-
-      <!-- Joystick boyutu -->
-      <div class="toggleRow">
-        <div>
-          <div class="toggleLabel">🕹 Joystick Boyutu</div>
-          <div class="toggleSub" id="joySizeLabel">Normal</div>
-        </div>
-        <div style="display:flex;gap:6px;">
-          <button onclick="setJoySize('small')"  style="padding:4px 8px;background:rgba(0,0,0,.5);border:1.5px solid #8B6914;border-radius:3px;color:#D4B896;font-size:9px;cursor:pointer;font-family:Cinzel,serif;">Küçük</button>
-          <button onclick="setJoySize('normal')" style="padding:4px 8px;background:rgba(0,0,0,.5);border:1.5px solid #8B6914;border-radius:3px;color:#D4B896;font-size:9px;cursor:pointer;font-family:Cinzel,serif;">Normal</button>
-          <button onclick="setJoySize('large')"  style="padding:4px 8px;background:rgba(0,0,0,.5);border:1.5px solid #8B6914;border-radius:3px;color:#D4B896;font-size:9px;cursor:pointer;font-family:Cinzel,serif;">Büyük</button>
-        </div>
-      </div>
-
-      <!-- Yetenek butonları -->
-      <div class="toggleRow">
-        <div>
-          <div class="toggleLabel">⚡ Yetenek Butonları (Q/F/R)</div>
-          <div class="toggleSub">Savaş ekranında yetenek butonlarını göster</div>
-        </div>
-        <label class="toggle">
-          <input type="checkbox" id="toggleAbilityBtns" onchange="applyAbilityBtnSetting(this.checked)" checked>
-          <span class="toggleSlider"></span>
-        </label>
-      </div>
-
-      <!-- Silah seçim çubuğu -->
-      <div class="toggleRow">
-        <div>
-          <div class="toggleLabel">🗡 Silah Seçim Çubuğu</div>
-          <div class="toggleSub">Alt barı göster/gizle</div>
-        </div>
-        <label class="toggle">
-          <input type="checkbox" id="toggleWeaponBar" onchange="applyWeaponBarSetting(this.checked)" checked>
-          <span class="toggleSlider"></span>
-        </label>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- Kayıt sıfırla -->
-      <button class="panBtn red" onclick="confirmReset()">🗑 Kayıdı Sıfırla</button>
-      <button class="panBtn" onclick="closeSettings()">✕ Kapat</button>
-    </div>
-  </div>
+  <div id="settingsBox" class="ovBox" style="display:none;"><div class="panel ovPanel" id="settingsPanel"></div></div>
+  <div id="profilBox" class="ovBox" style="display:none;"><div class="panel ovPanel" id="profilPanel"></div></div>
+  <div id="hikayeBox" class="ovBox" style="display:none;"><div class="panel ovPanel" id="hikayePanel"></div></div>
+  <div id="atolyeBox" class="ovBox" style="display:none;"><div class="panel ovPanel" id="atolyePanel" style="width:min(380px,100%)"></div></div>
 
   <!-- ── HUD ── -->
   <div id="hudLayer">

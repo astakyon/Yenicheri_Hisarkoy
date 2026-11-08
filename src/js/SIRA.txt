@@ -5,6 +5,7 @@
 cekirdek/surum-kayit.js
 cekirdek/pwa.js
 cekirdek/ayarlar.js
+cekirdek/ses.js
 gorev/gorev-basari.js
 karakter/xp-sinif.js
 karakter/yetenekler.js
@@ -22,6 +23,9 @@ cekirdek/istemci.js
 cekirdek/istemci-oyun.js
 cekirdek/baglanti.js
 ekran/bolumler.js
+gorev/hikaye.js
+ekran/profil.js
+ekran/ana-menu.js
 ekran/buyuk-harita.js
 ekran/buyuk-harita-cizim.js
 ekran/ui-yardimcilari.js

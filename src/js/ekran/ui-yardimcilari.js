@@ -3,7 +3,7 @@
 // ═══════════════════════════════════════════════════════
 function showDlg(t,p,b,cb){document.getElementById('dlgT').textContent=t;document.getElementById('dlgP').textContent=p;document.getElementById('dlgB').textContent=b;document.getElementById('dlgB').onclick=cb||hideDlg;document.getElementById('dlgLayer').style.display='flex';}
 function hideDlg(){document.getElementById('dlgLayer').style.display='none';}
-function lootPop(t){const f=document.getElementById('lootFd'),d=document.createElement('div');d.className='lpop';d.textContent=t;f.appendChild(d);setTimeout(()=>d.remove(),2200);}
+function lootPop(t){if(typeof SES!=='undefined'&&/Akçe|^\+|💎|🎁/.test(String(t)))SES.topla();const f=document.getElementById('lootFd'),d=document.createElement('div');d.className='lpop';d.textContent=t;f.appendChild(d);setTimeout(()=>d.remove(),2200);}
 function showWave(t){const e=document.getElementById('wvAnn');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2700);}
 const WEAPON_ICONS=['🗡','🔫','🏹'];
 function selW(i){

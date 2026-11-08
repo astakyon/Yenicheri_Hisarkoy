@@ -1,5 +1,9 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.76
+- Ana menü yeniden tasarlandı (DEVAM ET, HİKAYE, SERBEST HARİTALAR, ÇOK OYUNCULU, KARAKTERİM, ATÖLYE; profil rozeti; alt ikon çubuğu), telefon yatay kompakt düzen.
+- Sekmeli AAA ayarlar, oyuncu profili, ana hikaye (6 perde), prosedürel ses.
+
 ## v1.75
 - Hata: Çiftlik'ten ana menüye dönünce 🎒 Envanter düğmesi/paneli menünün üstünde kalıyordu — düzeltildi.
 - Eski (v1.72 öncesi) Çiftlik kaydında dolu parseli olan sıralar otomatik açık sayılıyor.
