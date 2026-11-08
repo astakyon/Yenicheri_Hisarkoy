@@ -1,5 +1,8 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.69
+- Çiftlik: envanter sistemi — çanta (24 ürün) + tohum stoğu. Tohum artık Pazar'dan satın alınır (panel: +1/+5, ürün sat, sulama yükseltme); ekim çantadaki tohumu harcar. Yeni 📦 Sandık: ürün ve tohum sınırsız saklanır, çantaya geri alınır. Başlangıçta 5 arpa tohumu.
+
 ## v1.68
 - Çiftlik: Pazar'da depo boşken 💧 Sulama sistemi satın alınır (3 seviye, her biri ekin büyümesini %15 hızlandırır).
 

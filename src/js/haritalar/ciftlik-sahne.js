@@ -13,13 +13,18 @@ const CIFTLIK_SIRA=['arpa','bugday','pamuk','uzum'];
 const CIFTLIK_PARSELLER=(function(){const a=[];[-14,-4,6].forEach(function(z){[-13.5,-4.5,4.5,13.5].forEach(function(x){a.push({x:x,z:z,w:7,d:7});});});return a;})();
 const CIFTLIK_RAF={id:'ciftlikRaf',icon:'🌰',name:'Tohum Rafı',x:-9,z:22};
 const CIFTLIK_PAZAR={id:'ciftlikPazar',icon:'💰',name:'Pazar Tezgâhı',x:9,z:22};
+const CIFTLIK_SANDIK={id:'ciftlikSandik',icon:'📦',name:'Sandık',x:-2.5,z:22};
 const CIFTLIK_CIKIS={id:'ciftlikCikis',icon:'🏰',name:'Çiftlikten Çık',x:0,z:33.5};
 let ciftlikMeshler=[];   // parsel başına ekin meshi
 
 function ciftlikHazirla(){
   const c=SAVE.ciftlik||(SAVE.ciftlik={});
   if(!c.parsel||c.parsel.length!==CIFTLIK_PARSELLER.length)c.parsel=CIFTLIK_PARSELLER.map(function(){return{e:null,t:0};});
-  c.depo=Object.assign({arpa:0,bugday:0,pamuk:0,uzum:0},c.depo||{});
+  const bos=function(){return{arpa:0,bugday:0,pamuk:0,uzum:0};};
+  c.depo=Object.assign(bos(),c.depo||{});
+  if(!c.tohum)c.tohum=Object.assign(bos(),{arpa:5});else c.tohum=Object.assign(bos(),c.tohum);
+  if(!c.sandik)c.sandik={};
+  c.sandik.depo=Object.assign(bos(),c.sandik.depo||{});c.sandik.tohum=Object.assign(bos(),c.sandik.tohum||{});
   if(!CIFTLIK_EKIN[c.secili])c.secili='arpa';
   return c;
 }
@@ -51,7 +56,7 @@ function ciftlikGorselYenile(){
 }
 
 function buildCiftlik(){
-  clearScene();
+  clearScene();ciftlikPanelKapat();
   S3.fog=new THREE.Fog(0xb4cf98,40,100);S3.background=new THREE.Color(0xa8d0ec);
   const sun=new THREE.DirectionalLight(0xFFF2D0,1.8);sun.position.set(-20,34,14);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
   sun.shadow.camera.left=-45;sun.shadow.camera.right=45;sun.shadow.camera.top=45;sun.shadow.camera.bottom=-45;S3.add(sun);
@@ -76,7 +81,7 @@ function buildCiftlik(){
   yapiKoy('yapi_ev',-24,-26,{w:7,d:5.5},[7,5.5]);
   yapiKoy('yapi_ev',24,-26,{w:7,d:5.5},[7,5.5]);
   yapiKoy('yapi_dukkan',CIFTLIK_PAZAR.x,CIFTLIK_PAZAR.z+3.2,{w:6,d:3},[6,2.6]);
-  [[-9,25],[-7,25]].forEach(function(p){const g=modelYap('cevre_sandik');g.position.set(p[0],0,p[1]);S3.add(g);addCircleCollider(p[0],p[1],.8);});
+  [[-9,25],[CIFTLIK_SANDIK.x,CIFTLIK_SANDIK.z+3]].forEach(function(p){const g=modelYap('cevre_sandik');g.position.set(p[0],0,p[1]);S3.add(g);addCircleCollider(p[0],p[1],.8);});
   const raf=modelYap('cevre_varil');raf.position.set(CIFTLIK_RAF.x,0,CIFTLIK_RAF.z+1.6);S3.add(raf);addCircleCollider(CIFTLIK_RAF.x,CIFTLIK_RAF.z+1.6,.8);
   [[-5,18],[5,18],[-5,-30],[5,-30]].forEach(function(p){yapiKoy('cevre_mesale',p[0],p[1]);});
   [[-34,-34],[-34,-10],[-34,14],[34,-34],[34,-10],[34,14],[-20,-34],[20,-34],[-34,30],[34,30]].forEach(function(p,i){
@@ -87,6 +92,7 @@ function buildCiftlik(){
   halka.rotation.x=-Math.PI/2;halka.position.set(CIFTLIK_CIKIS.x,.06,CIFTLIK_CIKIS.z);S3.add(halka);window._ciftlikHalka=halka;
   S3.add(madenYaziSprite('⬇ ÇIKIŞ — KIŞLA',0x66ff99,0,3.4,CIFTLIK_CIKIS.z));
   S3.add(madenYaziSprite('TOHUM RAFI',0xE8C060,CIFTLIK_RAF.x,3.2,CIFTLIK_RAF.z));
+  S3.add(madenYaziSprite('SANDIK',0xE8C060,CIFTLIK_SANDIK.x,3.2,CIFTLIK_SANDIK.z));
   S3.add(madenYaziSprite('PAZAR',0xE8C060,CIFTLIK_PAZAR.x,3.2,CIFTLIK_PAZAR.z));
   ciftlikGorselYenile();
 }
