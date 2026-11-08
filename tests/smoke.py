@@ -842,6 +842,53 @@ def main():
         check(r['bm'] == 2 and r['lt'] == 4, '2 mermi ve 4 ganimet oluştu')
         check(r['tam'] and r['benzersiz'], 'düşman+mermi+ganimet: %d varlığın hepsinde benzersiz tamsayı id' % r['n'])
         ctx.close()
+
+        print('Profil, hikaye, ayarlar, kayıt (v1.76)')
+        ctx, pg, errs = yeni_sayfa(844, 390)
+        pg.evaluate("menuProfilGuncelle()")
+        pg.evaluate("profilAdDegis('Test<b>Er')")
+        check(pg.evaluate("SAVE.profil.ad") == 'TestbEr', 'profil adı temizleniyor')
+        pg.evaluate("profilAvatarSec('🦅')")
+        check(pg.evaluate("document.getElementById('mpAv').textContent") == '🦅' or pg.evaluate("SAVE.profil.avatar") == '🦅', 'profil avatarı seçiliyor')
+        h = pg.evaluate("""() => { const g0=mainGold; hikayeSay('kill_gorev',10); const p=HIKAYE[0];
+          const t1=hikayeTamam(p); SAVE.story2.odul=true; hikayeOdulAl();
+          return {t1, act:SAVE.story2.act, bitti:SAVE.story2.bitti.slice(), gold:mainGold-g0, ilk:hikayePerdeDurum(HIKAYE[1])}; }""")
+        check(h['t1'] and h['act'] == 2 and h['bitti'] == [1] and h['gold'] > 0 and h['ilk'] == 'aktif', 'hikaye: perde 1 tamam → ödül → perde 2 açıldı')
+        h2 = pg.evaluate("() => { hikayeOdulAl(); return SAVE.story2.act; }")
+        check(h2 == 2, 'hikaye: ödül tekrar alınamıyor')
+        check(pg.evaluate("hikayePerdeDurum(HIKAYE[3])") == 'kilit', 'hikaye: ilerlemeyen perde kilitli')
+        pg.evaluate("openSettings()"); pg.wait_for_timeout(200)
+        sek = pg.evaluate("document.querySelectorAll('#settingsPanel .ayTab').length")
+        check(sek >= 4, 'ayarlarda sekmeler var (%d)' % sek)
+        for i in range(sek):
+            pg.evaluate("document.querySelectorAll('#settingsPanel .ayTab')[%d].click()" % i); pg.wait_for_timeout(80)
+        check(not errs, 'tüm ayar sekmeleri hatasız açılıyor')
+        pg.evaluate("closeSettings()")
+        pk = pg.evaluate("kayitPaketi()")
+        pg.evaluate("SAVE.profil.ad='Degisti'")
+        pg.evaluate("ayarSekme('hesap')")
+        pg.evaluate("(t)=>{document.getElementById('ayKayit').value=t; kayitIce();}", pk)
+        check(pg.evaluate("document.getElementById('dlgB')&&getComputedStyle(document.getElementById('dlgB')).display!=='none'"), 'geçerli kayıt: onay penceresi çıkıyor')
+        pg.evaluate("hideDlg()")
+        pg.evaluate("document.getElementById('ayKayit').value='{bozuk json'; kayitIce();")
+        check(pg.evaluate("SAVE.profil.ad") == 'Degisti', 'bozuk kayıt reddedilip mevcut kayıt korunuyor')
+        check(pg.evaluate("typeof SAVE") == 'object' and pg.evaluate("!!SAVE.stats"), 'bozuk kayıt içe aktarılınca oyun bozulmuyor')
+        check(not errs, 'profil/hikaye testlerinde JS hatası yok: %s' % errs[:1])
+        ctx.close()
+
+        print('Ekran boyutlarında menü ve paneller taşmıyor')
+        for (w, hh) in ((844, 390), (667, 375), (390, 844), (360, 640), (1024, 768)):
+            ctx, pg, errs = yeni_sayfa(w, hh)
+            sorun = []
+            for ad, fn, kutu in (('menü', '0', 'menuLayer'), ('ayar', 'openSettings()', 'settingsPanel'), ('profil', 'profilAc()', 'profilPanel'), ('hikaye', 'hikayeAc()', 'hikayePanel'), ('atölye', 'atolyeAc()', 'atolyePanel')):
+                pg.evaluate(fn); pg.wait_for_timeout(150)
+                r = pg.evaluate("(id)=>{const e=document.getElementById(id);const b=e.getBoundingClientRect();return [b.left,b.top,b.right,b.bottom,innerWidth,innerHeight,document.documentElement.scrollWidth]}", kutu)
+                if r[0] < -1 or r[1] < -1 or r[2] > r[4] + 1 or r[3] > r[5] + 1:
+                    sorun.append('%s %s' % (ad, [round(x) for x in r]))
+                for k in ('settingsBox', 'profilBox', 'hikayeBox', 'atolyeBox'):
+                    pg.evaluate("document.getElementById('%s').style.display='none'" % k)
+            check(not sorun, '%dx%d: ekrana sığıyor %s' % (w, hh, sorun or ''))
+            ctx.close()
         b.close()
 
     print()

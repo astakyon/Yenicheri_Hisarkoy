@@ -38,9 +38,21 @@ function buildWorldMapGrid(){
       <div class="wmDesc">${unlocked?m.desc:(m.desc2||'Kilitli')}</div>
       ${isCurrent?'<span class="wmBadge you">📍 BURADASIN</span>':''}
       ${!unlocked?'<span class="wmBadge lock">🔒 KİLİTLİ</span>':''}
+      ${hikayeRozet(m.id)}
     `;
     if(unlocked&&m.action)card.onclick=m.action;
     grid.appendChild(card);
   });
 }
 
+
+// Hikâye rozeti: haritanın bağlı olduğu perde (aktif / bitti)
+function hikayeRozet(id){
+  if(typeof HIKAYE==='undefined')return '';
+  const p=HIKAYE.find(function(x){return x.harita===id;});
+  if(!p)return '';
+  const d=hikayePerdeDurum(p);
+  if(d==='aktif')return '<span class="wmStory">📖 PERDE '+p.no+' — AKTİF</span>';
+  if(d==='bitti')return '<span class="wmStory" style="opacity:.7">✔ PERDE '+p.no+'</span>';
+  return '';
+}

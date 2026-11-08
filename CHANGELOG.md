@@ -2,6 +2,8 @@
 
 ## v1.76
 - Ana menü yeniden tasarlandı (DEVAM ET, HİKAYE, SERBEST HARİTALAR, ÇOK OYUNCULU, KARAKTERİM, ATÖLYE; profil rozeti; alt ikon çubuğu), telefon yatay kompakt düzen.
+- Serbest Haritalar kartlarında hikâye rozeti; ölümde titreşim; grafik ayarı açılışta uygulanır; DEVAM ET aktif perdeye gider.
+- Yeni testler: profil, hikâye ilerlemesi/ödülü, ayar sekmeleri, kayıt içe aktarma, 5 ekran boyutunda taşma; co-op yeniden bağlanma testindeki zamanlama yarışı giderildi.
 - Sekmeli AAA ayarlar, oyuncu profili, ana hikaye (6 perde), prosedürel ses.
 
 ## v1.75

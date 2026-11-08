@@ -21,7 +21,7 @@ function oyuncuOldu(p){
 
 function oyunBitti(){
   if(SESSION.peers)SESSION.peers.forEach(function(tr){try{tr.send({t:'over',k:kills,w:wave});}catch(e){}});
-  playing=false;showDeath();
+  playing=false;if(typeof SES!=='undefined')SES.titre(200);showDeath();
 }
 
 function oyuncuCanlandir(p,oran){

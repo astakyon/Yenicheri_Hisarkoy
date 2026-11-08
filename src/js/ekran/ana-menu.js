@@ -1,8 +1,7 @@
 // ── Ana menü yardımcıları (v1.76) ──
 function menuDevam(){
   try{
-    const h=(typeof HIKAYE!=='undefined'&&SAVE.story2&&!SAVE.story2.bitti);
-    if(h&&typeof hikayeAc==='function'){hikayeAc();return;}
+    if(typeof hikayeDurum==='function'&&!hikayeDurum().bitti){hikayeAc();return;}
   }catch(e){}
   BEGIN('kisla');
 }
@@ -13,7 +12,7 @@ function menuProfilGuncelle(){
     if(av)av.textContent=p.avatar||'🪖';
     if(ad)ad.textContent=p.ad||'Yeniçeri';
     if(sv)sv.textContent=(typeof getFameTitle==='function'?getFameTitle():'')||'';
-    if(dv){const s=SAVE.story2;dv.textContent=s&&!s.bitti?'Perde '+((s.act|0)+1):'Kışla';}
+    if(dv){const d=hikayeDurum();dv.textContent=d.bitti?'Kışla':'Perde '+d.act;}
   }catch(e){}
 }
 function nasilAc(){

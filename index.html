@@ -585,6 +585,8 @@ canvas{display:block;position:absolute;top:0;left:0;}
  #mProfil{top:4px;right:6px;padding:2px 10px 2px 4px}#mProfil span{width:26px;height:26px;font-size:18px}
  #mIcos .mIco{padding:3px 6px}#mIcos .mIco span{font-size:16px}#mIcos .mIco p{font-size:8px}
 }
+@media (orientation:portrait){#mIcos{flex-wrap:nowrap;gap:2px;max-width:100vw}#mIcos .mIco{padding:2px 4px}#mIcos .mIco p{font-size:8px;letter-spacing:0}}
+@media (orientation:portrait){#yatayUyari{top:auto!important;bottom:calc(env(safe-area-inset-bottom,0px) + 14px)}}
 </style>
 </head>
 <body>
@@ -3266,7 +3268,7 @@ function oyuncuOldu(p){
 
 function oyunBitti(){
   if(SESSION.peers)SESSION.peers.forEach(function(tr){try{tr.send({t:'over',k:kills,w:wave});}catch(e){}});
-  playing=false;showDeath();
+  playing=false;if(typeof SES!=='undefined')SES.titre(200);showDeath();
 }
 
 function oyuncuCanlandir(p,oran){
@@ -3889,12 +3891,24 @@ function buildWorldMapGrid(){
       <div class="wmDesc">${unlocked?m.desc:(m.desc2||'Kilitli')}</div>
       ${isCurrent?'<span class="wmBadge you">📍 BURADASIN</span>':''}
       ${!unlocked?'<span class="wmBadge lock">🔒 KİLİTLİ</span>':''}
+      ${hikayeRozet(m.id)}
     `;
     if(unlocked&&m.action)card.onclick=m.action;
     grid.appendChild(card);
   });
 }
 
+
+// Hikâye rozeti: haritanın bağlı olduğu perde (aktif / bitti)
+function hikayeRozet(id){
+  if(typeof HIKAYE==='undefined')return '';
+  const p=HIKAYE.find(function(x){return x.harita===id;});
+  if(!p)return '';
+  const d=hikayePerdeDurum(p);
+  if(d==='aktif')return '<span class="wmStory">📖 PERDE '+p.no+' — AKTİF</span>';
+  if(d==='bitti')return '<span class="wmStory" style="opacity:.7">✔ PERDE '+p.no+'</span>';
+  return '';
+}
 // ═══════════════════════════════════════════════════════
 // ANA HİKAYE — "Hisarköy'ün Gölgesi" (v1.76)
 // 6 perde; her perde bir haritaya bağlı, ölçülebilir hedefleri var, sırayla açılır.
@@ -4082,8 +4096,7 @@ profilHazirla();
 // ── Ana menü yardımcıları (v1.76) ──
 function menuDevam(){
   try{
-    const h=(typeof HIKAYE!=='undefined'&&SAVE.story2&&!SAVE.story2.bitti);
-    if(h&&typeof hikayeAc==='function'){hikayeAc();return;}
+    if(typeof hikayeDurum==='function'&&!hikayeDurum().bitti){hikayeAc();return;}
   }catch(e){}
   BEGIN('kisla');
 }
@@ -4094,7 +4107,7 @@ function menuProfilGuncelle(){
     if(av)av.textContent=p.avatar||'🪖';
     if(ad)ad.textContent=p.ad||'Yeniçeri';
     if(sv)sv.textContent=(typeof getFameTitle==='function'?getFameTitle():'')||'';
-    if(dv){const s=SAVE.story2;dv.textContent=s&&!s.bitti?'Perde '+((s.act|0)+1):'Kışla';}
+    if(dv){const d=hikayeDurum();dv.textContent=d.bitti?'Kışla':'Perde '+d.act;}
   }catch(e){}
 }
 function nasilAc(){
@@ -4700,6 +4713,7 @@ function initThree(){
   REN=new THREE.WebGLRenderer({antialias:true,canvas:cv});
   REN.setSize(W,H);REN.shadowMap.enabled=true;REN.shadowMap.type=THREE.PCFSoftShadowMap;
   REN.toneMapping=THREE.ACESFilmicToneMapping;REN.toneMappingExposure=1.15;
+  if(typeof applyGrafik==='function')applyGrafik();
   CLK=new THREE.Clock();RC=new THREE.Raycaster();GP=new THREE.Plane(new THREE.Vector3(0,1,0),0);
   window.addEventListener('resize',()=>{const W2=window.innerWidth,H2=window.innerHeight;REN.setSize(W2,H2);CAM.aspect=W2/H2;CAM.updateProjectionMatrix();});
   const cv3=document.getElementById('c3d');
