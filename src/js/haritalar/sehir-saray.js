@@ -7,11 +7,11 @@
 const DM_AYAR={
   sehir:{ad:'Yabancı Şehir',ikon:'🏙',ust:'🏙 YABANCI ŞEHİR — Tehlikeli Sokaklar',gorev:'Sokak çetelerini dağıt, Çete Reisi\'ni yen!',
     dalga:5,kapilar:[[-34,-34],[34,-34],[-35,2],[35,2],[0,-36]],bas:[0,32],cikis:{id:'dalgaCikis',icon:'🏰',name:'Şehirden Çık',x:0,z:35.5},
-    renk:0x4a3a6a,bossRenk:0x2a1a4a,bossAd:'Çete Reisi',hp:function(w){return 36+w*5;},bossHp:340,dmg:3.5,bossDmg:11,say:function(n){return 3+n;},
+    renk:0x4a3a6a,bossRenk:0x2a1a4a,bossAd:'Çete Reisi',hp:function(w){return 24+w*4;},bossHp:260,dmg:3,bossDmg:9,say:function(n){return 2+n;},
     xp:20,bossXp:400,hazine:[[-30,18],[30,18],[-30,-14],[30,-14],[0,-24],[-18,-30]],hazineAltin:[15,30],fame:30},
   saray:{ad:'Osmanlı Sarayı',ikon:'👑',ust:'👑 OSMANLI SARAYI — Hain Vezir',gorev:'Muhafızları püskürt, Hain Vezir\'i durdur!',
     dalga:6,kapilar:[[-30,-34],[30,-34],[0,-36],[-35,-10],[35,-10]],bas:[0,32],cikis:{id:'dalgaCikis',icon:'🏰',name:'Saraydan Çık',x:0,z:35.5},
-    renk:0x8a1a2a,bossRenk:0x1a1a3a,bossAd:'Hain Vezir',hp:function(w){return 50+w*7;},bossHp:650,dmg:5,bossDmg:14,say:function(n){return 4+Math.floor(n*1.3);},
+    renk:0x8a1a2a,bossRenk:0x1a1a3a,bossAd:'Hain Vezir',hp:function(w){return 30+w*4;},bossHp:450,dmg:3.5,bossDmg:11,say:function(n){return 3+Math.floor(n*1.2);},
     xp:26,bossXp:900,hazine:[[-30,28],[30,28],[-30,-26],[30,-26]],hazineAltin:[25,45],fame:60}
 };
 let dmKuyruk=[],dmHazine=[],dmBitti=false,dmSayac=0,dmHalka=null;
@@ -94,7 +94,7 @@ function dmDalgaBaslat(n){
   const k=a.kapilar[Math.floor(Math.random()*a.kapilar.length)];
   showWave(son?'⚠ '+a.bossAd.toUpperCase()+' ve adamları geliyor!':a.ikon+' Dalga '+n+'/'+a.dalga+' — '+say+' düşman');
   if(son)dmKuyruk.push({t:200,boss:true,nokta:k});
-  for(let i=0;i<say;i++)dmKuyruk.push({t:240+i*80,boss:false,nokta:a.kapilar[(Math.floor(Math.random()*a.kapilar.length)+i)%a.kapilar.length]});
+  for(let i=0;i<say;i++)dmKuyruk.push({t:240+i*120,boss:false,nokta:a.kapilar[(Math.floor(Math.random()*a.kapilar.length)+i)%a.kapilar.length]});
 }
 function dmDusmanDogur(boss,nokta){
   const a=dmAyar(),w=wave,hp=boss?a.bossHp:a.hp(w);

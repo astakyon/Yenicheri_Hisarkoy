@@ -1,5 +1,8 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.74
+- Şehir/Saray denge ayarı: bot ile oynanış denemesi sonrası düşman canı/hasarı ve doğma aralığı yumuşatıldı (yeni karakterle Şehir 4. dalgaya ~%55 canla ulaşıyor; Saray son görev olarak daha zor).
+
 ## v1.73
 - Yeni harita: 🏙 Yabancı Şehir — 5 dalga sokak çetesi, 6 hazine sandığı, Çete Reisi (patron). Liman, meydan, çeşme, pazar tezgâhları.
 - Yeni harita: 👑 Osmanlı Sarayı — 6 dalga saray muhafızı, 4 hazine sandığı, Hain Vezir (patron). Kırmızı halı, sütunlar, taht kürsüsü.
