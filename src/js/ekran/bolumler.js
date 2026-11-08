@@ -8,8 +8,8 @@ const WORLD_MAPS=[
   {id:'maden', name:'Demir Madeni',   icon:'⛏', desc:'Metal ve nadir maden topla, tuzaklara dikkat et',unlockKey:'maden',action:()=>{closeChapters();BEGIN('maden');}},
   {id:'ciftlik', name:'Çiftlik',        icon:'🌱',desc:'Ekin ek, büyüt, biç ve pazarda sat',unlockKey:'ciftlik',action:()=>{closeChapters();BEGIN('ciftlik');}},
   {id:'tarim', name:'Tarım Ovası',    icon:'🌾',desc:'Köylüleri eşkıyalardan koru, tahıl topla',unlockKey:'tarim',action:()=>{closeChapters();BEGIN('tarim');}},
-  {id:'sehir', name:'Yabancı Şehir',  icon:'🏙',desc:'Tehlikeli sokaklarda düzen sağla',unlocked:false,desc2:'Yakında açılacak'},
-  {id:'saray', name:'Osmanlı Sarayı', icon:'👑',desc:'Son görev — Hain Veziri durdur',unlocked:false,desc2:'Yakında açılacak'},
+  {id:'sehir', name:'Yabancı Şehir',  icon:'🏙',desc:'Tehlikeli sokaklarda düzen sağla',unlockKey:'sehir',action:()=>{closeChapters();BEGIN('sehir');}},
+  {id:'saray', name:'Osmanlı Sarayı', icon:'👑',desc:'Son görev — Hain Veziri durdur',unlockKey:'saray',action:()=>{closeChapters();BEGIN('saray');}},
 ];
 // unlockKey'i olan haritalar SAVE.mapsUnlocked'tan canlı okunur
 function isMapUnlocked(m){return m.unlockKey?!!(SAVE.mapsUnlocked&&SAVE.mapsUnlocked[m.unlockKey]):m.unlocked;}

@@ -26,7 +26,7 @@ from playwright.sync_api import sync_playwright  # noqa: E402
 import ortak  # noqa: E402
 
 REFERANS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'altin-referans.json')
-HARITALAR = ['kisla', 'gorev', 'orman', 'maden', 'tarim']
+HARITALAR = ['kisla', 'gorev', 'orman', 'maden', 'tarim', 'sehir', 'saray']
 KARE = 1500          # harita başına 25 saniyelik oyun
 KONTROL_ARALIGI = 250
 

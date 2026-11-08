@@ -9,8 +9,8 @@ const BLUEPRINT_MAPS=[
   {id:'maden', name:'Demir Madeni',   icon:'⛏', unlockKey:'maden'},
   {id:'ciftlik', name:'Çiftlik',       icon:'🌱',unlockKey:'ciftlik'},
   {id:'tarim', name:'Tarım Ovası',    icon:'🌾',unlockKey:'tarim'},
-  {id:'sehir', name:'Yabancı Şehir',  icon:'🏙',unlocked:false},
-  {id:'saray', name:'Osmanlı Sarayı', icon:'👑',unlocked:false},
+  {id:'sehir', name:'Yabancı Şehir',  icon:'🏙',unlockKey:'sehir'},
+  {id:'saray', name:'Osmanlı Sarayı', icon:'👑',unlockKey:'saray'},
 ];
 let bmActiveTab='kisla';
 let wasPlayingBeforeMap=false;
@@ -104,8 +104,8 @@ function drawBlueprintMap(mapId){
   const cv=document.getElementById('bmCanvas');
   if(!cv)return;
   const ctx=cv.getContext('2d');
-  const half=(mapId==='kisla')?48:(mapId==='orman'||mapId==='tarim')?46:(mapId==='maden'||mapId==='ciftlik')?38:28;
-  BM_SCALE=(mapId==='kisla')?7.2:(mapId==='orman'||mapId==='tarim')?7.6:(mapId==='maden'||mapId==='ciftlik')?8.4:11;
+  const half=(mapId==='kisla')?48:(mapId==='orman'||mapId==='tarim')?46:(mapId==='maden'||mapId==='ciftlik'||mapId==='sehir'||mapId==='saray')?38:28;
+  BM_SCALE=(mapId==='kisla')?7.2:(mapId==='orman'||mapId==='tarim')?7.6:(mapId==='maden'||mapId==='ciftlik'||mapId==='sehir'||mapId==='saray')?8.4:11;
   const W=Math.round(half*2*BM_SCALE+50),H=W; // kare canvas — dünya zaten kare
   cv.width=W;cv.height=H;
   bmCanvasW=W;bmCanvasH=H;
@@ -130,6 +130,7 @@ function drawBlueprintMap(mapId){
   else if(mapId==='maden'&&mInfo&&isMapUnlocked(mInfo)) drawBlueprintMaden(ctx,W,H);
   else if(mapId==='ciftlik'&&mInfo&&isMapUnlocked(mInfo)) drawBlueprintCiftlik(ctx,W,H);
   else if(mapId==='tarim'&&mInfo&&isMapUnlocked(mInfo)) drawBlueprintTarim(ctx,W,H);
+  else if((mapId==='sehir'||mapId==='saray')&&mInfo&&isMapUnlocked(mInfo)) drawBlueprintDalga(ctx,W,H,mapId);
   else                       drawBlueprintLocked(ctx,info,W,H);
 
   // Oyuncu konumu + bakış yönü (sadece şu an o haritadaysak)

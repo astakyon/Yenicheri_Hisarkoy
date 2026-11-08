@@ -50,6 +50,7 @@ haritalar/maden-guncelleme.js
 haritalar/tarim-guncelleme.js
 haritalar/ciftlik-guncelleme.js
 haritalar/ciftlik-panel.js
+haritalar/sehir-saray.js
 cekirdek/oyun-baslat.js
 ekran/bolge-menusu.js
 kontrol/girdi.js

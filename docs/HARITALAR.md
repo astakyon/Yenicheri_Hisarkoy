@@ -54,3 +54,7 @@ Açık hava haritası (±46). Alanlar `src/js/haritalar/tarim-sahne.js` içindek
 | Ana yol | x -3..3, tüm harita; çıkış z=41.5 |
 
 Mantık `tarim-guncelleme.js`: köylüler (40 can) eşkıyadan kaçar, eşkıyalar en yakın köylüye saldırır; tahıl demetleri 3×3 sabit konumda. Doğrulama: `tests/smoke.py` → "Tarım Ovası: köylüler, tahıl, baskın" (BFS ulaşılabilirlik).
+
+
+## Yabancı Şehir ve Osmanlı Sarayı (v1.73)
+Ortak dalga motoru: `src/js/haritalar/sehir-saray.js`. Ayarlar `DM_AYAR` içinde (dalga sayısı, kapılar, düşman gücü, patron, hazine yerleri). Sınır ±38, doğma (0,32), çıkış halkası (0,35.5). Son dalgada patron + eskort doğar; patron ölünce `dmZafer()`. Yeni bir benzer harita eklemek için `DM_AYAR`'a giriş + `buildX()` + `BEGIN` dalı + bölümler/bölge haritası kaydı yeterli.

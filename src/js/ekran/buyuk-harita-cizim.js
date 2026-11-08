@@ -295,6 +295,21 @@ function drawBlueprintCiftlik(ctx,W,H){
   drawNorthArrow(ctx,W-30,28);
 }
 
+function drawBlueprintDalga(ctx,W,H,id){
+  const a=DM_AYAR[id],p1=worldToBlueprint(id,-38,-38),p2=worldToBlueprint(id,38,38);
+  ctx.strokeStyle='#2a3a5c';ctx.lineWidth=2;ctx.strokeRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
+  ctx.fillStyle='#2a3a5c';ctx.font='bold 11px Georgia,serif';ctx.textAlign='center';ctx.fillText(a.ad,W/2,p1.y-8);
+  if(id==='sehir'){
+    drawZoneRect(ctx,id,{x:0,z:0,w:9,d:76},null,{lw:.8});drawZoneRect(ctx,id,{x:0,z:-4,w:76,d:8},null,{lw:.8});
+    drawZoneRect(ctx,id,{x:0,z:-8,w:16,d:16},'Meydan',{bold:true,fontSize:9});
+    drawZoneRect(ctx,id,{x:0,z:-37,w:76,d:6},'Liman',{fontSize:9});
+  }else{
+    drawZoneRect(ctx,id,{x:0,z:0,w:7,d:76},null,{lw:.8});
+    drawZoneRect(ctx,id,{x:0,z:-31,w:16,d:7},'Taht',{bold:true,fontSize:9});
+  }
+  a.hazine.forEach(function(h){const q=worldToBlueprint(id,h[0],h[1]);ctx.font='11px Georgia,serif';ctx.fillText('💎',q.x,q.y);});
+  drawZoneRect(ctx,id,{x:0,z:36,w:6,d:2},'Çıkış',{bold:true,fontSize:9});
+}
 function drawBlueprintTarim(ctx,W,H){
   const sP1=worldToBlueprint('tarim',-46,-46),sP2=worldToBlueprint('tarim',46,46);
   ctx.strokeStyle='#2a3a5c';ctx.lineWidth=2;ctx.strokeRect(sP1.x,sP1.y,sP2.x-sP1.x,sP2.y-sP1.y);

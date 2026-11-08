@@ -45,6 +45,7 @@ function update(dt){
   else if(currentMap==='maden'){updateMaden(dt);}
   else if(currentMap==='tarim'){updateTarim(dt);}
   else if(currentMap==='ciftlik'){updateCiftlik(dt);}
+  else if(currentMap==='sehir'||currentMap==='saray'){updateDalga(dt);}
   else if(currentMap&&currentMap.startsWith('custom_')){updateCustomMap(dt);}
   else{updateKisla(dt);}
   updateAim();

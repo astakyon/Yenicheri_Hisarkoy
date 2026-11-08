@@ -1,5 +1,10 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.73
+- Yeni harita: 🏙 Yabancı Şehir — 5 dalga sokak çetesi, 6 hazine sandığı, Çete Reisi (patron). Liman, meydan, çeşme, pazar tezgâhları.
+- Yeni harita: 👑 Osmanlı Sarayı — 6 dalga saray muhafızı, 4 hazine sandığı, Hain Vezir (patron). Kırmızı halı, sütunlar, taht kürsüsü.
+- İkisi de ortak dalga motorunu kullanır (haritalar/sehir-saray.js, ayarlar DM_AYAR). Zaferde ödül akçeleri kışlaya aktarılır; her an ⬇ çıkış halkasından çıkılabilir. Bölümler ve Bölge Haritası'nda açıldı.
+
 ## v1.72
 - Çiftlik: parsel sıraları artık akçeyle açılıyor (başta 4 parsel; 600 ve 1500 akçeyle 8 ve 12). İki yeni ekin: Nohut (hızlı, ucuz) ve Zeytin (yavaş, çok değerli).
 

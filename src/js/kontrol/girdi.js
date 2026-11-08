@@ -11,7 +11,7 @@ document.addEventListener('keydown',function(e){
   if((e.key==='i'||e.key==='I')&&currentMap==='ciftlik'&&playing){if(ciftlikPanelTur==='envanter')ciftlikPanelKapat();else ciftlikPanelAc('envanter');}
   if((e.key==='e'||e.key==='E')){
     if(pl.nearZone){
-      if(pl.nearZone.id==='madenCikis')madenCik();else if(pl.nearZone.id==='tarimCikis')tarimCik();else if(String(pl.nearZone.id).indexOf('ciftlik')===0)ciftlikEtkilesim(pl.nearZone);
+      if(pl.nearZone.id==='madenCikis')madenCik();else if(pl.nearZone.id==='tarimCikis')tarimCik();else if(pl.nearZone.id==='dalgaCikis')dmCik();else if(String(pl.nearZone.id).indexOf('ciftlik')===0)ciftlikEtkilesim(pl.nearZone);
       else if(pl.nearZone.id==='demirKapi')BEGIN('gorev');
       else openZone(pl.nearZone.id);
     }
@@ -39,7 +39,7 @@ function initTouch(){
   document.addEventListener('touchend',function(e){for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===joyId)joyEnd();}});
   document.addEventListener('touchcancel',function(e){for(var i=0;i<e.changedTouches.length;i++){if(e.changedTouches[i].identifier===joyId)joyEnd();}});
   const atkBtn=document.getElementById('atkBtn');
-  atkBtn.addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();atkBtn.classList.add('pr');if(!playing||paused)return;if(currentMap==='gorev'||currentMap==='orman'||currentMap==='maden'||currentMap==='tarim'||(currentMap&&currentMap.startsWith('custom_'))){if(selWeapon===0)doMelee();else{pwrOn=true;pwr=0;}}else if(pl.nearZone){if(pl.nearZone.id==='madenCikis')madenCik();else if(pl.nearZone.id==='tarimCikis')tarimCik();else if(String(pl.nearZone.id).indexOf('ciftlik')===0)ciftlikEtkilesim(pl.nearZone);else if(pl.nearZone.id==='demirKapi')BEGIN('gorev');else openZone(pl.nearZone.id);}},{passive:false});
+  atkBtn.addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();atkBtn.classList.add('pr');if(!playing||paused)return;if(currentMap==='gorev'||currentMap==='orman'||currentMap==='maden'||currentMap==='tarim'||currentMap==='sehir'||currentMap==='saray'||(currentMap&&currentMap.startsWith('custom_'))){if(selWeapon===0)doMelee();else{pwrOn=true;pwr=0;}}else if(pl.nearZone){if(pl.nearZone.id==='madenCikis')madenCik();else if(pl.nearZone.id==='tarimCikis')tarimCik();else if(pl.nearZone.id==='dalgaCikis')dmCik();else if(String(pl.nearZone.id).indexOf('ciftlik')===0)ciftlikEtkilesim(pl.nearZone);else if(pl.nearZone.id==='demirKapi')BEGIN('gorev');else openZone(pl.nearZone.id);}},{passive:false});
   atkBtn.addEventListener('touchend',function(e){e.preventDefault();atkBtn.classList.remove('pr');if(pwrOn){doRanged();pwrOn=false;pwr=0;document.getElementById('pwrW').style.display='none';}},{passive:false});
   const runBtn=document.getElementById('runBtn');
   runBtn.addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();runBtn.classList.add('pr');keys['shift']=true;},{passive:false});

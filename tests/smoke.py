@@ -74,9 +74,9 @@ def main():
         ctx.close()
 
         print('Haritalar')
-        for m in ('kisla', 'gorev', 'orman', 'maden', 'tarim', 'ciftlik'):
+        for m in ('kisla', 'gorev', 'orman', 'maden', 'tarim', 'ciftlik', 'sehir', 'saray'):
             ctx, pg, errs = yeni_sayfa()
-            pg.evaluate("SAVE.mapsUnlocked={orman:true,maden:true,tarim:true,ciftlik:true}; BEGIN('%s')" % m)
+            pg.evaluate("SAVE.mapsUnlocked={orman:true,maden:true,tarim:true,ciftlik:true,sehir:true,saray:true}; BEGIN('%s')" % m)
             pg.wait_for_timeout(4000)
             st = pg.evaluate('({map:currentMap,playing})')
             check(st['map'] == m and st['playing'], '%s açıldı' % m)
@@ -271,8 +271,8 @@ def main():
 
         print('Harita performans bütçesi')
         ctx, pg, errs = yeni_sayfa()
-        pg.evaluate("SAVE.mapsUnlocked={orman:true,maden:true,tarim:true,ciftlik:true}"); 
-        for m, azamiCizim, azamiMesh in (('kisla', 90, 260), ('gorev', 90, 200), ('orman', 100, 200), ('maden', 110, 200), ('tarim', 100, 200), ('ciftlik', 100, 200)):
+        pg.evaluate("SAVE.mapsUnlocked={orman:true,maden:true,tarim:true,ciftlik:true,sehir:true,saray:true}"); 
+        for m, azamiCizim, azamiMesh in (('kisla', 90, 260), ('gorev', 90, 200), ('orman', 100, 200), ('maden', 110, 200), ('tarim', 100, 200), ('ciftlik', 100, 200), ('sehir', 100, 220), ('saray', 100, 200)):
             pg.evaluate("BEGIN('%s')" % m); pg.wait_for_timeout(700)
             r = pg.evaluate("""() => { REN.info.reset(); REN.render(S3, CAM); let mesh = 0, gercekIsik = 0; S3.traverse(o => { if (o.isMesh) mesh++; if (o.isPointLight) gercekIsik++; });
               return { cizim: REN.info.render.calls, mesh, gercekIsik, sanal: FENER.liste.length }; }""")
@@ -328,7 +328,7 @@ def main():
 
         print('Harita denetimi (v1.57): doğma noktası ulaşılabilir, yeterli açık alan')
         ctx, pg, errs = yeni_sayfa(1280, 720)
-        for m, asgariAcik, asgariUlas in (('kisla', .6, 5000), ('gorev', .5, 1500), ('orman', .8, 6000), ('maden', .3, 1500), ('tarim', .7, 6000), ('ciftlik', .7, 3500)):
+        for m, asgariAcik, asgariUlas in (('kisla', .6, 5000), ('gorev', .5, 1500), ('orman', .8, 6000), ('maden', .3, 1500), ('tarim', .7, 6000), ('ciftlik', .7, 3500), ('sehir', .5, 2500), ('saray', .5, 2500)):
             pg.evaluate("BEGIN('%s')" % m); pg.wait_for_timeout(700)
             r = pg.evaluate("""() => { const H = MAP_HALF, hu = new Set(); let top = 0;
               for (let x = -H + 2; x <= H - 2; x++) for (let z = -H + 2; z <= H - 2; z++) { top++; if (!checkCollision(x, z, .6)) hu.add(x + ',' + z); }
@@ -410,6 +410,32 @@ def main():
         check(r['sifir'], 'Varsayılana dönünce model eski haline geliyor')
         check(not errs, 'JavaScript hatası yok')
         ctx.close()
+
+        print('Yabancı Şehir ve Osmanlı Sarayı: dalga, hazine, boss, zafer (v1.73)')
+        for hid in ('sehir', 'saray'):
+            ctx, pg, errs = yeni_sayfa(1280, 720)
+            pg.evaluate("SAVE.mapsUnlocked={orman:true,maden:true,tarim:true,ciftlik:true,sehir:true,saray:true}; BEGIN('%s')" % hid); pg.wait_for_timeout(900)
+            r = pg.evaluate("() => ({ acik: dmAyar().hazine.filter(h => !checkCollision(h[0], h[1], .6)).length, toplam: dmAyar().hazine.length, hazine: dmHazine.length, wave })")
+            check(r['acik'] == r['toplam'] and r['hazine'] == r['toplam'] and r['wave'] == 0, '%s: %d hazine sandığı da çarpışmasız yerde' % (hid, r['toplam']))
+            pg.evaluate("() => { pl.x = dmHazine[0].x; pl.z = dmHazine[0].z; }"); pg.wait_for_timeout(400)
+            check(pg.evaluate("dmSayac") == 1 and pg.evaluate("akce") > 0, '%s: hazine sandığı toplanınca akçe geliyor' % hid)
+            pg.evaluate("() => { pl.x = 0; pl.z = 30; waveTimer = 1; }"); pg.wait_for_timeout(700)
+            check(pg.evaluate("wave") == 1 and pg.evaluate("waveActive") is True and pg.evaluate("dmKuyruk.length") > 0, '%s: ilk dalga düşmanları sıraya girdi' % hid)
+            pg.evaluate("() => { dmKuyruk.forEach(q => q.t = 1); }"); pg.wait_for_timeout(500)
+            check(pg.evaluate("enemies.length") > 0, '%s: düşmanlar doğdu' % hid)
+            pg.evaluate("() => { enemies.forEach(e => e.hp = 0); dmKuyruk = []; }"); pg.wait_for_timeout(500)
+            check(pg.evaluate("waveActive") is False and pg.evaluate("kills") > 0, '%s: dalga bitince kazanılıyor' % hid)
+            pg.evaluate("() => { wave = dmAyar().dalga - 1; waveTimer = 1; }"); pg.wait_for_timeout(600)
+            pg.evaluate("() => { dmKuyruk.forEach(q => q.t = 1); }"); pg.wait_for_timeout(500)
+            check(pg.evaluate("enemies.some(e => e.isBoss)"), '%s: son dalgada patron doğdu' % hid)
+            pg.evaluate("() => { enemies.forEach(e => e.hp = 0); dmKuyruk = []; }"); pg.wait_for_timeout(600)
+            check(pg.evaluate("dmBitti") is True, '%s: patron yenilince zafer' % hid)
+            pg.evaluate("hideDlg()")
+            pg.evaluate("() => { pl.x = dmAyar().cikis.x; pl.z = dmAyar().cikis.z; }"); pg.wait_for_timeout(300)
+            pg.keyboard.press('e'); pg.wait_for_timeout(900)
+            check(pg.evaluate('currentMap') == 'kisla', '%s: çıkışta E ile Kışla\'ya dönülüyor' % hid)
+            check(not errs, '%s: JavaScript hatası yok (%s)' % (hid, errs[:1]))
+            ctx.close()
 
         print('Çiftlik: ek, büyüt, biç, sat (v1.63)')
         ctx, pg, errs = yeni_sayfa(1280, 720)
