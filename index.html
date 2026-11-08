@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.67">
+<meta name="game-version" content="v1.68">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.67</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.68</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -530,7 +530,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.67</div>
+      <div id="mVer">v1.68</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
@@ -941,7 +941,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.67';
+const VERSION='v1.68';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -5752,7 +5752,7 @@ function ciftlikHazirla(){
 // 0..1 büyüme oranı (boş parselde -1)
 function ciftlikOran(p){
   if(!p.e)return -1;
-  return Math.min(1,Math.max(0,(Date.now()-p.t)/(CIFTLIK_EKIN[p.e].sure*1000)));
+  return Math.min(1,Math.max(0,(Date.now()-p.t)/(CIFTLIK_EKIN[p.e].sure*1000*(1-.15*((SAVE.ciftlik&&SAVE.ciftlik.sulama)||0)))));
 }
 function ciftlikEkinGeo(ekin,olgun){
   const key='ekin_'+ekin+(olgun?'_o':'_y');if(_GC[key])return _GC[key];
@@ -6702,10 +6702,16 @@ function updateTarim(dt){
 function ciftlikCik(){if(currentMap!=='ciftlik'||pl.hp<=0)return;BEGIN('kisla');}
 function ciftlikAltin(d){mainGold+=d;SAVE.mainGold=mainGold;saveGame();updateGoldHud();}
 
+function ciftlikSulamaFiyat(lv){return 300*(lv+1)*(lv+1);}
 function ciftlikSat(){
   const c=ciftlikHazirla();let top=0,adet=0;
   CIFTLIK_SIRA.forEach(function(k){top+=c.depo[k]*CIFTLIK_EKIN[k].deger;adet+=c.depo[k];c.depo[k]=0;});
-  if(!adet){lootPop('Depoda satacak ürün yok');return;}
+  if(!adet){
+    const lv=c.sulama||0,fy=ciftlikSulamaFiyat(lv);
+    if(lv>=3){lootPop('Depoda satacak ürün yok');return;}
+    if(mainGold<fy){lootPop('Sulama sistemi (Sv '+(lv+1)+') için '+fy+' akçe gerek');return;}
+    ciftlikAltin(-fy);c.sulama=lv+1;saveGame();lootPop('💧 Sulama sistemi Sv '+c.sulama+' — ekinler %'+Math.round(c.sulama*15)+' daha hızlı büyür');return;
+  }
   ciftlikAltin(top);SAVE.stats.satis=(SAVE.stats.satis||0)+top;saveGame();
   lootPop('💰 '+adet+' ürün satıldı: +'+top+' Akçe');addFX(CIFTLIK_PAZAR.x,CIFTLIK_PAZAR.z,0xFFD700,8);
 }
@@ -6733,7 +6739,7 @@ function ciftlikYakin(){
   [CIFTLIK_CIKIS,CIFTLIK_RAF,CIFTLIK_PAZAR].forEach(function(z){z._d=Math.hypot(pl.x-z.x,pl.z-z.z);});
   if(CIFTLIK_CIKIS._d<3.8)return{z:CIFTLIK_CIKIS,t:'[ E ] 🏰 Çiftlikten Çık'};
   if(CIFTLIK_RAF._d<3.4)return{z:CIFTLIK_RAF,t:'[ E ] 🌰 Tohum seç — şimdiki: '+CIFTLIK_EKIN[c.secili].ad+' ('+CIFTLIK_EKIN[c.secili].tohum+' akçe)'};
-  if(CIFTLIK_PAZAR._d<3.6)return{z:CIFTLIK_PAZAR,t:'[ E ] 💰 Sat — depo: '+ciftlikDepoMetin(c)};
+  if(CIFTLIK_PAZAR._d<3.6)return{z:CIFTLIK_PAZAR,t:'[ E ] 💰 Sat — depo: '+ciftlikDepoMetin(c)+((c.sulama||0)<3&&ciftlikDepoMetin(c)==='boş'?' · 💧 Sulama Sv '+((c.sulama||0)+1)+': '+ciftlikSulamaFiyat(c.sulama||0)+' akçe':'')};
   for(let i=0;i<CIFTLIK_PARSELLER.length;i++){
     const q=CIFTLIK_PARSELLER[i];
     if(Math.abs(pl.x-q.x)<q.w/2+.6&&Math.abs(pl.z-q.z)<q.d/2+.6){

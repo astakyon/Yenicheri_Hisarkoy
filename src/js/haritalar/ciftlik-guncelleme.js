@@ -4,10 +4,16 @@
 function ciftlikCik(){if(currentMap!=='ciftlik'||pl.hp<=0)return;BEGIN('kisla');}
 function ciftlikAltin(d){mainGold+=d;SAVE.mainGold=mainGold;saveGame();updateGoldHud();}
 
+function ciftlikSulamaFiyat(lv){return 300*(lv+1)*(lv+1);}
 function ciftlikSat(){
   const c=ciftlikHazirla();let top=0,adet=0;
   CIFTLIK_SIRA.forEach(function(k){top+=c.depo[k]*CIFTLIK_EKIN[k].deger;adet+=c.depo[k];c.depo[k]=0;});
-  if(!adet){lootPop('Depoda satacak ürün yok');return;}
+  if(!adet){
+    const lv=c.sulama||0,fy=ciftlikSulamaFiyat(lv);
+    if(lv>=3){lootPop('Depoda satacak ürün yok');return;}
+    if(mainGold<fy){lootPop('Sulama sistemi (Sv '+(lv+1)+') için '+fy+' akçe gerek');return;}
+    ciftlikAltin(-fy);c.sulama=lv+1;saveGame();lootPop('💧 Sulama sistemi Sv '+c.sulama+' — ekinler %'+Math.round(c.sulama*15)+' daha hızlı büyür');return;
+  }
   ciftlikAltin(top);SAVE.stats.satis=(SAVE.stats.satis||0)+top;saveGame();
   lootPop('💰 '+adet+' ürün satıldı: +'+top+' Akçe');addFX(CIFTLIK_PAZAR.x,CIFTLIK_PAZAR.z,0xFFD700,8);
 }
@@ -35,7 +41,7 @@ function ciftlikYakin(){
   [CIFTLIK_CIKIS,CIFTLIK_RAF,CIFTLIK_PAZAR].forEach(function(z){z._d=Math.hypot(pl.x-z.x,pl.z-z.z);});
   if(CIFTLIK_CIKIS._d<3.8)return{z:CIFTLIK_CIKIS,t:'[ E ] 🏰 Çiftlikten Çık'};
   if(CIFTLIK_RAF._d<3.4)return{z:CIFTLIK_RAF,t:'[ E ] 🌰 Tohum seç — şimdiki: '+CIFTLIK_EKIN[c.secili].ad+' ('+CIFTLIK_EKIN[c.secili].tohum+' akçe)'};
-  if(CIFTLIK_PAZAR._d<3.6)return{z:CIFTLIK_PAZAR,t:'[ E ] 💰 Sat — depo: '+ciftlikDepoMetin(c)};
+  if(CIFTLIK_PAZAR._d<3.6)return{z:CIFTLIK_PAZAR,t:'[ E ] 💰 Sat — depo: '+ciftlikDepoMetin(c)+((c.sulama||0)<3&&ciftlikDepoMetin(c)==='boş'?' · 💧 Sulama Sv '+((c.sulama||0)+1)+': '+ciftlikSulamaFiyat(c.sulama||0)+' akçe':'')};
   for(let i=0;i<CIFTLIK_PARSELLER.length;i++){
     const q=CIFTLIK_PARSELLER[i];
     if(Math.abs(pl.x-q.x)<q.w/2+.6&&Math.abs(pl.z-q.z)<q.d/2+.6){

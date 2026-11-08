@@ -1,5 +1,8 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.68
+- Çiftlik: Pazar'da depo boşken 💧 Sulama sistemi satın alınır (3 seviye, her biri ekin büyümesini %15 hızlandırır).
+
 ## v1.67
 - Karakterim: yatağan, hançer, kayışlar (bandolye) ve tüfek ayrı ayrı takılıp çıkarılabiliyor (Ekipman düğmeleri); seçim kaydediliyor, eski kayıtlar korunuyor.
 - Silah konumları ayarlandı (sırtta çapraz tüfek, belde eğimli yatağan, kuşakta hançer); ekipman çıkarılınca çekme/kınına koyma mantığı buna uyuyor.

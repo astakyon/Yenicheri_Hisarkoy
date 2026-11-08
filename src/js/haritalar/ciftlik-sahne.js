@@ -26,7 +26,7 @@ function ciftlikHazirla(){
 // 0..1 büyüme oranı (boş parselde -1)
 function ciftlikOran(p){
   if(!p.e)return -1;
-  return Math.min(1,Math.max(0,(Date.now()-p.t)/(CIFTLIK_EKIN[p.e].sure*1000)));
+  return Math.min(1,Math.max(0,(Date.now()-p.t)/(CIFTLIK_EKIN[p.e].sure*1000*(1-.15*((SAVE.ciftlik&&SAVE.ciftlik.sulama)||0)))));
 }
 function ciftlikEkinGeo(ekin,olgun){
   const key='ekin_'+ekin+(olgun?'_o':'_y');if(_GC[key])return _GC[key];
