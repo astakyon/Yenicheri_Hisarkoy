@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.69">
+<meta name="game-version" content="v1.70">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.69</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.70</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -530,7 +530,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.69</div>
+      <div id="mVer">v1.70</div>
     </div>
     <div id="mBtns">
       <button class="mBtn" onclick="BEGIN('kisla')">⚔ OYUNA BAŞLA</button>
@@ -941,7 +941,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.69';
+const VERSION='v1.70';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -5132,6 +5132,7 @@ const ZONES=[
 const INTERACTABLE_ZONES=['armory','camii','drill','cebehaneUst','cebehane','demirKapi','hamam','kervansaray','carsi'];
 
 function clearScene(){
+  if(typeof ciftlikEnvBtn==='function')ciftlikEnvBtn(false);
   if(!S3)return;
   // Sadece dinamik nesneleri temizle
   [...enemies,...bullets,...loots,...parts].forEach(o=>S3.remove(o.mesh||o));
@@ -5782,7 +5783,7 @@ function ciftlikGorselYenile(){
 }
 
 function buildCiftlik(){
-  clearScene();ciftlikPanelKapat();
+  clearScene();ciftlikPanelKapat();ciftlikEnvBtn(true);
   S3.fog=new THREE.Fog(0xb4cf98,40,100);S3.background=new THREE.Color(0xa8d0ec);
   const sun=new THREE.DirectionalLight(0xFFF2D0,1.8);sun.position.set(-20,34,14);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
   sun.shadow.camera.left=-45;sun.shadow.camera.right=45;sun.shadow.camera.top=45;sun.shadow.camera.bottom=-45;S3.add(sun);
@@ -6705,7 +6706,7 @@ function updateTarim(dt){
 // ═══════════════════════════════════════════════════════
 // ÇİFTLİK — etkileşim ve güncelleme (v1.63)
 // ═══════════════════════════════════════════════════════
-function ciftlikCik(){if(currentMap!=='ciftlik'||pl.hp<=0)return;ciftlikPanelKapat();BEGIN('kisla');}
+function ciftlikCik(){if(currentMap!=='ciftlik'||pl.hp<=0)return;ciftlikPanelKapat();ciftlikEnvBtn(false);BEGIN('kisla');}
 function ciftlikAltin(d){mainGold+=d;SAVE.mainGold=mainGold;saveGame();updateGoldHud();}
 
 function ciftlikSulamaFiyat(lv){return 300*(lv+1)*(lv+1);}
@@ -6721,7 +6722,7 @@ function ciftlikEtkilesim(z){
   if(z.id==='ciftlikCikis'){ciftlikCik();return;}
   if(z.id==='ciftlikPazar'){ciftlikPanelAc('pazar');return;}
   if(z.id==='ciftlikSandik'){ciftlikPanelAc('sandik');return;}
-  if(z.id==='ciftlikRaf'){const i=(CIFTLIK_SIRA.indexOf(c.secili)+1)%CIFTLIK_SIRA.length;c.secili=CIFTLIK_SIRA[i];saveGame();const e=CIFTLIK_EKIN[c.secili];lootPop('🌰 Ekilecek: '+e.ad+' — tohum '+c.tohum[c.secili]+' ('+e.sure+' sn, satış '+e.deger+')');return;}
+  if(z.id==='ciftlikRaf'){ciftlikPanelAc('envanter');return;}
   if(z.id==='ciftlikParsel'){
     const p=c.parsel[z.i],o=ciftlikOran(p);
     if(!p.e){
@@ -6741,7 +6742,7 @@ function ciftlikYakin(){
   const c=ciftlikHazirla();
   [CIFTLIK_CIKIS,CIFTLIK_RAF,CIFTLIK_PAZAR,CIFTLIK_SANDIK].forEach(function(z){z._d=Math.hypot(pl.x-z.x,pl.z-z.z);});
   if(CIFTLIK_CIKIS._d<3.8)return{z:CIFTLIK_CIKIS,t:'[ E ] 🏰 Çiftlikten Çık'};
-  if(CIFTLIK_RAF._d<3.4)return{z:CIFTLIK_RAF,t:'[ E ] 🌰 Tohum seç — şimdiki: '+CIFTLIK_EKIN[c.secili].ad+' ('+CIFTLIK_EKIN[c.secili].tohum+' akçe)'};
+  if(CIFTLIK_RAF._d<3.4)return{z:CIFTLIK_RAF,t:'[ E ] 🌰 Envanteri aç — ekilecek: '+CIFTLIK_EKIN[c.secili].ad+' (tohum '+c.tohum[c.secili]+')'};
   if(CIFTLIK_SANDIK._d<3.2)return{z:CIFTLIK_SANDIK,t:'[ E ] 📦 Sandık — ürün ve tohum sakla'};
   if(CIFTLIK_PAZAR._d<3.6)return{z:CIFTLIK_PAZAR,t:'[ E ] 💰 Pazar — tohum al, ürün sat'};
   for(let i=0;i<CIFTLIK_PARSELLER.length;i++){
@@ -6758,7 +6759,7 @@ function ciftlikYakin(){
 
 function updateCiftlik(dt){
   updateMovement(dt);
-  if(ciftlikPanelTur&&(Math.hypot(pl.x-(ciftlikPanelTur==='pazar'?CIFTLIK_PAZAR.x:CIFTLIK_SANDIK.x),pl.z-(ciftlikPanelTur==='pazar'?CIFTLIK_PAZAR.z:CIFTLIK_SANDIK.z))>6))ciftlikPanelKapat();
+  if(ciftlikPanelTur&&ciftlikPanelTur!=='envanter'&&(Math.hypot(pl.x-(ciftlikPanelTur==='pazar'?CIFTLIK_PAZAR.x:CIFTLIK_SANDIK.x),pl.z-(ciftlikPanelTur==='pazar'?CIFTLIK_PAZAR.z:CIFTLIK_SANDIK.z))>6))ciftlikPanelKapat();
   if(window._ciftlikHalka)window._ciftlikHalka.material.opacity=.5+Math.sin(gt*.08)*.2;
   if(gt%30===0)ciftlikGorselYenile();
   const intH=document.getElementById('intH'),zBtn=document.getElementById('zoneBtn'),y=ciftlikYakin();
@@ -6788,14 +6789,30 @@ function ciftlikPanelDiv(){
   }
   return d;
 }
+function ciftlikEnvBtn(goster){
+  let b=document.getElementById('ciftlikEnvBtn');
+  if(!b){b=document.createElement('button');b.id='ciftlikEnvBtn';b.textContent='🎒 Envanter [I]';
+    b.style.cssText='display:none;position:fixed;left:50%;bottom:10px;transform:translateX(-50%);z-index:21;padding:8px 14px;border:2px solid #b8923a;border-radius:10px;background:rgba(40,28,10,.9);color:#f0e0b8;font-family:Cinzel,serif;font-size:13px;cursor:pointer;';
+    b.onclick=function(){if(ciftlikPanelTur==='envanter')ciftlikPanelKapat();else ciftlikPanelAc('envanter');};
+    b.addEventListener('touchstart',function(e){e.stopPropagation();},{passive:true});document.body.appendChild(b);}
+  b.style.display=goster?'block':'none';
+}
 function ciftlikPanelAc(tur){ciftlikPanelTur=tur;ciftlikPanelCiz();ciftlikPanelDiv().style.display='block';}
 function ciftlikPanelKapat(){ciftlikPanelTur=null;const d=document.getElementById('ciftlikPanel');if(d)d.style.display='none';}
 function ciftlikPanelCiz(){
   if(!ciftlikPanelTur)return;
   const c=ciftlikHazirla(),d=ciftlikPanelDiv(),B='style="padding:5px 9px;margin:0 2px;border:1px solid #b8923a;border-radius:6px;background:#3a2a10;color:#f0e0b8;cursor:pointer;font-family:inherit;font-size:12px"';
-  let h='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b style="font-size:15px;color:#E8C060">'+(ciftlikPanelTur==='pazar'?'💰 PAZAR':'📦 SANDIK')+'</b><span>💰 '+mainGold+' akçe</span><button class="zmX" data-a="kapat">✕</button></div>';
+  let h='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b style="font-size:15px;color:#E8C060">'+(ciftlikPanelTur==='pazar'?'💰 PAZAR':ciftlikPanelTur==='sandik'?'📦 SANDIK':'🎒 ENVANTER')+'</b><span>💰 '+mainGold+' akçe</span><button class="zmX" data-a="kapat">✕</button></div>';
   h+='<div style="opacity:.8;margin-bottom:6px">🎒 Çanta: '+ciftlikCantaDolu(c)+' / '+CIFTLIK_CANTA+' ürün</div>';
-  if(ciftlikPanelTur==='pazar'){
+  if(ciftlikPanelTur==='envanter'){
+    const kutu=function(k,tip,n){const e=CIFTLIK_EKIN[k],sec=c.secili===k;
+      return '<div data-a="sec" data-k="'+k+'" style="cursor:pointer;text-align:center;padding:8px 2px;border-radius:8px;background:'+(n>0?'#4a3516':'#2a2012')+';border:3px solid '+(sec?'#7CFC8A':'#6a5320')+';opacity:'+(n>0||sec?1:.55)+'"><div style="font-size:24px">'+(tip==='t'?'🌰':e.simge)+'</div><div style="font-size:11px">'+e.ad+(tip==='t'?' tohumu':'')+'</div><b style="font-size:15px">× '+n+'</b></div>';};
+    h+='<div style="color:#E8C060;margin:4px 0">🌰 Tohumlar <small>(dokun: ekilecek ekini seç)</small></div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">';
+    CIFTLIK_SIRA.forEach(function(k){h+=kutu(k,'t',c.tohum[k]);});
+    h+='</div><div style="color:#E8C060;margin:8px 0 4px">🎒 Ürünler</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">';
+    CIFTLIK_SIRA.forEach(function(k){h+=kutu(k,'u',c.depo[k]);});
+    h+='</div><div style="margin-top:8px">✅ Ekilecek: <b>'+CIFTLIK_EKIN[c.secili].ad+'</b> — tohum '+c.tohum[c.secili]+'</div><div style="opacity:.7;margin-top:4px;font-size:11px">Tohum almak için Pazar\'a, saklamak için Sandık\'a git.</div>';
+  }else if(ciftlikPanelTur==='pazar'){
     h+='<div style="color:#E8C060;margin:4px 0">🌰 Tohum al</div>';
     CIFTLIK_SIRA.forEach(function(k){const e=CIFTLIK_EKIN[k];
       h+='<div style="display:flex;align-items:center;justify-content:space-between;margin:3px 0"><span>'+e.simge+' '+e.ad+' <small>('+e.sure+' sn, satış '+e.deger+')</small> — çantada '+c.tohum[k]+'</span><span><button '+B+' data-a="al1" data-k="'+k+'">+1 · '+e.tohum+'</button><button '+B+' data-a="al5" data-k="'+k+'">+5 · '+e.tohum*5+'</button></span></div>';});
@@ -6821,7 +6838,8 @@ function ciftlikPanelCiz(){
 function ciftlikPanelEylem(a,k){
   const c=ciftlikHazirla();
   if(a==='kapat'){ciftlikPanelKapat();return;}
-  if(a==='al1'||a==='al5'){
+  if(a==='sec'){c.secili=k;saveGame();lootPop('🌰 Ekilecek: '+CIFTLIK_EKIN[k].ad);}
+  else if(a==='al1'||a==='al5'){
     const n=a==='al5'?5:1,fy=CIFTLIK_EKIN[k].tohum*n;
     if(mainGold<fy){lootPop('Yetersiz akçe ('+fy+' gerek)');return;}
     ciftlikAltin(-fy);c.tohum[k]+=n;saveGame();
@@ -7302,6 +7320,7 @@ document.addEventListener('keydown',function(e){
   if(e.key==='f'||e.key==='F')useAbility('f');
   if(e.key==='r'&&!e.ctrlKey)useAbility('r');
   if(e.key==='Escape'||e.key==='p'||e.key==='P'){if(document.getElementById('dlgLayer').style.display==='flex'){hideDlg();return;}if(document.getElementById('zoneMenuBox').style.display==='flex'){closeZoneMenu();return;}if(playing)doPause();else if(paused)doResume();}
+  if((e.key==='i'||e.key==='I')&&currentMap==='ciftlik'&&playing){if(ciftlikPanelTur==='envanter')ciftlikPanelKapat();else ciftlikPanelAc('envanter');}
   if((e.key==='e'||e.key==='E')){
     if(pl.nearZone){
       if(pl.nearZone.id==='madenCikis')madenCik();else if(pl.nearZone.id==='tarimCikis')tarimCik();else if(String(pl.nearZone.id).indexOf('ciftlik')===0)ciftlikEtkilesim(pl.nearZone);

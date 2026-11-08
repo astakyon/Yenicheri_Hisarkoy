@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════
 // ÇİFTLİK — etkileşim ve güncelleme (v1.63)
 // ═══════════════════════════════════════════════════════
-function ciftlikCik(){if(currentMap!=='ciftlik'||pl.hp<=0)return;ciftlikPanelKapat();BEGIN('kisla');}
+function ciftlikCik(){if(currentMap!=='ciftlik'||pl.hp<=0)return;ciftlikPanelKapat();ciftlikEnvBtn(false);BEGIN('kisla');}
 function ciftlikAltin(d){mainGold+=d;SAVE.mainGold=mainGold;saveGame();updateGoldHud();}
 
 function ciftlikSulamaFiyat(lv){return 300*(lv+1)*(lv+1);}
@@ -17,7 +17,7 @@ function ciftlikEtkilesim(z){
   if(z.id==='ciftlikCikis'){ciftlikCik();return;}
   if(z.id==='ciftlikPazar'){ciftlikPanelAc('pazar');return;}
   if(z.id==='ciftlikSandik'){ciftlikPanelAc('sandik');return;}
-  if(z.id==='ciftlikRaf'){const i=(CIFTLIK_SIRA.indexOf(c.secili)+1)%CIFTLIK_SIRA.length;c.secili=CIFTLIK_SIRA[i];saveGame();const e=CIFTLIK_EKIN[c.secili];lootPop('🌰 Ekilecek: '+e.ad+' — tohum '+c.tohum[c.secili]+' ('+e.sure+' sn, satış '+e.deger+')');return;}
+  if(z.id==='ciftlikRaf'){ciftlikPanelAc('envanter');return;}
   if(z.id==='ciftlikParsel'){
     const p=c.parsel[z.i],o=ciftlikOran(p);
     if(!p.e){
@@ -37,7 +37,7 @@ function ciftlikYakin(){
   const c=ciftlikHazirla();
   [CIFTLIK_CIKIS,CIFTLIK_RAF,CIFTLIK_PAZAR,CIFTLIK_SANDIK].forEach(function(z){z._d=Math.hypot(pl.x-z.x,pl.z-z.z);});
   if(CIFTLIK_CIKIS._d<3.8)return{z:CIFTLIK_CIKIS,t:'[ E ] 🏰 Çiftlikten Çık'};
-  if(CIFTLIK_RAF._d<3.4)return{z:CIFTLIK_RAF,t:'[ E ] 🌰 Tohum seç — şimdiki: '+CIFTLIK_EKIN[c.secili].ad+' ('+CIFTLIK_EKIN[c.secili].tohum+' akçe)'};
+  if(CIFTLIK_RAF._d<3.4)return{z:CIFTLIK_RAF,t:'[ E ] 🌰 Envanteri aç — ekilecek: '+CIFTLIK_EKIN[c.secili].ad+' (tohum '+c.tohum[c.secili]+')'};
   if(CIFTLIK_SANDIK._d<3.2)return{z:CIFTLIK_SANDIK,t:'[ E ] 📦 Sandık — ürün ve tohum sakla'};
   if(CIFTLIK_PAZAR._d<3.6)return{z:CIFTLIK_PAZAR,t:'[ E ] 💰 Pazar — tohum al, ürün sat'};
   for(let i=0;i<CIFTLIK_PARSELLER.length;i++){
@@ -54,7 +54,7 @@ function ciftlikYakin(){
 
 function updateCiftlik(dt){
   updateMovement(dt);
-  if(ciftlikPanelTur&&(Math.hypot(pl.x-(ciftlikPanelTur==='pazar'?CIFTLIK_PAZAR.x:CIFTLIK_SANDIK.x),pl.z-(ciftlikPanelTur==='pazar'?CIFTLIK_PAZAR.z:CIFTLIK_SANDIK.z))>6))ciftlikPanelKapat();
+  if(ciftlikPanelTur&&ciftlikPanelTur!=='envanter'&&(Math.hypot(pl.x-(ciftlikPanelTur==='pazar'?CIFTLIK_PAZAR.x:CIFTLIK_SANDIK.x),pl.z-(ciftlikPanelTur==='pazar'?CIFTLIK_PAZAR.z:CIFTLIK_SANDIK.z))>6))ciftlikPanelKapat();
   if(window._ciftlikHalka)window._ciftlikHalka.material.opacity=.5+Math.sin(gt*.08)*.2;
   if(gt%30===0)ciftlikGorselYenile();
   const intH=document.getElementById('intH'),zBtn=document.getElementById('zoneBtn'),y=ciftlikYakin();

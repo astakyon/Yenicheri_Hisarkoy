@@ -1,5 +1,8 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.70
+- Çiftlik: tohum/ekin seçimi envanterden — kutucuklarla (4 tohum + 4 ürün), dokununca ekilecek ekin seçilir. 🎒 Envanter düğmesi / [I] tuşu; Tohum Rafı'nda E de envanteri açar.
+
 ## v1.69
 - Çiftlik: envanter sistemi — çanta (24 ürün) + tohum stoğu. Tohum artık Pazar'dan satın alınır (panel: +1/+5, ürün sat, sulama yükseltme); ekim çantadaki tohumu harcar. Yeni 📦 Sandık: ürün ve tohum sınırsız saklanır, çantaya geri alınır. Başlangıçta 5 arpa tohumu.
 

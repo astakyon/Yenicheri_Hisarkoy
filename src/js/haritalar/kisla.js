@@ -30,6 +30,7 @@ const ZONES=[
 const INTERACTABLE_ZONES=['armory','camii','drill','cebehaneUst','cebehane','demirKapi','hamam','kervansaray','carsi'];
 
 function clearScene(){
+  if(typeof ciftlikEnvBtn==='function')ciftlikEnvBtn(false);
   if(!S3)return;
   // Sadece dinamik nesneleri temizle
   [...enemies,...bullets,...loots,...parts].forEach(o=>S3.remove(o.mesh||o));

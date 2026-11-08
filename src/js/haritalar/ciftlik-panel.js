@@ -16,14 +16,30 @@ function ciftlikPanelDiv(){
   }
   return d;
 }
+function ciftlikEnvBtn(goster){
+  let b=document.getElementById('ciftlikEnvBtn');
+  if(!b){b=document.createElement('button');b.id='ciftlikEnvBtn';b.textContent='🎒 Envanter [I]';
+    b.style.cssText='display:none;position:fixed;left:50%;bottom:10px;transform:translateX(-50%);z-index:21;padding:8px 14px;border:2px solid #b8923a;border-radius:10px;background:rgba(40,28,10,.9);color:#f0e0b8;font-family:Cinzel,serif;font-size:13px;cursor:pointer;';
+    b.onclick=function(){if(ciftlikPanelTur==='envanter')ciftlikPanelKapat();else ciftlikPanelAc('envanter');};
+    b.addEventListener('touchstart',function(e){e.stopPropagation();},{passive:true});document.body.appendChild(b);}
+  b.style.display=goster?'block':'none';
+}
 function ciftlikPanelAc(tur){ciftlikPanelTur=tur;ciftlikPanelCiz();ciftlikPanelDiv().style.display='block';}
 function ciftlikPanelKapat(){ciftlikPanelTur=null;const d=document.getElementById('ciftlikPanel');if(d)d.style.display='none';}
 function ciftlikPanelCiz(){
   if(!ciftlikPanelTur)return;
   const c=ciftlikHazirla(),d=ciftlikPanelDiv(),B='style="padding:5px 9px;margin:0 2px;border:1px solid #b8923a;border-radius:6px;background:#3a2a10;color:#f0e0b8;cursor:pointer;font-family:inherit;font-size:12px"';
-  let h='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b style="font-size:15px;color:#E8C060">'+(ciftlikPanelTur==='pazar'?'💰 PAZAR':'📦 SANDIK')+'</b><span>💰 '+mainGold+' akçe</span><button class="zmX" data-a="kapat">✕</button></div>';
+  let h='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b style="font-size:15px;color:#E8C060">'+(ciftlikPanelTur==='pazar'?'💰 PAZAR':ciftlikPanelTur==='sandik'?'📦 SANDIK':'🎒 ENVANTER')+'</b><span>💰 '+mainGold+' akçe</span><button class="zmX" data-a="kapat">✕</button></div>';
   h+='<div style="opacity:.8;margin-bottom:6px">🎒 Çanta: '+ciftlikCantaDolu(c)+' / '+CIFTLIK_CANTA+' ürün</div>';
-  if(ciftlikPanelTur==='pazar'){
+  if(ciftlikPanelTur==='envanter'){
+    const kutu=function(k,tip,n){const e=CIFTLIK_EKIN[k],sec=c.secili===k;
+      return '<div data-a="sec" data-k="'+k+'" style="cursor:pointer;text-align:center;padding:8px 2px;border-radius:8px;background:'+(n>0?'#4a3516':'#2a2012')+';border:3px solid '+(sec?'#7CFC8A':'#6a5320')+';opacity:'+(n>0||sec?1:.55)+'"><div style="font-size:24px">'+(tip==='t'?'🌰':e.simge)+'</div><div style="font-size:11px">'+e.ad+(tip==='t'?' tohumu':'')+'</div><b style="font-size:15px">× '+n+'</b></div>';};
+    h+='<div style="color:#E8C060;margin:4px 0">🌰 Tohumlar <small>(dokun: ekilecek ekini seç)</small></div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">';
+    CIFTLIK_SIRA.forEach(function(k){h+=kutu(k,'t',c.tohum[k]);});
+    h+='</div><div style="color:#E8C060;margin:8px 0 4px">🎒 Ürünler</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">';
+    CIFTLIK_SIRA.forEach(function(k){h+=kutu(k,'u',c.depo[k]);});
+    h+='</div><div style="margin-top:8px">✅ Ekilecek: <b>'+CIFTLIK_EKIN[c.secili].ad+'</b> — tohum '+c.tohum[c.secili]+'</div><div style="opacity:.7;margin-top:4px;font-size:11px">Tohum almak için Pazar\'a, saklamak için Sandık\'a git.</div>';
+  }else if(ciftlikPanelTur==='pazar'){
     h+='<div style="color:#E8C060;margin:4px 0">🌰 Tohum al</div>';
     CIFTLIK_SIRA.forEach(function(k){const e=CIFTLIK_EKIN[k];
       h+='<div style="display:flex;align-items:center;justify-content:space-between;margin:3px 0"><span>'+e.simge+' '+e.ad+' <small>('+e.sure+' sn, satış '+e.deger+')</small> — çantada '+c.tohum[k]+'</span><span><button '+B+' data-a="al1" data-k="'+k+'">+1 · '+e.tohum+'</button><button '+B+' data-a="al5" data-k="'+k+'">+5 · '+e.tohum*5+'</button></span></div>';});
@@ -49,7 +65,8 @@ function ciftlikPanelCiz(){
 function ciftlikPanelEylem(a,k){
   const c=ciftlikHazirla();
   if(a==='kapat'){ciftlikPanelKapat();return;}
-  if(a==='al1'||a==='al5'){
+  if(a==='sec'){c.secili=k;saveGame();lootPop('🌰 Ekilecek: '+CIFTLIK_EKIN[k].ad);}
+  else if(a==='al1'||a==='al5'){
     const n=a==='al5'?5:1,fy=CIFTLIK_EKIN[k].tohum*n;
     if(mainGold<fy){lootPop('Yetersiz akçe ('+fy+' gerek)');return;}
     ciftlikAltin(-fy);c.tohum[k]+=n;saveGame();

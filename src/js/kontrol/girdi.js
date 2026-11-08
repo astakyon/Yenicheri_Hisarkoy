@@ -8,6 +8,7 @@ document.addEventListener('keydown',function(e){
   if(e.key==='f'||e.key==='F')useAbility('f');
   if(e.key==='r'&&!e.ctrlKey)useAbility('r');
   if(e.key==='Escape'||e.key==='p'||e.key==='P'){if(document.getElementById('dlgLayer').style.display==='flex'){hideDlg();return;}if(document.getElementById('zoneMenuBox').style.display==='flex'){closeZoneMenu();return;}if(playing)doPause();else if(paused)doResume();}
+  if((e.key==='i'||e.key==='I')&&currentMap==='ciftlik'&&playing){if(ciftlikPanelTur==='envanter')ciftlikPanelKapat();else ciftlikPanelAc('envanter');}
   if((e.key==='e'||e.key==='E')){
     if(pl.nearZone){
       if(pl.nearZone.id==='madenCikis')madenCik();else if(pl.nearZone.id==='tarimCikis')tarimCik();else if(String(pl.nearZone.id).indexOf('ciftlik')===0)ciftlikEtkilesim(pl.nearZone);

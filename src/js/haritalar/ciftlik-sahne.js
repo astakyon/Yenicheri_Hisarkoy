@@ -56,7 +56,7 @@ function ciftlikGorselYenile(){
 }
 
 function buildCiftlik(){
-  clearScene();ciftlikPanelKapat();
+  clearScene();ciftlikPanelKapat();ciftlikEnvBtn(true);
   S3.fog=new THREE.Fog(0xb4cf98,40,100);S3.background=new THREE.Color(0xa8d0ec);
   const sun=new THREE.DirectionalLight(0xFFF2D0,1.8);sun.position.set(-20,34,14);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
   sun.shadow.camera.left=-45;sun.shadow.camera.right=45;sun.shadow.camera.top=45;sun.shadow.camera.bottom=-45;S3.add(sun);
