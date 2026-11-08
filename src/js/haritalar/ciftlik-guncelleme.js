@@ -18,6 +18,11 @@ function ciftlikEtkilesim(z){
   if(z.id==='ciftlikPazar'){ciftlikPanelAc('pazar');return;}
   if(z.id==='ciftlikSandik'){ciftlikPanelAc('sandik');return;}
   if(z.id==='ciftlikRaf'){ciftlikPanelAc('envanter');return;}
+  if(z.id==='ciftlikKilit'){
+    const fy=CIFTLIK_SIRA_FIYAT[c.sira];
+    if(mainGold<fy){lootPop('Yeni parsel sırası için '+fy+' akçe gerek');return;}
+    ciftlikAltin(-fy);c.sira++;saveGame();ciftlikGorselYenile();lootPop('🌱 Yeni parsel sırası açıldı! (4 parsel)');return;
+  }
   if(z.id==='ciftlikParsel'){
     const p=c.parsel[z.i],o=ciftlikOran(p);
     if(!p.e){
@@ -43,6 +48,7 @@ function ciftlikYakin(){
   for(let i=0;i<CIFTLIK_PARSELLER.length;i++){
     const q=CIFTLIK_PARSELLER[i];
     if(Math.abs(pl.x-q.x)<q.w/2+.6&&Math.abs(pl.z-q.z)<q.d/2+.6){
+      if(!ciftlikParselAcik(i)){const fy=CIFTLIK_SIRA_FIYAT[c.sira];if(i<4*(3-c.sira)&&i>=4*(2-c.sira))return{z:{id:'ciftlikKilit',name:'Kilit'},t:'[ E ] 🔒 Parsel sırasını aç — '+fy+' akçe'};return{z:null,t:'🔒 Önce yakın parsel sırasını aç'};}
       const p=c.parsel[i],o=ciftlikOran(p),zz={id:'ciftlikParsel',i:i,name:'Parsel'};
       if(!p.e)return{z:zz,t:'[ E ] 🌱 '+CIFTLIK_EKIN[c.secili].ad+' ek (tohum: '+c.tohum[c.secili]+')'};
       if(o>=1)return{z:zz,t:'[ E ] ✂ '+CIFTLIK_EKIN[p.e].ad+' olgun — biç'};

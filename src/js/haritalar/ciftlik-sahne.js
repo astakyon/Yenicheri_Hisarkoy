@@ -3,24 +3,31 @@
 // Parseller SAVE.ciftlik içinde gerçek zamanla büyür (oyundan çıksan da büyümeye devam eder).
 // ═══════════════════════════════════════════════════════
 const CIFTLIK_EKIN={
+  nohut:  {ad:'Nohut', simge:'🫘',tohum:4, sure:45, deger:11, renk:0xB59A5A},
   arpa:   {ad:'Arpa',   simge:'🌾',tohum:3, sure:30, deger:8,  renk:0xC9B458},
   bugday: {ad:'Buğday', simge:'🌾',tohum:5, sure:60, deger:16, renk:0xE2B94C},
   pamuk:  {ad:'Pamuk',  simge:'☁',tohum:9, sure:100,deger:30, renk:0xF4F4EC},
-  uzum:   {ad:'Üzüm',   simge:'🍇',tohum:14,sure:150,deger:48, renk:0x7A2C9C}
+  uzum:   {ad:'Üzüm',   simge:'🍇',tohum:14,sure:150,deger:48, renk:0x7A2C9C},
+  zeytin: {ad:'Zeytin', simge:'🫒',tohum:24,sure:220,deger:82, renk:0x6A7A2A}
 };
-const CIFTLIK_SIRA=['arpa','bugday','pamuk','uzum'];
+const CIFTLIK_SIRA=['nohut','arpa','bugday','pamuk','uzum','zeytin'];
+// Parsel sıraları: en yakın (güney) sıra açık başlar; diğerleri akçeyle açılır
+const CIFTLIK_SIRA_FIYAT=[0,600,1500];
+function ciftlikParselAcik(i){const c=SAVE.ciftlik;return (2-Math.floor(i/4))<((c&&c.sira)||1);}
 // Parsel merkezleri: 4 sütun × 3 sıra, her biri 7×7
 const CIFTLIK_PARSELLER=(function(){const a=[];[-14,-4,6].forEach(function(z){[-13.5,-4.5,4.5,13.5].forEach(function(x){a.push({x:x,z:z,w:7,d:7});});});return a;})();
 const CIFTLIK_RAF={id:'ciftlikRaf',icon:'🌰',name:'Tohum Rafı',x:-9,z:22};
 const CIFTLIK_PAZAR={id:'ciftlikPazar',icon:'💰',name:'Pazar Tezgâhı',x:9,z:22};
 const CIFTLIK_SANDIK={id:'ciftlikSandik',icon:'📦',name:'Sandık',x:-2.5,z:22};
 const CIFTLIK_CIKIS={id:'ciftlikCikis',icon:'🏰',name:'Çiftlikten Çık',x:0,z:33.5};
+let ciftlikToprak=[];
 let ciftlikMeshler=[];   // parsel başına ekin meshi
 
 function ciftlikHazirla(){
   const c=SAVE.ciftlik||(SAVE.ciftlik={});
   if(!c.parsel||c.parsel.length!==CIFTLIK_PARSELLER.length)c.parsel=CIFTLIK_PARSELLER.map(function(){return{e:null,t:0};});
-  const bos=function(){return{arpa:0,bugday:0,pamuk:0,uzum:0};};
+  if(!c.sira)c.sira=1;
+  const bos=function(){const o={};CIFTLIK_SIRA.forEach(function(k){o[k]=0;});return o;};
   c.depo=Object.assign(bos(),c.depo||{});
   if(!c.tohum)c.tohum=Object.assign(bos(),{arpa:5});else c.tohum=Object.assign(bos(),c.tohum);
   if(!c.sandik)c.sandik={};
@@ -48,7 +55,8 @@ function ciftlikGorselYenile(){
   const c=ciftlikHazirla();
   ciftlikMeshler.forEach(function(m,i){
     const p=c.parsel[i],o=ciftlikOran(p);
-    if(o<0){m.visible=false;return;}
+    if(ciftlikToprak[i])ciftlikToprak[i].material.color.setHex(ciftlikParselAcik(i)?0x5a3e1c:0x2e2a22);
+    if(o<0||!ciftlikParselAcik(i)){m.visible=false;return;}
     const olgun=o>=1;
     if(m.userData.durum!==p.e+(olgun?'o':'y')){m.geometry=ciftlikEkinGeo(p.e,olgun);m.userData.durum=p.e+(olgun?'o':'y');}
     m.visible=true;m.scale.set(1,.25+.75*o,1);
@@ -71,9 +79,9 @@ function buildCiftlik(){
   [[0,10,5,52],[0,-4,64,3]].forEach(function(r){const y=new THREE.Mesh(new THREE.PlaneGeometry(r[2],r[3]),yolMat);y.rotation.x=-Math.PI/2;y.position.set(r[0],.015,r[1]);y.receiveShadow=true;S3.add(y);});
   // Parseller
   const c=ciftlikHazirla();ciftlikMeshler=[];
-  const toprakMat=new THREE.MeshLambertMaterial({color:0x5a3e1c});
+  ciftlikToprak=[];
   CIFTLIK_PARSELLER.forEach(function(p){
-    const t=new THREE.Mesh(new THREE.PlaneGeometry(p.w,p.d),toprakMat);t.rotation.x=-Math.PI/2;t.position.set(p.x,.03,p.z);t.receiveShadow=true;S3.add(t);
+    const t=new THREE.Mesh(new THREE.PlaneGeometry(p.w,p.d),new THREE.MeshLambertMaterial({color:0x5a3e1c}));ciftlikToprak.push(t);t.rotation.x=-Math.PI/2;t.position.set(p.x,.03,p.z);t.receiveShadow=true;S3.add(t);
     const m=new THREE.Mesh(ciftlikEkinGeo('arpa',false),new THREE.MeshLambertMaterial({vertexColors:true}));
     m.position.set(p.x,0,p.z);m.visible=false;S3.add(m);ciftlikMeshler.push(m);
   });
@@ -94,5 +102,6 @@ function buildCiftlik(){
   S3.add(madenYaziSprite('TOHUM RAFI',0xE8C060,CIFTLIK_RAF.x,3.2,CIFTLIK_RAF.z));
   S3.add(madenYaziSprite('SANDIK',0xE8C060,CIFTLIK_SANDIK.x,3.2,CIFTLIK_SANDIK.z));
   S3.add(madenYaziSprite('PAZAR',0xE8C060,CIFTLIK_PAZAR.x,3.2,CIFTLIK_PAZAR.z));
+  [2,1].forEach(function(r){S3.add(madenYaziSprite('🔒 PARSEL SIRASI',0xAAAAAA,0,2.2,CIFTLIK_PARSELLER[(2-r)*4].z));});
   ciftlikGorselYenile();
 }

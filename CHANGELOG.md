@@ -1,5 +1,8 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.72
+- Çiftlik: parsel sıraları artık akçeyle açılıyor (başta 4 parsel; 600 ve 1500 akçeyle 8 ve 12). İki yeni ekin: Nohut (hızlı, ucuz) ve Zeytin (yavaş, çok değerli).
+
 ## v1.71
 - Çok oyunculu: oyuncuların seçtiği görünüm (renkler, bıyık, başlık, ekipman) odadaki herkese gösteriliyor.
 

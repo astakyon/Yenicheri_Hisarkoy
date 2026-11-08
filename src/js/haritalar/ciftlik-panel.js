@@ -34,9 +34,9 @@ function ciftlikPanelCiz(){
   if(ciftlikPanelTur==='envanter'){
     const kutu=function(k,tip,n){const e=CIFTLIK_EKIN[k],sec=c.secili===k;
       return '<div data-a="sec" data-k="'+k+'" style="cursor:pointer;text-align:center;padding:8px 2px;border-radius:8px;background:'+(n>0?'#4a3516':'#2a2012')+';border:3px solid '+(sec?'#7CFC8A':'#6a5320')+';opacity:'+(n>0||sec?1:.55)+'"><div style="font-size:24px">'+(tip==='t'?'🌰':e.simge)+'</div><div style="font-size:11px">'+e.ad+(tip==='t'?' tohumu':'')+'</div><b style="font-size:15px">× '+n+'</b></div>';};
-    h+='<div style="color:#E8C060;margin:4px 0">🌰 Tohumlar <small>(dokun: ekilecek ekini seç)</small></div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">';
+    h+='<div style="color:#E8C060;margin:4px 0">🌰 Tohumlar <small>(dokun: ekilecek ekini seç)</small></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">';
     CIFTLIK_SIRA.forEach(function(k){h+=kutu(k,'t',c.tohum[k]);});
-    h+='</div><div style="color:#E8C060;margin:8px 0 4px">🎒 Ürünler</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">';
+    h+='</div><div style="color:#E8C060;margin:8px 0 4px">🎒 Ürünler</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">';
     CIFTLIK_SIRA.forEach(function(k){h+=kutu(k,'u',c.depo[k]);});
     h+='</div><div style="margin-top:8px">✅ Ekilecek: <b>'+CIFTLIK_EKIN[c.secili].ad+'</b> — tohum '+c.tohum[c.secili]+'</div><div style="opacity:.7;margin-top:4px;font-size:11px">Tohum almak için Pazar\'a, saklamak için Sandık\'a git.</div>';
   }else if(ciftlikPanelTur==='pazar'){
