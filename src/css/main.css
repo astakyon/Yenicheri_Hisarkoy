@@ -475,7 +475,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
   #mmBox{width:calc(92px*var(--ui));height:calc(92px*var(--ui));}
   #camBtns{top:calc(144px*var(--ui));width:calc(92px*var(--ui));gap:calc(8px*var(--ui));}
   .camB{width:calc(30px*var(--ui));height:calc(30px*var(--ui));font-size:calc(16px*var(--ui));}
-  #actionCluster{transform:scale(1);}
+  #actionCluster{transform:scale(var(--uiT));}
 }
 @media (max-height:380px) and (orientation:landscape){
   #camBtns{top:calc(50px*var(--ui));right:calc(112px*var(--ui));width:auto;}

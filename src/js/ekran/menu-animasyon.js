@@ -62,10 +62,13 @@ function drawMenu(){
 function uiOlcekle(){
   const h=window.innerHeight,w=window.innerWidth,r=document.documentElement.style;
   // yatay: yüksekliğe göre (telefon 1.12, PC 1.0–1.2); dikey telefon: genişliğe göre, HUD sığsın
-  const u=w>=h?(h<500?1.12:Math.max(1.0,Math.min(1.2,h/640))):Math.max(.8,Math.min(1.4,w/560));
+  const m=(typeof SETTINGS!=='undefined'&&SETTINGS.uiBoyut?SETTINGS.uiBoyut:100)/100;
+  // yatay telefon: yükseklikle orantılı küçülür (340px'te ~0.65); PC 1.0–1.2; dikey telefon genişliğe göre
+  const u0=w>=h?(h<500?Math.max(.6,Math.min(.95,h/520)):Math.max(1.0,Math.min(1.2,h/640))):Math.max(.8,Math.min(1.4,w/560));
+  const u=Math.max(.45,u0*m);
   r.setProperty('--ui',u.toFixed(3));
-  r.setProperty('--uiP',Math.max(1,Math.min(1.2,h/640)).toFixed(3));   // paneller (zoom)
-  r.setProperty('--uiT',Math.max(1,Math.min(1.15,u*.9)).toFixed(3));  // dokunmatik düğmeler
+  r.setProperty('--uiP',(Math.max(1,Math.min(1.2,h/640))*Math.min(1,m)).toFixed(3));   // paneller (zoom)
+  r.setProperty('--uiT',Math.max(.7,Math.min(1.15,u*1.05)).toFixed(3));  // dokunmatik düğmeler
 }
 window.addEventListener('resize',uiOlcekle);uiOlcekle();
 

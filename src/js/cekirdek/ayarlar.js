@@ -12,7 +12,8 @@ let SETTINGS={
   master: 80, muzik: 45, efekt: 80, sessiz: false,
   kalite: 'yuksek',       // 'dusuk'|'orta'|'yuksek'
   golge: true, olcek: 100, fps: false,
-  titresim: true
+  titresim: true,
+  uiBoyut: 100            // arayüz boyutu %
 };
 function loadSettings(){try{const d=localStorage.getItem(SETTINGS_KEY);if(d)SETTINGS={...SETTINGS,...JSON.parse(d)};}catch(e){}}
 function saveSettings(){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(SETTINGS));}catch(e){}}
@@ -36,6 +37,7 @@ function ayarDegis(k,v,yenile){
   else if(['master','muzik','efekt','sessiz'].indexOf(k)>=0&&typeof SES!=='undefined'){SES.baslat();SES.hacim();}
   else if(['kalite','golge','olcek'].indexOf(k)>=0)applyGrafik();
   else if(k==='fps')applyFps();
+  else if(k==='uiBoyut'&&typeof uiOlcekle==='function')uiOlcekle();
   else if(k==='titresim'&&v&&typeof SES!=='undefined')SES.titre(30);
   if(yenile)ayarCiz();
 }
@@ -46,6 +48,7 @@ function ayarCiz(){
   h+='<div class="ovBody">';
   if(AYAR_SEKME==='kontrol'){
     h+=_ayRow('📱 Dokunmatik Kontroller','Joystick ve butonları göster/gizle',_ayTog('touchEnabled'));
+    h+=_ayRow('🖥 Arayüz Boyutu','Yazı, çubuk ve HUD boyutu — ekran doluysa küçült',_aySec('uiBoyut',[[60,'Çok küçük'],[75,'Küçük'],[100,'Normal'],[125,'Büyük']]));
     h+=_ayRow('🕹 Joystick Boyutu','',_aySec('joySize',[['small','Küçük'],['normal','Normal'],['large','Büyük']]));
     h+=_ayRow('🌫 Joystick Saydamlığı','Düşükse oyun alanını daha az kapatır',_aySlider('joyOp',30,100,5));
     h+=_ayRow('⚡ Yetenek Butonları (Q/F/R)','Savaş ekranında göster',_ayTog('abilityBtns'));

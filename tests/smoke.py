@@ -300,9 +300,9 @@ def main():
           const ince = (colliders||[]).filter(c => c && c.w !== undefined && Math.min(c.w, c.d) <= 2 && Math.max(c.w, c.d) >= 30 && Math.abs(c.x) < 40 && Math.abs(c.z) < 40).length;
           return { ui, hpH: hp ? hp.getBoundingClientRect().height : 0, mmW: mm.getBoundingClientRect().width, acik: ac / top, ince };
         }""")
-        check(r['ui'] >= 1.1, 'arayüz ölçeği telefonda yeterli (%.2f)' % r['ui'])
-        check(r['hpH'] >= 18, 'can çubuğu okunur yükseklikte (%dpx)' % r['hpH'])
-        check(r['mmW'] >= 90, 'mini harita yeterince büyük (%dpx)' % r['mmW'])
+        check(r['ui'] >= .55, 'arayüz ölçeği telefonda makul (ekranı kaplamaz) (%.2f)' % r['ui'])
+        check(r['hpH'] >= 12, 'can çubuğu okunur yükseklikte (%dpx)' % r['hpH'])
+        check(r['mmW'] >= 60, 'mini harita yeterince büyük (%dpx)' % r['mmW'])
         check(r['acik'] >= .7, 'doğma noktası çevresi ferah (%.0f%% açık)' % (r['acik'] * 100))
         r2 = pg.evaluate("""() => {
           // her etkileşim noktası caddeye yakın (|x|<=14) ve çarpışmasız; yanında görevli var
@@ -875,6 +875,15 @@ def main():
         check(pg.evaluate("typeof SAVE") == 'object' and pg.evaluate("!!SAVE.stats"), 'bozuk kayıt içe aktarılınca oyun bozulmuyor')
         check(not errs, 'profil/hikaye testlerinde JS hatası yok: %s' % errs[:1])
         ctx.close()
+
+        print('Telefonda HUD ekranı kaplamıyor (v1.77)')
+        for (w, hh) in ((740, 340), (844, 390), (915, 412)):
+            ctx, pg, errs = yeni_sayfa(w, hh)
+            pg.evaluate("BEGIN('gorev')"); pg.wait_for_timeout(1200)
+            oran = pg.evaluate("""() => { const r=['topLeftHud','mmBox'].map(i=>document.getElementById(i).getBoundingClientRect());
+              const alan=r.reduce((a,b)=>a+b.width*b.height,0); return alan/(innerWidth*innerHeight); }""")
+            check(oran < 0.2, '%dx%d: HUD alanı ekranın %%%d\'i (en çok %%20)' % (w, hh, oran * 100))
+            ctx.close()
 
         print('Ekran boyutlarında menü ve paneller taşmıyor')
         for (w, hh) in ((844, 390), (667, 375), (390, 844), (360, 640), (1024, 768)):

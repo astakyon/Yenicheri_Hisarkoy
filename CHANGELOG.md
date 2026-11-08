@@ -1,5 +1,9 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.77
+- Telefon yatay modunda arayüz (HUD, bölüm yazısı, mini harita, tuşlar) ekran yüksekliğine göre küçüldü; oyun alanı görünüyor.
+- Ayarlar → Kontroller → "Arayüz Boyutu" (Çok küçük / Küçük / Normal / Büyük).
+
 ## v1.76
 - Ana menü yeniden tasarlandı (DEVAM ET, HİKAYE, SERBEST HARİTALAR, ÇOK OYUNCULU, KARAKTERİM, ATÖLYE; profil rozeti; alt ikon çubuğu), telefon yatay kompakt düzen.
 - Serbest Haritalar kartlarında hikâye rozeti; ölümde titreşim; grafik ayarı açılışta uygulanır; DEVAM ET aktif perdeye gider.

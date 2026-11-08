@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.76">
+<meta name="game-version" content="v1.77">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.76</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.77</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -490,7 +490,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
   #mmBox{width:calc(92px*var(--ui));height:calc(92px*var(--ui));}
   #camBtns{top:calc(144px*var(--ui));width:calc(92px*var(--ui));gap:calc(8px*var(--ui));}
   .camB{width:calc(30px*var(--ui));height:calc(30px*var(--ui));font-size:calc(16px*var(--ui));}
-  #actionCluster{transform:scale(1);}
+  #actionCluster{transform:scale(var(--uiT));}
 }
 @media (max-height:380px) and (orientation:landscape){
   #camBtns{top:calc(50px*var(--ui));right:calc(112px*var(--ui));width:auto;}
@@ -611,7 +611,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.76</div>
+      <div id="mVer">v1.77</div>
     </div>
     <div id="mProfil" onclick="profilAc()" role="button" aria-label="Profil"><span id="mpAv">🪖</span><div><b id="mpAd">Yeniçeri</b><small id="mpSv">Sv 1</small></div></div>
     <div id="mBtns">
@@ -966,7 +966,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.76';
+const VERSION='v1.77';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -1055,7 +1055,7 @@ try{
 // ═══════════════════════════════════════════════════════
 // AYARLAR SİSTEMİ
 // ═══════════════════════════════════════════════════════
-const SURUM='v1.76';
+const SURUM='v1.77';
 const SETTINGS_KEY='yenicheri_settings';
 let SETTINGS={
   touchEnabled: true,
@@ -1066,7 +1066,8 @@ let SETTINGS={
   master: 80, muzik: 45, efekt: 80, sessiz: false,
   kalite: 'yuksek',       // 'dusuk'|'orta'|'yuksek'
   golge: true, olcek: 100, fps: false,
-  titresim: true
+  titresim: true,
+  uiBoyut: 100            // arayüz boyutu %
 };
 function loadSettings(){try{const d=localStorage.getItem(SETTINGS_KEY);if(d)SETTINGS={...SETTINGS,...JSON.parse(d)};}catch(e){}}
 function saveSettings(){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(SETTINGS));}catch(e){}}
@@ -1090,6 +1091,7 @@ function ayarDegis(k,v,yenile){
   else if(['master','muzik','efekt','sessiz'].indexOf(k)>=0&&typeof SES!=='undefined'){SES.baslat();SES.hacim();}
   else if(['kalite','golge','olcek'].indexOf(k)>=0)applyGrafik();
   else if(k==='fps')applyFps();
+  else if(k==='uiBoyut'&&typeof uiOlcekle==='function')uiOlcekle();
   else if(k==='titresim'&&v&&typeof SES!=='undefined')SES.titre(30);
   if(yenile)ayarCiz();
 }
@@ -1100,6 +1102,7 @@ function ayarCiz(){
   h+='<div class="ovBody">';
   if(AYAR_SEKME==='kontrol'){
     h+=_ayRow('📱 Dokunmatik Kontroller','Joystick ve butonları göster/gizle',_ayTog('touchEnabled'));
+    h+=_ayRow('🖥 Arayüz Boyutu','Yazı, çubuk ve HUD boyutu — ekran doluysa küçült',_aySec('uiBoyut',[[60,'Çok küçük'],[75,'Küçük'],[100,'Normal'],[125,'Büyük']]));
     h+=_ayRow('🕹 Joystick Boyutu','',_aySec('joySize',[['small','Küçük'],['normal','Normal'],['large','Büyük']]));
     h+=_ayRow('🌫 Joystick Saydamlığı','Düşükse oyun alanını daha az kapatır',_aySlider('joyOp',30,100,5));
     h+=_ayRow('⚡ Yetenek Butonları (Q/F/R)','Savaş ekranında göster',_ayTog('abilityBtns'));
@@ -2147,10 +2150,13 @@ function drawMenu(){
 function uiOlcekle(){
   const h=window.innerHeight,w=window.innerWidth,r=document.documentElement.style;
   // yatay: yüksekliğe göre (telefon 1.12, PC 1.0–1.2); dikey telefon: genişliğe göre, HUD sığsın
-  const u=w>=h?(h<500?1.12:Math.max(1.0,Math.min(1.2,h/640))):Math.max(.8,Math.min(1.4,w/560));
+  const m=(typeof SETTINGS!=='undefined'&&SETTINGS.uiBoyut?SETTINGS.uiBoyut:100)/100;
+  // yatay telefon: yükseklikle orantılı küçülür (340px'te ~0.65); PC 1.0–1.2; dikey telefon genişliğe göre
+  const u0=w>=h?(h<500?Math.max(.6,Math.min(.95,h/520)):Math.max(1.0,Math.min(1.2,h/640))):Math.max(.8,Math.min(1.4,w/560));
+  const u=Math.max(.45,u0*m);
   r.setProperty('--ui',u.toFixed(3));
-  r.setProperty('--uiP',Math.max(1,Math.min(1.2,h/640)).toFixed(3));   // paneller (zoom)
-  r.setProperty('--uiT',Math.max(1,Math.min(1.15,u*.9)).toFixed(3));  // dokunmatik düğmeler
+  r.setProperty('--uiP',(Math.max(1,Math.min(1.2,h/640))*Math.min(1,m)).toFixed(3));   // paneller (zoom)
+  r.setProperty('--uiT',Math.max(.7,Math.min(1.15,u*1.05)).toFixed(3));  // dokunmatik düğmeler
 }
 window.addEventListener('resize',uiOlcekle);uiOlcekle();
 
