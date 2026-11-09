@@ -871,6 +871,13 @@ canvas{display:block;position:absolute;top:0;left:0;}
 .wmName{color:#f3d27a!important;letter-spacing:.08em}.wmDesc{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:14px!important;color:#c9b27a!important}
 /* Karakterim açıkken ana menü öğeleri gizlenir; sadece gökyüzü + karakter kalır */
 #menuLayer.gOpen #mTitleWrap,#menuLayer.gOpen #mBtns,#menuLayer.gOpen #mTop,#menuLayer.gOpen #mIcos,#menuLayer.gOpen #mProfil,#menuLayer.gOpen #mVer{visibility:hidden!important}
+/* Karakterim paneli: sabit boyut, sol kenarda yukarıdan aşağıya */
+#gorunumBox{align-items:stretch!important;justify-content:flex-start!important;padding:10px 0 10px 10px!important;user-select:none;-webkit-user-select:none}
+#gorunumPanel{height:100%;max-height:none!important;width:min(380px,94vw);box-sizing:border-box}
+#gorunumPanel button{user-select:none;-webkit-user-select:none}
+@media (orientation:portrait){#gorunumBox{align-items:stretch!important;justify-content:flex-start!important;padding:8px!important}#gorunumPanel{height:100%;max-height:none!important;width:min(380px,70vw)}}
+@media (max-height:480px) and (orientation:landscape){#gorunumBox{padding:6px 0 6px 6px!important}}
+#gorunumTabs{flex-wrap:wrap;overflow:visible}.gTab{height:32px;padding:0 11px}
 </style>
 </head>
 <body>
