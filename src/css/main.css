@@ -854,3 +854,5 @@ canvas{display:block;position:absolute;top:0;left:0;}
 .wmCard{background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.03))!important;border:1.5px solid rgba(214,166,60,.5)!important;border-radius:16px!important;box-shadow:0 8px 22px rgba(0,0,0,.35);backdrop-filter:blur(8px)}
 .wmCard.unlocked:hover,.wmCard.current{border-color:#f0c25a!important;box-shadow:0 0 20px rgba(200,40,58,.4)}
 .wmName{color:#f3d27a!important;letter-spacing:.08em}.wmDesc{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:14px!important;color:#c9b27a!important}
+/* Karakterim açıkken ana menü öğeleri gizlenir; sadece gökyüzü + karakter kalır */
+#menuLayer.gOpen #mTitleWrap,#menuLayer.gOpen #mBtns,#menuLayer.gOpen #mTop,#menuLayer.gOpen #mIcos,#menuLayer.gOpen #mProfil,#menuLayer.gOpen #mVer{visibility:hidden!important}

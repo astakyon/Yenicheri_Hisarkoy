@@ -51,8 +51,8 @@ function gorunumCiz(){
   });
   ic.innerHTML=h;
 }
-function gorunumAc(){document.getElementById('gorunumBox').style.display='flex';HERO.manuel=HERO.g?HERO.g.rotation.y:-.5;gorunumCiz();}
-function gorunumKapat(){document.getElementById('gorunumBox').style.display='none';HERO.manuel=null;if(typeof kariyerDon==='function')kariyerDon();}
+function gorunumAc(){const ml=document.getElementById('menuLayer');if(ml)ml.classList.add('gOpen');document.getElementById('gorunumBox').style.display='flex';HERO.manuel=HERO.g?HERO.g.rotation.y:-.5;gorunumCiz();}
+function gorunumKapat(){const ml=document.getElementById('menuLayer');if(ml)ml.classList.remove('gOpen');document.getElementById('gorunumBox').style.display='none';HERO.manuel=null;if(typeof kariyerDon==='function')kariyerDon();}
 // Panelin dışında (boş alanda) sürükleyerek karakteri istediğin yöne döndür
 (function(){
   const kutu=document.getElementById('gorunumBox');if(!kutu)return;let x0=null;
