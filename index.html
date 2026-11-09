@@ -6,14 +6,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.84">
+<meta name="game-version" content="v1.85">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.84</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.85</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:wght@600&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Cinzel',Georgia,serif;}
 #gc{position:fixed;inset:0;overflow:hidden;}
@@ -643,6 +643,185 @@ canvas{display:block;position:absolute;top:0;left:0;}
 @media (max-height:480px) and (orientation:landscape){#mIcos{left:max(3vw,12px)!important;right:auto!important;bottom:6px!important;top:auto!important;flex-direction:row!important;gap:10px}#mIcos .mIco{min-width:0}}
 @media (orientation:portrait){#mIcos{left:50%!important;transform:translateX(-50%)}}
 @media (max-height:480px) and (orientation:landscape){#mBtns{grid-template-columns:1fr!important;max-width:46vw!important;margin-bottom:54px}#mBtns .mBtn{white-space:nowrap}}
+
+
+/* ═══════════════════════════════════════════════════════════
+   v1.85 — ANA MENÜ "DİVAN CAM" + DEĞİŞTİRİLEBİLİR ATMOSFER
+   Atmosfer: #menuLayer[data-atm] → --atm-sky / --atm-glow / --atm-star / --atm-vig (docs/ATMOSFER.md)
+   ═══════════════════════════════════════════════════════════ */
+#menuLayer{--atm-sky:linear-gradient(180deg,#060a1a 0%,#0c1634 28%,#16254a 50%,#26335a 64%,#4a4260 74%,#7a5a4c 84%,#3a2418 94%,#1a0e08 100%);--atm-glow:rgba(255,170,90,.30);--atm-star:1;--atm-vig:rgba(0,0,0,.65);}
+#menuBg{background:radial-gradient(ellipse 90% 40% at 50% 66%,var(--atm-glow),transparent 70%),var(--atm-sky);}
+#menuLayer::after{background:radial-gradient(ellipse 120% 100% at 70% 55%,transparent 45%,var(--atm-vig) 100%),linear-gradient(90deg,rgba(4,2,0,.78) 0%,rgba(4,2,0,.35) 38%,transparent 62%);}
+#menuLayer[data-atm="gece"]{--atm-sky:linear-gradient(180deg,#02040c 0%,#050a1e 35%,#0a1432 60%,#101c44 80%,#080c1c 100%);--atm-glow:rgba(90,120,255,.16);--atm-star:1;--atm-vig:rgba(0,0,6,.75);}
+#menuLayer[data-atm="safak"]{--atm-sky:linear-gradient(180deg,#1a2350 0%,#3a3a78 24%,#8a5a8a 46%,#e08a6a 66%,#ffc47a 80%,#5a3828 94%,#1a0e08 100%);--atm-glow:rgba(255,200,120,.42);--atm-star:.25;--atm-vig:rgba(10,0,0,.55);}
+#menuLayer[data-atm="sis"]{--atm-sky:linear-gradient(180deg,#1c2430 0%,#2c3846 30%,#46556a 55%,#6a7886 75%,#2a2e32 94%,#14161a 100%);--atm-glow:rgba(200,215,230,.25);--atm-star:.12;--atm-vig:rgba(0,0,0,.6);}
+
+/* rozet (profil) */
+#menuLayer #mProfil{top:2.6vh;right:3vw;padding:.6vh 1.8vh .6vh .6vh;gap:1.4vh;border:1.5px solid rgba(214,166,60,.7);border-radius:40px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));backdrop-filter:blur(10px);box-shadow:0 8px 20px rgba(0,0,0,.4);}
+#menuLayer #mProfil span{width:clamp(30px,6vh,44px);height:clamp(30px,6vh,44px);font:900 clamp(12px,2.4vh,17px) 'Cinzel',serif;color:#fff1c8;background:linear-gradient(160deg,#d8364a,#7c1422);border:1.5px solid #d6a63c;}
+#menuLayer #mProfil b{font-size:clamp(11px,2vh,14px);letter-spacing:.1em;text-transform:uppercase;}
+#menuLayer #mProfil small{font:600 clamp(11px,2vh,14px) 'Cormorant Garamond',Georgia,serif;opacity:1;color:#c9b27a;}
+
+/* ana düğmeler */
+#menuLayer #mBtns{left:5vw!important;top:auto!important;bottom:calc(3.5vh + clamp(64px,13vh,92px))!important;transform:none!important;width:min(400px,46vw)!important;max-width:none!important;margin:0!important;display:flex!important;flex-direction:column!important;grid-template-columns:none!important;gap:clamp(6px,1.4vh,12px)!important;}
+#menuLayer #mBtns .mBtn{display:flex;align-items:center;gap:clamp(10px,2vh,16px);width:100%;box-sizing:border-box;height:clamp(40px,8.4vh,64px);margin:0;padding:0 clamp(16px,3vh,26px) 0 clamp(12px,2vh,16px);text-align:left;white-space:nowrap;overflow:hidden;color:#f3e3b0;font-family:'Cinzel',serif;letter-spacing:.14em;font-size:clamp(11px,2.2vh,17px);border:1.5px solid rgba(214,166,60,.55);border-left:4px solid #d6a63c;border-radius:4px 26px 26px 4px;background:linear-gradient(90deg,rgba(255,255,255,.10),rgba(255,255,255,.03));backdrop-filter:blur(10px);box-shadow:0 10px 26px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.14);text-shadow:none;transition:background .15s,transform .12s;}
+#menuLayer #mBtns .mBtn::after{display:none;}
+#menuLayer #mBtns .mBtn:hover,#menuLayer #mBtns .mBtn:focus-visible{background:linear-gradient(90deg,rgba(214,166,60,.30),rgba(255,255,255,.05));padding-left:clamp(12px,2vh,16px);color:#fff3c8;}
+#menuLayer #mBtns .mBtn:active{transform:scale(.985);}
+#menuLayer #mBtns .mDia{flex:none;display:grid;place-items:center;width:clamp(24px,5vh,38px);height:clamp(24px,5vh,38px);margin:0 .4vh 0 .6vh;transform:rotate(45deg);border:1.5px solid #d6a63c;background:rgba(214,166,60,.14);color:#f3d27a;}
+#menuLayer #mBtns .mDia svg{width:58%;height:58%;transform:rotate(-45deg);}
+#menuLayer #mBtns .mTx2{display:flex;flex-direction:column;min-width:0;flex:1;}
+#menuLayer #mBtns .mTx2 b{font-weight:700;font-size:1em;letter-spacing:.14em;}
+#menuLayer #mBtns .mTx2 small{display:block;margin-top:.2vh;font:600 clamp(11px,2vh,15px) 'Cormorant Garamond',Georgia,serif;letter-spacing:.03em;color:#c9b27a;opacity:1;overflow:hidden;text-overflow:ellipsis;}
+#menuLayer #mBtns .mBar{display:none;height:5px;border-radius:3px;background:rgba(0,0,0,.35);margin-top:.9vh;overflow:hidden;}
+#menuLayer #mBtns .mBar u{display:block;height:100%;width:6%;border-radius:3px;background:#ffd27a;}
+#menuLayer #mBtns .mPri{height:clamp(56px,13vh,96px);border-color:#f0c25a;background:linear-gradient(100deg,rgba(200,40,58,.88),rgba(110,16,32,.78) 70%,rgba(60,10,20,.55));box-shadow:0 0 34px rgba(200,40,58,.4),inset 0 1px 0 rgba(255,255,255,.25);font-size:clamp(14px,3.2vh,26px);color:#fff1c8;}
+#menuLayer #mBtns .mPri:hover,#menuLayer #mBtns .mPri:focus-visible{background:linear-gradient(100deg,rgba(225,55,75,.95),rgba(130,22,40,.85) 70%,rgba(70,12,24,.6));}
+#menuLayer #mBtns .mPri .mDia{width:clamp(30px,6.4vh,54px);height:clamp(30px,6.4vh,54px);background:rgba(255,210,122,.2);color:#ffe3a0;}
+#menuLayer #mBtns .mPri small{color:#ffd9de;font-size:clamp(11px,2vh,15px);}
+#menuLayer #mBtns .mPri .mBar{display:block;}
+@media (max-height:360px){#menuLayer #mBtns .mPri .mBar{display:none;}}
+
+/* alt ikonlar → cam kapsül */
+#menuLayer #mIcos{left:5vw!important;right:auto!important;top:auto!important;bottom:3.5vh!important;transform:none!important;flex-direction:row!important;flex-wrap:nowrap;max-width:none;gap:clamp(14px,3vh,26px);padding:.8vh clamp(14px,2.6vh,22px);border:1.5px solid rgba(214,166,60,.45);border-radius:40px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.03));backdrop-filter:blur(10px);}
+#menuLayer #mIcos .mIco{padding:0!important;min-width:0!important;gap:.5vh;}
+#menuLayer #mIcos .mIco i{display:grid;place-items:center;width:clamp(34px,7.2vh,46px);height:clamp(34px,7.2vh,46px);border-radius:50%;border:1.5px solid #d6a63c;background:rgba(255,255,255,.07);color:#f3d27a;}
+#menuLayer #mIcos .mIco i svg{width:52%;height:52%;}
+#menuLayer #mIcos .mIco p{font-size:clamp(8px,1.4vh,10px);letter-spacing:.14em;color:#d9c386;margin:0;}
+@media (max-height:480px) and (orientation:landscape){#menuLayer #mIcos{left:5vw!important;bottom:6px!important;padding:3px 14px;}#menuLayer #mBtns{margin-bottom:0!important;bottom:calc(6px + 58px)!important;}}
+@media (orientation:portrait){
+  #menuLayer #mTitleWrap{top:11vh;}
+  #menuLayer #mBtns{left:6vw!important;width:88vw!important;bottom:calc(3vh + 88px)!important;}
+  #menuLayer #mIcos{left:50%!important;transform:translateX(-50%)!important;bottom:2.5vh!important;}
+}
+#menuLayer #mIcos .mIco p{white-space:nowrap;}
+@media (orientation:portrait){#menuLayer #mIcos{gap:clamp(8px,3vw,18px);}}
+
+/* ═══ v1.85 KARİYER — HARİTA YOLU (K1) ═══ */
+#kariyerBox{background:radial-gradient(110% 100% at 55% 30%,#1c2a55 0%,#0b1128 62%,#050813 100%);}
+#kariyerPanel.ovPanel>*{width:100%;max-width:none;}
+#kariyerPanel .ovHead.kyHead{gap:clamp(8px,2vh,18px);margin-bottom:clamp(6px,1.4vh,12px);}
+#kariyerPanel .kyHead .panTitle{font:900 clamp(18px,4.2vh,28px) 'Cinzel',serif;letter-spacing:.22em;color:#f3d27a;margin:0;}
+#kariyerPanel .kyRank{margin-left:auto;display:flex;align-items:center;gap:clamp(8px,1.6vh,12px);padding:clamp(3px,.6vh,6px) clamp(10px,2vh,20px) clamp(3px,.6vh,6px) clamp(3px,.6vh,6px);border:1.5px solid rgba(214,166,60,.5);border-radius:40px;background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.03));backdrop-filter:blur(10px);}
+.kyLv{flex:none;display:grid;place-items:center;width:clamp(28px,5.6vh,40px);height:clamp(28px,5.6vh,40px);border-radius:50%;background:linear-gradient(160deg,#d8364a,#7c1422);border:1.5px solid #d6a63c;font:900 clamp(12px,2.4vh,16px) 'Cinzel',serif;color:#fff1c8;}
+.kyRank b{display:block;font:700 clamp(10px,1.9vh,13px) 'Cinzel',serif;letter-spacing:.1em;color:#f3e3b0;}
+.kyRank .pfBar{width:clamp(70px,16vh,130px);margin-top:3px;}
+.kyRank small{font:600 clamp(10px,1.8vh,13px)/1.15 'Cormorant Garamond',Georgia,serif;color:#c9b27a;}
+.kyBody{flex:1;min-height:0;display:flex;gap:clamp(8px,1.8vh,16px);}
+.kyNav{flex:none;display:flex;flex-direction:column;gap:2px;padding:clamp(4px,.8vh,8px) clamp(3px,.6vh,6px);border:1.5px solid rgba(214,166,60,.5);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.03));align-self:flex-start;}
+.kyNav .mBtn{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;width:clamp(58px,13vh,76px);padding:clamp(5px,1.1vh,9px) 0;border-radius:12px;color:#d9c386;font:700 clamp(7px,1.35vh,9px) 'Cinzel',serif;letter-spacing:.08em;text-align:center;}
+.kyNav .mBtn.kyOn{background:linear-gradient(160deg,rgba(200,40,58,.9),rgba(110,16,32,.8));color:#fff1c8;box-shadow:0 0 20px rgba(200,40,58,.4);}
+.kyNav .mBtn:hover{background:rgba(214,166,60,.16);}
+.kyNav .mBtn.kyOn:hover{background:linear-gradient(160deg,rgba(225,55,75,.95),rgba(130,22,40,.85));}
+.kyIc svg{width:clamp(18px,3.8vh,24px);height:clamp(18px,3.8vh,24px);display:block;}
+.kyMain{flex:1;min-width:0;display:flex;flex-direction:column;gap:clamp(6px,1.4vh,12px);}
+.kyMap{position:relative;flex:1;min-height:0;}
+.kyPath{position:absolute;inset:0;width:100%;height:100%;}
+.kyPath path{fill:none;stroke:#d6a63c;stroke-width:3;stroke-dasharray:3 9;stroke-linecap:round;opacity:.8;vector-effect:non-scaling-stroke;}
+.kyPv{display:none;}
+.kyNode{all:unset;box-sizing:border-box;position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;color:#f3e3b0;text-align:center;}
+.kyNode i{display:grid;place-items:center;width:clamp(34px,10vh,56px);height:clamp(34px,10vh,56px);border-radius:50%;border:2px solid #d6a63c;background:radial-gradient(circle,#3a2c12,#14100a);box-shadow:0 0 0 4px rgba(214,166,60,.14),0 6px 14px rgba(0,0,0,.5);font-style:normal;font-size:clamp(16px,4.6vh,26px);}
+.kyNode span{font:700 clamp(8px,1.6vh,11px) 'Cinzel',serif;letter-spacing:.06em;max-width:11ch;text-shadow:0 1px 4px #000;}
+.kyNode.kilit{opacity:.5;}
+.kyNode.sec{opacity:1;}
+.kyNode.sec i{width:clamp(42px,12.5vh,68px);height:clamp(42px,12.5vh,68px);border-color:#ffe3a0;background:radial-gradient(circle,#c8283a,#6a1020);box-shadow:0 0 0 5px rgba(200,40,58,.3),0 0 28px rgba(200,40,58,.6);}
+.kyInfo{flex:none;display:flex;align-items:center;gap:clamp(8px,2vh,18px);padding:clamp(8px,1.8vh,14px) clamp(12px,2.4vh,20px);border:1.5px solid rgba(214,166,60,.5);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.03));backdrop-filter:blur(10px);box-shadow:0 10px 26px rgba(0,0,0,.4);}
+.kyInfoT{flex:1;min-width:0;}
+.kyInfoT b{display:block;font:900 clamp(13px,2.8vh,20px) 'Cinzel',serif;letter-spacing:.12em;color:#f3e3b0;}
+.kyInfoT small{display:block;font:600 clamp(11px,2vh,16px) 'Cormorant Garamond',Georgia,serif;color:#c9b27a;margin-top:1px;}
+.kyInfoT .kyMeta{font-size:clamp(10px,1.8vh,14px);opacity:.85;}
+.kyGir,.kySinif{flex:none;cursor:pointer;border:2px solid #f0c25a;border-radius:10px;padding:clamp(8px,1.8vh,14px) clamp(18px,3.6vh,34px);background:linear-gradient(100deg,#c8283a,#7a1426);color:#fff1c8;font:900 clamp(12px,2.2vh,16px) 'Cinzel',serif;letter-spacing:.18em;box-shadow:0 0 24px rgba(200,40,58,.5);}
+.kyGir:disabled{opacity:.45;box-shadow:none;cursor:default;}
+.kySinif{background:linear-gradient(180deg,#8a5d14,#4a300a);border-color:#d6a63c;box-shadow:none;letter-spacing:.1em;padding:clamp(8px,1.8vh,14px) clamp(10px,2vh,18px);font-size:clamp(10px,1.8vh,13px);}
+@media (orientation:portrait){
+  .kyBody{flex-direction:column;}
+  .kyNav{flex-direction:row;align-self:stretch;justify-content:space-between;}
+  .kyNav .mBtn{width:auto;flex:1;}
+  .kyPh{display:none;}.kyPv{display:block;}
+  .kyNode{left:var(--px);top:var(--py);}
+  .kyRank small{display:none;}
+}
+#kariyerPanel .kyNode{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0!important;}
+@media (orientation:portrait){
+  #kariyerPanel .kyRank{min-width:0;flex:0 1 auto;}
+  #kariyerPanel .kyRank b{display:none;}
+  #kariyerPanel .kyRank .pfBar{width:clamp(48px,14vw,80px);}
+  #kariyerPanel .kyHead .panTitle{font-size:clamp(16px,5.4vw,24px);letter-spacing:.14em;}
+  #kariyerPanel .kyNode:not(.sec) span{display:none;}
+  #kariyerPanel .kyInfo{flex-wrap:wrap;}
+  #kariyerPanel .kyInfoT{flex:1 1 100%;}
+  #kariyerPanel .kyInfo>button{flex:1 1 40%;}
+  #kariyerPanel .kyNode.sec span{position:absolute;top:100%;white-space:nowrap;max-width:none;}
+}
+
+/* ═══ v1.85 TÜM SAYFALAR — Divan Cam stili ═══ */
+.ovBox,#coopBox{background:radial-gradient(110% 100% at 55% 30%,#1c2a55 0%,#0b1128 62%,#050813 100%)!important;}
+.ovPanel.panel>*{width:min(1100px,100%);}
+.ovHead .panTitle,.panTitle{font-family:'Cinzel',serif;}
+.ovHead .panTitle{font-weight:900;font-size:clamp(18px,4.2vh,28px);letter-spacing:.2em;color:#f3d27a;}
+.ovHead .zmX{width:clamp(36px,7vh,46px);height:clamp(36px,7vh,46px);border-radius:50%;border:2px solid #d6a63c;background:#4a1212;color:#f3d27a;}
+.ovFoot .panBtn{height:clamp(36px,7vh,44px);border:1.5px solid rgba(214,166,60,.5);border-radius:22px;background:rgba(255,255,255,.06);color:#f3e3b0;font:700 clamp(11px,1.9vh,13px) 'Cinzel',serif;letter-spacing:.2em;}
+.ovFoot .panBtn:hover{background:rgba(214,166,60,.2);}
+/* kartlar (Hikaye, Serbest Haritalar, Profil) */
+.hkKart{background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.03));border:1.5px solid rgba(214,166,60,.4);border-left:4px solid rgba(214,166,60,.6);border-radius:14px;box-shadow:0 8px 20px rgba(0,0,0,.35);}
+.hkKart.aktif{border-color:#f0c25a;border-left-color:#f0c25a;box-shadow:0 0 22px rgba(200,40,58,.28);}
+.hkKart.bitti{border-left-color:#d6a63c;}
+.hkAd{color:#f3e3b0;letter-spacing:.06em;}
+.hkBtn{border:2px solid #f0c25a;border-radius:10px;background:linear-gradient(100deg,#c8283a,#7a1426);color:#fff1c8;letter-spacing:.14em;}
+.hkBtn.grn{border-color:#d6a63c;background:linear-gradient(180deg,#8a5d14,#4a300a);}
+.pfBar{background:rgba(0,0,0,.45);border-radius:4px;}
+.pfBar i{background:linear-gradient(90deg,#b8801f,#f3d27a);}
+/* ayarlar */
+.toggleRow{padding:11px 4px;border-bottom:1px solid rgba(214,166,60,.2);}
+.toggleLabel{font:700 13px 'Cinzel',serif;letter-spacing:.08em;color:#f3e3b0;}
+.toggleSub{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:14px;color:#c9b27a;}
+.toggleSlider{background:rgba(0,0,0,.4);border:1.5px solid #d6a63c;}
+.toggleSlider::before{background:#9a8a60;}
+.toggle input:checked+.toggleSlider{background:linear-gradient(100deg,#c8283a,#7a1426);border-color:#d6a63c;}
+.toggle input:checked+.toggleSlider::before{background:#ffe3a0;}
+.ayChip{min-height:36px;border:1.5px solid rgba(214,166,60,.5);border-radius:10px;background:rgba(255,255,255,.05);color:#f3e3b0;}
+.ayChip.on{background:linear-gradient(100deg,#c8283a,#7a1426);border-color:#f0c25a;color:#fff1c8;}
+.ayTab{border:0;border-radius:12px;background:none;color:#d9c386;}
+.ayTab.on{background:linear-gradient(160deg,rgba(200,40,58,.9),rgba(110,16,32,.8));color:#fff1c8;box-shadow:0 0 20px rgba(200,40,58,.4);}
+#settingsPanel .ovBody,#nasilPanel .ovBody{border:1.5px solid rgba(214,166,60,.4);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));padding:6px 18px;}
+@media (orientation:landscape){
+  #settingsPanel.ovPanel{display:grid;grid-template-columns:clamp(110px,22vh,200px) 1fr;grid-template-rows:auto 1fr auto;grid-template-areas:"head head" "tabs body" "foot foot";column-gap:clamp(10px,2vh,20px);}
+  #settingsPanel .ovHead{grid-area:head}
+  #settingsPanel .ayTabs{grid-area:tabs;flex-direction:column;overflow:visible;margin:0;gap:3px;align-self:start;padding:8px;border:1.5px solid rgba(214,166,60,.4);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.03));}
+  #settingsPanel .ayTab{flex:0 0 auto;min-height:0;padding:clamp(7px,1.6vh,13px) 10px;font-size:clamp(10px,1.8vh,12px);letter-spacing:.1em;justify-content:flex-start;}
+  #settingsPanel .ayTab span{display:inline;margin-right:6px;}
+  #settingsPanel .ovBody{grid-area:body}
+  #settingsPanel .ovFoot{grid-area:foot;display:flex}
+  #settingsPanel>*{width:auto}
+  #settingsPanel .ovHead{width:100%}
+}
+/* nasıl oynanır: her kontrol bir kart */
+#nasilPanel .ovBody{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-content:start;padding:14px;}
+#nasilPanel .toggleRow{display:flex;align-items:center;gap:14px;padding:12px 16px;border:1.5px solid rgba(214,166,60,.4);border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.03));flex-direction:row;justify-content:flex-start;}
+#nasilPanel .toggleRow>div:first-child{flex:none;min-width:clamp(90px,16vh,150px);padding:8px 12px;border:1.5px solid #d6a63c;border-bottom-width:4px;border-radius:8px;background:linear-gradient(180deg,#3a2c12,#1c1409);color:#ffe3a0;text-align:center;font:700 12px 'Cinzel',serif;}
+#nasilPanel .toggleRow>div:last-child{max-width:none;justify-content:flex-start;font:700 clamp(12px,2.2vh,15px) 'Cinzel',serif;letter-spacing:.08em;color:#f3e3b0;}
+@media (orientation:portrait){#nasilPanel .ovBody{grid-template-columns:1fr;}}
+/* çok oyunculu: iki kart */
+#coopBox{position:fixed;inset:0;align-items:stretch;justify-content:stretch;}
+#coopPanel{width:100%;height:100%;box-sizing:border-box;background:none;border:0;border-radius:0;padding:max(12px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));display:flex;flex-direction:column;gap:clamp(8px,1.8vh,16px);text-align:left;}
+#coopPanel>*{width:min(1100px,100%);margin-left:auto;margin-right:auto;}
+.coopCards{flex:1;min-height:0;display:flex;gap:clamp(10px,2.4vh,22px);}
+.coopCard{flex:1;display:flex;flex-direction:column;gap:clamp(6px,1.4vh,12px);padding:clamp(12px,2.6vh,26px) clamp(14px,3vh,28px);border:1.5px solid rgba(214,166,60,.5);border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.03));box-shadow:0 10px 26px rgba(0,0,0,.4);justify-content:center;}
+.coopCard.coopHost{border-color:#f0c25a;}
+.coopCT{font:900 clamp(15px,3.2vh,22px) 'Cinzel',serif;letter-spacing:.14em;color:#f3e3b0;}
+.coopCS{font:600 clamp(12px,2.2vh,16px) 'Cormorant Garamond',Georgia,serif;color:#c9b27a;}
+#coopKodSatiri{text-align:center;font-size:clamp(9px,1.6vh,11px);}
+#coopKod{font-size:clamp(20px,4.4vh,32px);}
+#coopGiris{height:clamp(40px,8vh,58px);border:1.5px solid rgba(214,166,60,.6);border-radius:12px;background:rgba(0,0,0,.4);color:#f3d27a;font-size:clamp(16px,3.4vh,24px);}
+.coopB{height:clamp(40px,8vh,58px);border:2px solid #f0c25a!important;border-radius:12px!important;background:linear-gradient(100deg,#c8283a,#7a1426)!important;color:#fff1c8;font-size:clamp(12px,2.2vh,16px);letter-spacing:.18em;box-shadow:0 0 22px rgba(200,40,58,.4)!important;}
+.coopCard:not(.coopHost) .coopB{background:linear-gradient(180deg,#8a5d14,#4a300a)!important;border-color:#d6a63c!important;box-shadow:none!important;}
+#coopDurum{text-align:center;font:600 clamp(12px,2vh,15px) 'Cormorant Garamond',Georgia,serif;color:#c9b27a;min-height:0;}
+@media (orientation:portrait){.coopCards{flex-direction:column;}}
+#settingsPanel.ovPanel>*{margin:0;}
+#settingsPanel.ovPanel>.ovHead,#settingsPanel.ovPanel>.ovFoot{width:100%;}
+#settingsPanel .ovFoot .panBtn{flex:1;width:100%;}
+#coopPanel #coopT{font:900 clamp(18px,4.2vh,28px) 'Cinzel',serif;letter-spacing:.2em;color:#f3d27a;}
+#coopPanel .ovHead{justify-content:space-between;}
 </style>
 </head>
 <body>
@@ -667,19 +846,19 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.84</div>
+      <div id="mVer">v1.85</div>
     </div>
-    <div id="mProfil" onclick="profilAc()" role="button" aria-label="Profil"><span id="mpAv">🪖</span><div><b id="mpAd">Yeniçeri</b><small id="mpSv">Sv 1</small></div></div>
+    <div id="mProfil" onclick="profilAc()" role="button" aria-label="Profil"><span id="mpAv">1</span><div><b id="mpAd">Yeniçeri</b><small id="mpSv">Sv 1</small></div></div>
     <div id="mBtns">
-      <button class="mBtn mPri" onclick="kariyerAc()">🏅 KARİYER<small id="mDevamAlt"></small></button>
-      <button class="mBtn" onclick="coopAc()">👥 ÇOK OYUNCULU</button>
-      <button class="mBtn" onclick="atolyeAc()">🛠 ATÖLYE</button>
-      <button class="mBtn" id="btnInstall" style="display:none" onclick="installApp()">⬇ UYGULAMAYI YÜKLE</button>
+      <button class="mBtn mPri" onclick="kariyerAc()"><span class="mDia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="9" r="5"/><path d="M8.5 13.5L7 21l5-3 5 3-1.5-7.5"/></svg></span><span class="mTx2"><b>KARİYER</b><small id="mDevamAlt"></small><i class="mBar"><u id="mXpBar"></u></i></span></button>
+      <button class="mBtn" onclick="coopAc()"><span class="mDia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 20c0-4 3-6 6-6s6 2 6 6M15 14c3 0 6 1.5 6 5"/></svg></span><span class="mTx2"><b>ÇOK OYUNCULU</b><small>Arkadaşlarınla oda kur</small></span></button>
+      <button class="mBtn" onclick="atolyeAc()"><span class="mDia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M14 4l6 6-3 3-6-6zM12 8L4 16l4 4 8-8"/></svg></span><span class="mTx2"><b>ATÖLYE</b><small>Model ve harita araçları</small></span></button>
+      <button class="mBtn" id="btnInstall" style="display:none" onclick="installApp()"><span class="mTx2"><b>⬇ UYGULAMAYI YÜKLE</b></span></button>
     </div>
     <div id="mIcos">
-      <div class="mIco" onclick="profilAc('basarim')" role="button"><span>🏆</span><p>BAŞARIMLAR</p></div>
-      <div class="mIco" onclick="nasilAc()" role="button"><span>📜</span><p>NASIL OYNANIR</p></div>
-      <div class="mIco" onclick="openSettings()" role="button"><span>⚙</span><p>AYARLAR</p></div>
+      <div class="mIco" onclick="profilAc('basarim')" role="button" tabindex="0" aria-label="Başarımlar"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 01-10 0zM7 6H4v2a3 3 0 003 3M17 6h3v2a3 3 0 01-3 3M12 14v4M8 20h8"/></svg></i><p>BAŞARIMLAR</p></div>
+      <div class="mIco" onclick="nasilAc()" role="button" tabindex="0" aria-label="Nasıl oynanır"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 4h11a2 2 0 012 2v12a2 2 0 01-2 2H6zM9 9h7M9 13h7"/></svg></i><p>NASIL OYNANIR</p></div>
+      <div class="mIco" onclick="openSettings()" role="button" tabindex="0" aria-label="Ayarlar"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg></i><p>AYARLAR</p></div>
     </div>
   </div>
 
@@ -937,14 +1116,21 @@ canvas{display:block;position:absolute;top:0;left:0;}
 <div id="downBox" style="display:none"><div>☠ YERE DÜŞTÜN</div><small>Yoldaşın yanında durursa canlanırsın</small><div id="downBar"><div id="downFl"></div></div></div>
 <div id="coopBox">
     <div id="coopPanel">
-      <div id="coopT">👥 ÇOK OYUNCULU</div>
-      <button class="mBtn coopB" onclick="odaKur()">🏰 ODA KUR</button>
-      <div id="coopKodSatiri">ODA KODU<div id="coopKod">-----</div></div>
-      <div class="coopAyrac">— ya da —</div>
-      <input id="coopGiris" maxlength="5" placeholder="ODA KODU" autocomplete="off" autocapitalize="characters" spellcheck="false">
-      <button class="mBtn coopB" onclick="odayaKatil(document.getElementById('coopGiris').value)">🚪 ODAYA KATIL</button>
+      <div class="ovHead kyHead"><div class="panTitle" id="coopT">ÇOK OYUNCULU</div><button class="zmX" onclick="coopKapat()" aria-label="Kapat">✕</button></div>
+      <div class="coopCards">
+        <div class="coopCard coopHost">
+          <div class="coopCT">ODA KUR</div><div class="coopCS">Sen ev sahibisin, dostların sana katılır</div>
+          <div id="coopKodSatiri">ODA KODU<div id="coopKod">-----</div></div>
+          <button class="mBtn coopB" onclick="odaKur()">🏰 ODA KUR</button>
+        </div>
+        <div class="coopCard">
+          <div class="coopCT">ODAYA KATIL</div><div class="coopCS">Dostundan aldığın kodu gir</div>
+          <input id="coopGiris" maxlength="5" placeholder="ODA KODU" autocomplete="off" autocapitalize="characters" spellcheck="false">
+          <button class="mBtn coopB" onclick="odayaKatil(document.getElementById('coopGiris').value)">🚪 ODAYA KATIL</button>
+        </div>
+      </div>
       <div id="coopDurum"></div>
-      <button class="mBtn coopB" onclick="coopKapat()">KAPAT</button>
+      <div class="ovFoot"><button class="panBtn" onclick="coopKapat()">← Ana Menü</button></div>
     </div>
   </div>
   <div id="dlgLayer">
@@ -1020,7 +1206,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.84';
+const VERSION='v1.85';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -1109,7 +1295,7 @@ try{
 // ═══════════════════════════════════════════════════════
 // AYARLAR SİSTEMİ
 // ═══════════════════════════════════════════════════════
-const SURUM='v1.84';
+const SURUM='v1.85';
 const SETTINGS_KEY='yenicheri_settings';
 let SETTINGS={
   touchEnabled: true,
@@ -1121,11 +1307,23 @@ let SETTINGS={
   kalite: 'yuksek',       // 'dusuk'|'orta'|'yuksek'
   golge: true, olcek: 100, fps: false,
   titresim: true,
-  uiBoyut: 100            // arayüz boyutu %
+  uiBoyut: 100,           // arayüz boyutu %
+  atmosfer: 'aksam'       // menü atmosferi (ATMOSFERLER anahtarı)
 };
 function loadSettings(){try{const d=localStorage.getItem(SETTINGS_KEY);if(d)SETTINGS={...SETTINGS,...JSON.parse(d)};}catch(e){}}
 function saveSettings(){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(SETTINGS));}catch(e){}}
 loadSettings();
+
+// ── MENÜ ATMOSFERİ (v1.85) ─────────────────────────────
+// Yeni atmosfer eklemek: (1) buraya bir satır, (2) main.css'te '#menuLayer[data-atm="anahtar"]{...}' bloğu
+// (--atm-sky, --atm-glow, --atm-star, --atm-vig değişkenleri). Ayrıntı: docs/ATMOSFER.md
+const ATMOSFERLER={aksam:'Akşam',gece:'Gece',safak:'Şafak',sis:'Sisli'};
+function atmosferUygula(ad){
+  if(!ATMOSFERLER[ad])ad='aksam';
+  const m=document.getElementById('menuLayer');if(m)m.setAttribute('data-atm',ad);
+  const sc=document.getElementById('starCv');if(sc&&typeof getComputedStyle==='function'){
+    const o=getComputedStyle(m).getPropertyValue('--atm-star').trim();sc.style.opacity=o||'1';}
+}
 
 let AYAR_SEKME='kontrol';
 function openSettings(){ayarCiz();document.getElementById('settingsBox').style.display='flex';}
@@ -1145,6 +1343,7 @@ function ayarDegis(k,v,yenile){
   else if(['master','muzik','efekt','sessiz'].indexOf(k)>=0&&typeof SES!=='undefined'){SES.baslat();SES.hacim();}
   else if(['kalite','golge','olcek'].indexOf(k)>=0)applyGrafik();
   else if(k==='fps')applyFps();
+  else if(k==='atmosfer')atmosferUygula(v);
   else if(k==='uiBoyut'&&typeof uiOlcekle==='function')uiOlcekle();
   else if(k==='titresim'&&v&&typeof SES!=='undefined')SES.titre(30);
   if(yenile)ayarCiz();
@@ -1173,6 +1372,7 @@ function ayarCiz(){
     h+=_ayRow('🌑 Gölgeler','Kapatmak performansı artırır',_ayTog('golge'));
     h+=_ayRow('📐 Çözünürlük Ölçeği','Düşürmek akıcılığı artırır',_aySec('olcek',[[60,'%60'],[80,'%80'],[100,'%100']]));
     h+=_ayRow('📊 FPS Göstergesi','Sağ üstte kare hızı',_ayTog('fps'));
+    h+=_ayRow('🌆 Menü Atmosferi','Ana menünün gökyüzü ve ışığı',_aySec('atmosfer',Object.keys(ATMOSFERLER).map(function(k){return [k,ATMOSFERLER[k]];})));
   }else if(AYAR_SEKME==='hesap'){
     h+='<div class="toggleSub" style="margin:2px 0 8px">Kayıt, bu tarayıcıda saklanır. Başka cihaza taşımak için dışa aktarıp yapıştırın.</div>';
     h+='<textarea id="ayKayit" class="ayTxt" rows="4" placeholder="Dışa aktarılan kayıt burada görünür; içe aktarmak için buraya yapıştırın"></textarea>';
@@ -1269,7 +1469,7 @@ function applyAllSettings(){
   if(tl)tl.style.display=SETTINGS.touchEnabled?'block':'none';
   const ab=document.getElementById('abilityBtns');
   if(ab)ab.style.display=SETTINGS.abilityBtns?'flex':'none';
-  setJoySize(SETTINGS.joySize||'normal');applyJoyOp();applyGrafik();applyFps();
+  setJoySize(SETTINGS.joySize||'normal');applyJoyOp();applyGrafik();applyFps();atmosferUygula(SETTINGS.atmosfer);
   if(typeof SES!=='undefined')SES.hacim();
 }
 
@@ -4132,41 +4332,49 @@ setInterval(function(){
   if(typeof playing!=='undefined'&&playing&&!paused&&!document.hidden){const P=profilHazirla();P.sure++;if(P.sure%30===0)saveGame();}
 },1000);
 profilHazirla();
-// ═══ KARİYER (v1.83): tam sayfa merkez — Devam Et, Yeni Oyun, Hikaye, Serbest Haritalar, Karakterim + rütbe/harita özeti ═══
+// ═══ KARİYER (v1.85): tam sayfa harita yolu — sol ikon çubuğu (Devam Et, Hikaye, Serbest, Karakterim, Yeni Oyun), altın noktalı yolda haritalar, altta seçili harita ═══
 let KARIYER_DON=false;   // alt sayfadan (Hikaye vb.) kapanınca Kariyer'e dön
 function kariyerAc(){KARIYER_DON=false;kariyerCiz();document.getElementById('kariyerBox').style.display='flex';}
 function kariyerKapat(){document.getElementById('kariyerBox').style.display='none';KARIYER_DON=false;if(typeof menuProfilGuncelle==='function')menuProfilGuncelle();}
 // Kariyer'den bir alt sayfaya git; alt sayfa kapanınca Kariyer'e dönülür
 function kariyerGit(fn){document.getElementById('kariyerBox').style.display='none';KARIYER_DON=true;fn();}
 function kariyerDon(){if(KARIYER_DON){KARIYER_DON=false;kariyerCiz();document.getElementById('kariyerBox').style.display='flex';}}
+let KARIYER_SEC='kisla';   // yolda seçili harita
+function kariyerSec(id){KARIYER_SEC=id;kariyerCiz();}
+// Haritaların yoldaki konumu (% — yatay: x,y). Dikey ekranda x/y yer değiştirir.
+const KY_PT=[[10,70],[22,42],[34,66],[46,36],[58,62],[70,32],[80,58],[90,28]];
 function kariyerCiz(){
   const lv=SAVE.level||1,fame=SAVE.fame||0;
   let sonraki=null,onceki=FAME_TITLES[0];
   FAME_TITLES.forEach(function(t){if(fame>=t.min)onceki=t;else if(!sonraki)sonraki=t;});
   const xy=Math.min(100,Math.round((SAVE.xp||0)/(SAVE.xpNext||100)*100));
   const fy=sonraki?Math.min(100,Math.round((fame-onceki.min)/(sonraki.min-onceki.min)*100)):100;
-  let h='<div class="ovHead"><div><div class="panTitle">🏅 KARİYER</div><div class="panSub" style="margin:0">'+getFameTitle().toUpperCase()+' · SEVİYE '+lv+'</div></div><button class="zmX" onclick="kariyerKapat()" aria-label="Geri">✕</button></div>';
-  h+='<div class="ovBody kyGrid"><div class="kyNav">';
-  h+='<button class="mBtn mPri" onclick="kariyerKapat();haritayaGir(\'kisla\')">▶ DEVAM ET<small>Kışla · Sv '+lv+'</small></button>';
-  h+='<button class="mBtn" onclick="confirmReset()">✦ YENİ OYUN<small>Kayıdı sıfırlar</small></button>';
-  h+='<button class="mBtn" onclick="kariyerGit(hikayeAc)">📖 HİKAYE</button>';
-  h+='<button class="mBtn" onclick="kariyerGit(openChapters)">🗺 SERBEST HARİTALAR</button>';
-  h+='<button class="mBtn" onclick="kariyerGit(gorunumAc)">🎨 KARAKTERİM</button>';
-  h+='</div><div class="kyOzet">';
-  h+='<div class="hkKart aktif"><div class="hkAd">'+getFameTitle()+' · Seviye '+lv+'</div>'
-   +'<div class="toggleSub">XP '+(SAVE.xp||0)+' / '+(SAVE.xpNext||100)+'</div><div class="pfBar"><i style="width:'+xy+'%"></i></div>'
-   +'<div class="toggleSub" style="margin-top:6px">Ün '+fame+(sonraki?' / '+sonraki.min+' → '+sonraki.title:' (en yüksek rütbe)')+'</div><div class="pfBar"><i style="width:'+fy+'%"></i></div></div>';
-  if(lv>=10&&!SAVE.class)h+='<div class="hkKart aktif"><div class="hkAd">🎖 Sınıfını seç</div><div class="toggleSub">Seviye 10\'a ulaştın; sınıf bonusunu seçebilirsin.</div><div class="hkRow"><button class="hkBtn grn" onclick="kariyerKapat();document.getElementById(\'classBox\').style.display=\'flex\'">SEÇ</button></div></div>';
-  h+='<div class="panSub" style="margin:8px 0 4px">HARİTALAR</div>';
-  WORLD_MAPS.forEach(function(m){
-    const gerek=haritaSv(m.id),acik=lv>=gerek,pr=(typeof HIKAYE!=='undefined')?HIKAYE.find(function(x){return x.harita===m.id;}):null;
-    h+='<div class="hkKart '+(acik?'aktif':'kilit')+'"><div class="hkTop" style="cursor:default"><div class="hkIc">'+(acik?m.icon:'🔒')+'</div><div><div class="hkAd">'+m.name+'</div>'
-     +'<div class="toggleSub">'+(acik?'✔ Açık':'Sv '+gerek+' gerekli ('+(gerek-lv)+' seviye kaldı)')+' · Önerilen Sv '+gerek+(pr?' · 📖 Perde '+pr.no:'')+'</div></div></div>'
-     +(acik?'<div class="hkRow"><button class="hkBtn" onclick="haritayaGir(\''+m.id+'\')">▶ GİR</button></div>':'')+'</div>';
+  const ic=function(d){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+d+'</svg>';};
+  const nav=function(d,ad,fn,cls){return '<button class="mBtn'+(cls?' '+cls:'')+'" onclick="'+fn+'"><span class="kyIc">'+ic(d)+'</span><span class="kyLb">'+ad+'</span></button>';};
+  let h='<div class="ovHead kyHead"><div class="panTitle">KARİYER</div>'
+   +'<div class="kyRank"><span class="kyLv">'+lv+'</span><div><b>'+getFameTitle().toUpperCase()+'</b><div class="pfBar"><i style="width:'+xy+'%"></i></div></div><small>XP '+(SAVE.xp||0)+'/'+(SAVE.xpNext||100)+'<br>Ün '+fame+(sonraki?'/'+sonraki.min:'')+'</small></div>'
+   +'<button class="zmX" onclick="kariyerKapat()" aria-label="Kapat">✕</button></div>';
+  h+='<div class="kyBody"><div class="kyNav">'
+   +nav('<path d="M7 4l13 8-13 8z" fill="currentColor"/>','DEVAM ET',"kariyerKapat();haritayaGir('kisla')",'kyOn')
+   +nav('<path d="M6 4h11a2 2 0 012 2v12a2 2 0 01-2 2H6zM9 9h7M9 13h7"/>','HİKAYE','kariyerGit(hikayeAc)')
+   +nav('<path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2zM9 4v14M15 6v14"/>','SERBEST','kariyerGit(openChapters)')
+   +nav('<circle cx="12" cy="8" r="4"/><path d="M4 21c0-5 4-7 8-7s8 2 8 7"/>','KARAKTERİM','kariyerGit(gorunumAc)')
+   +nav('<path d="M12 4v16M4 12h16"/>','YENİ OYUN','confirmReset()')
+   +'</div><div class="kyMain"><div class="kyMap">';
+  // yol (yatay + dikey ekran için iki ayrı çizgi)
+  const yol=function(sw){let d='';KY_PT.forEach(function(p,i){const x=sw?p[1]:p[0],y=sw?p[0]:p[1];if(!i){d+='M'+x+' '+y;return;}const q=KY_PT[i-1],qx=sw?q[1]:q[0],qy=sw?q[0]:q[1];d+=sw?' C'+qx+' '+((qy+y)/2)+' '+x+' '+((qy+y)/2)+' '+x+' '+y:' C'+((qx+x)/2)+' '+qy+' '+((qx+x)/2)+' '+y+' '+x+' '+y;});return d;};
+  h+='<svg class="kyPath kyPh" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="'+yol(false)+'"/></svg><svg class="kyPath kyPv" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="'+yol(true)+'"/></svg>';
+  let sec=WORLD_MAPS.find(function(m){return m.id===KARIYER_SEC;})||WORLD_MAPS[0];
+  WORLD_MAPS.forEach(function(m,i){
+    const gerek=haritaSv(m.id),acik=lv>=gerek,pt=KY_PT[i]||[50,50];
+    h+='<button class="hkKart kyNode '+(acik?'aktif':'kilit')+(m.id===sec.id?' sec':'')+'" style="--x:'+pt[0]+'%;--y:'+pt[1]+'%;--px:'+pt[1]+'%;--py:'+pt[0]+'%" onclick="kariyerSec(\''+m.id+'\')" aria-label="'+m.name+'"><i>'+(acik?m.icon:'🔒')+'</i><span>'+m.name+'</span></button>';
   });
-  h+='<div class="panSub" style="margin:8px 0 4px">RÜTBELER</div>';
-  FAME_TITLES.forEach(function(t){h+='<div class="toggleSub" style="padding:3px 2px;'+(fame>=t.min?'color:#ffd36b':'opacity:.6')+'">'+(fame>=t.min?'✔ ':'◻ ')+t.title+' — '+t.min+' ün</div>';});
-  h+='</div></div><div class="ovFoot"><button class="panBtn" onclick="kariyerKapat()">← Ana Menü</button></div>';
+  h+='</div>';
+  const gerek=haritaSv(sec.id),acik=lv>=gerek,pr=(typeof HIKAYE!=='undefined')?HIKAYE.find(function(x){return x.harita===sec.id;}):null;
+  h+='<div class="kyInfo"><div class="kyInfoT"><b>'+sec.name.toUpperCase()+'</b><small>'+sec.desc+'</small><small class="kyMeta">'+(acik?'✔ Açık':'🔒 Sv '+gerek+' gerekli ('+(gerek-lv)+' seviye kaldı)')+' · Önerilen Sv '+gerek+(pr?' · 📖 Perde '+pr.no:'')+'</small></div>';
+  if(lv>=10&&!SAVE.class)h+='<button class="kySinif" onclick="kariyerKapat();document.getElementById(\'classBox\').style.display=\'flex\'">🎖 SINIFINI SEÇ</button>';
+  h+=(acik?'<button class="hkBtn kyGir" onclick="haritayaGir(\''+sec.id+'\')">▶ GİR</button>':'<button class="hkBtn kyGir" disabled>🔒</button>')+'</div></div></div>';
+  h+='<div class="ovFoot"><button class="panBtn" onclick="kariyerKapat()">← Ana Menü</button></div>';
   document.getElementById('kariyerPanel').innerHTML=h;
 }
 // ── Ana menü yardımcıları (v1.76) ──
@@ -4176,10 +4384,11 @@ function menuProfilGuncelle(){
   try{
     const p=SAVE.profil||{};
     const av=document.getElementById('mpAv'),ad=document.getElementById('mpAd'),sv=document.getElementById('mpSv'),dv=document.getElementById('mDevamAlt');
-    if(av)av.textContent=p.avatar||'🪖';
+    if(av)av.textContent=SAVE.level||1;   // v1.85: rozette seviye numarası
     if(ad)ad.textContent=p.ad||'Yeniçeri';
     if(sv)sv.textContent=(typeof getFameTitle==='function'?getFameTitle():'')||'';
-    if(dv){dv.textContent='Kışla · Sv '+(SAVE.level||1);}
+    if(dv){dv.textContent='Kışla · Seviye '+(SAVE.level||1)+' — devam et';}
+    const xb=document.getElementById('mXpBar');if(xb)xb.style.width=(SAVE.xpNext>0?Math.min(SAVE.xp/SAVE.xpNext*100,100):0)+'%';
   }catch(e){}
 }
 function nasilAc(){

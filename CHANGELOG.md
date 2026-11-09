@@ -1,5 +1,13 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.85
+- Yeni arayüz stili "Divan Cam": altın çerçeveli cam paneller, kırmızı ana düğmeler, eğik uçlu menü plakaları.
+- Ana menü: KARİYER (seviye + XP çubuğu), ÇOK OYUNCULU, ATÖLYE büyük plakalar; alt ikonlar cam kapsülde; profil rozetinde seviye numarası.
+- Menü arka planı mevcut gökyüzü olarak kaldı ve değiştirilebilir oldu: Ayarlar → Grafik → Menü Atmosferi (Akşam, Gece, Şafak, Sisli). Yenisi için docs/ATMOSFER.md.
+- KARİYER artık harita yolu: sol ikon çubuğu (Devam Et, Hikaye, Serbest, Karakterim, Yeni Oyun), altın noktalı yolda 8 harita, altta seçili haritanın bilgisi ve GİR. Kilitli haritada GİR kapalı. Dikey ekranda yol dikey akar.
+- Ayarlar (sol sekme çubuğu + sabit panel), Çok Oyunculu (Oda Kur / Odaya Katıl iki kart), Nasıl Oynanır (her kontrol bir kart), Hikaye ve kartlar aynı stile geçti.
+- Rütbe merdiveni listesi Kariyer sayfasından kalktı (rütbe adı ve Ün çubuğu üstteki rozette).
+
 ## v1.84
 - Ana menü sadeleşti: KARİYER, ÇOK OYUNCULU, ATÖLYE; alt: Başarımlar, Nasıl Oynanır, Ayarlar (sol altta, kahramana binmez).
 - KARİYER tam sayfa merkez: Devam Et, Yeni Oyun, Hikaye, Serbest Haritalar, Karakterim + rütbe/XP/harita özeti. Alt sayfalar kapanınca Kariyer'e dönülür.

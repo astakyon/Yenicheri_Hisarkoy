@@ -5,10 +5,11 @@ function menuProfilGuncelle(){
   try{
     const p=SAVE.profil||{};
     const av=document.getElementById('mpAv'),ad=document.getElementById('mpAd'),sv=document.getElementById('mpSv'),dv=document.getElementById('mDevamAlt');
-    if(av)av.textContent=p.avatar||'🪖';
+    if(av)av.textContent=SAVE.level||1;   // v1.85: rozette seviye numarası
     if(ad)ad.textContent=p.ad||'Yeniçeri';
     if(sv)sv.textContent=(typeof getFameTitle==='function'?getFameTitle():'')||'';
-    if(dv){dv.textContent='Kışla · Sv '+(SAVE.level||1);}
+    if(dv){dv.textContent='Kışla · Seviye '+(SAVE.level||1)+' — devam et';}
+    const xb=document.getElementById('mXpBar');if(xb)xb.style.width=(SAVE.xpNext>0?Math.min(SAVE.xp/SAVE.xpNext*100,100):0)+'%';
   }catch(e){}
 }
 function nasilAc(){

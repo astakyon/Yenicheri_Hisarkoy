@@ -13,11 +13,23 @@ let SETTINGS={
   kalite: 'yuksek',       // 'dusuk'|'orta'|'yuksek'
   golge: true, olcek: 100, fps: false,
   titresim: true,
-  uiBoyut: 100            // arayüz boyutu %
+  uiBoyut: 100,           // arayüz boyutu %
+  atmosfer: 'aksam'       // menü atmosferi (ATMOSFERLER anahtarı)
 };
 function loadSettings(){try{const d=localStorage.getItem(SETTINGS_KEY);if(d)SETTINGS={...SETTINGS,...JSON.parse(d)};}catch(e){}}
 function saveSettings(){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(SETTINGS));}catch(e){}}
 loadSettings();
+
+// ── MENÜ ATMOSFERİ (v1.85) ─────────────────────────────
+// Yeni atmosfer eklemek: (1) buraya bir satır, (2) main.css'te '#menuLayer[data-atm="anahtar"]{...}' bloğu
+// (--atm-sky, --atm-glow, --atm-star, --atm-vig değişkenleri). Ayrıntı: docs/ATMOSFER.md
+const ATMOSFERLER={aksam:'Akşam',gece:'Gece',safak:'Şafak',sis:'Sisli'};
+function atmosferUygula(ad){
+  if(!ATMOSFERLER[ad])ad='aksam';
+  const m=document.getElementById('menuLayer');if(m)m.setAttribute('data-atm',ad);
+  const sc=document.getElementById('starCv');if(sc&&typeof getComputedStyle==='function'){
+    const o=getComputedStyle(m).getPropertyValue('--atm-star').trim();sc.style.opacity=o||'1';}
+}
 
 let AYAR_SEKME='kontrol';
 function openSettings(){ayarCiz();document.getElementById('settingsBox').style.display='flex';}
@@ -37,6 +49,7 @@ function ayarDegis(k,v,yenile){
   else if(['master','muzik','efekt','sessiz'].indexOf(k)>=0&&typeof SES!=='undefined'){SES.baslat();SES.hacim();}
   else if(['kalite','golge','olcek'].indexOf(k)>=0)applyGrafik();
   else if(k==='fps')applyFps();
+  else if(k==='atmosfer')atmosferUygula(v);
   else if(k==='uiBoyut'&&typeof uiOlcekle==='function')uiOlcekle();
   else if(k==='titresim'&&v&&typeof SES!=='undefined')SES.titre(30);
   if(yenile)ayarCiz();
@@ -65,6 +78,7 @@ function ayarCiz(){
     h+=_ayRow('🌑 Gölgeler','Kapatmak performansı artırır',_ayTog('golge'));
     h+=_ayRow('📐 Çözünürlük Ölçeği','Düşürmek akıcılığı artırır',_aySec('olcek',[[60,'%60'],[80,'%80'],[100,'%100']]));
     h+=_ayRow('📊 FPS Göstergesi','Sağ üstte kare hızı',_ayTog('fps'));
+    h+=_ayRow('🌆 Menü Atmosferi','Ana menünün gökyüzü ve ışığı',_aySec('atmosfer',Object.keys(ATMOSFERLER).map(function(k){return [k,ATMOSFERLER[k]];})));
   }else if(AYAR_SEKME==='hesap'){
     h+='<div class="toggleSub" style="margin:2px 0 8px">Kayıt, bu tarayıcıda saklanır. Başka cihaza taşımak için dışa aktarıp yapıştırın.</div>';
     h+='<textarea id="ayKayit" class="ayTxt" rows="4" placeholder="Dışa aktarılan kayıt burada görünür; içe aktarmak için buraya yapıştırın"></textarea>';
@@ -161,7 +175,7 @@ function applyAllSettings(){
   if(tl)tl.style.display=SETTINGS.touchEnabled?'block':'none';
   const ab=document.getElementById('abilityBtns');
   if(ab)ab.style.display=SETTINGS.abilityBtns?'flex':'none';
-  setJoySize(SETTINGS.joySize||'normal');applyJoyOp();applyGrafik();applyFps();
+  setJoySize(SETTINGS.joySize||'normal');applyJoyOp();applyGrafik();applyFps();atmosferUygula(SETTINGS.atmosfer);
   if(typeof SES!=='undefined')SES.hacim();
 }
 

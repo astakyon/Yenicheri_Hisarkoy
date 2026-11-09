@@ -53,8 +53,8 @@ def main():
         check(pg.evaluate("typeof THREE") == 'object', 'THREE yüklendi (CDN erişimi ya da THREE_JS gerekir)')
         pg.tap('text=KARİYER'); pg.wait_for_timeout(300)
         check(pg.evaluate("getComputedStyle(document.getElementById('kariyerBox')).display") == 'flex' and pg.evaluate("getComputedStyle(document.getElementById('menuLayer')).display") != 'none', 'Kariyer sayfası açılıyor')
-        check(pg.evaluate("[...document.querySelectorAll('#kariyerPanel .kyNav .mBtn')].map(b=>b.textContent.trim().split(/\\s/)[1]).join(',')").startswith('DEVAM'), 'Kariyer: Devam Et, Yeni Oyun, Hikaye, Serbest Haritalar, Karakterim')
-        pg.tap('#kariyerPanel >> text=SERBEST HARİTALAR'); pg.wait_for_timeout(300)
+        check(pg.evaluate("[...document.querySelectorAll('#kariyerPanel .kyNav .mBtn')].map(b=>b.textContent.trim()).join(',')") == 'DEVAM ET,HİKAYE,SERBEST,KARAKTERİM,YENİ OYUN', 'Kariyer: Devam Et, Hikaye, Serbest, Karakterim, Yeni Oyun')
+        pg.tap('#kariyerPanel >> text=SERBEST'); pg.wait_for_timeout(300)
         check(pg.evaluate("getComputedStyle(document.getElementById('worldMapBox')).display") == 'flex' and pg.evaluate("getComputedStyle(document.getElementById('kariyerBox')).display") == 'none', 'Serbest Haritalar tam sayfa açılıyor (Kariyer kapanır)')
         pg.evaluate('closeChapters()')
         check(pg.evaluate("getComputedStyle(document.getElementById('kariyerBox')).display") == 'flex', 'Geri dönünce Kariyer sayfasına dönülüyor')
@@ -880,7 +880,9 @@ def main():
           kariyerAc(); const n=document.querySelectorAll('#kariyerPanel .hkKart').length, gir=document.querySelectorAll('#kariyerPanel .hkBtn').length;
           kariyerKapat(); SAVE.level=8; const d=isMapUnlocked({id:'saray'}); SAVE.level=1; return {a,b,c,d,n,gir}; }""")
         check(kr['a'] is False and kr['b'] is False and kr['c'] is False and kr['d'] is True, 'harita kilitleri seviyeye bağlı (Sv1: Saray kapalı, Sv8: açık)')
-        check(kr['n'] == 9 and kr['gir'] == 2, 'Kariyer ekranı 8 harita + rütbe kartını listeliyor, Sv1\'de 2 harita girilebilir (%s kart, %s GİR)' % (kr['n'], kr['gir']))
+        check(kr['n'] == 8 and kr['gir'] == 1, 'Kariyer yolu 8 haritayı gösteriyor, seçili harita için tek GİR var (%s düğüm, %s GİR)' % (kr['n'], kr['gir']))
+        kk = pg.evaluate("() => { SAVE.level=1; kariyerAc(); kariyerSec('saray'); const b=document.querySelector('#kariyerPanel .kyGir'); const r={dis:b.disabled, sec:document.querySelectorAll('#kariyerPanel .kyNode.sec').length}; kariyerSec('kisla'); kariyerKapat(); return r; }")
+        check(kk['dis'] is True and kk['sec'] == 1, 'Kilitli harita seçilince GİR kapalı, tek harita seçili')
         y = pg.evaluate("""() => { const o={};
           const a=hikayeHazirla(); a.ekin={}; a.c.ekin_cesit=0; hikayeEkinSat('nohut'); hikayeEkinSat('nohut'); o.bir=a.c.ekin_cesit; hikayeEkinSat('arpa'); hikayeEkinSat('pamuk'); o.uc=a.c.ekin_cesit;
           const sv=SAVE.level, nx=SAVE.xpNext; SAVE.level=1; SAVE.xp=0; SAVE.xpNext=100; addXP(100); o.egri=SAVE.xpNext; SAVE.level=sv; SAVE.xpNext=nx;
