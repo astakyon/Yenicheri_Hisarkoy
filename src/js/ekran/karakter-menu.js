@@ -36,7 +36,7 @@ function gorunumCiz(){
   ic.innerHTML=h;
 }
 function gorunumAc(){document.getElementById('gorunumBox').style.display='flex';HERO.manuel=HERO.g?HERO.g.rotation.y:-.5;gorunumCiz();}
-function gorunumKapat(){document.getElementById('gorunumBox').style.display='none';HERO.manuel=null;}
+function gorunumKapat(){document.getElementById('gorunumBox').style.display='none';HERO.manuel=null;if(typeof kariyerDon==='function')kariyerDon();}
 // Panelin dışında (boş alanda) sürükleyerek karakteri istediğin yöne döndür
 (function(){
   const kutu=document.getElementById('gorunumBox');if(!kutu)return;let x0=null;

@@ -50,7 +50,7 @@ function profilCiz(){
   h+='<div class="pfSec">İSTATİSTİKLER</div><div class="pfStats">';
   [['Oynama süresi',profilSure(P.sure)],['Öldürülen düşman',st.kills||0],['Patron zaferi',st.bossKills||0],['En yüksek dalga',st.highWave||0],['Avlanan hayvan',st.animalsHunted||0],['Pazarda satış (akçe)',st.satis||0],['Hazine sandığı',st.hazine||0],['Toplam kazanç (akçe)',st.totalGoldEarned||0],['Hikaye perdesi',hk.tam+' / '+hk.toplam],['Başarım',earned+' / '+ACHIEVEMENTS.length]].forEach(function(r){h+='<div class="pfStat"><b>'+r[1]+'</b><span>'+r[0].toUpperCase()+'</span></div>';});
   h+='</div><div class="pfSec">BAŞARIMLAR</div><div class="pfBadges">'+ACHIEVEMENTS.map(function(a){const k=!!SAVE.achievements[a.id];return '<div class="pfBadge'+(k?'':' off')+'" title="'+a.desc+'"><i>'+a.icon+'</i>'+a.title+'</div>';}).join('')+'</div>';
-  h+='</div><div class="ovFoot"><button class="panBtn grn" onclick="profilKapat()">✔ Tamam</button></div>';
+  h+='</div><div class="ovFoot"><button class="panBtn grn" onclick="profilKapat()">← Geri</button></div>';
   document.getElementById('profilPanel').innerHTML=h;
 }
 // Oynama süresi sayacı (oyun açık, duraklatılmamış ve sekme görünürken)

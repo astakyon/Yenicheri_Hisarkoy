@@ -96,13 +96,13 @@ function hikayeBaslat(no){
   const p=HIKAYE[no-1],H=hikayeHazirla();
   if(!p||hikayePerdeDurum(p)==='kilit')return;
   if((SAVE.level||1)<haritaSv(p.harita)){lootPop('🔒 '+p.ad+' için Sv '+haritaSv(p.harita)+' gerekli — önce serbest haritalarda seviye kazan');return;}
-  hikayeKapat();
+  document.getElementById('hikayeBox').style.display='none';KARIYER_DON=false;
   BEGIN(p.harita);
   setTimeout(function(){if(typeof lootPop==='function')lootPop('📖 Perde '+p.no+' — '+p.hedefler.map(function(h){return h.ad;}).join(' · '));},1800);
 }
 let _hkAcik=null;
 function hikayeAc(){_hkAcik=hikayeHazirla().act;hikayeCiz();document.getElementById('hikayeBox').style.display='flex';}
-function hikayeKapat(){document.getElementById('hikayeBox').style.display='none';}
+function hikayeKapat(){document.getElementById('hikayeBox').style.display='none';if(typeof kariyerDon==='function')kariyerDon();}
 function hikayeSec(no){_hkAcik=_hkAcik===no?null:no;hikayeCiz();}
 function hikayeCiz(){
   const H=hikayeHazirla(),d=hikayeDurum();
@@ -123,6 +123,6 @@ function hikayeCiz(){
     h+='</div>';
   });
   if(d.bitti)h+='<div class="hkKart bitti"><div class="hkAd">🏅 Hisarköy Muhafızı</div><div class="hkMetin">Ana hikâyeyi tamamladın. "Hisarköy Muhafızı" unvanı Profil\'de seçilebilir. Serbest haritalarda ilerlemeye ve çiftliğini büyütmeye devam et!</div></div>';
-  h+='</div></div><div class="ovFoot"><button class="panBtn" onclick="hikayeKapat()">✕ Kapat</button></div>';
+  h+='</div></div><div class="ovFoot"><button class="panBtn" onclick="hikayeKapat()">← Geri</button></div>';
   document.getElementById('hikayePanel').innerHTML=h;
 }

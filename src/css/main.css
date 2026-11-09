@@ -608,3 +608,23 @@ canvas{display:block;position:absolute;top:0;left:0;}
 .toggleSlider::before{height:20px;width:20px;left:3px;bottom:2px}
 .toggle input:checked+.toggleSlider::before{transform:translateX(24px)}
 .toggleRow>div:last-child{display:flex;align-items:center;justify-content:flex-end}
+/* v1.83 TAM SAYFA: pencere yerine sayfa değişir (arka plan menüyü gizler) */
+.ovBox{background:radial-gradient(ellipse at 50% 0%,#241606 0%,#0a0603 70%);padding:0;align-items:stretch;justify-content:stretch}
+.ovPanel.panel{width:100%;height:100%;max-height:none;border:none;border-radius:0;background:transparent;box-shadow:none;padding:max(10px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+.ovPanel.panel>*{width:min(900px,100%);margin-left:auto;margin-right:auto}
+#atolyePanel.panel{height:100%}#atolyePanel.panel>*{width:min(460px,100%)}
+#atolyePanel .ovBody{flex:0 1 auto}
+#worldMapBox{background:radial-gradient(ellipse at 50% 0%,#241606 0%,#0a0603 70%);padding:0;align-items:stretch}
+#wmPanel{width:min(900px,100%);max-height:none;min-height:100%;margin:0 auto;border:none;border-radius:0;background:transparent;box-shadow:none}
+#coopBox{background:radial-gradient(ellipse at 50% 0%,#241606 0%,#0a0603 70%)}
+.kyGrid{display:grid;grid-template-columns:minmax(210px,300px) 1fr;gap:14px;align-items:start}
+.kyNav{display:flex;flex-direction:column;gap:8px;position:sticky;top:0}
+.kyNav .mBtn{width:100%;margin:0}
+.kyOzet{min-width:0}
+@media (max-width:640px) and (orientation:portrait){.kyGrid{grid-template-columns:1fr}.kyNav{position:static}}
+@media (max-height:480px){.kyNav .mBtn{padding:8px 10px;font-size:12px}.kyGrid{grid-template-columns:minmax(170px,230px) 1fr;gap:10px}}
+/* v1.83 alt ikonlar sol alta (kahramanın üstüne binmez) */
+#mIcos{left:max(4vw,16px)!important;right:auto!important;bottom:3.5vh!important;top:auto!important;flex-direction:row!important}
+@media (max-height:480px) and (orientation:landscape){#mIcos{left:max(3vw,12px)!important;right:auto!important;bottom:6px!important;top:auto!important;flex-direction:row!important;gap:10px}#mIcos .mIco{min-width:0}}
+@media (orientation:portrait){#mIcos{left:50%!important;transform:translateX(-50%)}}
+@media (max-height:480px) and (orientation:landscape){#mBtns{grid-template-columns:1fr!important;max-width:46vw!important;margin-bottom:54px}#mBtns .mBtn{white-space:nowrap}}

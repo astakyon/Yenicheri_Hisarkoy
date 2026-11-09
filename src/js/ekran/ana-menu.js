@@ -12,8 +12,11 @@ function menuProfilGuncelle(){
   }catch(e){}
 }
 function nasilAc(){
-  showDlg('📜 Nasıl Oynanır',NASIL_METIN,'Anlaşıldı!',hideDlg);
+  const sat=NASIL_METIN.split('\n').map(function(l){const i=l.indexOf(' → ');return i<0?'<div class="toggleSub">'+l+'</div>':'<div class="toggleRow"><div class="toggleLabel">'+l.slice(0,i)+'</div><div class="toggleSub" style="font-size:12px">'+l.slice(i+3)+'</div></div>';}).join('');
+  document.getElementById('nasilPanel').innerHTML='<div class="ovHead"><div class="panTitle">📜 NASIL OYNANIR</div><button class="zmX" onclick="nasilKapat()" aria-label="Geri">✕</button></div><div class="ovBody">'+sat+'</div><div class="ovFoot"><button class="panBtn" onclick="nasilKapat()">← Geri</button></div>';
+  document.getElementById('nasilBox').style.display='flex';
 }
+function nasilKapat(){document.getElementById('nasilBox').style.display='none';}
 const NASIL_METIN='WASD / Joystick → Hareket\nShift / 🏃 → Koşma\nFare / ⚔ → Saldır\n1/2/3 → Silah seç\nE / Kapı → Bölgeye Gir\nKışlada Demir Kapı → Göreve Çık\nEsc → Duraklat';
 function atolyeAc(){
   const b=document.getElementById('atolyeBox'),p=document.getElementById('atolyePanel');

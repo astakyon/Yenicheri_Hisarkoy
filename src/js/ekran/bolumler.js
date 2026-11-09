@@ -20,7 +20,7 @@ function isMapUnlocked(m){return (SAVE.level||1)>=haritaSv(m.id);}
 function haritayaGir(id){
   if((SAVE.level||1)<haritaSv(id)){const m=WORLD_MAPS.find(function(x){return x.id===id;});lootPop('🔒 '+(m?m.name:id)+' için Sv '+haritaSv(id)+' gerekli (şu an Sv '+(SAVE.level||1)+')');return false;}
   ['worldMapBox','kariyerBox','hikayeBox'].forEach(function(b){const e=document.getElementById(b);if(e)e.style.display='none';});
-  BEGIN(id);return true;
+  KARIYER_DON=false;BEGIN(id);return true;
 }
 
 function openChapters(){
@@ -29,6 +29,7 @@ function openChapters(){
 }
 function closeChapters(){
   document.getElementById('worldMapBox').style.display='none';
+  if(typeof kariyerDon==='function')kariyerDon();
 }
 
 function buildWorldMapGrid(){

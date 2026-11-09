@@ -1,5 +1,10 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.84
+- Ana menü sadeleşti: KARİYER, ÇOK OYUNCULU, ATÖLYE; alt: Başarımlar, Nasıl Oynanır, Ayarlar (sol altta, kahramana binmez).
+- KARİYER tam sayfa merkez: Devam Et, Yeni Oyun, Hikaye, Serbest Haritalar, Karakterim + rütbe/XP/harita özeti. Alt sayfalar kapanınca Kariyer'e dönülür.
+- Ayarlar, Profil, Hikaye, Serbest Haritalar, Nasıl Oynanır, Atölye ve Çok Oyunculu açılır pencere yerine tam sayfa.
+
 ## v1.83
 - Ayarlardaki açma/kapama anahtarları görünmüyordu (satır içi öğe olduğu için boyutu çökmüştü, yalnızca yeşil bir kenar kalıyordu) → tam boyutlu (52×28) anahtar.
 

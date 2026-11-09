@@ -75,7 +75,7 @@ function ayarCiz(){
     h+='<p>3D Osmanlı aksiyon RPG — kışla, av, maden, tarım, şehir ve saray. Hikayeyi sürdür, çiftliğini büyüt, arkadaşlarınla oda kur.</p>';
     h+='<p class="toggleSub">Telefonda en iyi deneyim için yatay modda, tam ekran (Ana Ekrana Ekle) oynayın.</p></div>';
   }
-  h+='</div><div class="ovFoot"><button class="panBtn" onclick="closeSettings()">✕ Kapat</button></div>';
+  h+='</div><div class="ovFoot"><button class="panBtn" onclick="closeSettings()">← Geri</button></div>';
   document.getElementById('settingsPanel').innerHTML=h;
 }
 function kayitPaketi(){return JSON.stringify({yeniceri:1,surum:(typeof SURUM!=='undefined'?SURUM:''),save:SAVE,ayar:SETTINGS});}
