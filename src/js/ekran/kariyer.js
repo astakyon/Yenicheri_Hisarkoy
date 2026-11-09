@@ -9,8 +9,8 @@ let KARIYER_SEC='kisla';   // yolda seçili harita
 function kariyerSec(id){KARIYER_SEC=id;kariyerCiz();}
 // Harita ağı (% — yatay: x,y; dikey ekranda x/y yer değiştirir).
 // Merkez Hisarköy; Çiftlik + Demir Madeni ekonomi dalı (materyal/para), diğerleri hikâye yolu.
-const KY_PT={kisla:[12,50],ciftlik:[27,82],maden:[27,18],gorev:[36,50],orman:[51,30],tarim:[65,64],sehir:[79,34],saray:[91,58]};
-const KY_BAG=[['kisla','ciftlik','e'],['kisla','maden','e'],['kisla','gorev','h'],['gorev','orman','h'],['orman','tarim','h'],['tarim','sehir','h'],['sehir','saray','h']];
+const KY_PT={kisla:[12,46],ciftlik:[26,72],maden:[26,16],gorev:[36,48],orman:[51,28],tarim:[65,58],sehir:[80,30],saray:[10,90]};
+const KY_BAG=[['kisla','ciftlik','e'],['kisla','maden','e'],['kisla','gorev','h'],['gorev','orman','h'],['orman','tarim','h'],['tarim','sehir','h'],['sehir','saray','h',[[80,98],[10,98]]]];
 function kariyerCiz(){
   const lv=SAVE.level||1,fame=SAVE.fame||0;
   let sonraki=null,onceki=FAME_TITLES[0];
@@ -30,13 +30,13 @@ function kariyerCiz(){
    +nav('<path d="M12 4v16M4 12h16"/>','YENİ OYUN','confirmReset()')
    +'</div><div class="kyMain"><div class="kyMap">';
   // yol (yatay + dikey ekran için iki ayrı çizgi)
-  const yol=function(sw,t){let d='';KY_BAG.forEach(function(e){if(e[2]!==t)return;const p=KY_PT[e[0]],q=KY_PT[e[1]],px=sw?p[1]:100-p[0],py=sw?p[0]:p[1],qx=sw?q[1]:100-q[0],qy=sw?q[0]:q[1];d+=sw?'M'+px+' '+py+' C'+px+' '+((py+qy)/2)+' '+qx+' '+((py+qy)/2)+' '+qx+' '+qy:'M'+px+' '+py+' C'+((px+qx)/2)+' '+py+' '+((px+qx)/2)+' '+qy+' '+qx+' '+qy;});return d;};
+  const yol=function(sw,t){let d='';KY_BAG.forEach(function(e){if(e[2]!==t)return;const P=function(p){return sw?[p[1],p[0]]:[p[0],p[1]];},p=P(KY_PT[e[0]]),q=P(KY_PT[e[1]]);let c1,c2;if(e[3]){c1=P(e[3][0]);c2=P(e[3][1]);}else if(sw){c1=[p[0],(p[1]+q[1])/2];c2=[q[0],(p[1]+q[1])/2];}else{c1=[(p[0]+q[0])/2,p[1]];c2=[(p[0]+q[0])/2,q[1]];}d+='M'+p[0]+' '+p[1]+' C'+c1[0]+' '+c1[1]+' '+c2[0]+' '+c2[1]+' '+q[0]+' '+q[1];});return d;};
   [false,true].forEach(function(sw){h+='<svg class="kyPath '+(sw?'kyPv':'kyPh')+'" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="kyEko" d="'+yol(sw,'e')+'"/><path d="'+yol(sw,'h')+'"/></svg>';});
   h+='<div class="kyLeg"><span><u></u>Hikâye yolu</span><span><u class="e"></u>Ekonomi: materyal · para</span></div>';
   let sec=WORLD_MAPS.find(function(m){return m.id===KARIYER_SEC;})||WORLD_MAPS[0];
   WORLD_MAPS.forEach(function(m,i){
     const gerek=haritaSv(m.id),acik=lv>=gerek,pt=KY_PT[m.id]||[50,50];
-    h+='<button class="hkKart kyNode '+(acik?'aktif':'kilit')+(m.id===sec.id?' sec':'')+'" style="--x:'+(100-pt[0])+'%;--y:'+pt[1]+'%;--px:'+pt[1]+'%;--py:'+pt[0]+'%" onclick="kariyerSec(\''+m.id+'\')" aria-label="'+m.name+'"><i>'+(acik?m.icon:'🔒')+'</i><span>'+m.name+'</span></button>';
+    h+='<button class="hkKart kyNode '+(acik?'aktif':'kilit')+(m.id===sec.id?' sec':'')+'" style="--x:'+pt[0]+'%;--y:'+pt[1]+'%;--px:'+pt[1]+'%;--py:'+pt[0]+'%" onclick="kariyerSec(\''+m.id+'\')" aria-label="'+m.name+'"><i>'+(acik?m.icon:'🔒')+'</i><span>'+m.name+'</span></button>';
   });
   h+='</div>';
   const gerek=haritaSv(sec.id),acik=lv>=gerek,pr=(typeof HIKAYE!=='undefined')?HIKAYE.find(function(x){return x.harita===sec.id;}):null;

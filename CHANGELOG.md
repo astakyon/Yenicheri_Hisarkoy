@@ -6,7 +6,7 @@
 - Sayfa arka planlarına yıldız + Osmanlı silüeti eklendi (düz mavi kalktı).
 - Karakterim baştan tasarlandı: sekmeler (Kıyafet/Kemer/Başlık/Yüz/Ekipman), büyük renk kutuları, cam panel.
 - Serbest Haritalar kartları cam stiline alındı.
-- Kariyer haritası: Hisarköy merkez; Çiftlik + Demir Madeni ekonomi dalı (materyal/para), diğer haritalar Hisarköy'e bağlı ilerleyen hikâye yolu.
+- Kariyer haritası: Hisarköy solda merkez; Çiftlik + Demir Madeni ekonomi dalı, hikâye yolu Hisarköy'den sağa ilerleyip Osmanlı Sarayı'nda sol altta biter.
 - Karakterim paneli sabit boy, sol kenarda tam yükseklik.
 
 ## v1.85

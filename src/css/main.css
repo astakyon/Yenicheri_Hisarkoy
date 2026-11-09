@@ -869,4 +869,4 @@ canvas{display:block;position:absolute;top:0;left:0;}
 .kyLeg{position:absolute;right:0;bottom:0;display:flex;gap:16px;font:600 clamp(11px,2vh,14px) 'Cormorant Garamond',serif;color:#d9c386;z-index:1}
 .kyLeg u{display:inline-block;width:22px;border-top:3px dotted #d6a63c;margin-right:6px;vertical-align:middle}
 .kyLeg u.e{border-top-color:#7fd08a}
-@media (orientation:portrait){.kyLeg{flex-direction:column;gap:2px;left:0;top:0;bottom:auto;align-items:flex-start}}
+@media (orientation:portrait){.kyLeg{flex-direction:column;gap:2px;left:auto;right:0;top:auto;bottom:0;align-items:flex-end}}
