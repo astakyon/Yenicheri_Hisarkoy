@@ -532,7 +532,7 @@ def main():
               const pr = document.getElementById('gorunumPanel').getBoundingClientRect(); if (pr.bottom > innerHeight + 1 || pr.top < -1) out.push('panel'); return out; }""")
             check(not ok, '%dx%d: panel ve Tamam/Kapat düğmeleri ekranda, tıklanabilir (sorunlu: %s)' % (w, h, ok or 'yok'))
             a0 = pg.evaluate("HERO.manuel")
-            bx, by = (w / 2, h * .2) if h > w else (w - 60, h / 2)
+            bx, by = (w * .88, h * .2) if h > w else (w - 60, h / 2)
             pg.mouse.move(bx, by); pg.mouse.down(); pg.mouse.move(bx - 100, by, steps=6); pg.mouse.up()
             a1 = pg.evaluate("HERO.manuel")
             check(abs(a1 - a0) > .5, '%dx%d: boş alanda sürükleyince karakter dönüyor (%.2f → %.2f)' % (w, h, a0, a1))
