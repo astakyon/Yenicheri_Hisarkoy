@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.82">
+<meta name="game-version" content="v1.83">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.82</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.83</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -63,7 +63,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 .toggleRow:last-child{border-bottom:none;}
 .toggleLabel{color:#D4B896;font-size:11px;}
 .toggleSub{color:#666;font-size:8px;margin-top:2px;}
-.toggle{position:relative;width:46px;height:24px;flex-shrink:0;}
+.toggle{display:inline-block;vertical-align:middle;position:relative;width:46px;height:24px;flex-shrink:0;}
 .toggle input{opacity:0;width:0;height:0;}
 .toggleSlider{position:absolute;cursor:pointer;inset:0;background:rgba(50,30,0,.8);border:1.5px solid #5a3800;border-radius:24px;transition:.3s;}
 .toggleSlider::before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:#8B6914;border-radius:50%;transition:.3s;}
@@ -618,6 +618,11 @@ canvas{display:block;position:absolute;top:0;left:0;}
   #settingsPanel .ovBody{grid-area:body}
   #settingsPanel .ovFoot{display:none}
 }
+/* v1.83 anahtarlar: tam boyutlu ve kolay dokunulur */
+.toggle{display:inline-block;vertical-align:middle;width:52px;height:28px}
+.toggleSlider::before{height:20px;width:20px;left:3px;bottom:2px}
+.toggle input:checked+.toggleSlider::before{transform:translateX(24px)}
+.toggleRow>div:last-child{display:flex;align-items:center;justify-content:flex-end}
 </style>
 </head>
 <body>
@@ -642,7 +647,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.82</div>
+      <div id="mVer">v1.83</div>
     </div>
     <div id="mProfil" onclick="profilAc()" role="button" aria-label="Profil"><span id="mpAv">🪖</span><div><b id="mpAd">Yeniçeri</b><small id="mpSv">Sv 1</small></div></div>
     <div id="mBtns">
@@ -998,7 +1003,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.82';
+const VERSION='v1.83';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -1087,7 +1092,7 @@ try{
 // ═══════════════════════════════════════════════════════
 // AYARLAR SİSTEMİ
 // ═══════════════════════════════════════════════════════
-const SURUM='v1.82';
+const SURUM='v1.83';
 const SETTINGS_KEY='yenicheri_settings';
 let SETTINGS={
   touchEnabled: true,

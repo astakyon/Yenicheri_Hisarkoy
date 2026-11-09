@@ -1,5 +1,8 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.83
+- Ayarlardaki açma/kapama anahtarları görünmüyordu (satır içi öğe olduğu için boyutu çökmüştü, yalnızca yeşil bir kenar kalıyordu) → tam boyutlu (52×28) anahtar.
+
 ## v1.82
 - Ayarlar (ve Profil/Hikaye/Kariyer) sabit boyutlu pencere: sekme değişince boy değişmiyor, içerik kaydırılıyor. Telefon yatayda ayar sekmeleri solda dikey, içerik tam yükseklik.
 - Menü çiftleri temizlendi: alt çubuktaki PROFİL kaldırıldı (üstteki rozet tek giriş), BAŞARIMLAR profilin başarım bölümüne gider; DEVAM ET artık Kışla'ya gider (Hikaye ayrı düğme).
