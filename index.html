@@ -885,6 +885,18 @@ canvas{display:block;position:absolute;top:0;left:0;}
 .kyLeg u{display:inline-block;width:22px;border-top:3px dotted #d6a63c;margin-right:6px;vertical-align:middle}
 .kyLeg u.e{border-top-color:#7fd08a}
 @media (orientation:portrait){.kyLeg{flex-direction:column;gap:2px;left:auto;right:0;top:auto;bottom:0;align-items:flex-end}}
+/* v1.86 — Kariyer: resimli harita çerçevesi (yer tutucu çizim; --ky-harita ile gerçek görsel takılabilir) */
+.kyMap{border:5px solid #8a6a3a;border-radius:10px;overflow:hidden;box-shadow:0 0 0 2px #3a2810,0 12px 30px rgba(0,0,0,.55),inset 0 0 40px rgba(40,24,6,.55);
+ background:var(--ky-harita,none),
+  url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 60' preserveAspectRatio='none'><defs><radialGradient id='g' cx='50%25' cy='45%25' r='70%25'><stop offset='0' stop-color='%236f9a45'/><stop offset='1' stop-color='%234a7234'/></radialGradient></defs><rect width='100' height='60' fill='url(%23g)'/><path d='M0 6C14 2 22 12 30 8S48 0 60 6 86 12 100 4V0H0z' fill='%23d9c48e' opacity='.8'/><path d='M22 30l7-13 6 9 6-15 9 19z' fill='%238a7a5a'/><path d='M30 24l3-6 3 5zM47 18l4-8 4 9z' fill='%23d8d2c0' opacity='.8'/><path d='M62 4C58 18 70 24 66 36S56 52 64 60' stroke='%233f86b8' stroke-width='2.2' fill='none' opacity='.85'/><path d='M0 44c10-8 20-2 30-8' stroke='%23c8ad70' stroke-width='1' fill='none' stroke-dasharray='2 2'/><rect x='72' y='8' width='10' height='6' fill='%23caa56a' opacity='.7'/><circle cx='92' cy='50' r='6' fill='%23caa56a' opacity='.55'/></svg>") center/100% 100%,
+  #5a8a3a;}
+.kyMap::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(30,18,4,.5) 100%)}
+.kyPath{z-index:1}.kyNode{z-index:2}
+.kyPath path{stroke:#6ec3ff;stroke-width:3.5;stroke-dasharray:1 8;filter:drop-shadow(0 1px 2px #000)}
+.kyPath path.kyEko{stroke:#f3c64e;stroke-dasharray:1 8}
+.kyLeg{background:rgba(8,12,28,.7);padding:6px 12px;border-radius:10px;z-index:3;left:8px;bottom:8px;right:auto;flex-direction:column;gap:2px;align-items:flex-start}
+.kyLeg u{border-top-color:#6ec3ff}.kyLeg u.e{border-top-color:#f3c64e}
+@media (orientation:portrait){.kyLeg{left:8px;right:auto;bottom:8px;top:auto;align-items:flex-start}}
 </style>
 </head>
 <body>
@@ -4424,8 +4436,8 @@ let KARIYER_SEC='kisla';   // yolda seçili harita
 function kariyerSec(id){KARIYER_SEC=id;kariyerCiz();}
 // Harita ağı (% — yatay: x,y; dikey ekranda x/y yer değiştirir).
 // Merkez Hisarköy; Çiftlik + Demir Madeni ekonomi dalı (materyal/para), diğerleri hikâye yolu.
-const KY_PT={kisla:[12,46],ciftlik:[26,72],maden:[26,16],gorev:[36,48],orman:[51,28],tarim:[65,58],sehir:[80,30],saray:[10,90]};
-const KY_BAG=[['kisla','ciftlik','e'],['kisla','maden','e'],['kisla','gorev','h'],['gorev','orman','h'],['orman','tarim','h'],['tarim','sehir','h'],['sehir','saray','h',[[80,98],[10,98]]]];
+const KY_PT={kisla:[12,66],maden:[31,22],gorev:[40,54],orman:[52,36],tarim:[63,58],ciftlik:[53,76],sehir:[80,50],saray:[91,24]};
+const KY_BAG=[['kisla','maden','e'],['kisla','ciftlik','e'],['kisla','gorev','h'],['gorev','orman','h'],['orman','tarim','h'],['tarim','sehir','h'],['sehir','saray','h']];
 function kariyerCiz(){
   const lv=SAVE.level||1,fame=SAVE.fame||0;
   let sonraki=null,onceki=FAME_TITLES[0];
@@ -4447,7 +4459,7 @@ function kariyerCiz(){
   // yol (yatay + dikey ekran için iki ayrı çizgi)
   const yol=function(sw,t){let d='';KY_BAG.forEach(function(e){if(e[2]!==t)return;const P=function(p){return sw?[p[1],p[0]]:[p[0],p[1]];},p=P(KY_PT[e[0]]),q=P(KY_PT[e[1]]);let c1,c2;if(e[3]){c1=P(e[3][0]);c2=P(e[3][1]);}else if(sw){c1=[p[0],(p[1]+q[1])/2];c2=[q[0],(p[1]+q[1])/2];}else{c1=[(p[0]+q[0])/2,p[1]];c2=[(p[0]+q[0])/2,q[1]];}d+='M'+p[0]+' '+p[1]+' C'+c1[0]+' '+c1[1]+' '+c2[0]+' '+c2[1]+' '+q[0]+' '+q[1];});return d;};
   [false,true].forEach(function(sw){h+='<svg class="kyPath '+(sw?'kyPv':'kyPh')+'" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="kyEko" d="'+yol(sw,'e')+'"/><path d="'+yol(sw,'h')+'"/></svg>';});
-  h+='<div class="kyLeg"><span><u></u>Hikâye yolu</span><span><u class="e"></u>Ekonomi: materyal · para</span></div>';
+  h+='<div class="kyLeg"><span><u></u>Hikâye yolu</span><span><u class="e"></u>Ekonomi yolu · materyal &amp; para</span></div>';
   let sec=WORLD_MAPS.find(function(m){return m.id===KARIYER_SEC;})||WORLD_MAPS[0];
   WORLD_MAPS.forEach(function(m,i){
     const gerek=haritaSv(m.id),acik=lv>=gerek,pt=KY_PT[m.id]||[50,50];

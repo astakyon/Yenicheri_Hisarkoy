@@ -29,6 +29,18 @@ def read(path):
         return f.read()
 
 
+def harita_css():
+    """src/assets/kariyer-harita.(jpg|png|webp) varsa Kariyer haritası arka planı olarak gömülür."""
+    import base64
+    for ext, mime in (('jpg', 'jpeg'), ('png', 'png'), ('webp', 'webp')):
+        yol = os.path.join(SRC, 'assets', 'kariyer-harita.' + ext)
+        if os.path.exists(yol):
+            with open(yol, 'rb') as f:
+                b = base64.b64encode(f.read()).decode()
+            return "\n:root{--ky-harita:url(data:image/%s;base64,%s) center/100%% 100%% no-repeat}\n" % (mime, b)
+    return ''
+
+
 def module_order():
     """SIRA.txt'yi okur; listeyi ve diskteki dosyaları karşılaştırır."""
     js_dir = os.path.join(SRC, 'js')
@@ -71,7 +83,7 @@ def build():
         js_parts.append(text)
 
     out = read(os.path.join(SRC, 'index.html'))
-    for key, text in (('@@CSS@@', read(os.path.join(SRC, 'css', 'main.css'))),
+    for key, text in (('@@CSS@@', read(os.path.join(SRC, 'css', 'main.css')) + harita_css()),
                       ('@@BODY@@', read(os.path.join(SRC, 'html', 'body.html'))),
                       ('@@JS@@', ''.join(js_parts))):
         if out.count(key) != 1:

@@ -9,8 +9,8 @@ let KARIYER_SEC='kisla';   // yolda seçili harita
 function kariyerSec(id){KARIYER_SEC=id;kariyerCiz();}
 // Harita ağı (% — yatay: x,y; dikey ekranda x/y yer değiştirir).
 // Merkez Hisarköy; Çiftlik + Demir Madeni ekonomi dalı (materyal/para), diğerleri hikâye yolu.
-const KY_PT={kisla:[12,46],ciftlik:[26,72],maden:[26,16],gorev:[36,48],orman:[51,28],tarim:[65,58],sehir:[80,30],saray:[10,90]};
-const KY_BAG=[['kisla','ciftlik','e'],['kisla','maden','e'],['kisla','gorev','h'],['gorev','orman','h'],['orman','tarim','h'],['tarim','sehir','h'],['sehir','saray','h',[[80,98],[10,98]]]];
+const KY_PT={kisla:[12,66],maden:[31,22],gorev:[40,54],orman:[52,36],tarim:[63,58],ciftlik:[53,76],sehir:[80,50],saray:[91,24]};
+const KY_BAG=[['kisla','maden','e'],['kisla','ciftlik','e'],['kisla','gorev','h'],['gorev','orman','h'],['orman','tarim','h'],['tarim','sehir','h'],['sehir','saray','h']];
 function kariyerCiz(){
   const lv=SAVE.level||1,fame=SAVE.fame||0;
   let sonraki=null,onceki=FAME_TITLES[0];
@@ -32,7 +32,7 @@ function kariyerCiz(){
   // yol (yatay + dikey ekran için iki ayrı çizgi)
   const yol=function(sw,t){let d='';KY_BAG.forEach(function(e){if(e[2]!==t)return;const P=function(p){return sw?[p[1],p[0]]:[p[0],p[1]];},p=P(KY_PT[e[0]]),q=P(KY_PT[e[1]]);let c1,c2;if(e[3]){c1=P(e[3][0]);c2=P(e[3][1]);}else if(sw){c1=[p[0],(p[1]+q[1])/2];c2=[q[0],(p[1]+q[1])/2];}else{c1=[(p[0]+q[0])/2,p[1]];c2=[(p[0]+q[0])/2,q[1]];}d+='M'+p[0]+' '+p[1]+' C'+c1[0]+' '+c1[1]+' '+c2[0]+' '+c2[1]+' '+q[0]+' '+q[1];});return d;};
   [false,true].forEach(function(sw){h+='<svg class="kyPath '+(sw?'kyPv':'kyPh')+'" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="kyEko" d="'+yol(sw,'e')+'"/><path d="'+yol(sw,'h')+'"/></svg>';});
-  h+='<div class="kyLeg"><span><u></u>Hikâye yolu</span><span><u class="e"></u>Ekonomi: materyal · para</span></div>';
+  h+='<div class="kyLeg"><span><u></u>Hikâye yolu</span><span><u class="e"></u>Ekonomi yolu · materyal &amp; para</span></div>';
   let sec=WORLD_MAPS.find(function(m){return m.id===KARIYER_SEC;})||WORLD_MAPS[0];
   WORLD_MAPS.forEach(function(m,i){
     const gerek=haritaSv(m.id),acik=lv>=gerek,pt=KY_PT[m.id]||[50,50];

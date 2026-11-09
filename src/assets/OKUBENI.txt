@@ -1,0 +1,1 @@
+Kariyer haritası görseli: kariyer-harita.jpg (veya .png/.webp) buraya konursa build otomatik gömer. Üzerinde yazı/arayüz olmayan, ~16:9 temiz harita olmalı.
