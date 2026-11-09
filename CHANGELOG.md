@@ -1,5 +1,8 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.79
+- Menü/arayüz denetimi (16 ekran × 3 boyut): duraklat ve kamera düğmeleri telefonda en az ~36px; üst çubuk dokunmatikte 44px; model kütüphanesi düğmeleri büyütüldü.
+
 ## v1.78
 - Dikey telefonda tam ekran "Telefonu yatay çevir" perdesi + TAM EKRAN + YATAY düğmesi; yatay kilit her dokunuşta başarana kadar denenir (kurulu uygulama zaten yatay açılır).
 - Telefon yatay menüde alt ikonlar sağ sütuna alındı (kahramanın üstüne binmez).

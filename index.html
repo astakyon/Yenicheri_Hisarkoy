@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.78">
+<meta name="game-version" content="v1.79">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.78</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.79</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -597,6 +597,13 @@ canvas{display:block;position:absolute;top:0;left:0;}
  #mIcos .mIco{padding:3px 4px;min-width:52px}
 }
 #yuDikey{color:#b9a468;font-size:12px;margin-top:6px;text-decoration:underline}
+/* v1.79 dokunma hedefleri en az ~38px (telefonda küçük arayüzde bile) */
+@media (pointer:coarse){
+ #pauseBtn2{width:max(38px,calc(34px*var(--ui)));height:max(38px,calc(34px*var(--ui)));font-size:15px}
+ .camB{width:max(34px,calc(30px*var(--ui)));height:max(34px,calc(30px*var(--ui)))}
+ #libYan button,#libListe button,#libYan .libB{min-height:32px}
+}
+@media (pointer:coarse){#topBar{height:max(44px,calc(40px*var(--ui)))}#pauseBtn2{width:36px;height:36px}#topLeftHud,#mmBox,#camBtns{margin-top:max(0px,calc(44px - 40px*var(--ui)))}}
 </style>
 </head>
 <body>
@@ -621,7 +628,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.78</div>
+      <div id="mVer">v1.79</div>
     </div>
     <div id="mProfil" onclick="profilAc()" role="button" aria-label="Profil"><span id="mpAv">🪖</span><div><b id="mpAd">Yeniçeri</b><small id="mpSv">Sv 1</small></div></div>
     <div id="mBtns">
@@ -976,7 +983,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.78';
+const VERSION='v1.79';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -1065,7 +1072,7 @@ try{
 // ═══════════════════════════════════════════════════════
 // AYARLAR SİSTEMİ
 // ═══════════════════════════════════════════════════════
-const SURUM='v1.78';
+const SURUM='v1.79';
 const SETTINGS_KEY='yenicheri_settings';
 let SETTINGS={
   touchEnabled: true,
@@ -3824,7 +3831,7 @@ function coopAc(){
 }
 function coopKapat(){document.getElementById('coopBox').style.display='none';}
 
-// ── İSTEMCİ: koparsa aynı odaya anahtarıyla geri dön (8 deneme × ~7 sn) ──
+// ── İSTEMCİ: koparsa aynı odaya anahtarıyla geri dön (8 deneme, her biri biraz daha uzun) ──
 function ag_goster(g,t){const k=document.getElementById('netBox');if(!k)return;k.style.display=g?'block':'none';if(t)k.textContent=t;}
 function clientYenidenBaglan(){
   if(CLIENT.baglaniyor)return true;
@@ -3842,7 +3849,7 @@ function clientYenidenBaglan(){
     const sonraki=function(){if(bitti)return;bitti=true;try{peer.destroy();}catch(e){}setTimeout(dene,800);};
     const peer=new Peer(peerSecenekleri());
     ODA.peer=peer;
-    const zaman=setTimeout(sonraki,7000);
+    const zaman=setTimeout(sonraki,6000+deneme*2500);
     peer.on('error',function(){clearTimeout(zaman);sonraki();});
     peer.on('open',function(){
       const conn=peer.connect('yenicheri-'+ODA.kod,{reliable:true,serialization:'json'});

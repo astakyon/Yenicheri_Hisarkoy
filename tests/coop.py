@@ -201,7 +201,7 @@ def main():
             check(host.evaluate("WORLD.players.has('c1') && SESSION.peers.size === 0"), 'bağlantı kopunca host oyuncuyu hemen silmedi, bekletti')
             ist.wait_for_function("CLIENT.baglaniyor === true || CLIENT.kopuk === false", timeout=3000)
             host.wait_for_function("SESSION.peers.has('c1') && !SESSION.offline.has('c1')", timeout=40000)
-            ist.wait_for_function("CLIENT.kopuk === false && CLIENT.baglaniyor === false", timeout=40000)
+            ist.wait_for_function("CLIENT.kopuk === false && CLIENT.baglaniyor === false", timeout=75000)
             check(ist.evaluate("CLIENT.aktif && CLIENT.id") == 'c1' and host.evaluate("WORLD.players.size") == 2, 'istemci aynı kimlikle (c1) geri döndü, fazladan oyuncu oluşmadı')
             ist.wait_for_timeout(700)
             ist.evaluate("keys['d'] = true"); ist.wait_for_timeout(800); ist.evaluate("keys['d'] = false"); ist.wait_for_timeout(500)

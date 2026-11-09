@@ -129,7 +129,7 @@ function coopAc(){
 }
 function coopKapat(){document.getElementById('coopBox').style.display='none';}
 
-// ── İSTEMCİ: koparsa aynı odaya anahtarıyla geri dön (8 deneme × ~7 sn) ──
+// ── İSTEMCİ: koparsa aynı odaya anahtarıyla geri dön (8 deneme, her biri biraz daha uzun) ──
 function ag_goster(g,t){const k=document.getElementById('netBox');if(!k)return;k.style.display=g?'block':'none';if(t)k.textContent=t;}
 function clientYenidenBaglan(){
   if(CLIENT.baglaniyor)return true;
@@ -147,7 +147,7 @@ function clientYenidenBaglan(){
     const sonraki=function(){if(bitti)return;bitti=true;try{peer.destroy();}catch(e){}setTimeout(dene,800);};
     const peer=new Peer(peerSecenekleri());
     ODA.peer=peer;
-    const zaman=setTimeout(sonraki,7000);
+    const zaman=setTimeout(sonraki,6000+deneme*2500);
     peer.on('error',function(){clearTimeout(zaman);sonraki();});
     peer.on('open',function(){
       const conn=peer.connect('yenicheri-'+ODA.kod,{reliable:true,serialization:'json'});

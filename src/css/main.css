@@ -582,3 +582,10 @@ canvas{display:block;position:absolute;top:0;left:0;}
  #mIcos .mIco{padding:3px 4px;min-width:52px}
 }
 #yuDikey{color:#b9a468;font-size:12px;margin-top:6px;text-decoration:underline}
+/* v1.79 dokunma hedefleri en az ~38px (telefonda küçük arayüzde bile) */
+@media (pointer:coarse){
+ #pauseBtn2{width:max(38px,calc(34px*var(--ui)));height:max(38px,calc(34px*var(--ui)));font-size:15px}
+ .camB{width:max(34px,calc(30px*var(--ui)));height:max(34px,calc(30px*var(--ui)))}
+ #libYan button,#libListe button,#libYan .libB{min-height:32px}
+}
+@media (pointer:coarse){#topBar{height:max(44px,calc(40px*var(--ui)))}#pauseBtn2{width:36px;height:36px}#topLeftHud,#mmBox,#camBtns{margin-top:max(0px,calc(44px - 40px*var(--ui)))}}
