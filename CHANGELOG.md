@@ -1,5 +1,10 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.80 (mantık analizi)
+- Hikaye ödülü XP'si menüde seviyeye çevrilmiyordu (6 perde sonunda Sv 4, XP 1635/337 kalıyordu) → artık addXP ile işleniyor.
+- Hikaye: perde sayaçları tek anahtar/perde olduğundan sıra dışı yapılan hedefler (ör. Saray'ı erken bitirmek) artık kaybolmuyor; sonraki perdenin hedefi zaten yapılmışsa ödül hazır gelir.
+- Duraklat → Kışlaya/Ana Menüye Dön: havuzda akçe varken artık onay ister (eskiden sessizce kaybolurdu). Yeni iki düğmeli onay penceresi.
+
 ## v1.79
 - Menü/arayüz denetimi (16 ekran × 3 boyut): duraklat ve kamera düğmeleri telefonda en az ~36px; üst çubuk dokunmatikte 44px; model kütüphanesi düğmeleri büyütüldü.
 

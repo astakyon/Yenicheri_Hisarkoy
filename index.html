@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.79">
+<meta name="game-version" content="v1.80">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.79</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.80</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -628,7 +628,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.79</div>
+      <div id="mVer">v1.80</div>
     </div>
     <div id="mProfil" onclick="profilAc()" role="button" aria-label="Profil"><span id="mpAv">🪖</span><div><b id="mpAd">Yeniçeri</b><small id="mpSv">Sv 1</small></div></div>
     <div id="mBtns">
@@ -755,8 +755,8 @@ canvas{display:block;position:absolute;top:0;left:0;}
       <div class="divider"></div>
       <button class="panBtn grn" onclick="doResume()">▶ Devam Et</button>
       <button class="panBtn" onclick="openBigMap()">🗺 Büyük Harita</button>
-      <button class="panBtn" onclick="toKisla()">🏰 Kışlaya Dön</button>
-      <button class="panBtn red" onclick="toMenu()">✕ Ana Menüye Dön</button>
+      <button class="panBtn" onclick="ayrilOnay('kisla')">🏰 Kışlaya Dön</button>
+      <button class="panBtn red" onclick="ayrilOnay('menu')">✕ Ana Menüye Dön</button>
     </div>
   </div>
 
@@ -850,7 +850,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
       </div>
       <button class="panBtn grn" onclick="mileContinue()">▶ Devam Et</button>
       <button class="panBtn" onclick="toKisla()">🏰 Kışlaya Dön (Havuz kaybolur)</button>
-      <button class="panBtn red" onclick="toMenu()">✕ Ana Menüye Dön</button>
+      <button class="panBtn red" onclick="ayrilOnay('menu')">✕ Ana Menüye Dön</button>
     </div>
   </div>
 
@@ -912,7 +912,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
   </div>
   <div id="dlgLayer">
     <div id="dlgBox">
-      <div id="dlgT"></div><div id="dlgP"></div><button id="dlgB"></button>
+      <div id="dlgT"></div><div id="dlgP"></div><button id="dlgB"></button><button id="dlgI" style="display:none" onclick="hideDlg()">Vazgeç</button>
     </div>
   </div>
 
@@ -983,7 +983,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.79';
+const VERSION='v1.80';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -1072,7 +1072,7 @@ try{
 // ═══════════════════════════════════════════════════════
 // AYARLAR SİSTEMİ
 // ═══════════════════════════════════════════════════════
-const SURUM='v1.79';
+const SURUM='v1.80';
 const SETTINGS_KEY='yenicheri_settings';
 let SETTINGS={
   touchEnabled: true,
@@ -3984,7 +3984,7 @@ function hikayeHazirla(){
   return H;
 }
 function hikayeIlerleme(perde,h){
-  const H=hikayeHazirla(),c=H.c[h.k]||0,c0=h.abs?0:(H.c0[h.k]||0);
+  const H=hikayeHazirla(),c=H.c[h.k]||0,c0=0;
   return Math.max(0,Math.min(h.n,c-c0));
 }
 function hikayeTamam(perde){return perde.hedefler.every(function(h){return hikayeIlerleme(perde,h)>=h.n;});}
@@ -4008,8 +4008,8 @@ function hikayeTik(){
   const dh=(S.sehirZafer||0)-_hk.sehir;if(dh>0){hikayeSay('zafer_sehir',dh);ch=true;}_hk.sehir=S.sehirZafer||0;
   const dr=(S.sarayZafer||0)-_hk.saray;if(dr>0){hikayeSay('zafer_saray',dr);ch=true;}_hk.saray=S.sarayZafer||0;
   if(currentMap==='tarim'&&typeof wave!=='undefined'&&wave>(H.c.wave_tarim||0)){H.c.wave_tarim=wave;ch=true;}
-  if(!ch)return;
   const perde=HIKAYE[H.act-1];
+  if(!ch&&!(perde&&!H.odul&&hikayeTamam(perde)))return;
   if(perde&&!H.odul&&hikayeTamam(perde)){
     H.odul=true;saveGame();
     lootPop('📖 Perde '+perde.no+' tamamlandı! Ana menü → Hikaye\'den ödülünü al');
@@ -4022,9 +4022,9 @@ function hikayeOdulAl(){
   if(!perde||!H.odul||!hikayeTamam(perde))return;
   addMainGold(perde.odul.gold);
   SAVE.fame=(SAVE.fame||0)+perde.odul.fame;
-  if(typeof addXP==='function'&&typeof playing!=='undefined'&&playing)addXP(perde.odul.xp);else SAVE.xp=(SAVE.xp||0)+perde.odul.xp;
+  try{addXP(perde.odul.xp);}catch(e){SAVE.xp=(SAVE.xp||0)+perde.odul.xp;}
   H.bitti.push(perde.no);H.odul=false;H.act=Math.min(HIKAYE.length+1,perde.no+1);
-  H.c0=Object.assign({},H.c);   // sonraki perde sıfırdan sayılır
+  { const sn=HIKAYE[H.act-1]; if(sn&&hikayeTamam(sn))H.odul=true; }   // sonraki perdenin hedefi zaten yapılmışsa ödül hazır
   saveGame();
   if(typeof SES!=='undefined')SES.zafer();
   hikayeCiz();
@@ -4658,7 +4658,15 @@ startBmRefresh();
 // UI YARDIMCILARI
 // ═══════════════════════════════════════════════════════
 function showDlg(t,p,b,cb){document.getElementById('dlgT').textContent=t;document.getElementById('dlgP').textContent=p;document.getElementById('dlgB').textContent=b;document.getElementById('dlgB').onclick=cb||hideDlg;document.getElementById('dlgLayer').style.display='flex';}
-function hideDlg(){document.getElementById('dlgLayer').style.display='none';}
+function hideDlg(){document.getElementById('dlgLayer').style.display='none';const i=document.getElementById('dlgI');if(i)i.style.display='none';}
+// İki seçenekli onay (Vazgeç düğmeli)
+function showConfirm(t,p,b,cb){showDlg(t,p,b,function(){hideDlg();cb();});const i=document.getElementById('dlgI');if(i)i.style.display='';}
+// Havuzda akçe varken oyundan çıkışı onaylat (boss'u yenmeden çıkınca havuz kaybolur)
+function ayrilOnay(hedef){
+  const git=function(){if(hedef==='kisla')toKisla();else toMenu();};
+  if(typeof poolGold!=='undefined'&&poolGold>0&&playing)showConfirm('⚠ '+poolGold+' Akçe kaybolacak','Havuzdaki akçeler yalnızca boss\'u yenerek veya sağ çıkışla kışlaya aktarılır. Şimdi ayrılırsan kaybolur.','Yine de ayrıl',git);
+  else git();
+}
 function lootPop(t){if(typeof SES!=='undefined'&&/Akçe|^\+|💎|🎁/.test(String(t)))SES.topla();const f=document.getElementById('lootFd'),d=document.createElement('div');d.className='lpop';d.textContent=t;f.appendChild(d);setTimeout(()=>d.remove(),2200);}
 function showWave(t){const e=document.getElementById('wvAnn');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2700);}
 const WEAPON_ICONS=['🗡','🔫','🏹'];

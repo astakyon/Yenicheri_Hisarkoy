@@ -2,7 +2,15 @@
 // UI YARDIMCILARI
 // ═══════════════════════════════════════════════════════
 function showDlg(t,p,b,cb){document.getElementById('dlgT').textContent=t;document.getElementById('dlgP').textContent=p;document.getElementById('dlgB').textContent=b;document.getElementById('dlgB').onclick=cb||hideDlg;document.getElementById('dlgLayer').style.display='flex';}
-function hideDlg(){document.getElementById('dlgLayer').style.display='none';}
+function hideDlg(){document.getElementById('dlgLayer').style.display='none';const i=document.getElementById('dlgI');if(i)i.style.display='none';}
+// İki seçenekli onay (Vazgeç düğmeli)
+function showConfirm(t,p,b,cb){showDlg(t,p,b,function(){hideDlg();cb();});const i=document.getElementById('dlgI');if(i)i.style.display='';}
+// Havuzda akçe varken oyundan çıkışı onaylat (boss'u yenmeden çıkınca havuz kaybolur)
+function ayrilOnay(hedef){
+  const git=function(){if(hedef==='kisla')toKisla();else toMenu();};
+  if(typeof poolGold!=='undefined'&&poolGold>0&&playing)showConfirm('⚠ '+poolGold+' Akçe kaybolacak','Havuzdaki akçeler yalnızca boss\'u yenerek veya sağ çıkışla kışlaya aktarılır. Şimdi ayrılırsan kaybolur.','Yine de ayrıl',git);
+  else git();
+}
 function lootPop(t){if(typeof SES!=='undefined'&&/Akçe|^\+|💎|🎁/.test(String(t)))SES.topla();const f=document.getElementById('lootFd'),d=document.createElement('div');d.className='lpop';d.textContent=t;f.appendChild(d);setTimeout(()=>d.remove(),2200);}
 function showWave(t){const e=document.getElementById('wvAnn');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2700);}
 const WEAPON_ICONS=['🗡','🔫','🏹'];

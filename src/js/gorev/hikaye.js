@@ -45,7 +45,7 @@ function hikayeHazirla(){
   return H;
 }
 function hikayeIlerleme(perde,h){
-  const H=hikayeHazirla(),c=H.c[h.k]||0,c0=h.abs?0:(H.c0[h.k]||0);
+  const H=hikayeHazirla(),c=H.c[h.k]||0,c0=0;
   return Math.max(0,Math.min(h.n,c-c0));
 }
 function hikayeTamam(perde){return perde.hedefler.every(function(h){return hikayeIlerleme(perde,h)>=h.n;});}
@@ -69,8 +69,8 @@ function hikayeTik(){
   const dh=(S.sehirZafer||0)-_hk.sehir;if(dh>0){hikayeSay('zafer_sehir',dh);ch=true;}_hk.sehir=S.sehirZafer||0;
   const dr=(S.sarayZafer||0)-_hk.saray;if(dr>0){hikayeSay('zafer_saray',dr);ch=true;}_hk.saray=S.sarayZafer||0;
   if(currentMap==='tarim'&&typeof wave!=='undefined'&&wave>(H.c.wave_tarim||0)){H.c.wave_tarim=wave;ch=true;}
-  if(!ch)return;
   const perde=HIKAYE[H.act-1];
+  if(!ch&&!(perde&&!H.odul&&hikayeTamam(perde)))return;
   if(perde&&!H.odul&&hikayeTamam(perde)){
     H.odul=true;saveGame();
     lootPop('📖 Perde '+perde.no+' tamamlandı! Ana menü → Hikaye\'den ödülünü al');
@@ -83,9 +83,9 @@ function hikayeOdulAl(){
   if(!perde||!H.odul||!hikayeTamam(perde))return;
   addMainGold(perde.odul.gold);
   SAVE.fame=(SAVE.fame||0)+perde.odul.fame;
-  if(typeof addXP==='function'&&typeof playing!=='undefined'&&playing)addXP(perde.odul.xp);else SAVE.xp=(SAVE.xp||0)+perde.odul.xp;
+  try{addXP(perde.odul.xp);}catch(e){SAVE.xp=(SAVE.xp||0)+perde.odul.xp;}
   H.bitti.push(perde.no);H.odul=false;H.act=Math.min(HIKAYE.length+1,perde.no+1);
-  H.c0=Object.assign({},H.c);   // sonraki perde sıfırdan sayılır
+  { const sn=HIKAYE[H.act-1]; if(sn&&hikayeTamam(sn))H.odul=true; }   // sonraki perdenin hedefi zaten yapılmışsa ödül hazır
   saveGame();
   if(typeof SES!=='undefined')SES.zafer();
   hikayeCiz();

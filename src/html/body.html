@@ -146,8 +146,8 @@
       <div class="divider"></div>
       <button class="panBtn grn" onclick="doResume()">▶ Devam Et</button>
       <button class="panBtn" onclick="openBigMap()">🗺 Büyük Harita</button>
-      <button class="panBtn" onclick="toKisla()">🏰 Kışlaya Dön</button>
-      <button class="panBtn red" onclick="toMenu()">✕ Ana Menüye Dön</button>
+      <button class="panBtn" onclick="ayrilOnay('kisla')">🏰 Kışlaya Dön</button>
+      <button class="panBtn red" onclick="ayrilOnay('menu')">✕ Ana Menüye Dön</button>
     </div>
   </div>
 
@@ -241,7 +241,7 @@
       </div>
       <button class="panBtn grn" onclick="mileContinue()">▶ Devam Et</button>
       <button class="panBtn" onclick="toKisla()">🏰 Kışlaya Dön (Havuz kaybolur)</button>
-      <button class="panBtn red" onclick="toMenu()">✕ Ana Menüye Dön</button>
+      <button class="panBtn red" onclick="ayrilOnay('menu')">✕ Ana Menüye Dön</button>
     </div>
   </div>
 
@@ -303,7 +303,7 @@
   </div>
   <div id="dlgLayer">
     <div id="dlgBox">
-      <div id="dlgT"></div><div id="dlgP"></div><button id="dlgB"></button>
+      <div id="dlgT"></div><div id="dlgP"></div><button id="dlgB"></button><button id="dlgI" style="display:none" onclick="hideDlg()">Vazgeç</button>
     </div>
   </div>
 

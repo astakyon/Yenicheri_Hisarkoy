@@ -858,6 +858,17 @@ def main():
         h2 = pg.evaluate("() => { hikayeOdulAl(); return SAVE.story2.act; }")
         check(h2 == 2, 'hikaye: ödül tekrar alınamıyor')
         check(pg.evaluate("hikayePerdeDurum(HIKAYE[3])") == 'kilit', 'hikaye: ilerlemeyen perde kilitli')
+        x = pg.evaluate("""() => { const H=hikayeHazirla(); // sıra dışı ilerleme kaybolmamalı
+          hikayeSay('zafer_saray',1); hikayeSay('wave_tarim',3);
+          const kay=hikayeIlerleme(HIKAYE[5],HIKAYE[5].hedefler[0]);
+          // tüm ödülleri menüde al: XP seviyeye çevrilmeli, çubuk taşmamalı
+          for(let i=0;i<6;i++){const A=hikayeHazirla();const pr=HIKAYE[A.act-1];if(!pr)break;pr.hedefler.forEach(h=>{A.c[h.k]=Math.max(A.c[h.k]||0,h.n)});A.odul=true;hikayeOdulAl();}
+          return {kay, xp:SAVE.xp, nxt:SAVE.xpNext, lvl:SAVE.level, bitti:hikayeDurum().bitti}; }""")
+        check(x['kay'] == 1, 'hikaye: sıra dışı yapılan hedef (Saray zaferi) kaybolmuyor')
+        check(x['bitti'] and x['xp'] < x['nxt'] and x['lvl'] >= 5, 'hikaye ödül XP\'si seviyeye dönüştü (sv %s, xp %s/%s)' % (x['lvl'], x['xp'], x['nxt']))
+        pg.evaluate("poolGold=40;playing=true;ayrilOnay('menu')")
+        check(pg.evaluate("getComputedStyle(document.getElementById('dlgLayer')).display") == 'flex' and 'kaybolacak' in pg.evaluate("document.getElementById('dlgT').textContent"), 'havuzda akçe varken menüye çıkış onay istiyor')
+        pg.evaluate("hideDlg();poolGold=0;playing=false")
         pg.evaluate("openSettings()"); pg.wait_for_timeout(200)
         sek = pg.evaluate("document.querySelectorAll('#settingsPanel .ayTab').length")
         check(sek >= 4, 'ayarlarda sekmeler var (%d)' % sek)
