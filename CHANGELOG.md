@@ -1,5 +1,9 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.86
+- Kariyer ve diğer sayfaların arka planı ana menüyle aynı atmosfer gökyüzünü kullanıyor (Ayarlar'daki atmosfer seçimi hepsine uygulanır).
+- Ana menü: Başarımlar butonu kaldırıldı (profil rozeti zaten açıyor); Nasıl Oynanır ve Ayarlar sağ üste, profilin yanına taşındı.
+
 ## v1.85
 - Yeni arayüz stili "Divan Cam": altın çerçeveli cam paneller, kırmızı ana düğmeler, eğik uçlu menü plakaları.
 - Ana menü: KARİYER (seviye + XP çubuğu), ÇOK OYUNCULU, ATÖLYE büyük plakalar; alt ikonlar cam kapsülde; profil rozetinde seviye numarası.

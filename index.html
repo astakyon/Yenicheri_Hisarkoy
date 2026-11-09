@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.85">
+<meta name="game-version" content="v1.86">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.85</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.86</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:wght@600&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -649,12 +649,12 @@ canvas{display:block;position:absolute;top:0;left:0;}
    v1.85 — ANA MENÜ "DİVAN CAM" + DEĞİŞTİRİLEBİLİR ATMOSFER
    Atmosfer: #menuLayer[data-atm] → --atm-sky / --atm-glow / --atm-star / --atm-vig (docs/ATMOSFER.md)
    ═══════════════════════════════════════════════════════════ */
-#menuLayer{--atm-sky:linear-gradient(180deg,#060a1a 0%,#0c1634 28%,#16254a 50%,#26335a 64%,#4a4260 74%,#7a5a4c 84%,#3a2418 94%,#1a0e08 100%);--atm-glow:rgba(255,170,90,.30);--atm-star:1;--atm-vig:rgba(0,0,0,.65);}
+#menuLayer,:root{--atm-sky:linear-gradient(180deg,#060a1a 0%,#0c1634 28%,#16254a 50%,#26335a 64%,#4a4260 74%,#7a5a4c 84%,#3a2418 94%,#1a0e08 100%);--atm-glow:rgba(255,170,90,.30);--atm-star:1;--atm-vig:rgba(0,0,0,.65);}
 #menuBg{background:radial-gradient(ellipse 90% 40% at 50% 66%,var(--atm-glow),transparent 70%),var(--atm-sky);}
 #menuLayer::after{background:radial-gradient(ellipse 120% 100% at 70% 55%,transparent 45%,var(--atm-vig) 100%),linear-gradient(90deg,rgba(4,2,0,.78) 0%,rgba(4,2,0,.35) 38%,transparent 62%);}
-#menuLayer[data-atm="gece"]{--atm-sky:linear-gradient(180deg,#02040c 0%,#050a1e 35%,#0a1432 60%,#101c44 80%,#080c1c 100%);--atm-glow:rgba(90,120,255,.16);--atm-star:1;--atm-vig:rgba(0,0,6,.75);}
-#menuLayer[data-atm="safak"]{--atm-sky:linear-gradient(180deg,#1a2350 0%,#3a3a78 24%,#8a5a8a 46%,#e08a6a 66%,#ffc47a 80%,#5a3828 94%,#1a0e08 100%);--atm-glow:rgba(255,200,120,.42);--atm-star:.25;--atm-vig:rgba(10,0,0,.55);}
-#menuLayer[data-atm="sis"]{--atm-sky:linear-gradient(180deg,#1c2430 0%,#2c3846 30%,#46556a 55%,#6a7886 75%,#2a2e32 94%,#14161a 100%);--atm-glow:rgba(200,215,230,.25);--atm-star:.12;--atm-vig:rgba(0,0,0,.6);}
+[data-atm="gece"]{--atm-sky:linear-gradient(180deg,#02040c 0%,#050a1e 35%,#0a1432 60%,#101c44 80%,#080c1c 100%);--atm-glow:rgba(90,120,255,.16);--atm-star:1;--atm-vig:rgba(0,0,6,.75);}
+[data-atm="safak"]{--atm-sky:linear-gradient(180deg,#1a2350 0%,#3a3a78 24%,#8a5a8a 46%,#e08a6a 66%,#ffc47a 80%,#5a3828 94%,#1a0e08 100%);--atm-glow:rgba(255,200,120,.42);--atm-star:.25;--atm-vig:rgba(10,0,0,.55);}
+[data-atm="sis"]{--atm-sky:linear-gradient(180deg,#1c2430 0%,#2c3846 30%,#46556a 55%,#6a7886 75%,#2a2e32 94%,#14161a 100%);--atm-glow:rgba(200,215,230,.25);--atm-star:.12;--atm-vig:rgba(0,0,0,.6);}
 
 /* rozet (profil) */
 #menuLayer #mProfil{top:2.6vh;right:3vw;padding:.6vh 1.8vh .6vh .6vh;gap:1.4vh;border:1.5px solid rgba(214,166,60,.7);border-radius:40px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));backdrop-filter:blur(10px);box-shadow:0 8px 20px rgba(0,0,0,.4);}
@@ -698,7 +698,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 @media (orientation:portrait){#menuLayer #mIcos{gap:clamp(8px,3vw,18px);}}
 
 /* ═══ v1.85 KARİYER — HARİTA YOLU (K1) ═══ */
-#kariyerBox{background:radial-gradient(110% 100% at 55% 30%,#1c2a55 0%,#0b1128 62%,#050813 100%);}
+#kariyerBox{background:radial-gradient(ellipse 90% 40% at 50% 66%,var(--atm-glow),transparent 70%),var(--atm-sky);}
 #kariyerPanel.ovPanel>*{width:100%;max-width:none;}
 #kariyerPanel .ovHead.kyHead{gap:clamp(8px,2vh,18px);margin-bottom:clamp(6px,1.4vh,12px);}
 #kariyerPanel .kyHead .panTitle{font:900 clamp(18px,4.2vh,28px) 'Cinzel',serif;letter-spacing:.22em;color:#f3d27a;margin:0;}
@@ -755,7 +755,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 }
 
 /* ═══ v1.85 TÜM SAYFALAR — Divan Cam stili ═══ */
-.ovBox,#coopBox{background:radial-gradient(110% 100% at 55% 30%,#1c2a55 0%,#0b1128 62%,#050813 100%)!important;}
+.ovBox,#coopBox,#worldMapBox{background:radial-gradient(ellipse 90% 40% at 50% 66%,var(--atm-glow),transparent 70%),radial-gradient(ellipse 120% 100% at 50% 50%,transparent 50%,var(--atm-vig) 100%),var(--atm-sky)!important;}
 .ovPanel.panel>*{width:min(1100px,100%);}
 .ovHead .panTitle,.panTitle{font-family:'Cinzel',serif;}
 .ovHead .panTitle{font-weight:900;font-size:clamp(18px,4.2vh,28px);letter-spacing:.2em;color:#f3d27a;}
@@ -822,6 +822,14 @@ canvas{display:block;position:absolute;top:0;left:0;}
 #settingsPanel .ovFoot .panBtn{flex:1;width:100%;}
 #coopPanel #coopT{font:900 clamp(18px,4.2vh,28px) 'Cinzel',serif;letter-spacing:.2em;color:#f3d27a;}
 #coopPanel .ovHead{justify-content:space-between;}
+
+/* v1.86 — sağ üst çubuk: Nasıl Oynanır + Ayarlar + Profil */
+#menuLayer #mTop{position:absolute;top:2.6vh;right:3vw;z-index:6;display:flex;align-items:center;gap:clamp(8px,1.6vh,14px);}
+#menuLayer #mTop #mProfil{position:static!important;top:auto!important;right:auto!important;}
+#menuLayer #mTop #mIcos{position:static!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;transform:none!important;flex-direction:row!important;padding:0!important;border:0!important;background:none!important;box-shadow:none!important;backdrop-filter:none!important;gap:clamp(8px,1.6vh,14px);}
+#menuLayer #mTop #mIcos .mIco p{display:none;}
+#menuLayer #mTop #mIcos .mIco i{width:clamp(34px,6.6vh,44px);height:clamp(34px,6.6vh,44px);background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));backdrop-filter:blur(10px);}
+@media (max-height:480px) and (orientation:landscape){#menuLayer #mTop{top:6px;right:8px}}
 </style>
 </head>
 <body>
@@ -846,19 +854,20 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.85</div>
+      <div id="mVer">v1.86</div>
+    </div>
+    <div id="mTop">
+    <div id="mIcos">
+      <div class="mIco" onclick="nasilAc()" role="button" tabindex="0" aria-label="Nasıl oynanır"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 4h11a2 2 0 012 2v12a2 2 0 01-2 2H6zM9 9h7M9 13h7"/></svg></i><p>NASIL OYNANIR</p></div>
+      <div class="mIco" onclick="openSettings()" role="button" tabindex="0" aria-label="Ayarlar"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg></i><p>AYARLAR</p></div>
     </div>
     <div id="mProfil" onclick="profilAc()" role="button" aria-label="Profil"><span id="mpAv">1</span><div><b id="mpAd">Yeniçeri</b><small id="mpSv">Sv 1</small></div></div>
+    </div>
     <div id="mBtns">
       <button class="mBtn mPri" onclick="kariyerAc()"><span class="mDia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="9" r="5"/><path d="M8.5 13.5L7 21l5-3 5 3-1.5-7.5"/></svg></span><span class="mTx2"><b>KARİYER</b><small id="mDevamAlt"></small><i class="mBar"><u id="mXpBar"></u></i></span></button>
       <button class="mBtn" onclick="coopAc()"><span class="mDia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 20c0-4 3-6 6-6s6 2 6 6M15 14c3 0 6 1.5 6 5"/></svg></span><span class="mTx2"><b>ÇOK OYUNCULU</b><small>Arkadaşlarınla oda kur</small></span></button>
       <button class="mBtn" onclick="atolyeAc()"><span class="mDia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M14 4l6 6-3 3-6-6zM12 8L4 16l4 4 8-8"/></svg></span><span class="mTx2"><b>ATÖLYE</b><small>Model ve harita araçları</small></span></button>
       <button class="mBtn" id="btnInstall" style="display:none" onclick="installApp()"><span class="mTx2"><b>⬇ UYGULAMAYI YÜKLE</b></span></button>
-    </div>
-    <div id="mIcos">
-      <div class="mIco" onclick="profilAc('basarim')" role="button" tabindex="0" aria-label="Başarımlar"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 01-10 0zM7 6H4v2a3 3 0 003 3M17 6h3v2a3 3 0 01-3 3M12 14v4M8 20h8"/></svg></i><p>BAŞARIMLAR</p></div>
-      <div class="mIco" onclick="nasilAc()" role="button" tabindex="0" aria-label="Nasıl oynanır"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 4h11a2 2 0 012 2v12a2 2 0 01-2 2H6zM9 9h7M9 13h7"/></svg></i><p>NASIL OYNANIR</p></div>
-      <div class="mIco" onclick="openSettings()" role="button" tabindex="0" aria-label="Ayarlar"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg></i><p>AYARLAR</p></div>
     </div>
   </div>
 
@@ -1206,7 +1215,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.85';
+const VERSION='v1.86';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -1295,7 +1304,7 @@ try{
 // ═══════════════════════════════════════════════════════
 // AYARLAR SİSTEMİ
 // ═══════════════════════════════════════════════════════
-const SURUM='v1.85';
+const SURUM='v1.86';
 const SETTINGS_KEY='yenicheri_settings';
 let SETTINGS={
   touchEnabled: true,
@@ -1320,7 +1329,7 @@ loadSettings();
 const ATMOSFERLER={aksam:'Akşam',gece:'Gece',safak:'Şafak',sis:'Sisli'};
 function atmosferUygula(ad){
   if(!ATMOSFERLER[ad])ad='aksam';
-  const m=document.getElementById('menuLayer');if(m)m.setAttribute('data-atm',ad);
+  const m=document.getElementById('menuLayer');if(m)m.setAttribute('data-atm',ad);document.documentElement.setAttribute('data-atm',ad);
   const sc=document.getElementById('starCv');if(sc&&typeof getComputedStyle==='function'){
     const o=getComputedStyle(m).getPropertyValue('--atm-star').trim();sc.style.opacity=o||'1';}
 }

@@ -634,12 +634,12 @@ canvas{display:block;position:absolute;top:0;left:0;}
    v1.85 — ANA MENÜ "DİVAN CAM" + DEĞİŞTİRİLEBİLİR ATMOSFER
    Atmosfer: #menuLayer[data-atm] → --atm-sky / --atm-glow / --atm-star / --atm-vig (docs/ATMOSFER.md)
    ═══════════════════════════════════════════════════════════ */
-#menuLayer{--atm-sky:linear-gradient(180deg,#060a1a 0%,#0c1634 28%,#16254a 50%,#26335a 64%,#4a4260 74%,#7a5a4c 84%,#3a2418 94%,#1a0e08 100%);--atm-glow:rgba(255,170,90,.30);--atm-star:1;--atm-vig:rgba(0,0,0,.65);}
+#menuLayer,:root{--atm-sky:linear-gradient(180deg,#060a1a 0%,#0c1634 28%,#16254a 50%,#26335a 64%,#4a4260 74%,#7a5a4c 84%,#3a2418 94%,#1a0e08 100%);--atm-glow:rgba(255,170,90,.30);--atm-star:1;--atm-vig:rgba(0,0,0,.65);}
 #menuBg{background:radial-gradient(ellipse 90% 40% at 50% 66%,var(--atm-glow),transparent 70%),var(--atm-sky);}
 #menuLayer::after{background:radial-gradient(ellipse 120% 100% at 70% 55%,transparent 45%,var(--atm-vig) 100%),linear-gradient(90deg,rgba(4,2,0,.78) 0%,rgba(4,2,0,.35) 38%,transparent 62%);}
-#menuLayer[data-atm="gece"]{--atm-sky:linear-gradient(180deg,#02040c 0%,#050a1e 35%,#0a1432 60%,#101c44 80%,#080c1c 100%);--atm-glow:rgba(90,120,255,.16);--atm-star:1;--atm-vig:rgba(0,0,6,.75);}
-#menuLayer[data-atm="safak"]{--atm-sky:linear-gradient(180deg,#1a2350 0%,#3a3a78 24%,#8a5a8a 46%,#e08a6a 66%,#ffc47a 80%,#5a3828 94%,#1a0e08 100%);--atm-glow:rgba(255,200,120,.42);--atm-star:.25;--atm-vig:rgba(10,0,0,.55);}
-#menuLayer[data-atm="sis"]{--atm-sky:linear-gradient(180deg,#1c2430 0%,#2c3846 30%,#46556a 55%,#6a7886 75%,#2a2e32 94%,#14161a 100%);--atm-glow:rgba(200,215,230,.25);--atm-star:.12;--atm-vig:rgba(0,0,0,.6);}
+[data-atm="gece"]{--atm-sky:linear-gradient(180deg,#02040c 0%,#050a1e 35%,#0a1432 60%,#101c44 80%,#080c1c 100%);--atm-glow:rgba(90,120,255,.16);--atm-star:1;--atm-vig:rgba(0,0,6,.75);}
+[data-atm="safak"]{--atm-sky:linear-gradient(180deg,#1a2350 0%,#3a3a78 24%,#8a5a8a 46%,#e08a6a 66%,#ffc47a 80%,#5a3828 94%,#1a0e08 100%);--atm-glow:rgba(255,200,120,.42);--atm-star:.25;--atm-vig:rgba(10,0,0,.55);}
+[data-atm="sis"]{--atm-sky:linear-gradient(180deg,#1c2430 0%,#2c3846 30%,#46556a 55%,#6a7886 75%,#2a2e32 94%,#14161a 100%);--atm-glow:rgba(200,215,230,.25);--atm-star:.12;--atm-vig:rgba(0,0,0,.6);}
 
 /* rozet (profil) */
 #menuLayer #mProfil{top:2.6vh;right:3vw;padding:.6vh 1.8vh .6vh .6vh;gap:1.4vh;border:1.5px solid rgba(214,166,60,.7);border-radius:40px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));backdrop-filter:blur(10px);box-shadow:0 8px 20px rgba(0,0,0,.4);}
@@ -683,7 +683,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 @media (orientation:portrait){#menuLayer #mIcos{gap:clamp(8px,3vw,18px);}}
 
 /* ═══ v1.85 KARİYER — HARİTA YOLU (K1) ═══ */
-#kariyerBox{background:radial-gradient(110% 100% at 55% 30%,#1c2a55 0%,#0b1128 62%,#050813 100%);}
+#kariyerBox{background:radial-gradient(ellipse 90% 40% at 50% 66%,var(--atm-glow),transparent 70%),var(--atm-sky);}
 #kariyerPanel.ovPanel>*{width:100%;max-width:none;}
 #kariyerPanel .ovHead.kyHead{gap:clamp(8px,2vh,18px);margin-bottom:clamp(6px,1.4vh,12px);}
 #kariyerPanel .kyHead .panTitle{font:900 clamp(18px,4.2vh,28px) 'Cinzel',serif;letter-spacing:.22em;color:#f3d27a;margin:0;}
@@ -740,7 +740,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 }
 
 /* ═══ v1.85 TÜM SAYFALAR — Divan Cam stili ═══ */
-.ovBox,#coopBox{background:radial-gradient(110% 100% at 55% 30%,#1c2a55 0%,#0b1128 62%,#050813 100%)!important;}
+.ovBox,#coopBox,#worldMapBox{background:radial-gradient(ellipse 90% 40% at 50% 66%,var(--atm-glow),transparent 70%),radial-gradient(ellipse 120% 100% at 50% 50%,transparent 50%,var(--atm-vig) 100%),var(--atm-sky)!important;}
 .ovPanel.panel>*{width:min(1100px,100%);}
 .ovHead .panTitle,.panTitle{font-family:'Cinzel',serif;}
 .ovHead .panTitle{font-weight:900;font-size:clamp(18px,4.2vh,28px);letter-spacing:.2em;color:#f3d27a;}
@@ -807,3 +807,11 @@ canvas{display:block;position:absolute;top:0;left:0;}
 #settingsPanel .ovFoot .panBtn{flex:1;width:100%;}
 #coopPanel #coopT{font:900 clamp(18px,4.2vh,28px) 'Cinzel',serif;letter-spacing:.2em;color:#f3d27a;}
 #coopPanel .ovHead{justify-content:space-between;}
+
+/* v1.86 — sağ üst çubuk: Nasıl Oynanır + Ayarlar + Profil */
+#menuLayer #mTop{position:absolute;top:2.6vh;right:3vw;z-index:6;display:flex;align-items:center;gap:clamp(8px,1.6vh,14px);}
+#menuLayer #mTop #mProfil{position:static!important;top:auto!important;right:auto!important;}
+#menuLayer #mTop #mIcos{position:static!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;transform:none!important;flex-direction:row!important;padding:0!important;border:0!important;background:none!important;box-shadow:none!important;backdrop-filter:none!important;gap:clamp(8px,1.6vh,14px);}
+#menuLayer #mTop #mIcos .mIco p{display:none;}
+#menuLayer #mTop #mIcos .mIco i{width:clamp(34px,6.6vh,44px);height:clamp(34px,6.6vh,44px);background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));backdrop-filter:blur(10px);}
+@media (max-height:480px) and (orientation:landscape){#menuLayer #mTop{top:6px;right:8px}}

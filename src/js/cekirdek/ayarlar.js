@@ -26,7 +26,7 @@ loadSettings();
 const ATMOSFERLER={aksam:'Akşam',gece:'Gece',safak:'Şafak',sis:'Sisli'};
 function atmosferUygula(ad){
   if(!ATMOSFERLER[ad])ad='aksam';
-  const m=document.getElementById('menuLayer');if(m)m.setAttribute('data-atm',ad);
+  const m=document.getElementById('menuLayer');if(m)m.setAttribute('data-atm',ad);document.documentElement.setAttribute('data-atm',ad);
   const sc=document.getElementById('starCv');if(sc&&typeof getComputedStyle==='function'){
     const o=getComputedStyle(m).getPropertyValue('--atm-star').trim();sc.style.opacity=o||'1';}
 }
