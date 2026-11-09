@@ -22,7 +22,7 @@ function joinAsClient(transport,hos){
   document.getElementById('hudLayer').style.display='block';
   document.getElementById('topBar').style.display='flex';document.getElementById('mmBox').style.display='block';document.getElementById('topLeftHud').style.display='flex';
   clientHaritaKur(harita,hos.x,hos.z,hos.spd,hos.rspd);
-  CLIENT.xpVerilen=0;CLIENT.odulBitti=false;poolGold=0;akce=0;deri=0;metal=0;
+  CLIENT.xpVerilen=0;CLIENT.hkVerilen=[0,0,0];CLIENT.odulBitti=false;poolGold=0;akce=0;deri=0;metal=0;
   transport.send({t:'hi',g:gorunumOku(),ab:{q:getAbilityLvl('q'),f:getAbilityLvl('f'),r:getAbilityLvl('r')},armor:SAVE.armor,mh:getBaseMaxHp()});
   playing=true;paused=false;
   document.getElementById('mapIndicator').textContent='👥 ODA — '+harita.toUpperCase();
@@ -105,6 +105,10 @@ function clientUzlastir(o){
   poolGold=ben.ak|0;akce=ben.ak|0;deri=ben.de|0;metal=ben.me|0;updateGoldHud();
   const ak=document.getElementById('akceV');if(ak)ak.textContent=akce;
   const dx=(ben.xp|0)-(CLIENT.xpVerilen||0);if(dx>0){CLIENT.xpVerilen=ben.xp|0;addXP(dx);}
+  if(ben.hk&&typeof hikayeSay==='function'){   // hikaye: host'un verdiği ortak kredi, istemcinin KENDİ kaydında sayılır
+    const g=CLIENT.hkVerilen||(CLIENT.hkVerilen=[0,0,0]),an=['kill_'+currentMap,'av','zafer_'+currentMap];
+    for(let i=0;i<3;i++){const d=(ben.hk[i]|0)-g[i];if(d>0){g[i]=ben.hk[i]|0;hikayeSay(an[i],d);}}
+  }
   const hpf=document.getElementById('hpf'),enf=document.getElementById('enf');
   if(hpf)hpf.style.width=(pl.hp/pl.maxHp*100)+'%';if(enf)enf.style.width=(pl.en/pl.maxEn*100)+'%';
   const hpn=document.getElementById('hpn'),enn=document.getElementById('enn');

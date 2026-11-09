@@ -366,60 +366,16 @@ function buildKervansarayUI(){
   // Haritalar
   html+=`<div class="divider"></div>
   <div style="color:#FFD700;font-size:9px;letter-spacing:2px;margin-bottom:8px;">🗺 YENİ TOPRAKLAR</div>`;
-  const ormanCost=300;
-  const ormanOwned=SAVE.mapsUnlocked&&SAVE.mapsUnlocked.orman;
-  html+=`<div class="itemCard" style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-    <div style="font-size:24px;">🏹</div>
-    <div style="flex:1;">
-      <div class="cardName">Anadolu Ormanı</div>
-      <div class="cardDesc">Hayvan avla — sessiz yaklaş, iz takip et, deri ve et kazan</div>
-    </div>
-    ${ormanOwned
-      ?`<button onclick="closeZoneMenu();haritayaGir('orman')" style="padding:6px 12px;background:rgba(39,174,96,.25);border:1px solid #27ae60;border-radius:3px;color:#2ecc71;font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">Ava Çık</button>`
-      :`<button onclick="buyOrmanMap()" style="padding:6px 10px;background:${mainGold>=ormanCost?'rgba(255,215,0,.15)':'rgba(100,0,0,.15)'};border:1px solid ${mainGold>=ormanCost?'#8B6914':'#7B1414'};border-radius:3px;color:${mainGold>=ormanCost?'#FFD700':'#c0392b'};font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">💰 ${ormanCost} Akçe</button>`
-    }
-  </div>`;
-  const madenCost=400;
-  const madenOwned=SAVE.mapsUnlocked&&SAVE.mapsUnlocked.maden;
-  html+=`<div class="itemCard" style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-    <div style="font-size:24px;">⛏</div>
-    <div style="flex:1;">
-      <div class="cardName">Demir Madeni</div>
-      <div class="cardDesc">Karanlık tünel — fenerini takip et, tuzaklara dikkat et, maden topla</div>
-    </div>
-    ${madenOwned
-      ?`<button onclick="closeZoneMenu();haritayaGir('maden')" style="padding:6px 12px;background:rgba(39,174,96,.25);border:1px solid #27ae60;border-radius:3px;color:#2ecc71;font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">Madene İn</button>`
-      :`<button onclick="buyMadenMap()" style="padding:6px 10px;background:${mainGold>=madenCost?'rgba(255,215,0,.15)':'rgba(100,0,0,.15)'};border:1px solid ${mainGold>=madenCost?'#8B6914':'#7B1414'};border-radius:3px;color:${mainGold>=madenCost?'#FFD700':'#c0392b'};font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">💰 ${madenCost} Akçe</button>`
-    }
-  </div>`;
-  [{name:'Tarım Ovası',icon:'🌾'},{name:'Yabancı Şehir',icon:'🏙'},{name:'Osmanlı Sarayı',icon:'👑'}].forEach(function(m){
-    html+=`<div class="itemCard" style="display:flex;align-items:center;gap:10px;opacity:.5;margin-bottom:5px;">
-      <div style="font-size:20px;">${m.icon}</div>
-      <div><div class="cardName">${m.name}</div><div class="cardDesc">Yakında...</div></div>
-      <span style="font-size:8px;color:#f39c12;border:1px solid #f39c12;border-radius:3px;padding:2px 6px;margin-left:auto;">Yakında</span>
+  // Haritalar WORLD_MAPS'ten üretilir; kapı seviyeye bağlıdır (Kariyer ekranıyla aynı kaynak)
+  WORLD_MAPS.filter(function(m){return m.id!=='kisla'&&m.id!=='gorev';}).forEach(function(m){
+    const gerek=haritaSv(m.id),acik=(SAVE.level||1)>=gerek;
+    html+=`<div class="itemCard" style="display:flex;align-items:center;gap:10px;margin-bottom:6px;${acik?'':'opacity:.6;'}">
+      <div style="font-size:24px;">${acik?m.icon:'🔒'}</div>
+      <div style="flex:1;"><div class="cardName">${m.name}</div><div class="cardDesc">${acik?m.desc:'Sv '+gerek+' gerekli (şu an Sv '+(SAVE.level||1)+')'}</div></div>
+      ${acik?`<button onclick="closeZoneMenu();haritayaGir('${m.id}')" style="padding:6px 12px;background:rgba(39,174,96,.25);border:1px solid #27ae60;border-radius:3px;color:#2ecc71;font-size:9px;cursor:pointer;font-family:Cinzel,serif;">GİT ▶</button>`:`<span style="font-size:9px;color:#f39c12;border:1px solid #f39c12;border-radius:3px;padding:3px 7px;">Sv ${gerek}</span>`}
     </div>`;
   });
   return html;
-}
-
-function buyOrmanMap(){
-  const cost=300;
-  if(!spendMain(cost))return;
-  SAVE.mapsUnlocked=SAVE.mapsUnlocked||{};
-  SAVE.mapsUnlocked.orman=true;
-  saveGame();
-  lootPop('🏹 Anadolu Ormanı açıldı! Av başlasın!');
-  openZone('kervansaray');
-}
-
-function buyMadenMap(){
-  const cost=400;
-  if(!spendMain(cost))return;
-  SAVE.mapsUnlocked=SAVE.mapsUnlocked||{};
-  SAVE.mapsUnlocked.maden=true;
-  saveGame();
-  lootPop('⛏ Demir Madeni açıldı! Karanlığa hazır ol!');
-  openZone('kervansaray');
 }
 
 // Yan görev paneli (Çarşı'ya eklenir)

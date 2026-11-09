@@ -25,4 +25,6 @@ function lootGuncelle(magDist,dY,mY,deriMetal){
   loots=loots.filter(function(l){return!l.collected;});
 }
 // Öldürme XP'si uzak oyunculara da yazılır (host kendi SAVE'ine addXP ile alır)
-function kazancDagit(xp){WORLD.players.forEach(function(p){if(p!==pl)p.xp=(p.xp||0)+xp;});}
+function kazancDagit(xp){WORLD.players.forEach(function(p){if(p!==pl){p.xp=(p.xp||0)+xp;p.hkKill=(p.hkKill||0)+1;}});}
+// Hikaye ortak kredisi (co-op): av ve harita zaferi bağlı oyunculara da yazılır; istemci kendi kaydında sayar
+function hikayeOrtakKredi(tur){WORLD.players.forEach(function(p){if(p!==pl){if(tur==='av')p.hkAv=(p.hkAv||0)+1;else if(tur==='zafer')p.hkZafer=(p.hkZafer||0)+1;}});}

@@ -194,6 +194,12 @@ def main():
             ist.wait_for_function("document.getElementById('downBox').style.display === 'none'", timeout=3000)
             check(True, 'istemcide "düştün" göstergesi kapandı')
 
+            print('Hikaye ortak kredisi')
+            ist.evaluate("hikayeHazirla(); window.__av0 = SAVE.story2.c.av || 0; window.__k0 = SAVE.story2.c['kill_' + currentMap] || 0;")
+            host.evaluate("kazancDagit(5); kazancDagit(5); hikayeOrtakKredi('av')")
+            ist.wait_for_function("(SAVE.story2.c.av || 0) === window.__av0 + 1 && (SAVE.story2.c['kill_' + currentMap] || 0) === window.__k0 + 2", timeout=6000)
+            check(True, 'istemci host\'un verdiği öldürme/av kredisini KENDİ hikaye kaydında saydı')
+
             print('Yeniden bağlanma')
             pos0 = host.evaluate("() => { const c = WORLD.players.get('c1'); return [c.x, c.z]; }")
             ist.evaluate("CLIENT.tr.conn.close()")

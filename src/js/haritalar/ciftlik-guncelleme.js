@@ -7,7 +7,7 @@ function ciftlikAltin(d){mainGold+=d;SAVE.mainGold=mainGold;saveGame();updateGol
 function ciftlikSulamaFiyat(lv){return 300*(lv+1)*(lv+1);}
 function ciftlikSat(){
   const c=ciftlikHazirla();let top=0,adet=0;
-  CIFTLIK_SIRA.forEach(function(k){top+=c.depo[k]*CIFTLIK_EKIN[k].deger;adet+=c.depo[k];c.depo[k]=0;});
+  CIFTLIK_SIRA.forEach(function(k){top+=c.depo[k]*CIFTLIK_EKIN[k].deger;adet+=c.depo[k];if(c.depo[k]>0&&typeof hikayeEkinSat==='function')hikayeEkinSat(k);c.depo[k]=0;});
   if(!adet){lootPop('Çantada satacak ürün yok');return;}
   ciftlikAltin(top);SAVE.stats.satis=(SAVE.stats.satis||0)+top;saveGame();
   lootPop('💰 '+adet+' ürün satıldı: +'+top+' Akçe');addFX(CIFTLIK_PAZAR.x,CIFTLIK_PAZAR.z,0xFFD700,8);

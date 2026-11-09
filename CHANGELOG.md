@@ -1,5 +1,13 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.82
+- Ayarlar (ve Profil/Hikaye/Kariyer) sabit boyutlu pencere: sekme değişince boy değişmiyor, içerik kaydırılıyor. Telefon yatayda ayar sekmeleri solda dikey, içerik tam yükseklik.
+- Menü çiftleri temizlendi: alt çubuktaki PROFİL kaldırıldı (üstteki rozet tek giriş), BAŞARIMLAR profilin başarım bölümüne gider; DEVAM ET artık Kışla'ya gider (Hikaye ayrı düğme).
+- Çok oyunculu hikaye: host öldürme/av/harita zaferi kredisini bağlı oyunculara da yazar; her istemci KENDİ hikaye kaydında sayar.
+- XP eşiği ×1.5 → ×1.28. Sv10 sınıf seçimi menüde otomatik açılmaz (oyun içinde açılır; Kariyer'de "Sınıfını seç"); seçimden sonra oyun her haritada devam eder (eskiden sadece Kışla).
+- Hikaye perde 4: 25 → 120 akçelik satış + "3 farklı ekin türü sat".
+- Eski Orman/Maden satın alma kodu kaldırıldı; Kervansaray haritaları WORLD_MAPS'ten listeler ("Yakında" yazan Tarım/Şehir/Saray düzeltildi).
+
 ## v1.81
 - Harita kilitleri karakter seviyesine bağlandı: Orman Sv2, Maden Sv3, Tarım Ovası/Çiftlik Sv4, Yabancı Şehir Sv6, Osmanlı Sarayı Sv8. Kartlarda "Önerilen Sv"; giriş yolları (Serbest Haritalar, Hikaye, Kariyer, bölge menüsü) kilit denetler.
 - Yeni ana menü düğmesi KARİYER: rütbe/ün/XP çubukları, harita listesi (açık/kilitli, kalan seviye, hikaye perdesi, GİR) ve rütbe basamakları.

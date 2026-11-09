@@ -35,7 +35,7 @@ function addXP(amount){
   while(SAVE.xp>=SAVE.xpNext){
     SAVE.xp-=SAVE.xpNext;
     SAVE.level++;
-    SAVE.xpNext=Math.floor(SAVE.xpNext*1.5);
+    SAVE.xpNext=Math.floor(SAVE.xpNext*1.28);   // v1.82: 1.5 → 1.28 (Sv8 ≈ 1650 XP, Sv12 ≈ 5 bin XP)
     onLevelUp(SAVE.level);
   }
   saveGame();
@@ -47,18 +47,12 @@ function onLevelUp(lvl){
   SAVE.maxHpBonus=(SAVE.maxHpBonus||0)+5;
   SAVE.maxEnBonus=(SAVE.maxEnBonus||0)+2;
   // Level 10: sınıf seçimi
-  if(lvl===10&&!SAVE.class){
-    setTimeout(()=>{
-      playing=false;
-      document.getElementById('classBox').style.display='flex';
-    },500);
-  }
+  if(lvl===10&&!SAVE.class){SAVE.sinifBekliyor=true;}   // pencere yalnızca oyun içindeyken açılır (sinifPenceresiKontrol)
   checkAchievements('level');
   // Level atla animasyonu
   showLevelUpAnn(lvl);
   lootPop('Level '+lvl+'! 🎖 +5 Can +2 Enerji');
-  pl.maxHp=getBaseMaxHp();pl.maxEn=getBaseMaxEn();
-  pl.hp=Math.min(pl.hp+5,pl.maxHp);
+  if(typeof pl!=='undefined'&&pl&&pl.maxHp!==undefined){pl.maxHp=getBaseMaxHp();pl.maxEn=getBaseMaxEn();pl.hp=Math.min(pl.hp+5,pl.maxHp);}
 }
 
 function showLevelUpAnn(lvl){
@@ -91,16 +85,22 @@ function updateCharHud(){
 }
 
 // ── Sınıf seç ──
+let _sinifOnceki=false;
+function sinifPenceresiAc(){_sinifOnceki=!!playing;playing=false;document.getElementById('classBox').style.display='flex';}
+// Sınıf seçimi bekliyorsa ve oyun içindeysek pencereyi aç (menüde asla otomatik açılmaz)
+function sinifPenceresiKontrol(){
+  if((SAVE.sinifBekliyor||(SAVE.level||1)>=10)&&!SAVE.class&&playing&&!paused&&document.getElementById('classBox').style.display!=='flex')sinifPenceresiAc();
+}
+setInterval(sinifPenceresiKontrol,1500);
 function selectClass(cls){
-  SAVE.class=cls;saveGame();
+  SAVE.class=cls;SAVE.sinifBekliyor=false;saveGame();
   document.getElementById('classBox').style.display='none';
   const c=CLASS_BONUS[cls];
-  pl.maxHp=getBaseMaxHp();pl.maxEn=getBaseMaxEn();
-  pl.hp=pl.maxHp;
+  if(typeof pl!=='undefined'&&pl&&pl.maxHp!==undefined){pl.maxHp=getBaseMaxHp();pl.maxEn=getBaseMaxEn();pl.hp=pl.maxHp;}
   lootPop(c.icon+' '+c.name+' sınıfı seçildi!');
-  updateCharHud();
+  try{updateCharHud();}catch(e){}
   checkSpecialAchievement('class_select');
-  if(currentMap==='kisla')playing=true;
+  if(_sinifOnceki){playing=true;_sinifOnceki=false;}   // eskiden yalnızca Kışla'da devam ediyordu; diğer haritalarda oyun donuk kalıyordu
 }
 
 // ── Karakter paneli ──

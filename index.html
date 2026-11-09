@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.81">
+<meta name="game-version" content="v1.82">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.81</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.82</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -604,6 +604,20 @@ canvas{display:block;position:absolute;top:0;left:0;}
  #libYan button,#libListe button,#libYan .libB{min-height:32px}
 }
 @media (pointer:coarse){#topBar{height:max(44px,calc(40px*var(--ui)))}#pauseBtn2{width:36px;height:36px}#topLeftHud,#mmBox,#camBtns{margin-top:max(0px,calc(44px - 40px*var(--ui)))}}
+/* v1.82 sabit pencere: sekme/içerik değişse de boyut aynı kalır; içerik kaydırılır */
+.ovPanel.panel{height:min(100%,480px)}
+#atolyePanel.panel{height:auto}
+.ovBody{scrollbar-width:thin;scrollbar-color:#8a6a1a rgba(0,0,0,.3)}
+.ovBody::-webkit-scrollbar{width:5px}.ovBody::-webkit-scrollbar-thumb{background:#8a6a1a;border-radius:3px}
+@media (max-height:480px) and (orientation:landscape){
+  #settingsPanel.ovPanel{display:grid;grid-template-columns:104px 1fr;grid-template-rows:auto 1fr;grid-template-areas:"head head" "tabs body";column-gap:8px}
+  #settingsPanel .ovHead{grid-area:head;margin-bottom:2px}
+  #settingsPanel .ayTabs{grid-area:tabs;flex-direction:column;overflow:visible;margin:0;gap:3px}
+  #settingsPanel .ayTab{flex:0 0 auto;min-height:0;padding:7px 6px;font-size:11px;justify-content:flex-start}
+  #settingsPanel .ayTab span{display:inline}
+  #settingsPanel .ovBody{grid-area:body}
+  #settingsPanel .ovFoot{display:none}
+}
 </style>
 </head>
 <body>
@@ -628,7 +642,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.81</div>
+      <div id="mVer">v1.82</div>
     </div>
     <div id="mProfil" onclick="profilAc()" role="button" aria-label="Profil"><span id="mpAv">🪖</span><div><b id="mpAd">Yeniçeri</b><small id="mpSv">Sv 1</small></div></div>
     <div id="mBtns">
@@ -642,8 +656,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
       <button class="mBtn" id="btnInstall" style="display:none" onclick="installApp()">⬇ UYGULAMAYI YÜKLE</button>
     </div>
     <div id="mIcos">
-      <div class="mIco" onclick="profilAc()" role="button"><span>👤</span><p>PROFİL</p></div>
-      <div class="mIco" onclick="profilAc()" role="button"><span>🏆</span><p>BAŞARIMLAR</p></div>
+      <div class="mIco" onclick="profilAc('basarim')" role="button"><span>🏆</span><p>BAŞARIMLAR</p></div>
       <div class="mIco" onclick="nasilAc()" role="button"><span>📜</span><p>NASIL OYNANIR</p></div>
       <div class="mIco" onclick="openSettings()" role="button"><span>⚙</span><p>AYARLAR</p></div>
     </div>
@@ -985,7 +998,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.81';
+const VERSION='v1.82';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -1074,7 +1087,7 @@ try{
 // ═══════════════════════════════════════════════════════
 // AYARLAR SİSTEMİ
 // ═══════════════════════════════════════════════════════
-const SURUM='v1.81';
+const SURUM='v1.82';
 const SETTINGS_KEY='yenicheri_settings';
 let SETTINGS={
   touchEnabled: true,
@@ -1678,60 +1691,16 @@ function buildKervansarayUI(){
   // Haritalar
   html+=`<div class="divider"></div>
   <div style="color:#FFD700;font-size:9px;letter-spacing:2px;margin-bottom:8px;">🗺 YENİ TOPRAKLAR</div>`;
-  const ormanCost=300;
-  const ormanOwned=SAVE.mapsUnlocked&&SAVE.mapsUnlocked.orman;
-  html+=`<div class="itemCard" style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-    <div style="font-size:24px;">🏹</div>
-    <div style="flex:1;">
-      <div class="cardName">Anadolu Ormanı</div>
-      <div class="cardDesc">Hayvan avla — sessiz yaklaş, iz takip et, deri ve et kazan</div>
-    </div>
-    ${ormanOwned
-      ?`<button onclick="closeZoneMenu();haritayaGir('orman')" style="padding:6px 12px;background:rgba(39,174,96,.25);border:1px solid #27ae60;border-radius:3px;color:#2ecc71;font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">Ava Çık</button>`
-      :`<button onclick="buyOrmanMap()" style="padding:6px 10px;background:${mainGold>=ormanCost?'rgba(255,215,0,.15)':'rgba(100,0,0,.15)'};border:1px solid ${mainGold>=ormanCost?'#8B6914':'#7B1414'};border-radius:3px;color:${mainGold>=ormanCost?'#FFD700':'#c0392b'};font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">💰 ${ormanCost} Akçe</button>`
-    }
-  </div>`;
-  const madenCost=400;
-  const madenOwned=SAVE.mapsUnlocked&&SAVE.mapsUnlocked.maden;
-  html+=`<div class="itemCard" style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-    <div style="font-size:24px;">⛏</div>
-    <div style="flex:1;">
-      <div class="cardName">Demir Madeni</div>
-      <div class="cardDesc">Karanlık tünel — fenerini takip et, tuzaklara dikkat et, maden topla</div>
-    </div>
-    ${madenOwned
-      ?`<button onclick="closeZoneMenu();haritayaGir('maden')" style="padding:6px 12px;background:rgba(39,174,96,.25);border:1px solid #27ae60;border-radius:3px;color:#2ecc71;font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">Madene İn</button>`
-      :`<button onclick="buyMadenMap()" style="padding:6px 10px;background:${mainGold>=madenCost?'rgba(255,215,0,.15)':'rgba(100,0,0,.15)'};border:1px solid ${mainGold>=madenCost?'#8B6914':'#7B1414'};border-radius:3px;color:${mainGold>=madenCost?'#FFD700':'#c0392b'};font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">💰 ${madenCost} Akçe</button>`
-    }
-  </div>`;
-  [{name:'Tarım Ovası',icon:'🌾'},{name:'Yabancı Şehir',icon:'🏙'},{name:'Osmanlı Sarayı',icon:'👑'}].forEach(function(m){
-    html+=`<div class="itemCard" style="display:flex;align-items:center;gap:10px;opacity:.5;margin-bottom:5px;">
-      <div style="font-size:20px;">${m.icon}</div>
-      <div><div class="cardName">${m.name}</div><div class="cardDesc">Yakında...</div></div>
-      <span style="font-size:8px;color:#f39c12;border:1px solid #f39c12;border-radius:3px;padding:2px 6px;margin-left:auto;">Yakında</span>
+  // Haritalar WORLD_MAPS'ten üretilir; kapı seviyeye bağlıdır (Kariyer ekranıyla aynı kaynak)
+  WORLD_MAPS.filter(function(m){return m.id!=='kisla'&&m.id!=='gorev';}).forEach(function(m){
+    const gerek=haritaSv(m.id),acik=(SAVE.level||1)>=gerek;
+    html+=`<div class="itemCard" style="display:flex;align-items:center;gap:10px;margin-bottom:6px;${acik?'':'opacity:.6;'}">
+      <div style="font-size:24px;">${acik?m.icon:'🔒'}</div>
+      <div style="flex:1;"><div class="cardName">${m.name}</div><div class="cardDesc">${acik?m.desc:'Sv '+gerek+' gerekli (şu an Sv '+(SAVE.level||1)+')'}</div></div>
+      ${acik?`<button onclick="closeZoneMenu();haritayaGir('${m.id}')" style="padding:6px 12px;background:rgba(39,174,96,.25);border:1px solid #27ae60;border-radius:3px;color:#2ecc71;font-size:9px;cursor:pointer;font-family:Cinzel,serif;">GİT ▶</button>`:`<span style="font-size:9px;color:#f39c12;border:1px solid #f39c12;border-radius:3px;padding:3px 7px;">Sv ${gerek}</span>`}
     </div>`;
   });
   return html;
-}
-
-function buyOrmanMap(){
-  const cost=300;
-  if(!spendMain(cost))return;
-  SAVE.mapsUnlocked=SAVE.mapsUnlocked||{};
-  SAVE.mapsUnlocked.orman=true;
-  saveGame();
-  lootPop('🏹 Anadolu Ormanı açıldı! Av başlasın!');
-  openZone('kervansaray');
-}
-
-function buyMadenMap(){
-  const cost=400;
-  if(!spendMain(cost))return;
-  SAVE.mapsUnlocked=SAVE.mapsUnlocked||{};
-  SAVE.mapsUnlocked.maden=true;
-  saveGame();
-  lootPop('⛏ Demir Madeni açıldı! Karanlığa hazır ol!');
-  openZone('kervansaray');
 }
 
 // Yan görev paneli (Çarşı'ya eklenir)
@@ -1849,7 +1818,7 @@ function addXP(amount){
   while(SAVE.xp>=SAVE.xpNext){
     SAVE.xp-=SAVE.xpNext;
     SAVE.level++;
-    SAVE.xpNext=Math.floor(SAVE.xpNext*1.5);
+    SAVE.xpNext=Math.floor(SAVE.xpNext*1.28);   // v1.82: 1.5 → 1.28 (Sv8 ≈ 1650 XP, Sv12 ≈ 5 bin XP)
     onLevelUp(SAVE.level);
   }
   saveGame();
@@ -1861,18 +1830,12 @@ function onLevelUp(lvl){
   SAVE.maxHpBonus=(SAVE.maxHpBonus||0)+5;
   SAVE.maxEnBonus=(SAVE.maxEnBonus||0)+2;
   // Level 10: sınıf seçimi
-  if(lvl===10&&!SAVE.class){
-    setTimeout(()=>{
-      playing=false;
-      document.getElementById('classBox').style.display='flex';
-    },500);
-  }
+  if(lvl===10&&!SAVE.class){SAVE.sinifBekliyor=true;}   // pencere yalnızca oyun içindeyken açılır (sinifPenceresiKontrol)
   checkAchievements('level');
   // Level atla animasyonu
   showLevelUpAnn(lvl);
   lootPop('Level '+lvl+'! 🎖 +5 Can +2 Enerji');
-  pl.maxHp=getBaseMaxHp();pl.maxEn=getBaseMaxEn();
-  pl.hp=Math.min(pl.hp+5,pl.maxHp);
+  if(typeof pl!=='undefined'&&pl&&pl.maxHp!==undefined){pl.maxHp=getBaseMaxHp();pl.maxEn=getBaseMaxEn();pl.hp=Math.min(pl.hp+5,pl.maxHp);}
 }
 
 function showLevelUpAnn(lvl){
@@ -1905,16 +1868,22 @@ function updateCharHud(){
 }
 
 // ── Sınıf seç ──
+let _sinifOnceki=false;
+function sinifPenceresiAc(){_sinifOnceki=!!playing;playing=false;document.getElementById('classBox').style.display='flex';}
+// Sınıf seçimi bekliyorsa ve oyun içindeysek pencereyi aç (menüde asla otomatik açılmaz)
+function sinifPenceresiKontrol(){
+  if((SAVE.sinifBekliyor||(SAVE.level||1)>=10)&&!SAVE.class&&playing&&!paused&&document.getElementById('classBox').style.display!=='flex')sinifPenceresiAc();
+}
+setInterval(sinifPenceresiKontrol,1500);
 function selectClass(cls){
-  SAVE.class=cls;saveGame();
+  SAVE.class=cls;SAVE.sinifBekliyor=false;saveGame();
   document.getElementById('classBox').style.display='none';
   const c=CLASS_BONUS[cls];
-  pl.maxHp=getBaseMaxHp();pl.maxEn=getBaseMaxEn();
-  pl.hp=pl.maxHp;
+  if(typeof pl!=='undefined'&&pl&&pl.maxHp!==undefined){pl.maxHp=getBaseMaxHp();pl.maxEn=getBaseMaxEn();pl.hp=pl.maxHp;}
   lootPop(c.icon+' '+c.name+' sınıfı seçildi!');
-  updateCharHud();
+  try{updateCharHud();}catch(e){}
   checkSpecialAchievement('class_select');
-  if(currentMap==='kisla')playing=true;
+  if(_sinifOnceki){playing=true;_sinifOnceki=false;}   // eskiden yalnızca Kışla'da devam ediyordu; diğer haritalarda oyun donuk kalıyordu
 }
 
 // ── Karakter paneli ──
@@ -3363,7 +3332,7 @@ function snapshot(){
   const r=function(v){return Math.round(v*100)/100;};
   const ps=[];
   WORLD.players.forEach(function(p,id){
-    ps.push({id:id,x:r(p.x),z:r(p.z),a:r(p.ang),f:r(p.face===undefined?p.ang:p.face),hp:Math.ceil(p.hp),mh:p.maxHp,d:p.hp<=0?1:0,cd:p.ab?[p.ab.cd.q,p.ab.cd.f,p.ab.cd.r]:[0,0,0],ak:p.akce|0,de:p.deri|0,me:p.metal|0,xp:p.xp|0,rv:p.hp<=0?(p.rev||0):0,en:Math.ceil(p.en),w:p.weapon,ar:armorOf(p),sh:p.ab&&p.ab.active.f?1:0,q:(SESSION.acks&&SESSION.acks.get(id))||0});
+    ps.push({id:id,x:r(p.x),z:r(p.z),a:r(p.ang),f:r(p.face===undefined?p.ang:p.face),hp:Math.ceil(p.hp),mh:p.maxHp,d:p.hp<=0?1:0,cd:p.ab?[p.ab.cd.q,p.ab.cd.f,p.ab.cd.r]:[0,0,0],ak:p.akce|0,de:p.deri|0,me:p.metal|0,xp:p.xp|0,hk:[p.hkKill|0,p.hkAv|0,p.hkZafer|0],rv:p.hp<=0?(p.rev||0):0,en:Math.ceil(p.en),w:p.weapon,ar:armorOf(p),sh:p.ab&&p.ab.active.f?1:0,q:(SESSION.acks&&SESSION.acks.get(id))||0});
   });
   return {
     t:gt,map:currentMap,wave:wave,kills:kills,
@@ -3380,7 +3349,7 @@ function snapshot(){
 function ozetPakla(s){
   const r1=function(v){return Math.round(v*10)/10;};
   return {z:1,t:s.t,map:s.map,wave:s.wave,kills:s.kills,
-    p:s.p.map(function(q){return [q.id,q.x,q.z,q.a,q.hp,q.mh,q.en,q.w,q.ar,q.sh,q.q,q.d,q.rv,q.cd[0],q.cd[1],q.cd[2],q.ak,q.de,q.me,q.xp,q.f];}),
+    p:s.p.map(function(q){return [q.id,q.x,q.z,q.a,q.hp,q.mh,q.en,q.w,q.ar,q.sh,q.q,q.d,q.rv,q.cd[0],q.cd[1],q.cd[2],q.ak,q.de,q.me,q.xp,q.f,q.hk||[0,0,0]];}),
     e:s.e.map(function(e){return [e.id,e.k,r1(e.x),r1(e.z),e.hp,e.mh,e.b];}),
     b:s.b.map(function(b){return [b.id,b.x,b.z,b.vx,b.vz];}),
     l:s.l.map(function(l){return [l.id,l.k,r1(l.x),r1(l.z)];})};
@@ -3388,7 +3357,7 @@ function ozetPakla(s){
 function ozetAc(w){
   if(!w||!w.z)return w;
   return {t:w.t,map:w.map,wave:w.wave,kills:w.kills,
-    p:w.p.map(function(a){return {id:a[0],x:a[1],z:a[2],a:a[3],hp:a[4],mh:a[5],en:a[6],w:a[7],ar:a[8],sh:a[9],q:a[10],d:a[11],rv:a[12],cd:[a[13],a[14],a[15]],ak:a[16],de:a[17],me:a[18],xp:a[19],f:a[20]};}),
+    p:w.p.map(function(a){return {id:a[0],x:a[1],z:a[2],a:a[3],hp:a[4],mh:a[5],en:a[6],w:a[7],ar:a[8],sh:a[9],q:a[10],d:a[11],rv:a[12],cd:[a[13],a[14],a[15]],ak:a[16],de:a[17],me:a[18],xp:a[19],f:a[20],hk:a[21]};}),
     e:w.e.map(function(a){return {id:a[0],k:a[1],x:a[2],z:a[3],hp:a[4],mh:a[5],b:a[6]};}),
     b:w.b.map(function(a){return {id:a[0],x:a[1],z:a[2],vx:a[3],vz:a[4]};}),
     l:w.l.map(function(a){return {id:a[0],k:a[1],x:a[2],z:a[3]};})};
@@ -3566,7 +3535,7 @@ function joinAsClient(transport,hos){
   document.getElementById('hudLayer').style.display='block';
   document.getElementById('topBar').style.display='flex';document.getElementById('mmBox').style.display='block';document.getElementById('topLeftHud').style.display='flex';
   clientHaritaKur(harita,hos.x,hos.z,hos.spd,hos.rspd);
-  CLIENT.xpVerilen=0;CLIENT.odulBitti=false;poolGold=0;akce=0;deri=0;metal=0;
+  CLIENT.xpVerilen=0;CLIENT.hkVerilen=[0,0,0];CLIENT.odulBitti=false;poolGold=0;akce=0;deri=0;metal=0;
   transport.send({t:'hi',g:gorunumOku(),ab:{q:getAbilityLvl('q'),f:getAbilityLvl('f'),r:getAbilityLvl('r')},armor:SAVE.armor,mh:getBaseMaxHp()});
   playing=true;paused=false;
   document.getElementById('mapIndicator').textContent='👥 ODA — '+harita.toUpperCase();
@@ -3649,6 +3618,10 @@ function clientUzlastir(o){
   poolGold=ben.ak|0;akce=ben.ak|0;deri=ben.de|0;metal=ben.me|0;updateGoldHud();
   const ak=document.getElementById('akceV');if(ak)ak.textContent=akce;
   const dx=(ben.xp|0)-(CLIENT.xpVerilen||0);if(dx>0){CLIENT.xpVerilen=ben.xp|0;addXP(dx);}
+  if(ben.hk&&typeof hikayeSay==='function'){   // hikaye: host'un verdiği ortak kredi, istemcinin KENDİ kaydında sayılır
+    const g=CLIENT.hkVerilen||(CLIENT.hkVerilen=[0,0,0]),an=['kill_'+currentMap,'av','zafer_'+currentMap];
+    for(let i=0;i<3;i++){const d=(ben.hk[i]|0)-g[i];if(d>0){g[i]=ben.hk[i]|0;hikayeSay(an[i],d);}}
+  }
   const hpf=document.getElementById('hpf'),enf=document.getElementById('enf');
   if(hpf)hpf.style.width=(pl.hp/pl.maxHp*100)+'%';if(enf)enf.style.width=(pl.en/pl.maxEn*100)+'%';
   const hpn=document.getElementById('hpn'),enn=document.getElementById('enn');
@@ -3973,7 +3946,7 @@ const HIKAYE=[
    odul:{gold:300,xp:240,fame:30}},
   {no:4,ad:'Ordunun Ekmeği',harita:'tarim',ikon:'🌾',harita2:'ciftlik',
    intro:'Köy muhtarı yalvarır:\n"Baskınlar tarlaları yakıyor, ordu aç kalacak! Ovayı eşkıyadan koru; çiftlikte ekin yetiştirip pazara ver ki ikmal kesilmesin."',
-   hedefler:[{k:'wave_tarim',n:3,abs:true,ad:'Tarım Ovası\'nda 3. dalgaya ulaş'},{k:'satis',n:25,ad:'Çiftlikte 25 akçelik ürün sat'}],
+   hedefler:[{k:'wave_tarim',n:3,abs:true,ad:'Tarım Ovası\'nda 3. dalgaya ulaş'},{k:'satis',n:120,ad:'Çiftlikte 120 akçelik ürün sat'},{k:'ekin_cesit',n:3,ad:'3 farklı ekin türü sat'}],
    outro:'Ambarlar dolu, askerin karnı tok. Köylüler eşkıyanın dilinden bir isim duymuş: liman şehrindeki bir reis, "Vezir\'in adamı" diye övünüyormuş.',
    odul:{gold:400,xp:300,fame:40}},
   {no:5,ad:'Liman Şehrinin Gölgesi',harita:'sehir',ikon:'🏙',
@@ -4008,6 +3981,8 @@ function hikayePerdeDurum(p){
 }
 // Sayaçlar: oyun ilerledikçe yarım saniyede bir istatistik farkından beslenir
 let _hk={kills:SAVE.stats.kills||0,av:SAVE.stats.animalsHunted||0,satis:SAVE.stats.satis||0,sehir:SAVE.stats.sehirZafer||0,saray:SAVE.stats.sarayZafer||0};
+// Satılan farklı ekin türlerini say (çiftlik pazarı çağırır)
+function hikayeEkinSat(k){const H=hikayeHazirla();H.ekin=H.ekin||{};if(!H.ekin[k]){H.ekin[k]=1;H.c.ekin_cesit=Object.keys(H.ekin).length;saveGame();}}
 function hikayeSay(k,d){const H=hikayeHazirla();H.c[k]=(H.c[k]||0)+d;}
 function hikayeTik(){
   if(typeof playing==='undefined'||!playing)return;
@@ -4108,7 +4083,8 @@ function profilUnvanAd(){
 }
 function profilSure(s){const sa=Math.floor(s/3600),dk=Math.floor(s%3600/60);return sa>0?sa+' sa '+dk+' dk':dk+' dk';}
 let _profilAcik=false;
-function profilAc(){_profilAcik=true;profilCiz();document.getElementById('profilBox').style.display='flex';}
+function profilAc(bolum){_profilAcik=true;profilCiz();document.getElementById('profilBox').style.display='flex';
+  const b=document.querySelector('#profilPanel .ovBody');if(b){b.scrollTop=0;if(bolum==='basarim'){const e=Array.prototype.find.call(b.querySelectorAll('.pfSec'),function(x){return x.textContent.indexOf('BAŞARIM')>=0;});if(e)b.scrollTop=e.offsetTop-b.offsetTop;}}}
 function profilKapat(){_profilAcik=false;document.getElementById('profilBox').style.display='none';if(typeof menuProfilGuncelle==='function')menuProfilGuncelle();}
 function profilAdDegis(v){profilHazirla().ad=profilAdTemizle(v)||'Yeniçeri';saveGame();menuProfilGuncelle&&menuProfilGuncelle();}
 function profilAvatarSec(a){profilHazirla().avatar=a;saveGame();profilCiz();}
@@ -4146,6 +4122,7 @@ function kariyerCiz(){
   h+='<div class="hkKart aktif"><div class="hkAd">'+getFameTitle()+' · Seviye '+lv+'</div>'
    +'<div class="toggleSub">XP '+(SAVE.xp||0)+' / '+(SAVE.xpNext||100)+'</div><div class="pfBar"><i style="width:'+xy+'%"></i></div>'
    +'<div class="toggleSub" style="margin-top:6px">Ün '+fame+(sonraki?' / '+sonraki.min+' → '+sonraki.title:' (en yüksek rütbe)')+'</div><div class="pfBar"><i style="width:'+fy+'%"></i></div></div>';
+  if(lv>=10&&!SAVE.class)h+='<div class="hkKart aktif"><div class="hkAd">🎖 Sınıfını seç</div><div class="toggleSub">Seviye 10\'a ulaştın; sınıf bonusunu seçebilirsin.</div><div class="hkRow"><button class="hkBtn grn" onclick="kariyerKapat();document.getElementById(\'classBox\').style.display=\'flex\'">SEÇ</button></div></div>';
   h+='<div class="panSub" style="margin:10px 0 4px">HARİTALAR</div>';
   WORLD_MAPS.forEach(function(m){
     const gerek=haritaSv(m.id),acik=lv>=gerek,pr=(typeof HIKAYE!=='undefined')?HIKAYE.find(function(x){return x.harita===m.id;}):null;
@@ -4159,12 +4136,8 @@ function kariyerCiz(){
   document.getElementById('kariyerPanel').innerHTML=h;
 }
 // ── Ana menü yardımcıları (v1.76) ──
-function menuDevam(){
-  try{
-    if(typeof hikayeDurum==='function'&&!hikayeDurum().bitti){hikayeAc();return;}
-  }catch(e){}
-  BEGIN('kisla');
-}
+// DEVAM ET → Kışla (ana üs). Hikaye ayrı bir düğme: aynı yere iki yol açılmaz.
+function menuDevam(){haritayaGir('kisla');}
 function menuProfilGuncelle(){
   try{
     const p=SAVE.profil||{};
@@ -4172,7 +4145,7 @@ function menuProfilGuncelle(){
     if(av)av.textContent=p.avatar||'🪖';
     if(ad)ad.textContent=p.ad||'Yeniçeri';
     if(sv)sv.textContent=(typeof getFameTitle==='function'?getFameTitle():'')||'';
-    if(dv){const d=hikayeDurum();dv.textContent=d.bitti?'Kışla':'Perde '+d.act;}
+    if(dv){dv.textContent='Kışla · Sv '+(SAVE.level||1);}
   }catch(e){}
 }
 function nasilAc(){
@@ -6493,7 +6466,9 @@ function lootGuncelle(magDist,dY,mY,deriMetal){
   loots=loots.filter(function(l){return!l.collected;});
 }
 // Öldürme XP'si uzak oyunculara da yazılır (host kendi SAVE'ine addXP ile alır)
-function kazancDagit(xp){WORLD.players.forEach(function(p){if(p!==pl)p.xp=(p.xp||0)+xp;});}
+function kazancDagit(xp){WORLD.players.forEach(function(p){if(p!==pl){p.xp=(p.xp||0)+xp;p.hkKill=(p.hkKill||0)+1;}});}
+// Hikaye ortak kredisi (co-op): av ve harita zaferi bağlı oyunculara da yazılır; istemci kendi kaydında sayar
+function hikayeOrtakKredi(tur){WORLD.players.forEach(function(p){if(p!==pl){if(tur==='av')p.hkAv=(p.hkAv||0)+1;else if(tur==='zafer')p.hkZafer=(p.hkZafer||0)+1;}});}
 // ═══════════════════════════════════════════════════════
 // SAVAŞ
 // ═══════════════════════════════════════════════════════
@@ -6889,7 +6864,7 @@ function updateOrman(dt){
       dropLoot(en.x,en.z,en.isBoss?6:2);
       kills++;document.getElementById('killV').textContent=kills;
       SAVE.stats.kills=(SAVE.stats.kills||0)+1;
-      SAVE.stats.animalsHunted=(SAVE.stats.animalsHunted||0)+1;
+      SAVE.stats.animalsHunted=(SAVE.stats.animalsHunted||0)+1;hikayeOrtakKredi('av');
       addXP(en.xpReward||14);kazancDagit(en.xpReward||14);addFame(en.isBoss?25:1);
       trackQuest('kills',1);checkAchievements('kills');
       if(en.isBoss){
@@ -7232,7 +7207,7 @@ function ciftlikAltin(d){mainGold+=d;SAVE.mainGold=mainGold;saveGame();updateGol
 function ciftlikSulamaFiyat(lv){return 300*(lv+1)*(lv+1);}
 function ciftlikSat(){
   const c=ciftlikHazirla();let top=0,adet=0;
-  CIFTLIK_SIRA.forEach(function(k){top+=c.depo[k]*CIFTLIK_EKIN[k].deger;adet+=c.depo[k];c.depo[k]=0;});
+  CIFTLIK_SIRA.forEach(function(k){top+=c.depo[k]*CIFTLIK_EKIN[k].deger;adet+=c.depo[k];if(c.depo[k]>0&&typeof hikayeEkinSat==='function')hikayeEkinSat(k);c.depo[k]=0;});
   if(!adet){lootPop('Çantada satacak ürün yok');return;}
   ciftlikAltin(top);SAVE.stats.satis=(SAVE.stats.satis||0)+top;saveGame();
   lootPop('💰 '+adet+' ürün satıldı: +'+top+' Akçe');addFX(CIFTLIK_PAZAR.x,CIFTLIK_PAZAR.z,0xFFD700,8);
@@ -7371,7 +7346,7 @@ function ciftlikPanelEylem(a,k){
     ciftlikAltin(-fy);c.tohum[k]+=n;saveGame();
   }else if(a==='sat'){
     const n=c.depo[k];if(!n){lootPop('Çantada satacak '+CIFTLIK_EKIN[k].ad+' yok');return;}
-    const t=n*CIFTLIK_EKIN[k].deger;c.depo[k]=0;ciftlikAltin(t);SAVE.stats.satis=(SAVE.stats.satis||0)+t;saveGame();lootPop('💰 +'+t+' Akçe');
+    const t=n*CIFTLIK_EKIN[k].deger;c.depo[k]=0;if(typeof hikayeEkinSat==='function')hikayeEkinSat(k);ciftlikAltin(t);SAVE.stats.satis=(SAVE.stats.satis||0)+t;saveGame();lootPop('💰 +'+t+' Akçe');
   }else if(a==='hepsat'){ciftlikSat();}
   else if(a==='sulama'){
     const lv=c.sulama||0,fy=ciftlikSulamaFiyat(lv);
@@ -7492,7 +7467,7 @@ function dmDusmanDogur(boss,nokta){
 }
 function dmZafer(){
   const a=dmAyar();dmBitti=true;waveActive=false;
-  transferPool();SAVE.stats[currentMap+'Zafer']=(SAVE.stats[currentMap+'Zafer']||0)+1;
+  transferPool();SAVE.stats[currentMap+'Zafer']=(SAVE.stats[currentMap+'Zafer']||0)+1;hikayeOrtakKredi('zafer');
   addFame(a.fame);saveGame();
   showDlg(a.bossAd+' Yenildi!',currentMap==='saray'?'Hain Vezir devrildi, saray kurtuldu.\nPadişah sana minnettar!\n\nAkçeler kışlaya aktarıldı.':'Sokaklar yeniden güvende.\nÇete dağıldı, şehir sana teşekkür ediyor.\n\nAkçeler kışlaya aktarıldı.','Devam Et',hideDlg);
 }

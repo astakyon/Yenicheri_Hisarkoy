@@ -589,3 +589,17 @@ canvas{display:block;position:absolute;top:0;left:0;}
  #libYan button,#libListe button,#libYan .libB{min-height:32px}
 }
 @media (pointer:coarse){#topBar{height:max(44px,calc(40px*var(--ui)))}#pauseBtn2{width:36px;height:36px}#topLeftHud,#mmBox,#camBtns{margin-top:max(0px,calc(44px - 40px*var(--ui)))}}
+/* v1.82 sabit pencere: sekme/içerik değişse de boyut aynı kalır; içerik kaydırılır */
+.ovPanel.panel{height:min(100%,480px)}
+#atolyePanel.panel{height:auto}
+.ovBody{scrollbar-width:thin;scrollbar-color:#8a6a1a rgba(0,0,0,.3)}
+.ovBody::-webkit-scrollbar{width:5px}.ovBody::-webkit-scrollbar-thumb{background:#8a6a1a;border-radius:3px}
+@media (max-height:480px) and (orientation:landscape){
+  #settingsPanel.ovPanel{display:grid;grid-template-columns:104px 1fr;grid-template-rows:auto 1fr;grid-template-areas:"head head" "tabs body";column-gap:8px}
+  #settingsPanel .ovHead{grid-area:head;margin-bottom:2px}
+  #settingsPanel .ayTabs{grid-area:tabs;flex-direction:column;overflow:visible;margin:0;gap:3px}
+  #settingsPanel .ayTab{flex:0 0 auto;min-height:0;padding:7px 6px;font-size:11px;justify-content:flex-start}
+  #settingsPanel .ayTab span{display:inline}
+  #settingsPanel .ovBody{grid-area:body}
+  #settingsPanel .ovFoot{display:none}
+}

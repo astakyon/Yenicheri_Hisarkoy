@@ -105,7 +105,7 @@ function dmDusmanDogur(boss,nokta){
 }
 function dmZafer(){
   const a=dmAyar();dmBitti=true;waveActive=false;
-  transferPool();SAVE.stats[currentMap+'Zafer']=(SAVE.stats[currentMap+'Zafer']||0)+1;
+  transferPool();SAVE.stats[currentMap+'Zafer']=(SAVE.stats[currentMap+'Zafer']||0)+1;hikayeOrtakKredi('zafer');
   addFame(a.fame);saveGame();
   showDlg(a.bossAd+' Yenildi!',currentMap==='saray'?'Hain Vezir devrildi, saray kurtuldu.\nPadişah sana minnettar!\n\nAkçeler kışlaya aktarıldı.':'Sokaklar yeniden güvende.\nÇete dağıldı, şehir sana teşekkür ediyor.\n\nAkçeler kışlaya aktarıldı.','Devam Et',hideDlg);
 }

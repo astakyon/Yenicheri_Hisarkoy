@@ -32,7 +32,8 @@ function profilUnvanAd(){
 }
 function profilSure(s){const sa=Math.floor(s/3600),dk=Math.floor(s%3600/60);return sa>0?sa+' sa '+dk+' dk':dk+' dk';}
 let _profilAcik=false;
-function profilAc(){_profilAcik=true;profilCiz();document.getElementById('profilBox').style.display='flex';}
+function profilAc(bolum){_profilAcik=true;profilCiz();document.getElementById('profilBox').style.display='flex';
+  const b=document.querySelector('#profilPanel .ovBody');if(b){b.scrollTop=0;if(bolum==='basarim'){const e=Array.prototype.find.call(b.querySelectorAll('.pfSec'),function(x){return x.textContent.indexOf('BAŞARIM')>=0;});if(e)b.scrollTop=e.offsetTop-b.offsetTop;}}}
 function profilKapat(){_profilAcik=false;document.getElementById('profilBox').style.display='none';if(typeof menuProfilGuncelle==='function')menuProfilGuncelle();}
 function profilAdDegis(v){profilHazirla().ad=profilAdTemizle(v)||'Yeniçeri';saveGame();menuProfilGuncelle&&menuProfilGuncelle();}
 function profilAvatarSec(a){profilHazirla().avatar=a;saveGame();profilCiz();}

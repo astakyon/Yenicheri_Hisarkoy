@@ -93,7 +93,7 @@ function updateOrman(dt){
       dropLoot(en.x,en.z,en.isBoss?6:2);
       kills++;document.getElementById('killV').textContent=kills;
       SAVE.stats.kills=(SAVE.stats.kills||0)+1;
-      SAVE.stats.animalsHunted=(SAVE.stats.animalsHunted||0)+1;
+      SAVE.stats.animalsHunted=(SAVE.stats.animalsHunted||0)+1;hikayeOrtakKredi('av');
       addXP(en.xpReward||14);kazancDagit(en.xpReward||14);addFame(en.isBoss?25:1);
       trackQuest('kills',1);checkAchievements('kills');
       if(en.isBoss){

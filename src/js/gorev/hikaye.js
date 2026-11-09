@@ -23,7 +23,7 @@ const HIKAYE=[
    odul:{gold:300,xp:240,fame:30}},
   {no:4,ad:'Ordunun Ekmeği',harita:'tarim',ikon:'🌾',harita2:'ciftlik',
    intro:'Köy muhtarı yalvarır:\n"Baskınlar tarlaları yakıyor, ordu aç kalacak! Ovayı eşkıyadan koru; çiftlikte ekin yetiştirip pazara ver ki ikmal kesilmesin."',
-   hedefler:[{k:'wave_tarim',n:3,abs:true,ad:'Tarım Ovası\'nda 3. dalgaya ulaş'},{k:'satis',n:25,ad:'Çiftlikte 25 akçelik ürün sat'}],
+   hedefler:[{k:'wave_tarim',n:3,abs:true,ad:'Tarım Ovası\'nda 3. dalgaya ulaş'},{k:'satis',n:120,ad:'Çiftlikte 120 akçelik ürün sat'},{k:'ekin_cesit',n:3,ad:'3 farklı ekin türü sat'}],
    outro:'Ambarlar dolu, askerin karnı tok. Köylüler eşkıyanın dilinden bir isim duymuş: liman şehrindeki bir reis, "Vezir\'in adamı" diye övünüyormuş.',
    odul:{gold:400,xp:300,fame:40}},
   {no:5,ad:'Liman Şehrinin Gölgesi',harita:'sehir',ikon:'🏙',
@@ -58,6 +58,8 @@ function hikayePerdeDurum(p){
 }
 // Sayaçlar: oyun ilerledikçe yarım saniyede bir istatistik farkından beslenir
 let _hk={kills:SAVE.stats.kills||0,av:SAVE.stats.animalsHunted||0,satis:SAVE.stats.satis||0,sehir:SAVE.stats.sehirZafer||0,saray:SAVE.stats.sarayZafer||0};
+// Satılan farklı ekin türlerini say (çiftlik pazarı çağırır)
+function hikayeEkinSat(k){const H=hikayeHazirla();H.ekin=H.ekin||{};if(!H.ekin[k]){H.ekin[k]=1;H.c.ekin_cesit=Object.keys(H.ekin).length;saveGame();}}
 function hikayeSay(k,d){const H=hikayeHazirla();H.c[k]=(H.c[k]||0)+d;}
 function hikayeTik(){
   if(typeof playing==='undefined'||!playing)return;

@@ -874,6 +874,26 @@ def main():
           kariyerKapat(); SAVE.level=8; const d=isMapUnlocked({id:'saray'}); SAVE.level=1; return {a,b,c,d,n,gir}; }""")
         check(kr['a'] is False and kr['b'] is False and kr['c'] is False and kr['d'] is True, 'harita kilitleri seviyeye bağlı (Sv1: Saray kapalı, Sv8: açık)')
         check(kr['n'] == 9 and kr['gir'] == 2, 'Kariyer ekranı 8 harita + rütbe kartını listeliyor, Sv1\'de 2 harita girilebilir (%s kart, %s GİR)' % (kr['n'], kr['gir']))
+        y = pg.evaluate("""() => { const o={};
+          const a=hikayeHazirla(); a.ekin={}; a.c.ekin_cesit=0; hikayeEkinSat('nohut'); hikayeEkinSat('nohut'); o.bir=a.c.ekin_cesit; hikayeEkinSat('arpa'); hikayeEkinSat('pamuk'); o.uc=a.c.ekin_cesit;
+          const sv=SAVE.level, nx=SAVE.xpNext; SAVE.level=1; SAVE.xp=0; SAVE.xpNext=100; addXP(100); o.egri=SAVE.xpNext; SAVE.level=sv; SAVE.xpNext=nx;
+          SAVE.class=null; SAVE.level=10; SAVE.sinifBekliyor=false; playing=false; onLevelUp(10); o.bekle=SAVE.sinifBekliyor; sinifPenceresiKontrol(); o.menudeAcik=document.getElementById('classBox').style.display==='flex';
+          playing=true; sinifPenceresiKontrol(); o.oyundaAcik=document.getElementById('classBox').style.display==='flex'; o.durdu=playing===false;
+          selectClass('sipahi'); o.devam=playing===true; o.sinif=SAVE.class;
+          SAVE.class=null; SAVE.sinifBekliyor=false; SAVE.level=1; playing=false; document.getElementById('classBox').style.display='none';
+          o.yakinda=(typeof gorevMagaza==='function')?0:0; return o; }""")
+        check(y['bir'] == 1 and y['uc'] == 3, 'hikaye: farklı ekin türleri sayılıyor (aynı tür tekrar sayılmıyor)')
+        check(y['egri'] == 128, 'XP eşiği seviye başına ×1.28 (%s)' % y['egri'])
+        check(y['bekle'] and not y['menudeAcik'] and y['oyundaAcik'] and y['durdu'] and y['devam'], 'Sv10 sınıf seçimi: menüde açılmıyor, oyunda açılıyor, seçince oyun devam ediyor')
+        sek_h = []
+        for sk in ('kontrol', 'ses', 'grafik', 'hesap', 'hakkinda'):
+            pg.evaluate("openSettings();ayarSekme('%s')" % sk); pg.wait_for_timeout(60)
+            sek_h.append(pg.evaluate("Math.round(document.getElementById('settingsPanel').getBoundingClientRect().height)"))
+        check(len(set(sek_h)) == 1, 'ayar penceresi tüm sekmelerde aynı boyutta %s' % sek_h)
+        pg.evaluate("closeSettings()")
+        kv = pg.evaluate("() => { const h=buildKervansarayUI(); return {yakinda: h.indexOf('Yakında')>=0, ormanSatin: h.indexOf('buyOrmanMap')>=0, saray: h.indexOf('Osmanlı Sarayı')>=0}; }")
+        check(not kv['yakinda'] and not kv['ormanSatin'] and kv['saray'], 'Kervansaray: "Yakında" ve eski satın alma kalmadı, haritalar WORLD_MAPS\'ten listeleniyor')
+        check(pg.evaluate("document.querySelectorAll('#mIcos .mIco').length") == 3 and 'PROFİL' not in pg.evaluate("document.getElementById('mIcos').textContent"), 'menüde profil çift giriş yok (rozet tek giriş)')
         pg.evaluate("openSettings()"); pg.wait_for_timeout(200)
         sek = pg.evaluate("document.querySelectorAll('#settingsPanel .ayTab').length")
         check(sek >= 4, 'ayarlarda sekmeler var (%d)' % sek)

@@ -11,6 +11,7 @@ function kariyerCiz(){
   h+='<div class="hkKart aktif"><div class="hkAd">'+getFameTitle()+' · Seviye '+lv+'</div>'
    +'<div class="toggleSub">XP '+(SAVE.xp||0)+' / '+(SAVE.xpNext||100)+'</div><div class="pfBar"><i style="width:'+xy+'%"></i></div>'
    +'<div class="toggleSub" style="margin-top:6px">Ün '+fame+(sonraki?' / '+sonraki.min+' → '+sonraki.title:' (en yüksek rütbe)')+'</div><div class="pfBar"><i style="width:'+fy+'%"></i></div></div>';
+  if(lv>=10&&!SAVE.class)h+='<div class="hkKart aktif"><div class="hkAd">🎖 Sınıfını seç</div><div class="toggleSub">Seviye 10\'a ulaştın; sınıf bonusunu seçebilirsin.</div><div class="hkRow"><button class="hkBtn grn" onclick="kariyerKapat();document.getElementById(\'classBox\').style.display=\'flex\'">SEÇ</button></div></div>';
   h+='<div class="panSub" style="margin:10px 0 4px">HARİTALAR</div>';
   WORLD_MAPS.forEach(function(m){
     const gerek=haritaSv(m.id),acik=lv>=gerek,pr=(typeof HIKAYE!=='undefined')?HIKAYE.find(function(x){return x.harita===m.id;}):null;

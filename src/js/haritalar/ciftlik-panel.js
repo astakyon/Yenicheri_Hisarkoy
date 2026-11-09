@@ -72,7 +72,7 @@ function ciftlikPanelEylem(a,k){
     ciftlikAltin(-fy);c.tohum[k]+=n;saveGame();
   }else if(a==='sat'){
     const n=c.depo[k];if(!n){lootPop('Çantada satacak '+CIFTLIK_EKIN[k].ad+' yok');return;}
-    const t=n*CIFTLIK_EKIN[k].deger;c.depo[k]=0;ciftlikAltin(t);SAVE.stats.satis=(SAVE.stats.satis||0)+t;saveGame();lootPop('💰 +'+t+' Akçe');
+    const t=n*CIFTLIK_EKIN[k].deger;c.depo[k]=0;if(typeof hikayeEkinSat==='function')hikayeEkinSat(k);ciftlikAltin(t);SAVE.stats.satis=(SAVE.stats.satis||0)+t;saveGame();lootPop('💰 +'+t+' Akçe');
   }else if(a==='hepsat'){ciftlikSat();}
   else if(a==='sulama'){
     const lv=c.sulama||0,fy=ciftlikSulamaFiyat(lv);

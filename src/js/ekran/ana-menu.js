@@ -1,10 +1,6 @@
 // ── Ana menü yardımcıları (v1.76) ──
-function menuDevam(){
-  try{
-    if(typeof hikayeDurum==='function'&&!hikayeDurum().bitti){hikayeAc();return;}
-  }catch(e){}
-  BEGIN('kisla');
-}
+// DEVAM ET → Kışla (ana üs). Hikaye ayrı bir düğme: aynı yere iki yol açılmaz.
+function menuDevam(){haritayaGir('kisla');}
 function menuProfilGuncelle(){
   try{
     const p=SAVE.profil||{};
@@ -12,7 +8,7 @@ function menuProfilGuncelle(){
     if(av)av.textContent=p.avatar||'🪖';
     if(ad)ad.textContent=p.ad||'Yeniçeri';
     if(sv)sv.textContent=(typeof getFameTitle==='function'?getFameTitle():'')||'';
-    if(dv){const d=hikayeDurum();dv.textContent=d.bitti?'Kışla':'Perde '+d.act;}
+    if(dv){dv.textContent='Kışla · Sv '+(SAVE.level||1);}
   }catch(e){}
 }
 function nasilAc(){
