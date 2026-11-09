@@ -1,5 +1,9 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.78
+- Dikey telefonda tam ekran "Telefonu yatay çevir" perdesi + TAM EKRAN + YATAY düğmesi; yatay kilit her dokunuşta başarana kadar denenir (kurulu uygulama zaten yatay açılır).
+- Telefon yatay menüde alt ikonlar sağ sütuna alındı (kahramanın üstüne binmez).
+
 ## v1.77
 - Telefon yatay modunda arayüz (HUD, bölüm yazısı, mini harita, tuşlar) ekran yüksekliğine göre küçüldü; oyun alanı görünüyor.
 - Ayarlar → Kontroller → "Arayüz Boyutu" (Çok küçük / Küçük / Normal / Büyük).

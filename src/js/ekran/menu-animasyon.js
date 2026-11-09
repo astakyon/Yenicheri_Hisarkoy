@@ -97,22 +97,27 @@ function menuKahramanCiz(){
   HERO.r.render(HERO.s,HERO.c);
 }
 
-// ── Telefonda yatay mod: ilk dokunuşta tam ekran + yatay kilit; olmazsa dikeyde "yatay çevir" uyarısı ──
+// ── Telefonda yatay mod: tam ekran + yatay kilit (her dokunuşta başarana kadar denenir); dikeyde tam ekran "çevir" perdesi ──
 (function(){
   const dokunmatik=window.matchMedia&&matchMedia('(pointer:coarse)').matches;if(!dokunmatik)return;
-  const uyari=document.createElement('div');uyari.id='yatayUyari';uyari.textContent='⟳  Telefonu yatay çevir';document.body.appendChild(uyari);
+  const uyari=document.createElement('div');uyari.id='yatayUyari';
+  uyari.innerHTML='<div class="yuIc"><div class="yuIk">📱⟳</div><b>Telefonu yatay çevir</b><small>Oyun yatay ekran içindir</small><button id="yuBtn" type="button">TAM EKRAN + YATAY</button><a id="yuDikey" href="#">Yine de dikey oyna</a></div>';
+  document.body.appendChild(uyari);
+  let kilitli=false;
+  function kil(){try{const o=screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape');if(o&&o.then)o.then(function(){kilitli=true;}).catch(function(){});}catch(e){}}
   function kilitle(){
+    if(kilitli)return;
     try{
       const el=document.documentElement,fs=el.requestFullscreen||el.webkitRequestFullscreen;
       const p=fs&&!document.fullscreenElement?fs.call(el):null;
-      const kil=function(){try{const o=screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape');if(o&&o.catch)o.catch(function(){});}catch(e){}};
       if(p&&p.then)p.then(kil).catch(kil);else kil();
     }catch(e){}
   }
-  let denendi=false;
-  function ilk(){if(denendi)return;denendi=true;kilitle();}
-  document.addEventListener('touchend',ilk,{passive:true});document.addEventListener('click',ilk);
-  function guncelle(){uyari.style.display=window.innerHeight>window.innerWidth?'block':'none';}
+  document.addEventListener('touchend',kilitle,{passive:true});document.addEventListener('click',kilitle);
+  document.getElementById('yuBtn').addEventListener('click',function(e){e.stopPropagation();kilitle();});
+  let dikeyOk=false;try{dikeyOk=sessionStorage.getItem('yc_dikey')==='1';}catch(e){}
+  document.getElementById('yuDikey').addEventListener('click',function(e){e.preventDefault();e.stopPropagation();dikeyOk=true;try{sessionStorage.setItem('yc_dikey','1');}catch(x){}guncelle();});
+  function guncelle(){uyari.style.display=(window.innerHeight>window.innerWidth&&!dikeyOk)?'flex':'none';}
   window.addEventListener('resize',guncelle);window.addEventListener('orientationchange',guncelle);guncelle();
-  try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(function(){});}catch(e){}
+  kil();
 })();

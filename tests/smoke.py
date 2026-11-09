@@ -39,6 +39,7 @@ def main():
 
         def yeni_sayfa(w=412, h=915):
             ctx = b.new_context(viewport={'width': w, 'height': h}, has_touch=True, is_mobile=True)
+            ctx.add_init_script("try{sessionStorage.setItem('yc_dikey','1')}catch(e){}")
             ctx.route('**/*', route)
             pg = ctx.new_page()
             errs = []
