@@ -6,12 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#7a1414">
-<meta name="game-version" content="v1.80">
+<meta name="game-version" content="v1.81">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<title>Yeniçeri: Hisarköy Muhafızı v1.80</title>
+<title>Yeniçeri: Hisarköy Muhafızı v1.81</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -628,12 +628,13 @@ canvas{display:block;position:absolute;top:0;left:0;}
     <div id="mTitleWrap">
       <div id="mEyebrow"><span class="ml"></span><span id="mSub">✦ 3D OSMANLI AKSİYON RPG ✦</span></div>
       <div id="mTitle"><span class="t1">YENİÇERİ</span><span class="t2">HİSARKÖY MUHAFIZI</span></div>
-      <div id="mVer">v1.80</div>
+      <div id="mVer">v1.81</div>
     </div>
     <div id="mProfil" onclick="profilAc()" role="button" aria-label="Profil"><span id="mpAv">🪖</span><div><b id="mpAd">Yeniçeri</b><small id="mpSv">Sv 1</small></div></div>
     <div id="mBtns">
       <button class="mBtn mPri" onclick="menuDevam()">▶ DEVAM ET<small id="mDevamAlt"></small></button>
       <button class="mBtn" onclick="hikayeAc()">📖 HİKAYE</button>
+      <button class="mBtn" onclick="kariyerAc()">🏅 KARİYER</button>
       <button class="mBtn" onclick="openChapters()">🗺 SERBEST HARİTALAR</button>
       <button class="mBtn" onclick="coopAc()">👥 ÇOK OYUNCULU</button>
       <button class="mBtn" onclick="gorunumAc()">🎨 KARAKTERİM</button>
@@ -661,6 +662,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
   <div id="settingsBox" class="ovBox" style="display:none;"><div class="panel ovPanel" id="settingsPanel"></div></div>
   <div id="profilBox" class="ovBox" style="display:none;"><div class="panel ovPanel" id="profilPanel"></div></div>
   <div id="hikayeBox" class="ovBox" style="display:none;"><div class="panel ovPanel" id="hikayePanel"></div></div>
+  <div id="kariyerBox" class="ovBox" style="display:none;"><div class="panel ovPanel" id="kariyerPanel"></div></div>
   <div id="atolyeBox" class="ovBox" style="display:none;"><div class="panel ovPanel" id="atolyePanel" style="width:min(380px,100%)"></div></div>
 
   <!-- ── HUD ── -->
@@ -983,7 +985,7 @@ canvas{display:block;position:absolute;top:0;left:0;}
 // ═══════════════════════════════════════════════════════
 // VERSİYON & KALICI VERİ
 // ═══════════════════════════════════════════════════════
-const VERSION='v1.80';
+const VERSION='v1.81';
 
 // LocalStorage kayıt
 const SAVE_KEY='yenicheri_save_104';
@@ -1072,7 +1074,7 @@ try{
 // ═══════════════════════════════════════════════════════
 // AYARLAR SİSTEMİ
 // ═══════════════════════════════════════════════════════
-const SURUM='v1.80';
+const SURUM='v1.81';
 const SETTINGS_KEY='yenicheri_settings';
 let SETTINGS={
   touchEnabled: true,
@@ -1685,7 +1687,7 @@ function buildKervansarayUI(){
       <div class="cardDesc">Hayvan avla — sessiz yaklaş, iz takip et, deri ve et kazan</div>
     </div>
     ${ormanOwned
-      ?`<button onclick="closeZoneMenu();BEGIN('orman')" style="padding:6px 12px;background:rgba(39,174,96,.25);border:1px solid #27ae60;border-radius:3px;color:#2ecc71;font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">Ava Çık</button>`
+      ?`<button onclick="closeZoneMenu();haritayaGir('orman')" style="padding:6px 12px;background:rgba(39,174,96,.25);border:1px solid #27ae60;border-radius:3px;color:#2ecc71;font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">Ava Çık</button>`
       :`<button onclick="buyOrmanMap()" style="padding:6px 10px;background:${mainGold>=ormanCost?'rgba(255,215,0,.15)':'rgba(100,0,0,.15)'};border:1px solid ${mainGold>=ormanCost?'#8B6914':'#7B1414'};border-radius:3px;color:${mainGold>=ormanCost?'#FFD700':'#c0392b'};font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">💰 ${ormanCost} Akçe</button>`
     }
   </div>`;
@@ -1698,7 +1700,7 @@ function buildKervansarayUI(){
       <div class="cardDesc">Karanlık tünel — fenerini takip et, tuzaklara dikkat et, maden topla</div>
     </div>
     ${madenOwned
-      ?`<button onclick="closeZoneMenu();BEGIN('maden')" style="padding:6px 12px;background:rgba(39,174,96,.25);border:1px solid #27ae60;border-radius:3px;color:#2ecc71;font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">Madene İn</button>`
+      ?`<button onclick="closeZoneMenu();haritayaGir('maden')" style="padding:6px 12px;background:rgba(39,174,96,.25);border:1px solid #27ae60;border-radius:3px;color:#2ecc71;font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">Madene İn</button>`
       :`<button onclick="buyMadenMap()" style="padding:6px 10px;background:${mainGold>=madenCost?'rgba(255,215,0,.15)':'rgba(100,0,0,.15)'};border:1px solid ${mainGold>=madenCost?'#8B6914':'#7B1414'};border-radius:3px;color:${mainGold>=madenCost?'#FFD700':'#c0392b'};font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">💰 ${madenCost} Akçe</button>`
     }
   </div>`;
@@ -3883,17 +3885,26 @@ function clientYenidenBaglan(){
 // BÖLÜMLER (Chapters) — ana menüden açılır, bölge kilidi/seçimi
 // ═══════════════════════════════════════════════════════
 const WORLD_MAPS=[
-  {id:'kisla',name:'Hisarköy Kışlası',icon:'🏰',desc:'Ana üs — geliştir, dinlen, hazırlan',unlocked:true,action:()=>{closeChapters();BEGIN('kisla');}},
-  {id:'gorev', name:'Hisarköy Devriye',icon:'⚔',desc:'Haydutlara karşı savaş, akçe kazan',unlocked:true,action:()=>{closeChapters();BEGIN('gorev');}},
-  {id:'orman', name:'Av Ormanı',      icon:'🏹',desc:'Hayvan avla, deri ve et kazan',unlockKey:'orman',action:()=>{closeChapters();BEGIN('orman');}},
-  {id:'maden', name:'Demir Madeni',   icon:'⛏', desc:'Metal ve nadir maden topla, tuzaklara dikkat et',unlockKey:'maden',action:()=>{closeChapters();BEGIN('maden');}},
-  {id:'ciftlik', name:'Çiftlik',        icon:'🌱',desc:'Ekin ek, büyüt, biç ve pazarda sat',unlockKey:'ciftlik',action:()=>{closeChapters();BEGIN('ciftlik');}},
-  {id:'tarim', name:'Tarım Ovası',    icon:'🌾',desc:'Köylüleri eşkıyalardan koru, tahıl topla',unlockKey:'tarim',action:()=>{closeChapters();BEGIN('tarim');}},
-  {id:'sehir', name:'Yabancı Şehir',  icon:'🏙',desc:'Tehlikeli sokaklarda düzen sağla',unlockKey:'sehir',action:()=>{closeChapters();BEGIN('sehir');}},
-  {id:'saray', name:'Osmanlı Sarayı', icon:'👑',desc:'Son görev — Hain Veziri durdur',unlockKey:'saray',action:()=>{closeChapters();BEGIN('saray');}},
+  {id:'kisla',name:'Hisarköy Kışlası',icon:'🏰',desc:'Ana üs — geliştir, dinlen, hazırlan',unlocked:true,action:()=>{haritayaGir('kisla');}},
+  {id:'gorev', name:'Hisarköy Devriye',icon:'⚔',desc:'Haydutlara karşı savaş, akçe kazan',unlocked:true,action:()=>{haritayaGir('gorev');}},
+  {id:'orman', name:'Av Ormanı',      icon:'🏹',desc:'Hayvan avla, deri ve et kazan',unlockKey:'orman',action:()=>{haritayaGir('orman');}},
+  {id:'maden', name:'Demir Madeni',   icon:'⛏', desc:'Metal ve nadir maden topla, tuzaklara dikkat et',unlockKey:'maden',action:()=>{haritayaGir('maden');}},
+  {id:'ciftlik', name:'Çiftlik',        icon:'🌱',desc:'Ekin ek, büyüt, biç ve pazarda sat',unlockKey:'ciftlik',action:()=>{haritayaGir('ciftlik');}},
+  {id:'tarim', name:'Tarım Ovası',    icon:'🌾',desc:'Köylüleri eşkıyalardan koru, tahıl topla',unlockKey:'tarim',action:()=>{haritayaGir('tarim');}},
+  {id:'sehir', name:'Yabancı Şehir',  icon:'🏙',desc:'Tehlikeli sokaklarda düzen sağla',unlockKey:'sehir',action:()=>{haritayaGir('sehir');}},
+  {id:'saray', name:'Osmanlı Sarayı', icon:'👑',desc:'Son görev — Hain Veziri durdur',unlockKey:'saray',action:()=>{haritayaGir('saray');}},
 ];
 // unlockKey'i olan haritalar SAVE.mapsUnlocked'tan canlı okunur
-function isMapUnlocked(m){return m.unlockKey?!!(SAVE.mapsUnlocked&&SAVE.mapsUnlocked[m.unlockKey]):m.unlocked;}
+// v1.81: haritalar karakter seviyesine göre açılır (HARITA_SV); Kariyer ekranında listelenir
+const HARITA_SV={kisla:1,gorev:1,orman:2,maden:3,tarim:4,ciftlik:4,sehir:6,saray:8};
+function haritaSv(id){return HARITA_SV[id]||1;}
+function isMapUnlocked(m){return (SAVE.level||1)>=haritaSv(m.id);}
+// Oyuncu yolundan haritaya giriş (kilit denetimiyle)
+function haritayaGir(id){
+  if((SAVE.level||1)<haritaSv(id)){const m=WORLD_MAPS.find(function(x){return x.id===id;});lootPop('🔒 '+(m?m.name:id)+' için Sv '+haritaSv(id)+' gerekli (şu an Sv '+(SAVE.level||1)+')');return false;}
+  ['worldMapBox','kariyerBox','hikayeBox'].forEach(function(b){const e=document.getElementById(b);if(e)e.style.display='none';});
+  BEGIN(id);return true;
+}
 
 function openChapters(){
   buildWorldMapGrid();
@@ -3916,9 +3927,9 @@ function buildWorldMapGrid(){
     card.innerHTML=`
       <div class="wmIcon">${m.icon}</div>
       <div class="wmName">${m.name}</div>
-      <div class="wmDesc">${unlocked?m.desc:(m.desc2||'Kilitli')}</div>
+      <div class="wmDesc">${unlocked?m.desc:'Seviye '+haritaSv(m.id)+' olunca açılır'}</div>
       ${isCurrent?'<span class="wmBadge you">📍 BURADASIN</span>':''}
-      ${!unlocked?'<span class="wmBadge lock">🔒 KİLİTLİ</span>':''}
+      ${!unlocked?'<span class="wmBadge lock">🔒 Sv '+haritaSv(m.id)+' GEREKLİ</span>':(haritaSv(m.id)>1?'<span class="wmBadge" style="background:#2a3a1a;color:#bfe59a">Önerilen Sv '+haritaSv(m.id)+'</span>':'')}
       ${hikayeRozet(m.id)}
     `;
     if(unlocked&&m.action)card.onclick=m.action;
@@ -4032,6 +4043,7 @@ function hikayeOdulAl(){
 function hikayeBaslat(no){
   const p=HIKAYE[no-1],H=hikayeHazirla();
   if(!p||hikayePerdeDurum(p)==='kilit')return;
+  if((SAVE.level||1)<haritaSv(p.harita)){lootPop('🔒 '+p.ad+' için Sv '+haritaSv(p.harita)+' gerekli — önce serbest haritalarda seviye kazan');return;}
   hikayeKapat();
   BEGIN(p.harita);
   setTimeout(function(){if(typeof lootPop==='function')lootPop('📖 Perde '+p.no+' — '+p.hedefler.map(function(h){return h.ad;}).join(' · '));},1800);
@@ -4121,6 +4133,31 @@ setInterval(function(){
   if(typeof playing!=='undefined'&&playing&&!paused&&!document.hidden){const P=profilHazirla();P.sure++;if(P.sure%30===0)saveGame();}
 },1000);
 profilHazirla();
+// ═══ KARİYER (v1.81): rütbe, seviye ve haritaların seviye kapıları ═══
+function kariyerAc(){kariyerCiz();document.getElementById('kariyerBox').style.display='flex';}
+function kariyerKapat(){document.getElementById('kariyerBox').style.display='none';}
+function kariyerCiz(){
+  const lv=SAVE.level||1,fame=SAVE.fame||0;
+  let sonraki=null,onceki=FAME_TITLES[0];
+  FAME_TITLES.forEach(function(t){if(fame>=t.min)onceki=t;else if(!sonraki)sonraki=t;});
+  const xy=Math.min(100,Math.round((SAVE.xp||0)/(SAVE.xpNext||100)*100));
+  const fy=sonraki?Math.min(100,Math.round((fame-onceki.min)/(sonraki.min-onceki.min)*100)):100;
+  let h='<div class="ovHead"><div><div class="panTitle">🏅 KARİYER</div><div class="panSub" style="margin:0">RÜTBE · SEVİYE · HARİTALAR</div></div><button class="zmX" onclick="kariyerKapat()">✕</button></div><div class="ovBody">';
+  h+='<div class="hkKart aktif"><div class="hkAd">'+getFameTitle()+' · Seviye '+lv+'</div>'
+   +'<div class="toggleSub">XP '+(SAVE.xp||0)+' / '+(SAVE.xpNext||100)+'</div><div class="pfBar"><i style="width:'+xy+'%"></i></div>'
+   +'<div class="toggleSub" style="margin-top:6px">Ün '+fame+(sonraki?' / '+sonraki.min+' → '+sonraki.title:' (en yüksek rütbe)')+'</div><div class="pfBar"><i style="width:'+fy+'%"></i></div></div>';
+  h+='<div class="panSub" style="margin:10px 0 4px">HARİTALAR</div>';
+  WORLD_MAPS.forEach(function(m){
+    const gerek=haritaSv(m.id),acik=lv>=gerek,pr=(typeof HIKAYE!=='undefined')?HIKAYE.find(function(x){return x.harita===m.id;}):null;
+    h+='<div class="hkKart '+(acik?'aktif':'kilit')+'"><div class="hkTop" style="cursor:default"><div class="hkIc">'+(acik?m.icon:'🔒')+'</div><div><div class="hkAd">'+m.name+'</div>'
+     +'<div class="toggleSub">'+(acik?'✔ Açık':'Sv '+gerek+' gerekli ('+(gerek-lv)+' seviye kaldı)')+' · Önerilen Sv '+gerek+(pr?' · 📖 Perde '+pr.no:'')+'</div></div></div>'
+     +(acik?'<div class="hkRow"><button class="hkBtn" onclick="haritayaGir(\''+m.id+'\')">▶ GİR</button></div>':'')+'</div>';
+  });
+  h+='<div class="panSub" style="margin:10px 0 4px">RÜTBELER</div>';
+  FAME_TITLES.forEach(function(t){h+='<div class="toggleSub" style="padding:3px 2px;'+(fame>=t.min?'color:#ffd36b':'opacity:.6')+'">'+(fame>=t.min?'✔ ':'◻ ')+t.title+' — '+t.min+' ün</div>';});
+  h+='</div><div class="ovFoot"><button class="panBtn" onclick="kariyerKapat()">✕ Kapat</button></div>';
+  document.getElementById('kariyerPanel').innerHTML=h;
+}
 // ── Ana menü yardımcıları (v1.76) ──
 function menuDevam(){
   try{

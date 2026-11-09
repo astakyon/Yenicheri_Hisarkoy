@@ -93,6 +93,7 @@ function hikayeOdulAl(){
 function hikayeBaslat(no){
   const p=HIKAYE[no-1],H=hikayeHazirla();
   if(!p||hikayePerdeDurum(p)==='kilit')return;
+  if((SAVE.level||1)<haritaSv(p.harita)){lootPop('🔒 '+p.ad+' için Sv '+haritaSv(p.harita)+' gerekli — önce serbest haritalarda seviye kazan');return;}
   hikayeKapat();
   BEGIN(p.harita);
   setTimeout(function(){if(typeof lootPop==='function')lootPop('📖 Perde '+p.no+' — '+p.hedefler.map(function(h){return h.ad;}).join(' · '));},1800);

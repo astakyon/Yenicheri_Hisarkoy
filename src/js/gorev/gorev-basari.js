@@ -375,7 +375,7 @@ function buildKervansarayUI(){
       <div class="cardDesc">Hayvan avla — sessiz yaklaş, iz takip et, deri ve et kazan</div>
     </div>
     ${ormanOwned
-      ?`<button onclick="closeZoneMenu();BEGIN('orman')" style="padding:6px 12px;background:rgba(39,174,96,.25);border:1px solid #27ae60;border-radius:3px;color:#2ecc71;font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">Ava Çık</button>`
+      ?`<button onclick="closeZoneMenu();haritayaGir('orman')" style="padding:6px 12px;background:rgba(39,174,96,.25);border:1px solid #27ae60;border-radius:3px;color:#2ecc71;font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">Ava Çık</button>`
       :`<button onclick="buyOrmanMap()" style="padding:6px 10px;background:${mainGold>=ormanCost?'rgba(255,215,0,.15)':'rgba(100,0,0,.15)'};border:1px solid ${mainGold>=ormanCost?'#8B6914':'#7B1414'};border-radius:3px;color:${mainGold>=ormanCost?'#FFD700':'#c0392b'};font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">💰 ${ormanCost} Akçe</button>`
     }
   </div>`;
@@ -388,7 +388,7 @@ function buildKervansarayUI(){
       <div class="cardDesc">Karanlık tünel — fenerini takip et, tuzaklara dikkat et, maden topla</div>
     </div>
     ${madenOwned
-      ?`<button onclick="closeZoneMenu();BEGIN('maden')" style="padding:6px 12px;background:rgba(39,174,96,.25);border:1px solid #27ae60;border-radius:3px;color:#2ecc71;font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">Madene İn</button>`
+      ?`<button onclick="closeZoneMenu();haritayaGir('maden')" style="padding:6px 12px;background:rgba(39,174,96,.25);border:1px solid #27ae60;border-radius:3px;color:#2ecc71;font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">Madene İn</button>`
       :`<button onclick="buyMadenMap()" style="padding:6px 10px;background:${mainGold>=madenCost?'rgba(255,215,0,.15)':'rgba(100,0,0,.15)'};border:1px solid ${mainGold>=madenCost?'#8B6914':'#7B1414'};border-radius:3px;color:${mainGold>=madenCost?'#FFD700':'#c0392b'};font-size:9px;cursor:pointer;font-family:Cinzel,serif;white-space:nowrap;">💰 ${madenCost} Akçe</button>`
     }
   </div>`;

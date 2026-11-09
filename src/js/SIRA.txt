@@ -25,6 +25,7 @@ cekirdek/baglanti.js
 ekran/bolumler.js
 gorev/hikaye.js
 ekran/profil.js
+ekran/kariyer.js
 ekran/ana-menu.js
 ekran/buyuk-harita.js
 ekran/buyuk-harita-cizim.js

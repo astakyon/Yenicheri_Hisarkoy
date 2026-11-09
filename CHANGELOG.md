@@ -1,5 +1,9 @@
 # Güncelleme notları — Yeniçeri: Hisarköy Muhafızı
 
+## v1.81
+- Harita kilitleri karakter seviyesine bağlandı: Orman Sv2, Maden Sv3, Tarım Ovası/Çiftlik Sv4, Yabancı Şehir Sv6, Osmanlı Sarayı Sv8. Kartlarda "Önerilen Sv"; giriş yolları (Serbest Haritalar, Hikaye, Kariyer, bölge menüsü) kilit denetler.
+- Yeni ana menü düğmesi KARİYER: rütbe/ün/XP çubukları, harita listesi (açık/kilitli, kalan seviye, hikaye perdesi, GİR) ve rütbe basamakları.
+
 ## v1.80 (mantık analizi)
 - Hikaye ödülü XP'si menüde seviyeye çevrilmiyordu (6 perde sonunda Sv 4, XP 1635/337 kalıyordu) → artık addXP ile işleniyor.
 - Hikaye: perde sayaçları tek anahtar/perde olduğundan sıra dışı yapılan hedefler (ör. Saray'ı erken bitirmek) artık kaybolmuyor; sonraki perdenin hedefi zaten yapılmışsa ödül hazır gelir.

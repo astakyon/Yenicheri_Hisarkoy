@@ -869,6 +869,11 @@ def main():
         pg.evaluate("poolGold=40;playing=true;ayrilOnay('menu')")
         check(pg.evaluate("getComputedStyle(document.getElementById('dlgLayer')).display") == 'flex' and 'kaybolacak' in pg.evaluate("document.getElementById('dlgT').textContent"), 'havuzda akçe varken menüye çıkış onay istiyor')
         pg.evaluate("hideDlg();poolGold=0;playing=false")
+        kr = pg.evaluate("""() => { SAVE.level=1; const a=haritayaGir('saray'); const b=isMapUnlocked({id:'orman'}), c=isMapUnlocked({id:'saray'});
+          kariyerAc(); const n=document.querySelectorAll('#kariyerPanel .hkKart').length, gir=document.querySelectorAll('#kariyerPanel .hkBtn').length;
+          kariyerKapat(); SAVE.level=8; const d=isMapUnlocked({id:'saray'}); SAVE.level=1; return {a,b,c,d,n,gir}; }""")
+        check(kr['a'] is False and kr['b'] is False and kr['c'] is False and kr['d'] is True, 'harita kilitleri seviyeye bağlı (Sv1: Saray kapalı, Sv8: açık)')
+        check(kr['n'] == 9 and kr['gir'] == 2, 'Kariyer ekranı 8 harita + rütbe kartını listeliyor, Sv1\'de 2 harita girilebilir (%s kart, %s GİR)' % (kr['n'], kr['gir']))
         pg.evaluate("openSettings()"); pg.wait_for_timeout(200)
         sek = pg.evaluate("document.querySelectorAll('#settingsPanel .ayTab').length")
         check(sek >= 4, 'ayarlarda sekmeler var (%d)' % sek)
