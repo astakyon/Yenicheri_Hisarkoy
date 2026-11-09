@@ -18,19 +18,35 @@ const GORUNUM_TIPLER=[
 ];
 const GORUNUM_ESYA=[['yatagan','Yatağan'],['hancer','Hançer'],['kayis','Kayışlar'],['tufek','Tüfek']];
 function _hex6(n){return '#'+('000000'+n.toString(16)).slice(-6);}
+let GORUNUM_SEKME='giysi';
+const GORUNUM_SEKMELER=[
+  {k:'giysi',ad:'KIYAFET',renk:['gov','yaka','dugme']},
+  {k:'kemer',ad:'KEMER',renk:['sash','toka','sal']},
+  {k:'bork',ad:'BAŞLIK',tip:['borkTip'],renk:['bork','kasik']},
+  {k:'yuz',ad:'YÜZ',tip:['biyikTip'],renk:['biyik']},
+  {k:'esya',ad:'EKİPMAN',esya:true}
+];
+function gorunumSekme(k){GORUNUM_SEKME=k;gorunumCiz();}
 function gorunumCiz(){
-  const g=gorunumOku(),ic=document.getElementById('gorunumIc');if(!ic)return;
-  let h='<div class="toggleLabel" style="margin:4px 0">Ekipman (tak / çıkar)</div><div style="display:flex;flex-wrap:wrap;gap:5px">';
-  GORUNUM_ESYA.forEach(function(e){const a=g[e[0]]!==false;h+='<button class="panBtn'+(a?' grn':'')+'" style="width:auto;margin:0;padding:6px 12px" onclick="gorunumDegis(\''+e[0]+'\','+(!a)+')">'+(a?'✔ ':'✖ ')+e[1]+'</button>';});
-  h+='</div>';
-  GORUNUM_TIPLER.forEach(function(t){
-    h+='<div class="toggleLabel" style="margin:8px 0 4px">'+t.ad+'</div><div style="display:flex;flex-wrap:wrap;gap:5px">';
-    t.sec.forEach(function(o){h+='<button class="panBtn'+(g[t.k]===o[0]?' grn':'')+'" style="width:auto;margin:0;padding:6px 10px" onclick="gorunumDegis(\''+t.k+'\',\''+o[0]+'\')">'+o[1]+'</button>';});
+  const g=gorunumOku(),ic=document.getElementById('gorunumIc'),tb=document.getElementById('gorunumTabs');if(!ic)return;
+  if(tb)tb.innerHTML=GORUNUM_SEKMELER.map(function(t){return '<button class="gTab'+(t.k===GORUNUM_SEKME?' on':'')+'" onclick="gorunumSekme(\''+t.k+'\')">'+t.ad+'</button>';}).join('');
+  const t=GORUNUM_SEKMELER.find(function(x){return x.k===GORUNUM_SEKME;})||GORUNUM_SEKMELER[0];
+  let h='';
+  if(t.esya){
+    h+='<div class="gEsya">';
+    GORUNUM_ESYA.forEach(function(e){const a=g[e[0]]!==false;h+='<button class="gCard'+(a?' on':'')+'" onclick="gorunumDegis(\''+e[0]+'\','+(!a)+')"><b>'+e[1]+'</b><small>'+(a?'Takılı':'Çıkarıldı')+'</small></button>';});
+    h+='</div>';
+  }
+  (t.tip||[]).forEach(function(k){
+    const T=GORUNUM_TIPLER.find(function(x){return x.k===k;});
+    h+='<div class="gLbl">'+T.ad+' TİPİ</div><div class="gChips">';
+    T.sec.forEach(function(o){h+='<button class="gChip'+(g[T.k]===o[0]?' on':'')+'" onclick="gorunumDegis(\''+T.k+'\',\''+o[0]+'\')">'+o[1]+'</button>';});
     h+='</div>';
   });
-  GORUNUM_SATIRLAR.forEach(function(r){
-    h+='<div class="toggleLabel" style="margin:10px 0 4px">'+r.ad+'</div><div style="display:flex;flex-wrap:wrap;gap:6px">';
-    r.renk.forEach(function(c){h+='<button aria-label="'+_hex6(c)+'" onclick="gorunumDegis(\''+r.k+'\','+c+')" style="width:32px;height:32px;border-radius:50%;cursor:pointer;background:'+_hex6(c)+';border:3px solid '+(g[r.k]===c?'#FFD24A':'#4a3410')+'"></button>';});
+  (t.renk||[]).forEach(function(k){
+    const r=GORUNUM_SATIRLAR.find(function(x){return x.k===k;});
+    h+='<div class="gLbl">'+r.ad.toUpperCase()+'</div><div class="gSw">';
+    r.renk.forEach(function(c){h+='<button aria-label="'+_hex6(c)+'" class="'+(g[r.k]===c?'on':'')+'" onclick="gorunumDegis(\''+r.k+'\','+c+')" style="background:'+_hex6(c)+'"></button>';});
     h+='</div>';
   });
   ic.innerHTML=h;

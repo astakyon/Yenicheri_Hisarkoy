@@ -3,6 +3,9 @@
 ## v1.86
 - Kariyer ve diğer sayfaların arka planı ana menüyle aynı atmosfer gökyüzünü kullanıyor (Ayarlar'daki atmosfer seçimi hepsine uygulanır).
 - Ana menü: Başarımlar butonu kaldırıldı (profil rozeti zaten açıyor); Nasıl Oynanır ve Ayarlar sağ üste, profilin yanına taşındı.
+- Sayfa arka planlarına yıldız + Osmanlı silüeti eklendi (düz mavi kalktı).
+- Karakterim baştan tasarlandı: sekmeler (Kıyafet/Kemer/Başlık/Yüz/Ekipman), büyük renk kutuları, cam panel.
+- Serbest Haritalar kartları cam stiline alındı.
 
 ## v1.85
 - Yeni arayüz stili "Divan Cam": altın çerçeveli cam paneller, kırmızı ana düğmeler, eğik uçlu menü plakaları.

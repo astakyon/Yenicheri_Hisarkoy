@@ -815,3 +815,42 @@ canvas{display:block;position:absolute;top:0;left:0;}
 #menuLayer #mTop #mIcos .mIco p{display:none;}
 #menuLayer #mTop #mIcos .mIco i{width:clamp(34px,6.6vh,44px);height:clamp(34px,6.6vh,44px);background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));backdrop-filter:blur(10px);}
 @media (max-height:480px) and (orientation:landscape){#menuLayer #mTop{top:6px;right:8px}}
+
+/* v1.86 — Karakterim yeniden tasarım + sayfa arka planı (silüet/yıldız) */
+#gorunumBox{background:linear-gradient(90deg,rgba(4,8,22,.78) 0%,rgba(4,8,22,.35) 42%,transparent 62%)!important;}
+#gorunumPanel{width:min(380px,94vw);padding:14px 16px;border-radius:20px!important;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04))!important;border:1.5px solid rgba(214,166,60,.55)!important;box-shadow:0 12px 34px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.14)!important;backdrop-filter:blur(14px);font-family:'Cinzel',serif;color:#f3e3b0;}
+#gorunumPanel .panTitle{font-size:20px!important;letter-spacing:.22em;color:#f3d27a;}
+#gorunumPanel .panSub{font-family:'Cormorant Garamond',serif;font-size:14px!important;letter-spacing:0!important;color:#c9b27a;text-transform:none}
+#gorunumTabs{display:flex;gap:6px;overflow-x:auto;flex-shrink:0;padding:6px 0 10px;scrollbar-width:none}
+#gorunumTabs::-webkit-scrollbar{display:none}
+.gTab{flex:none;height:34px;padding:0 13px;border-radius:17px;border:1.5px solid rgba(214,166,60,.45);background:rgba(255,255,255,.05);color:#d9c386;font:700 10px 'Cinzel',serif;letter-spacing:.12em;cursor:pointer}
+.gTab.on{background:linear-gradient(100deg,#c8283a,#7a1426);border-color:#f0c25a;color:#fff1c8;box-shadow:0 0 14px rgba(200,40,58,.45)}
+.gLbl{font-size:10px;letter-spacing:.3em;color:#d6a63c;margin:12px 0 8px}
+.gChips{display:flex;flex-wrap:wrap;gap:7px}
+.gChip{height:38px;padding:0 14px;border-radius:12px;border:1.5px solid rgba(214,166,60,.45);background:rgba(255,255,255,.05);color:#f3e3b0;font:700 11px 'Cinzel',serif;cursor:pointer}
+.gChip.on{background:linear-gradient(100deg,#c8283a,#7a1426);border-color:#f0c25a;color:#fff1c8}
+.gSw{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.gSw button{aspect-ratio:1;border-radius:14px;cursor:pointer;border:2px solid rgba(255,255,255,.18);box-shadow:inset 0 -6px 10px rgba(0,0,0,.25)}
+.gSw button.on{border-color:#ffe3a0;box-shadow:0 0 0 3px rgba(240,194,90,.55),inset 0 -6px 10px rgba(0,0,0,.25)}
+.gEsya{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.gCard{padding:16px 8px;border-radius:14px;border:1.5px solid rgba(214,166,60,.4);background:rgba(255,255,255,.05);color:#f3e3b0;cursor:pointer;display:flex;flex-direction:column;gap:4px;font-family:'Cinzel',serif}
+.gCard b{font-size:13px;letter-spacing:.1em}.gCard small{font:600 14px 'Cormorant Garamond',serif;color:#c9b27a}
+.gCard.on{border-color:#f0c25a;background:linear-gradient(160deg,rgba(200,40,58,.55),rgba(110,16,32,.45))}
+#gorunumPanel .gFoot .panBtn{border-radius:22px;border:1.5px solid rgba(214,166,60,.55);background:rgba(255,255,255,.06);color:#f3e3b0;font-size:12px;letter-spacing:.14em}
+#gorunumPanel .gFoot .panBtn.grn{background:linear-gradient(100deg,#c8283a,#7a1426);border-color:#f0c25a;color:#fff1c8}
+@media (max-height:480px) and (orientation:landscape){#gorunumPanel{width:min(330px,60vw);padding:8px 12px}.gSw{grid-template-columns:repeat(8,1fr);gap:6px}.gSw button{border-radius:9px}.gLbl{margin:8px 0 5px}.gTab{height:28px}}
+/* sayfa arka planı: gökyüzü + yıldız + Osmanlı silüeti */
+.ovBox,#coopBox,#worldMapBox,#kariyerBox{
+ background:
+  url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='200' viewBox='0 0 1200 200'><g fill='%23070b1c' opacity='.95'><path d='M0 200V150h40v-30h18v30h30v-50q22-34 44 0v50h40V90h8v60h30V70l6-18 6 18v80h40v-40q26-40 52 0v40h60V100h10v50h40v-26h14v26h50V60l6-22 6 22v90h40v-50q30-48 60 0v50h50V120h16v30h40V80l5-16 5 16v70h60v-40q24-36 48 0v40h60v-28h20v28h40V70l6-20 6 20v80h50v-46q28-42 56 0v46h60V130h14v20h40v50z'/></g></svg>") repeat-x left bottom/1000px auto,
+  radial-gradient(1.2px 1.2px at 12% 18%,#fff8,transparent),radial-gradient(1.2px 1.2px at 28% 8%,#fff9,transparent),radial-gradient(1px 1px at 41% 24%,#fff7,transparent),radial-gradient(1.4px 1.4px at 57% 12%,#fffa,transparent),radial-gradient(1px 1px at 69% 30%,#fff7,transparent),radial-gradient(1.3px 1.3px at 83% 9%,#fff9,transparent),radial-gradient(1px 1px at 93% 26%,#fff7,transparent),radial-gradient(1px 1px at 7% 38%,#fff6,transparent),radial-gradient(1px 1px at 49% 40%,#fff5,transparent),
+  radial-gradient(ellipse 90% 40% at 50% 70%,var(--atm-glow),transparent 70%),radial-gradient(ellipse 120% 100% at 50% 50%,transparent 50%,var(--atm-vig) 100%),var(--atm-sky)!important;}
+/* v1.86 — Serbest Haritalar cam kartlar */
+#wmPanel{background:none!important;border:0!important;box-shadow:none!important;width:min(1000px,96vw);margin:0 auto;font-family:'Cinzel',serif}
+#wmTitle{font-weight:900;font-size:22px;letter-spacing:.2em;color:#f3d27a}
+#wmClose{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:2px solid #d6a63c;background:#4a1212;color:#f3d27a;font-size:0;cursor:pointer}
+#wmClose::before{content:'✕';font-size:16px}
+#wmGrid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.wmCard{background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.03))!important;border:1.5px solid rgba(214,166,60,.5)!important;border-radius:16px!important;box-shadow:0 8px 22px rgba(0,0,0,.35);backdrop-filter:blur(8px)}
+.wmCard.unlocked:hover,.wmCard.current{border-color:#f0c25a!important;box-shadow:0 0 20px rgba(200,40,58,.4)}
+.wmName{color:#f3d27a!important;letter-spacing:.08em}.wmDesc{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:14px!important;color:#c9b27a!important}
