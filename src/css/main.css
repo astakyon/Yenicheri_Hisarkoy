@@ -915,3 +915,9 @@ canvas{display:block;position:absolute;top:0;left:0;}
  .kyIn .kyNode span{font-size:7px;padding:1px 4px;max-width:none;white-space:nowrap}
  .kyIn .kyNode:not(.sec) span,.kyBaharat span{display:none}
 }
+/* ikonlar resimdeki eski düğümleri tamamen örtsün: boyut harita genişliğine bağlı */
+.kyIn{container-type:inline-size}
+#kariyerPanel .kyIn .kyNode i{width:6.3cqw!important;height:6.3cqw!important;font-size:2.8cqw}
+#kariyerPanel .kyIn .kyNode.sec i{width:6.8cqw!important;height:6.8cqw!important}
+#kariyerPanel .kyIn .kyNode[aria-label*="Kışla"] i{width:8.4cqw!important;height:8.4cqw!important}
+.kyBaharat i{width:6.3cqw!important;height:6.3cqw!important}
