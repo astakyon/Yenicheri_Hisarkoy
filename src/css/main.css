@@ -882,3 +882,36 @@ canvas{display:block;position:absolute;top:0;left:0;}
 .kyLeg{background:rgba(8,12,28,.7);padding:6px 12px;border-radius:10px;z-index:3;left:8px;bottom:8px;right:auto;flex-direction:column;gap:2px;align-items:flex-start}
 .kyLeg u{border-top-color:#6ec3ff}.kyLeg u.e{border-top-color:#f3c64e}
 @media (orientation:portrait){.kyLeg{left:8px;right:auto;bottom:8px;top:auto;align-items:flex-start}}
+/* v1.86 — Kariyer resimli harita: resim hizalı, düğümler resmin üstünde */
+.kyMap{display:flex;align-items:center;overflow:hidden;background:#1a2a14!important}
+.kyMap::after{display:none}
+.kyIn{position:relative;flex:1;align-self:stretch;background:var(--ky-harita,#3a5a2a);min-width:0}
+.kyPath{position:absolute;inset:0;width:100%;height:100%;display:block!important}
+.kyBaharat{position:absolute;left:92.1%;top:60.4%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.9;pointer-events:none;color:#c9b27a}
+.kyBaharat i{display:grid;place-items:center;width:clamp(34px,10vh,56px);height:clamp(34px,10vh,56px);border-radius:50%;border:2px solid #6b5a30;background:#14100a;font-style:normal}
+.kyBaharat span{font:700 clamp(8px,1.6vh,11px) 'Cinzel',serif;letter-spacing:.05em;text-align:center;background:#120f0a;padding:3px 7px;border-radius:8px}
+.kyBaharat small{font:600 10px 'Cormorant Garamond',serif;color:#9a8a60}
+.kyIn .kyNode i{width:clamp(40px,11vh,62px);height:clamp(40px,11vh,62px)}
+.kyIn .kyNode span{background:#120f0a;padding:3px 8px;border-radius:8px;border:1px solid rgba(214,166,60,.35);text-shadow:none;max-width:12ch}
+.kyIn .kyNode.kilit{opacity:.85}
+.kyIn .kyNode.sec span{background:#3a0f18;border-color:#f0c25a}
+.kyIn .kyNode.sec i{width:clamp(46px,13vh,70px);height:clamp(46px,13vh,70px)}
+.kyLeg{left:8px!important;bottom:8px!important;right:auto!important;top:auto!important}
+@media (orientation:portrait){
+ .kyMap{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
+ .kyIn{flex:none;align-self:center;width:max(100%,900px);height:auto;aspect-ratio:1208/538}
+ #kariyerPanel .kyNode:not(.sec) span{display:block!important}
+ .kyIn .kyNode i{width:40px;height:40px}.kyIn .kyNode.sec i{width:48px;height:48px}
+ .kyIn .kyNode span{font-size:9px}
+ .kyLeg{display:none}
+}
+@media (orientation:portrait){.kyMap{justify-content:flex-start!important}.kyIn{width:max(100%,820px)!important}
+ #kariyerPanel .kyIn .kyNode span{position:static!important;white-space:normal!important;max-width:12ch!important;background:#120f0a!important;color:#f3e3b0!important;padding:2px 6px!important;border-radius:7px!important;font-size:9px!important}
+ #kariyerPanel .kyIn .kyNode{filter:none!important}}
+@media (orientation:portrait){#kariyerPanel .kyIn .kyNode{left:var(--x)!important;top:var(--y)!important}}
+@media (max-height:480px) and (orientation:landscape){
+ .kyLeg{display:none}
+ .kyIn .kyNode i,.kyBaharat i{width:30px;height:30px}.kyIn .kyNode.sec i{width:38px;height:38px}
+ .kyIn .kyNode span{font-size:7px;padding:1px 4px;max-width:none;white-space:nowrap}
+ .kyIn .kyNode:not(.sec) span,.kyBaharat span{display:none}
+}

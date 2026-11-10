@@ -9,6 +9,7 @@
 - Kariyer haritası: Hisarköy solda merkez; Çiftlik + Demir Madeni ekonomi dalı, hikâye yolu Hisarköy'den sağa ilerleyip Osmanlı Sarayı'nda sol altta biter.
 - Karakterim paneli sabit boy, sol kenarda tam yükseklik.
 - Kariyer: resimli harita çerçevesi; Hisarköy sol altta, hikâye yolu mavi, ekonomi yolu altın. Gerçek harita görseli src/assets/kariyer-harita.jpg olarak konursa build gömer.
+- Kariyer haritası artık resimli (src/assets/kariyer-harita.jpg, tasarım görselinden); düğümler resme hizalı, dikey ekranda yatay kaydırılır.
 
 ## v1.85
 - Yeni arayüz stili "Divan Cam": altın çerçeveli cam paneller, kırmızı ana düğmeler, eğik uçlu menü plakaları.

@@ -9,8 +9,9 @@ let KARIYER_SEC='kisla';   // yolda seçili harita
 function kariyerSec(id){KARIYER_SEC=id;kariyerCiz();}
 // Harita ağı (% — yatay: x,y; dikey ekranda x/y yer değiştirir).
 // Merkez Hisarköy; Çiftlik + Demir Madeni ekonomi dalı (materyal/para), diğerleri hikâye yolu.
-const KY_PT={kisla:[12,66],maden:[31,22],gorev:[40,54],orman:[52,36],tarim:[63,58],ciftlik:[53,76],sehir:[80,50],saray:[91,24]};
-const KY_BAG=[['kisla','maden','e'],['kisla','ciftlik','e'],['kisla','gorev','h'],['gorev','orman','h'],['orman','tarim','h'],['tarim','sehir','h'],['sehir','saray','h']];
+// Konumlar resim piksellerinden (1208x538) yüzdeye çevrilir: resim kariyer-harita.jpg ile birebir hizalı.
+const KY_PX={kisla:[173,410],maden:[347,160],gorev:[440,333],orman:[587,213],tarim:[726,360],ciftlik:[606,452],sehir:[967,325],saray:[1040,145]};
+const KY_PT={};Object.keys(KY_PX).forEach(function(k){KY_PT[k]=[+(KY_PX[k][0]/12.08).toFixed(2),+(KY_PX[k][1]/5.38).toFixed(2)];});
 function kariyerCiz(){
   const lv=SAVE.level||1,fame=SAVE.fame||0;
   let sonraki=null,onceki=FAME_TITLES[0];
@@ -29,20 +30,21 @@ function kariyerCiz(){
    +nav('<circle cx="12" cy="8" r="4"/><path d="M4 21c0-5 4-7 8-7s8 2 8 7"/>','KARAKTERİM','kariyerGit(gorunumAc)')
    +nav('<path d="M12 4v16M4 12h16"/>','YENİ OYUN','confirmReset()')
    +'</div><div class="kyMain"><div class="kyMap">';
-  // yol (yatay + dikey ekran için iki ayrı çizgi)
-  const yol=function(sw,t){let d='';KY_BAG.forEach(function(e){if(e[2]!==t)return;const P=function(p){return sw?[p[1],p[0]]:[p[0],p[1]];},p=P(KY_PT[e[0]]),q=P(KY_PT[e[1]]);let c1,c2;if(e[3]){c1=P(e[3][0]);c2=P(e[3][1]);}else if(sw){c1=[p[0],(p[1]+q[1])/2];c2=[q[0],(p[1]+q[1])/2];}else{c1=[(p[0]+q[0])/2,p[1]];c2=[(p[0]+q[0])/2,q[1]];}d+='M'+p[0]+' '+p[1]+' C'+c1[0]+' '+c1[1]+' '+c2[0]+' '+c2[1]+' '+q[0]+' '+q[1];});return d;};
-  [false,true].forEach(function(sw){h+='<svg class="kyPath '+(sw?'kyPv':'kyPh')+'" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="kyEko" d="'+yol(sw,'e')+'"/><path d="'+yol(sw,'h')+'"/></svg>';});
+  // resimde olmayan tek bağ: Yabancı Şehir → Osmanlı Sarayı (resmin mavi noktalı yoluyla aynı üslup)
+  h+='<div class="kyIn"><svg class="kyPath" viewBox="0 0 1208 538" preserveAspectRatio="none" aria-hidden="true"><path d="M967 325C1010 270 1000 210 1040 145"/></svg>';
+  h+='<div class="kyBaharat" aria-hidden="true"><i>🔒</i><span>Baharat Şehri<br><small>Yakında</small></span></div>';
   h+='<div class="kyLeg"><span><u></u>Hikâye yolu</span><span><u class="e"></u>Ekonomi yolu · materyal &amp; para</span></div>';
   let sec=WORLD_MAPS.find(function(m){return m.id===KARIYER_SEC;})||WORLD_MAPS[0];
   WORLD_MAPS.forEach(function(m,i){
     const gerek=haritaSv(m.id),acik=lv>=gerek,pt=KY_PT[m.id]||[50,50];
-    h+='<button class="hkKart kyNode '+(acik?'aktif':'kilit')+(m.id===sec.id?' sec':'')+'" style="--x:'+pt[0]+'%;--y:'+pt[1]+'%;--px:'+pt[1]+'%;--py:'+pt[0]+'%" onclick="kariyerSec(\''+m.id+'\')" aria-label="'+m.name+'"><i>'+(acik?m.icon:'🔒')+'</i><span>'+m.name+'</span></button>';
+    h+='<button class="hkKart kyNode '+(acik?'aktif':'kilit')+(m.id===sec.id?' sec':'')+'" style="--x:'+pt[0]+'%;--y:'+pt[1]+'%;" onclick="kariyerSec(\''+m.id+'\')" aria-label="'+m.name+'"><i>'+(acik?m.icon:'🔒')+'</i><span>'+m.name+'</span></button>';
   });
-  h+='</div>';
+  h+='</div></div>';
   const gerek=haritaSv(sec.id),acik=lv>=gerek,pr=(typeof HIKAYE!=='undefined')?HIKAYE.find(function(x){return x.harita===sec.id;}):null;
   h+='<div class="kyInfo"><div class="kyInfoT"><b>'+sec.name.toUpperCase()+'</b><small>'+sec.desc+'</small><small class="kyMeta">'+(acik?'✔ Açık':'🔒 Sv '+gerek+' gerekli ('+(gerek-lv)+' seviye kaldı)')+' · Önerilen Sv '+gerek+(pr?' · 📖 Perde '+pr.no:'')+'</small></div>';
   if(lv>=10&&!SAVE.class)h+='<button class="kySinif" onclick="kariyerKapat();document.getElementById(\'classBox\').style.display=\'flex\'">🎖 SINIFINI SEÇ</button>';
   h+=(acik?'<button class="hkBtn kyGir" onclick="haritayaGir(\''+sec.id+'\')">▶ GİR</button>':'<button class="hkBtn kyGir" disabled>🔒</button>')+'</div></div></div>';
   h+='<div class="ovFoot"><button class="panBtn" onclick="kariyerKapat()">← Ana Menü</button></div>';
   document.getElementById('kariyerPanel').innerHTML=h;
+  setTimeout(function(){const mp=document.querySelector('.kyMap'),sn=document.querySelector('.kyNode.sec');if(mp&&sn&&mp.scrollWidth>mp.clientWidth+4)mp.scrollLeft=Math.max(0,sn.offsetLeft-mp.clientWidth/2);},30);
 }
